@@ -396,3 +396,78 @@
     </div>
   </div>
 </template>
+
+<script setup>
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { 
+  Heart, Plus, Zap, Edit, ChevronRight, Leaf, Clock, 
+  BookOpen, ScanLine, Menu 
+} from 'lucide-vue-next';
+
+const router = useRouter();
+
+// Mock data
+const mockProfiles = [
+  {
+    id: '1',
+    name: 'Emma',
+    ageGroup: '6-9 years',
+    allergies: ['Dairy'],
+    dietaryRestriction: 'No pork',
+    nutritionFocus: ['Iron support', 'Balanced'],
+  },
+  {
+    id: '2',
+    name: 'Oliver',
+    ageGroup: '3-6 years',
+    allergies: ['Peanuts', 'Tree nuts'],
+    dietaryRestriction: '',
+    nutritionFocus: ['Calcium support', 'Diet variety'],
+  },
+];
+
+const profiles = ref([]);
+const selectedForFamily = ref([]);
+
+onMounted(() => {
+  const savedProfiles = localStorage.getItem('nutriguide_family_profiles');
+  if (savedProfiles) {
+    profiles.value = JSON.parse(savedProfiles);
+  } else {
+    profiles.value = mockProfiles;
+    localStorage.setItem('nutriguide_family_profiles', JSON.stringify(mockProfiles));
+  }
+});
+
+const toggleFamilySelection = (id) => {
+  if (selectedForFamily.value.includes(id)) {
+    selectedForFamily.value = selectedForFamily.value.filter(p => p !== id);
+  } else {
+    selectedForFamily.value = [...selectedForFamily.value, id];
+  }
+};
+
+const handleGenerateFamilyPlan = () => {
+  if (selectedForFamily.value.length > 0) {
+    localStorage.setItem('nutriguide_family_selection', JSON.stringify(selectedForFamily.value));
+    router.push('/results');
+  }
+};
+
+const handleViewMeals = (profileId) => {
+  localStorage.setItem('nutriguide_active_profile', profileId);
+  router.push('/results');
+};
+
+const handleEditProfile = (profileId) => {
+  localStorage.setItem('nutriguide_editing_profile', profileId);
+  router.push('/child-profile');
+};
+</script>
+
+<style scoped>
+.text-muted-foreground {
+  color: #6b7280;
+}
+</style>
