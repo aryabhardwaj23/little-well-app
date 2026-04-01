@@ -352,3 +352,47 @@
         </div>
       </div>
     </div>
+
+    <!-- Features Section -->
+    <div class="py-16 bg-white">
+      <div class="container mx-auto px-6 max-w-6xl">
+        <h2 class="text-3xl text-center mb-12">Why families love LittleWell</h2>
+
+        <div class="grid md:grid-cols-3 gap-8">
+          <!-- Feature 1 -->
+          <div class="text-center">
+            <div class="w-16 h-16 bg-[#A8D5BA] rounded-full flex items-center justify-center mx-auto mb-4">
+              <Heart class="w-8 h-8 text-white" />
+            </div>
+            <h3 class="text-xl mb-3">Personalised for your child</h3>
+            <p class="text-muted-foreground leading-relaxed">
+              Tailored meal plans based on age, allergies, and nutritional needs
+            </p>
+          </div>
+
+          <!-- Feature 2 -->
+          <div class="text-center">
+            <div class="w-16 h-16 bg-[#F7B267] rounded-full flex items-center justify-center mx-auto mb-4">
+              <Leaf class="w-8 h-8 text-white" />
+            </div>
+            <h3 class="text-xl mb-3">Seasonal & Fresh</h3>
+            <p class="text-muted-foreground leading-relaxed">
+              Recommendations using ingredients at their peak freshness and nutrition
+            </p>
+          </div>
+
+          <!-- Feature 3 -->
+          <div class="text-center">
+            <div class="w-16 h-16 bg-[#CDE7F0] rounded-full flex items-center justify-center mx-auto mb-4">
+              <Clock class="w-8 h-8 text-[#1B4965]" />
+            </div>
+            <h3 class="text-xl mb-3">Save time every day</h3>
+            <p class="text-muted-foreground leading-relaxed">
+              Quick, practical meal ideas that fit into busy morning routines
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
