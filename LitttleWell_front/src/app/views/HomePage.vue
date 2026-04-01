@@ -270,3 +270,85 @@
         </div>
       </div>
     </div>
+
+    <!-- Section 5: Learning Resources & Tools -->
+    <div class="py-16 bg-[#FAF9F6]">
+      <div class="container mx-auto px-6 max-w-6xl">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl mb-2">Learning Resources & Tools</h2>
+          <p class="text-muted-foreground">
+            Empower yourself with knowledge and practical tools for healthier choices
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          <!-- Nutrition Education Card -->
+          <div class="p-8 rounded-2xl shadow-sm relative overflow-hidden bg-white">
+            <span class="absolute top-4 right-4 bg-[#CDE7F0] text-[#1B4965] rounded-full px-3 py-1 text-sm">
+              Coming Soon
+            </span>
+            
+            <div class="flex items-start gap-4 mb-4">
+              <div class="w-14 h-14 bg-[#A8D5BA] rounded-full flex items-center justify-center flex-shrink-0">
+                <BookOpen class="w-7 h-7 text-[#2C5F2D]" />
+              </div>
+              <div>
+                <h3 class="text-xl mb-2">Nutrition Knowledge Hub</h3>
+                <p class="text-muted-foreground text-sm leading-relaxed">
+                  Learn how additives, preservatives, and sugar impact your child's cognitive development and behavior. Science-backed articles written for busy parents.
+                </p>
+              </div>
+            </div>
+            
+            <div class="mt-6 space-y-2 text-sm text-muted-foreground">
+              <div class="flex items-center gap-2">
+                <div class="w-1.5 h-1.5 bg-[#A8D5BA] rounded-full"></div>
+                <span>Understanding food additives and preservatives</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="w-1.5 h-1.5 bg-[#A8D5BA] rounded-full"></div>
+                <span>How sugar affects brain development and mood</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="w-1.5 h-1.5 bg-[#A8D5BA] rounded-full"></div>
+                <span>Making informed choices for your family</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Label Scanner Card -->
+          <div class="p-8 rounded-2xl shadow-sm relative overflow-hidden bg-white">
+            <span class="absolute top-4 right-4 bg-[#CDE7F0] text-[#1B4965] rounded-full px-3 py-1 text-sm">
+              Coming Soon
+            </span>
+            
+            <div class="flex items-start gap-4 mb-4">
+              <div class="w-14 h-14 bg-[#F7B267] rounded-full flex items-center justify-center flex-shrink-0">
+                <ScanLine class="w-7 h-7 text-white" />
+              </div>
+              <div>
+                <h3 class="text-xl mb-2">Smart Label Reader</h3>
+                <p class="text-muted-foreground text-sm leading-relaxed">
+                  Decode nutrition labels and ingredient lists instantly. Get clear, actionable insights about what's really in your children's snacks and meals.
+                </p>
+              </div>
+            </div>
+            
+            <div class="mt-6 space-y-2 text-sm text-muted-foreground">
+              <div class="flex items-center gap-2">
+                <div class="w-1.5 h-1.5 bg-[#F7B267] rounded-full"></div>
+                <span>Scan product labels with your phone</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="w-1.5 h-1.5 bg-[#F7B267] rounded-full"></div>
+                <span>Instant breakdown of nutritional content</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="w-1.5 h-1.5 bg-[#F7B267] rounded-full"></div>
+                <span>Identify hidden sugars and additives</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
