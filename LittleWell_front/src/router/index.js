@@ -2,16 +2,16 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 // Views
 import HomePage from '../views/HomePage.vue';
-import AboutPage from '../views/AboutPage.vue';
-import QuickStartPage from '../views/QuickStartPage.vue';
-import ChildProfilePage from '../views/ChildProfilePage.vue';
-import ChildInfoPage from '../views/ChildInfoPage.vue';
-import NutritionNeedsPage from '../views/NutritionNeedsPage.vue';
-import ProfileSummaryPage from '../views/ProfileSummaryPage.vue';
-import NutritionCheckPage from '../views/NutritionCheckPage.vue';
-import NutritionInsightsPage from '../views/NutritionInsightsPage.vue';
-import ResultsPageComplete from '../views/ResultsPageComplete.vue';
-import RecipePage from '../views/RecipePage.vue';
+// import AboutPage from '../views/AboutPage.vue';
+// import QuickStartPage from '../views/QuickStartPage.vue';
+// import ChildProfilePage from '../views/ChildProfilePage.vue';
+// import ChildInfoPage from '../views/ChildInfoPage.vue';
+// import NutritionNeedsPage from '../views/NutritionNeedsPage.vue';
+// import ProfileSummaryPage from '../views/ProfileSummaryPage.vue';
+// import NutritionCheckPage from '../views/NutritionCheckPage.vue';
+// import NutritionInsightsPage from '../views/NutritionInsightsPage.vue';
+// import ResultsPageComplete from '../views/ResultsPageComplete.vue';
+// import RecipePage from '../views/RecipePage.vue';
 
 const routes = [
   {
@@ -32,18 +32,6 @@ const routes = [
 //     component: QuickStartPage,
 //     meta: { title: 'Quick Start - LittleWell' }
 //   },
-  {
-    path: '/child-profile',
-    name: 'ChildProfile',
-    component: ChildProfilePage,
-    meta: { title: 'Child Profile - LittleWell' }
-  },
-  {
-    path: '/child-info',
-    name: 'ChildInfo',
-    component: ChildInfoPage,
-    meta: { title: 'Child Information - LittleWell' }
-  },
 //   {
 //     path: '/nutrition-needs',
 //     name: 'NutritionNeeds',
