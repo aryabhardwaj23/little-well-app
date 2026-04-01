@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
-// Views - 所有11个页面
+// Views
 import HomePage from '../views/HomePage.vue';
 import AboutPage from '../views/AboutPage.vue';
 import QuickStartPage from '../views/QuickStartPage.vue';
