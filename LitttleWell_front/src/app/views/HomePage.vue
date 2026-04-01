@@ -179,3 +179,94 @@
         </div>
       </div>
     </div>
+
+    <!-- Section 3: Quick Meal Option -->
+    <div class="py-12 bg-[#FAF9F6]">
+      <div class="container mx-auto px-6 max-w-6xl">
+        <div class="p-8 rounded-2xl shadow-sm border-2 border-transparent hover:border-[#F7B267] transition-all bg-white">
+          <div class="flex items-center gap-8">
+            <div class="w-16 h-16 bg-[#F7B267] rounded-full flex items-center justify-center flex-shrink-0">
+              <Zap class="w-8 h-8 text-white" />
+            </div>
+            <div class="flex-1">
+              <h2 class="text-2xl mb-2">Start a Quick Meal Plan</h2>
+              <p class="text-muted-foreground">
+                Get simple, balanced meal ideas instantly without creating a profile
+              </p>
+            </div>
+            <button
+              @click="router.push('/quick-start')"
+              class="bg-[#F7B267] hover:bg-[#E5A156] text-white rounded-lg px-8 py-3 transition-colors"
+            >
+              Start Now
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 4: Family Meal Planning -->
+    <div v-if="profiles.length >= 2" class="py-16 bg-white">
+      <div class="container mx-auto px-6 max-w-6xl">
+        <div class="text-center mb-8">
+          <h2 class="text-3xl mb-2">Plan for Your Family</h2>
+          <p class="text-muted-foreground">
+            Select multiple children to generate family lunchboxes
+          </p>
+        </div>
+
+        <div class="p-8 rounded-2xl shadow-sm bg-white border">
+          <div class="grid md:grid-cols-3 gap-4 mb-8">
+            <div
+              v-for="profile in profiles"
+              :key="profile.id"
+              @click="toggleFamilySelection(profile.id)"
+              :class="[
+                'p-4 rounded-xl border-2 cursor-pointer transition-all',
+                selectedForFamily.includes(profile.id)
+                  ? 'border-[#A8D5BA] bg-[#A8D5BA]/10'
+                  : 'border-gray-200 hover:border-[#A8D5BA]/50'
+              ]"
+            >
+              <div class="flex items-start gap-3">
+                <input
+                  type="checkbox"
+                  :checked="selectedForFamily.includes(profile.id)"
+                  class="mt-1"
+                  @click.stop
+                />
+                <div class="flex-1">
+                  <h4 class="font-medium mb-1">{{ profile.name }}</h4>
+                  <p class="text-sm text-muted-foreground mb-2">
+                    {{ profile.ageGroup }}
+                  </p>
+                  <div v-if="profile.nutritionFocus.length > 0" class="flex flex-wrap gap-1">
+                    <span
+                      v-for="focus in profile.nutritionFocus.slice(0, 2)"
+                      :key="focus"
+                      class="bg-[#A8D5BA]/20 text-[#2C5F2D] text-xs rounded-full px-2 py-0.5"
+                    >
+                      {{ focus }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div v-if="selectedForFamily.length > 0" class="bg-[#CDE7F0]/20 rounded-xl p-4 mb-6">
+            <p class="text-sm text-center">
+              <strong>{{ selectedForFamily.length }} children selected</strong> – Meals will be tailored to combine their nutrition needs
+            </p>
+          </div>
+
+          <button
+            @click="handleGenerateFamilyPlan"
+            :disabled="selectedForFamily.length === 0"
+            class="w-full bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg py-6 text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            Generate Family Lunchboxes
+          </button>
+        </div>
+      </div>
+    </div>
