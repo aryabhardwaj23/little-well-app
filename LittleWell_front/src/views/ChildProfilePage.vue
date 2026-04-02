@@ -114,7 +114,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { ArrowLeft } from 'lucide-vue-next';
 
@@ -146,12 +146,54 @@ const nutritionOptions = [
   'Diet variety',
 ];
 
+onMounted(() => {
+  const editingId = localStorage.getItem('nutriguide_editing_profile');
+  if (editingId) {
+    isEditing.value = true;
+    const savedProfiles = localStorage.getItem('nutriguide_family_profiles');
+    if (savedProfiles) {
+      const profiles = JSON.parse(savedProfiles);
+      const profile = profiles.find(p => p.id === editingId);
+      if (profile) {
+        formData.value = { ...profile };
+      }
+    }
+  }
+});
+
 const toggleAllergy = (allergy) => {
   if (formData.value.allergies.includes(allergy)) {
     formData.value.allergies = formData.value.allergies.filter(a => a !== allergy);
   } else {
     formData.value.allergies = [...formData.value.allergies, allergy];
   }
+};
+
+const toggleNutritionFocus = (focus) => {
+  if (formData.value.nutritionFocus.includes(focus)) {
+    formData.value.nutritionFocus = formData.value.nutritionFocus.filter(f => f !== focus);
+  } else {
+    formData.value.nutritionFocus = [...formData.value.nutritionFocus, focus];
+  }
+};
+
+const handleSave = () => {
+  const savedProfiles = localStorage.getItem('nutriguide_family_profiles');
+  let profiles = savedProfiles ? JSON.parse(savedProfiles) : [];
+  
+  if (isEditing.value) {
+    profiles = profiles.map(p => p.id === formData.value.id ? formData.value : p);
+  } else {
+    const newProfile = {
+      ...formData.value,
+      id: Date.now().toString(),
+    };
+    profiles.push(newProfile);
+  }
+  
+  localStorage.setItem('nutriguide_family_profiles', JSON.stringify(profiles));
+  localStorage.removeItem('nutriguide_editing_profile');
+  router.push('/');
 };
 </script>
 
