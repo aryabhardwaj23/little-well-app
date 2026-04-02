@@ -38,6 +38,18 @@ const routes = [
 //     component: NutritionNeedsPage,
 //     meta: { title: 'Nutrition Needs - LittleWell' }
 //   },
+  {
+    path: '/child-profile',
+    name: 'ChildProfile',
+    component: ChildProfilePage,
+    meta: { title: 'Child Profile - LittleWell' }
+  },
+  {
+    path: '/child-info',
+    name: 'ChildInfo',
+    component: ChildInfoPage,
+    meta: { title: 'Child Information - LittleWell' }
+  },
 //   {
 //     path: '/profile-summary',
 //     name: 'ProfileSummary',
