@@ -1,4 +1,4 @@
-<template>
+ <template>
   <div class="min-h-screen py-12 bg-[#FAF9F6]">
     <div class="container mx-auto px-6 max-w-4xl">
       <!-- Back Button -->
