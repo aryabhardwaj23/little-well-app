@@ -37,3 +37,86 @@
           </button>
         </div>
       </div>
+
+      <!-- Allergies -->
+      <div class="p-8 rounded-2xl shadow-sm mb-8 bg-white border">
+        <label class="text-lg mb-4 block font-medium">
+          Any allergies or intolerances? (optional)
+        </label>
+        <p class="text-sm text-muted-foreground mb-4">
+          Select all that apply
+        </p>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <button
+            v-for="allergy in commonAllergies"
+            :key="allergy"
+            @click="toggleAllergy(allergy)"
+            :class="[
+              'p-4 rounded-lg border-2 transition-all',
+              allergies.includes(allergy)
+                ? 'border-[#F7B267] bg-[#F7B267]/10 text-[#8B4513]'
+                : 'border-gray-200 hover:border-[#F7B267]/50'
+            ]"
+          >
+            {{ allergy }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Continue Button -->
+      <button
+        @click="handleContinue"
+        :disabled="!ageGroup"
+        class="w-full bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg py-4 text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+      >
+        Get Meal Suggestions
+      </button>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { ArrowLeft } from 'lucide-vue-next';
+
+const router = useRouter();
+
+const ageGroup = ref('');
+const allergies = ref([]);
+
+const ageGroups = ['0-3 years', '3-6 years', '6-9 years', '9-12 years', '12+ years'];
+
+const commonAllergies = [
+  'Peanuts',
+  'Tree nuts',
+  'Milk',
+  'Eggs',
+  'Wheat',
+  'Soy',
+  'Fish',
+  'Shellfish',
+];
+
+const toggleAllergy = (allergy) => {
+  if (allergies.value.includes(allergy)) {
+    allergies.value = allergies.value.filter(a => a !== allergy);
+  } else {
+    allergies.value = [...allergies.value, allergy];
+  }
+};
+
+const handleContinue = () => {
+  localStorage.setItem(
+    'nutriguide_quick_mode',
+    JSON.stringify({ ageGroup: ageGroup.value, allergies: allergies.value })
+  );
+  router.push('/results');
+};
+</script>
+
+<style scoped>
+.text-muted-foreground {
+  color: #6b7280;
+}
+</style>
