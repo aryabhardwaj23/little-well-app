@@ -3,7 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 // Views
 import HomePage from '../views/HomePage.vue';
 // import AboutPage from '../views/AboutPage.vue';
-// import QuickStartPage from '../views/QuickStartPage.vue';
+import QuickStartPage from '../views/QuickStartPage.vue';
 import ChildProfilePage from '../views/ChildProfilePage.vue';
 import ChildInfoPage from '../views/ChildInfoPage.vue';
 // import NutritionNeedsPage from '../views/NutritionNeedsPage.vue';
