@@ -26,12 +26,12 @@ const routes = [
 //     component: AboutPage,
 //     meta: { title: 'About Us - LittleWell' }
 //   },
-//   {
-//     path: '/quick-start',
-//     name: 'QuickStart',
-//     component: QuickStartPage,
-//     meta: { title: 'Quick Start - LittleWell' }
-//   },
+  {
+    path: '/quick-start',
+    name: 'QuickStart',
+    component: QuickStartPage,
+    meta: { title: 'Quick Start - LittleWell' }
+  },
 //   {
 //     path: '/nutrition-needs',
 //     name: 'NutritionNeeds',
