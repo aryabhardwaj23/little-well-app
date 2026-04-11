@@ -61,12 +61,21 @@
 
       <!-- Lunchbox Grid -->
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div
-          v-for="lunchbox in mockLunchboxes"
-          :key="lunchbox.id"
-          class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
-          @click="handleLunchboxClick(lunchbox.id)"
-        >
+        <div v-if="isLoading" class="text-center py-10 text-muted-foreground">
+          Loading personalised lunchbox recommendations...
+        </div>
+
+        <div v-else-if="lunchboxes.length === 0" class="text-center py-10 text-muted-foreground">
+          No recommendations available yet. Please create a child profile first.
+        </div>
+
+        <div v-else class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div
+            v-for="lunchbox in lunchboxes"
+            :key="lunchbox.id"
+            class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+            @click="handleLunchboxClick(lunchbox.id)"
+          >
           <!-- Child Name Badge (if exists) -->
           <div v-if="lunchbox.childName" class="px-6 pt-4">
             <span class="inline-flex items-center px-3 py-1 bg-[#CDE7F0]/30 text-[#1B4965] text-sm rounded-full">
@@ -145,6 +154,7 @@
           Back to Home
         </button>
         <button
+          @click="loadRecommendations"
           class="px-8 py-3 bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg transition-colors inline-flex items-center gap-2"
         >
           <RefreshCw class="w-4 h-4" />
@@ -156,120 +166,56 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, watch, onMounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import { RefreshCw, Sparkles, Leaf } from 'lucide-vue-next';
+import { getRecommendedProducts } from '../services/api';
 
 const router = useRouter();
+const route = useRoute();
 
 const seasonalMode = ref(true);
+const lunchboxes = ref([]);
+const isLoading = ref(false);
+const selectedChildId = ref(null);
 
-const mockLunchboxes = [
-  {
-    id: '1',
-    childName: 'Tommy',
-    items: [
-      {
-        name: 'Steamed Rice',
-        amount: '150g (about 3/4 cup)',
-        image: 'https://images.unsplash.com/photo-1516684732162-798a0062be99?w=400',
-        section: 'carbs',
-      },
-      {
-        name: 'Honey Glazed Chicken Wing',
-        amount: '1 piece (about 80g)',
-        image: 'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=400',
-        section: 'protein',
-      },
-      {
-        name: 'Stir-fried Carrot Sticks',
-        amount: '1/2 carrot (about 50g)',
-        image: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=400',
-        section: 'veggies',
-      },
-      {
-        name: 'Apple Slices',
-        amount: '1/2 apple (about 75g)',
-        image: 'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=400',
-        section: 'fruit',
-      },
-    ],
-    nutritionFocus: ['High in Iron', 'Balanced Protein'],
-    whyThisMeal: 'Chicken provides quality protein and iron to support energy levels. Carrots are rich in beta-carotene for healthy vision.',
-    colorInsight: '💛 Kids love bright colors! The golden chicken and orange carrots create an appetizing, vibrant meal.',
-    recipe: '1. Steam rice for 15 mins. 2. Bake chicken wing with honey glaze at 180°C for 20 mins.',
-    supportType: 'iron',
-  },
-  {
-    id: '2',
-    items: [
-      {
-        name: 'Whole Grain Pasta',
-        amount: '100g (about 1 cup cooked)',
-        image: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=400',
-        section: 'carbs',
-      },
-      {
-        name: 'Mini Turkey Meatballs',
-        amount: '3 pieces (about 90g)',
-        image: 'https://images.unsplash.com/photo-1529042410759-befb1204b468?w=400',
-        section: 'protein',
-      },
-      {
-        name: 'Cherry Tomatoes',
-        amount: '5-6 pieces (about 60g)',
-        image: 'https://images.unsplash.com/photo-1592841200221-a6898f307baa?w=400',
-        section: 'veggies',
-      },
-      {
-        name: 'Strawberry Hearts',
-        amount: '4-5 pieces (about 80g)',
-        image: 'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=400',
-        section: 'fruit',
-      },
-    ],
-    nutritionFocus: ['Supports Immunity', 'Rich in Vitamins'],
-    whyThisMeal: 'Turkey is a lean protein source, while tomatoes and strawberries provide vitamin C to boost immune system.',
-    colorInsight: '❤️ The cheerful reds from tomatoes and strawberries make this lunchbox visually exciting.',
-    recipe: '1. Cook pasta according to package. 2. Mix ground turkey with breadcrumbs, form small balls, bake 15 mins.',
-    supportType: 'vitamins',
-  },
-  {
-    id: '3',
-    childName: 'Sophie',
-    items: [
-      {
-        name: 'Quinoa',
-        amount: '120g (about 2/3 cup)',
-        image: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400',
-        section: 'carbs',
-      },
-      {
-        name: 'Baked Salmon Nuggets',
-        amount: '2 pieces (about 70g)',
-        image: 'https://images.unsplash.com/photo-1485921325833-c519f76c4927?w=400',
-        section: 'protein',
-      },
-      {
-        name: 'Steamed Broccoli Florets',
-        amount: '5-6 florets (about 60g)',
-        image: 'https://images.unsplash.com/photo-1459411621453-7b03977f4bfc?w=400',
-        section: 'veggies',
-      },
-      {
-        name: 'Orange Segments',
-        amount: '1/2 orange (about 70g)',
-        image: 'https://images.unsplash.com/photo-1580052614034-c55d20bfee3b?w=400',
-        section: 'fruit',
-      },
-    ],
-    nutritionFocus: ['Rich in Calcium', 'Omega-3 Boost'],
-    whyThisMeal: 'Salmon and broccoli work together to provide calcium, vitamin D, and omega-3s for strong bones and healthy brain development.',
-    colorInsight: '🧡 The vibrant greens and oranges create a beautiful rainbow effect.',
-    recipe: '1. Cook quinoa in water (1:2 ratio) for 15 mins. 2. Cut salmon into nuggets, coat lightly with breadcrumbs, bake 12 mins.',
-    supportType: 'calcium',
-  },
-];
+const loadRecommendations = async () => {
+  const childId = route.query.childId;
+
+  if (!childId) {
+    lunchboxes.value = [];
+    return;
+  }
+
+  try {
+    selectedChildId.value = childId;
+    isLoading.value = true;
+
+    const data = await getRecommendedProducts(childId, seasonalMode.value);
+
+    lunchboxes.value = data;
+  } catch (error) {
+    console.error('Failed to load recommendations:', error);
+    lunchboxes.value = [];
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+onMounted(() => {
+  loadRecommendations();
+});
+
+watch(seasonalMode, () => {
+  loadRecommendations();
+});
+
+watch(
+  () => route.query.childId,
+  () => {
+    loadRecommendations();
+  }
+);
 
 const supportColors = {
   iron: 'bg-[#F7B267]',
@@ -285,10 +231,14 @@ const supportTextColors = {
   general: 'text-white',
 };
 
-const checkData = localStorage.getItem('nutriguide_nutrition_check');
 let nutritionInsights = null;
-if (checkData) {
-  nutritionInsights = JSON.parse(checkData).nutritionInsights;
+try {
+  const checkData = localStorage.getItem('nutriguide_nutrition_check');
+  if (checkData) {
+    nutritionInsights = JSON.parse(checkData)?.nutritionInsights || null;
+  }
+} catch (error) {
+  console.error('Failed to parse nutrition check data:', error);
 }
 
 const needsSupport = nutritionInsights
