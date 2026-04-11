@@ -2,12 +2,18 @@
   <div class="min-h-screen py-12 bg-[#FAF9F6]">
     <div class="container mx-auto px-6 max-w-6xl">
       <!-- Header -->
-      <div class="text-center mb-8">
-        <h1 class="text-4xl mb-4">Nutritious Lunchboxes for Your Family</h1>
-        <p class="text-lg text-muted-foreground">
-          Colorful, balanced meals designed to delight and nourish your little ones
-        </p>
+    <div class="text-center mb-8">
+      <h1 class="text-4xl mb-4">Nutritious Lunchboxes for Your Family</h1>
+      <p class="text-lg text-muted-foreground">
+        Colorful, balanced meals designed to delight and nourish your little ones
+      </p>
+
+      <div v-if="isFamilyMode" class="mt-3">
+        <span class="inline-block px-3 py-1 rounded-full text-sm bg-[#CDE7F0]/30 text-[#1B4965]">
+          Family plan mode
+        </span>
       </div>
+    </div>
 
       <!-- Seasonal Toggle -->
       <div class="p-6 rounded-2xl shadow-sm mb-8 bg-white border">

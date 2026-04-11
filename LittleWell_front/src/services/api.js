@@ -51,3 +51,12 @@ export function updateChild(childId, payload) {
 export function getRecommendedProducts(childId, seasonal = true) {
   return request(`/products/recommended?child_id=${childId}&seasonal=${seasonal}`);
 }
+
+export function getFamilyRecommendedProducts(childIds, seasonal = true) {
+  const query = new URLSearchParams({
+    child_ids: childIds.join(','),
+    seasonal: String(seasonal),
+  });
+
+  return request(`/products/recommended/family?${query.toString()}`);
+}

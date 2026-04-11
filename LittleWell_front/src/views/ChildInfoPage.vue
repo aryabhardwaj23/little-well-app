@@ -190,11 +190,13 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { ArrowLeft } from 'lucide-vue-next';
+import { useChildProfileStore } from '../stores/childProfile';
 
 const router = useRouter();
+const childProfileStore = useChildProfileStore();
 
 const formData = ref({
   name: '',
@@ -205,6 +207,13 @@ const formData = ref({
   activityLevel: 'moderate',
   eatingHabit: '',
   dislikes: '',
+});
+
+onMounted(() => {
+  formData.value = {
+    ...formData.value,
+    ...childProfileStore.childProfileDraft,
+  };
 });
 
 const ageGroups = ['0-3 years', '3-6 years', '6-9 years', '9-12 years', '12+ years'];
@@ -237,7 +246,7 @@ const toggleAllergy = (allergy) => {
 };
 
 const handleContinue = () => {
-  localStorage.setItem('nutriguide_child_info', JSON.stringify(formData.value));
+  childProfileStore.updateDraft(formData.value);
   router.push('/nutrition-needs');
 };
 </script>
