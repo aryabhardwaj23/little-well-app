@@ -15,7 +15,7 @@
           <!-- Navigation Links -->
           <div class="hidden md:flex items-center gap-6">
             <button
-              @click="router.push('/results')"
+              @click="handleLunchboxPlan"
               class="text-[#2C5F2D] hover:bg-[#A8D5BA]/10 rounded-lg px-4 py-2 transition-colors"
             >
               Lunchbox Plan
@@ -408,29 +408,17 @@ import { getChildren } from '../services/api';
 
 const router = useRouter();
 
-// Mock data
-const mockProfiles = [
-  {
-    id: '1',
-    name: 'Emma',
-    ageGroup: '6-9 years',
-    allergies: ['Dairy'],
-    dietaryRestriction: 'No pork',
-    nutritionFocus: ['Iron support', 'Balanced'],
-  },
-  {
-    id: '2',
-    name: 'Oliver',
-    ageGroup: '3-6 years',
-    allergies: ['Peanuts', 'Tree nuts'],
-    dietaryRestriction: '',
-    nutritionFocus: ['Calcium support', 'Diet variety'],
-  },
-];
-
 const profiles = ref([]);
 const selectedForFamily = ref([]);
 const isLoadingProfiles = ref(false);
+
+const handleLunchboxPlan = () => {
+  if (profiles.value.length > 0) {
+    router.push(`/results?childId=${profiles.value[0].id}`);
+  } else {
+    router.push('/child-profile');
+  }
+};
 
 const mapChildToProfileCard = (child) => {
   return {
@@ -474,8 +462,8 @@ const toggleFamilySelection = (id) => {
 
 const handleGenerateFamilyPlan = () => {
   if (selectedForFamily.value.length > 0) {
-    localStorage.setItem('nutriguide_family_selection', JSON.stringify(selectedForFamily.value));
-    router.push('/results');
+    const childIds = selectedForFamily.value.join(',');
+    router.push(`/results?family=1&childIds=${childIds}`);
   }
 };
 
