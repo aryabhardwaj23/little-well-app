@@ -10,7 +10,7 @@ import ChildInfoPage from '../views/ChildInfoPage.vue';
 // import ProfileSummaryPage from '../views/ProfileSummaryPage.vue';
 // import NutritionCheckPage from '../views/NutritionCheckPage.vue';
 // import NutritionInsightsPage from '../views/NutritionInsightsPage.vue';
-// import ResultsPageComplete from '../views/ResultsPageComplete.vue';
+import ResultsPage from '../views/ResultsPage.vue';
 import RecipePage from '../views/RecipePage.vue';
 
 const routes = [
@@ -68,12 +68,12 @@ const routes = [
 //     component: NutritionInsightsPage,
 //     meta: { title: 'Nutrition Insights - LittleWell' }
 //   },
-//   {
-//     path: '/results',
-//     name: 'Results',
-//     component: ResultsPageComplete,
-//     meta: { title: 'Lunchbox Results - LittleWell' }
-//   },
+  {
+    path: '/results',
+    name: 'Results',
+    component: ResultsPage,
+    meta: { title: 'Lunchbox Results - LittleWell' }
+  },
   {
     path: '/recipe/:id',
     name: 'Recipe',
