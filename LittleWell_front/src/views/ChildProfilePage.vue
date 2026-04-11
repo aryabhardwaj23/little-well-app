@@ -115,12 +115,15 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import { ArrowLeft } from 'lucide-vue-next';
+import { createChild, getChildById, updateChild } from '../services/api';
 
 const router = useRouter();
+const route = useRoute();
 
 const isEditing = ref(false);
+const editingChildId = ref(null);
 
 const formData = ref({
   name: '',
@@ -146,18 +149,31 @@ const nutritionOptions = [
   'Diet variety',
 ];
 
-onMounted(() => {
-  const editingId = localStorage.getItem('nutriguide_editing_profile');
-  if (editingId) {
+onMounted(async () => {
+  const childId = route.query.childId;
+
+  if (!childId) return;
+
+  try {
     isEditing.value = true;
-    const savedProfiles = localStorage.getItem('nutriguide_family_profiles');
-    if (savedProfiles) {
-      const profiles = JSON.parse(savedProfiles);
-      const profile = profiles.find(p => p.id === editingId);
-      if (profile) {
-        formData.value = { ...profile };
-      }
-    }
+    editingChildId.value = childId;
+
+    const child = await getChildById(childId);
+
+    formData.value = {
+      name: child.child_name || '',
+      ageGroup: child.age_band || '',
+      allergies: child.allergies || [],
+      dietaryRestriction: child.religious_needs || '',
+      nutritionFocus: [
+        child.iron_status === 'needs_support' ? 'Iron support' : null,
+        child.calcium_status === 'needs_support' ? 'Calcium support' : null,
+        child.vitamin_d_status === 'needs_support' ? 'Immune support' : null,
+        child.variety_status === 'needs_support' ? 'Diet variety' : null,
+      ].filter(Boolean),
+    };
+  } catch (error) {
+    console.error('Failed to load child profile:', error);
   }
 });
 
@@ -177,23 +193,32 @@ const toggleNutritionFocus = (focus) => {
   }
 };
 
-const handleSave = () => {
-  const savedProfiles = localStorage.getItem('nutriguide_family_profiles');
-  let profiles = savedProfiles ? JSON.parse(savedProfiles) : [];
-  
-  if (isEditing.value) {
-    profiles = profiles.map(p => p.id === formData.value.id ? formData.value : p);
-  } else {
-    const newProfile = {
-      ...formData.value,
-      id: Date.now().toString(),
+const handleSave = async () => {
+  try {
+    const payload = {
+      user_id: 1,
+      child_name: formData.value.name,
+      age_band: formData.value.ageGroup,
+      band_id: null,
+      iron_status: formData.value.nutritionFocus.includes('Iron support') ? 'needs_support' : 'normal',
+      calcium_status: formData.value.nutritionFocus.includes('Calcium support') ? 'needs_support' : 'normal',
+      vitamin_d_status: formData.value.nutritionFocus.includes('Immune support') ? 'needs_support' : 'normal',
+      variety_status: formData.value.nutritionFocus.includes('Diet variety') ? 'needs_support' : 'normal',
+      religious_needs: formData.value.dietaryRestriction || '',
+      allergies: formData.value.allergies,
     };
-    profiles.push(newProfile);
+
+    if (isEditing.value && editingChildId.value) {
+      await updateChild(editingChildId.value, payload);
+    } else {
+      await createChild(payload);
+    }
+
+    router.push('/');
+  } catch (error) {
+    console.error('Failed to save child profile:', error);
+    alert(`Failed to save profile: ${error.message}`);
   }
-  
-  localStorage.setItem('nutriguide_family_profiles', JSON.stringify(profiles));
-  localStorage.removeItem('nutriguide_editing_profile');
-  router.push('/');
 };
 </script>
 
