@@ -404,6 +404,7 @@ import {
   Heart, Plus, Zap, Edit, ChevronRight, Leaf, Clock, 
   BookOpen, ScanLine, Menu 
 } from 'lucide-vue-next';
+import { getChildren } from '../services/api';
 
 const router = useRouter();
 
@@ -429,15 +430,38 @@ const mockProfiles = [
 
 const profiles = ref([]);
 const selectedForFamily = ref([]);
+const isLoadingProfiles = ref(false);
+
+const mapChildToProfileCard = (child) => {
+  return {
+    id: child.child_id,
+    name: child.child_name,
+    ageGroup: child.age_band,
+    allergies: child.allergies || [],
+    dietaryRestriction: child.religious_needs || '',
+    nutritionFocus: [
+      child.iron_status === 'needs_support' ? 'Iron support' : null,
+      child.calcium_status === 'needs_support' ? 'Calcium support' : null,
+      child.vitamin_d_status === 'needs_support' ? 'Immune support' : null,
+      child.variety_status === 'needs_support' ? 'Diet variety' : null,
+    ].filter(Boolean),
+  };
+};
+
+const loadProfiles = async () => {
+  try {
+    isLoadingProfiles.value = true;
+    const children = await getChildren();
+    profiles.value = children.map(mapChildToProfileCard);
+  } catch (error) {
+    console.error('Failed to load children:', error);
+  } finally {
+    isLoadingProfiles.value = false;
+  }
+};
 
 onMounted(() => {
-  const savedProfiles = localStorage.getItem('nutriguide_family_profiles');
-  if (savedProfiles) {
-    profiles.value = JSON.parse(savedProfiles);
-  } else {
-    profiles.value = mockProfiles;
-    localStorage.setItem('nutriguide_family_profiles', JSON.stringify(mockProfiles));
-  }
+  loadProfiles();
 });
 
 const toggleFamilySelection = (id) => {
@@ -456,13 +480,11 @@ const handleGenerateFamilyPlan = () => {
 };
 
 const handleViewMeals = (profileId) => {
-  localStorage.setItem('nutriguide_active_profile', profileId);
-  router.push('/results');
+  router.push(`/results?childId=${profileId}`);
 };
 
 const handleEditProfile = (profileId) => {
-  localStorage.setItem('nutriguide_editing_profile', profileId);
-  router.push('/child-profile');
+  router.push(`/child-profile?childId=${profileId}`);
 };
 </script>
 
