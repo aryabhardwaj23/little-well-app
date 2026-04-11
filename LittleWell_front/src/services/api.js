@@ -60,3 +60,13 @@ export function getFamilyRecommendedProducts(childIds, seasonal = true) {
 
   return request(`/products/recommended/family?${query.toString()}`);
 }
+
+export function getQuickRecommendedProducts({ ageGroup, allergies = [], seasonal = true }) {
+  const query = new URLSearchParams({
+    ageGroup,
+    allergies: allergies.join(','),
+    seasonal: String(seasonal),
+  });
+
+  return request(`/products/recommended/quick?${query.toString()}`);
+}

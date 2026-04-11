@@ -107,11 +107,13 @@ const toggleAllergy = (allergy) => {
 };
 
 const handleContinue = () => {
-  localStorage.setItem(
-    'nutriguide_quick_mode',
-    JSON.stringify({ ageGroup: ageGroup.value, allergies: allergies.value })
-  );
-  router.push('/results');
+  const query = new URLSearchParams({
+    quick: '1',
+    ageGroup: ageGroup.value,
+    allergies: allergies.value.join(','),
+  });
+
+  router.push(`/results?${query.toString()}`);
 };
 </script>
 

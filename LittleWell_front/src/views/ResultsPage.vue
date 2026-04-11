@@ -13,6 +13,11 @@
           Family plan mode
         </span>
       </div>
+      <div v-if="isQuickMode" class="mt-3 text-center">
+        <span class="inline-block px-3 py-1 rounded-full text-sm bg-[#F7B267]/20 text-[#8B4513]">
+          Quick start mode
+        </span>
+      </div>
     </div>
 
       <!-- Seasonal Toggle -->
@@ -175,8 +180,13 @@
 import { ref, watch, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { RefreshCw, Sparkles, Leaf } from 'lucide-vue-next';
-import { getRecommendedProducts, getFamilyRecommendedProducts } from '../services/api';
+import {
+  getRecommendedProducts,
+  getFamilyRecommendedProducts,
+  getQuickRecommendedProducts,
+} from '../services/api';
 
+const isQuickMode = ref(false);
 const router = useRouter();
 const route = useRoute();
 
@@ -193,15 +203,45 @@ const loadRecommendations = async () => {
   const childIdsParam = route.query.childIds;
   const family = route.query.family;
 
+  const quick = route.query.quick;
+  const quickAgeGroup = route.query.ageGroup;
+  const allergiesParam = route.query.allergies;
+
   try {
     isLoading.value = true;
     lunchboxes.value = [];
     needsSupport.value = [];
 
+    isQuickMode.value = false;
+    isFamilyMode.value = false;
+    selectedChildId.value = null;
+    selectedChildIds.value = [];
+
+    // Quick mode
+    if (quick && quickAgeGroup) {
+      isQuickMode.value = true;
+
+      const allergies = allergiesParam
+        ? String(allergiesParam)
+            .split(',')
+            .map(a => a.trim())
+            .filter(Boolean)
+        : [];
+
+      const data = await getQuickRecommendedProducts({
+        ageGroup: quickAgeGroup,
+        allergies,
+        seasonal: seasonalMode.value,
+      });
+
+      lunchboxes.value = Array.isArray(data) ? data : data.lunchboxes || [];
+      needsSupport.value = Array.isArray(data?.needsSupport) ? data.needsSupport : [];
+      return;
+    }
+
     // Family mode
     if (family && childIdsParam) {
       isFamilyMode.value = true;
-      selectedChildId.value = null;
 
       selectedChildIds.value = String(childIdsParam)
         .split(',')
@@ -217,8 +257,6 @@ const loadRecommendations = async () => {
 
     // Single child mode
     if (childId) {
-      isFamilyMode.value = false;
-      selectedChildIds.value = [];
       selectedChildId.value = childId;
 
       const data = await getRecommendedProducts(childId, seasonalMode.value);
@@ -228,10 +266,6 @@ const loadRecommendations = async () => {
       return;
     }
 
-    // No params
-    isFamilyMode.value = false;
-    selectedChildId.value = null;
-    selectedChildIds.value = [];
     lunchboxes.value = [];
     needsSupport.value = [];
   } catch (error) {
@@ -252,7 +286,14 @@ watch(seasonalMode, () => {
 });
 
 watch(
-  () => [route.query.childId, route.query.childIds, route.query.family],
+  () => [
+    route.query.childId,
+    route.query.childIds,
+    route.query.family,
+    route.query.quick,
+    route.query.ageGroup,
+    route.query.allergies,
+  ],
   () => {
     loadRecommendations();
   }
