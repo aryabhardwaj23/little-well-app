@@ -155,6 +155,7 @@
           </div>
         </div>
       </div>
+    </div>
 
       <!-- Action Buttons -->
       <div class="mt-12 flex gap-4 justify-center">
