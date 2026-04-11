@@ -169,7 +169,7 @@
 import { ref, watch, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { RefreshCw, Sparkles, Leaf } from 'lucide-vue-next';
-import { getRecommendedProducts } from '../services/api';
+import { getRecommendedProducts, getFamilyRecommendedProducts } from '../services/api';
 
 const router = useRouter();
 const route = useRoute();
@@ -178,25 +178,60 @@ const seasonalMode = ref(true);
 const lunchboxes = ref([]);
 const isLoading = ref(false);
 const selectedChildId = ref(null);
+const isFamilyMode = ref(false);
+const selectedChildIds = ref([]);
+const needsSupport = ref([]);
 
 const loadRecommendations = async () => {
   const childId = route.query.childId;
-
-  if (!childId) {
-    lunchboxes.value = [];
-    return;
-  }
+  const childIdsParam = route.query.childIds;
+  const family = route.query.family;
 
   try {
-    selectedChildId.value = childId;
     isLoading.value = true;
+    lunchboxes.value = [];
+    needsSupport.value = [];
 
-    const data = await getRecommendedProducts(childId, seasonalMode.value);
+    // Family mode
+    if (family && childIdsParam) {
+      isFamilyMode.value = true;
+      selectedChildId.value = null;
 
-    lunchboxes.value = data;
+      selectedChildIds.value = String(childIdsParam)
+        .split(',')
+        .map(id => id.trim())
+        .filter(Boolean);
+
+      const data = await getFamilyRecommendedProducts(selectedChildIds.value, seasonalMode.value);
+
+      lunchboxes.value = Array.isArray(data) ? data : data.lunchboxes || [];
+      needsSupport.value = Array.isArray(data?.needsSupport) ? data.needsSupport : [];
+      return;
+    }
+
+    // Single child mode
+    if (childId) {
+      isFamilyMode.value = false;
+      selectedChildIds.value = [];
+      selectedChildId.value = childId;
+
+      const data = await getRecommendedProducts(childId, seasonalMode.value);
+
+      lunchboxes.value = Array.isArray(data) ? data : data.lunchboxes || [];
+      needsSupport.value = Array.isArray(data?.needsSupport) ? data.needsSupport : [];
+      return;
+    }
+
+    // No params
+    isFamilyMode.value = false;
+    selectedChildId.value = null;
+    selectedChildIds.value = [];
+    lunchboxes.value = [];
+    needsSupport.value = [];
   } catch (error) {
     console.error('Failed to load recommendations:', error);
     lunchboxes.value = [];
+    needsSupport.value = [];
   } finally {
     isLoading.value = false;
   }
@@ -211,7 +246,7 @@ watch(seasonalMode, () => {
 });
 
 watch(
-  () => route.query.childId,
+  () => [route.query.childId, route.query.childIds, route.query.family],
   () => {
     loadRecommendations();
   }
@@ -230,22 +265,6 @@ const supportTextColors = {
   vitamins: 'text-[#2C5F2D]',
   general: 'text-white',
 };
-
-let nutritionInsights = null;
-try {
-  const checkData = localStorage.getItem('nutriguide_nutrition_check');
-  if (checkData) {
-    nutritionInsights = JSON.parse(checkData)?.nutritionInsights || null;
-  }
-} catch (error) {
-  console.error('Failed to parse nutrition check data:', error);
-}
-
-const needsSupport = nutritionInsights
-  ? Object.entries(nutritionInsights)
-      .filter(([_, status]) => status === 'needs' || status === 'improve')
-      .map(([area, _]) => area)
-  : [];
 
 const getCurrentSeason = () => {
   const month = new Date().getMonth();
