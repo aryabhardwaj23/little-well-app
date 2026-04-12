@@ -6,7 +6,11 @@ app = FastAPI(title="LittleWell API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:5173",
+        "https://littlewell.app",
+        "https://www.littlewell.app",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -14,7 +18,6 @@ app.add_middleware(
 
 app.include_router(children.router)
 app.include_router(recommendations.router)
-
 
 @app.get("/")
 def root():
