@@ -113,8 +113,10 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { ArrowLeft, Check, ClipboardCheck, Apple, Droplet, Cookie, Carrot } from 'lucide-vue-next';
+import { useNutritionCheckStore } from '../stores/nutritionCheck';
 
 const router = useRouter();
+const nutritionCheckStore = useNutritionCheckStore();
 
 const currentQuestion = ref(0);
 const answers = ref({});
@@ -191,29 +193,25 @@ const previousQuestion = () => {
 };
 
 const handleComplete = () => {
-  // Analyze answers to determine nutrition insights
   const insights = {
     fruits: answers.value.fruits || 'needs',
     water: answers.value.water || 'needs',
     sugar: answers.value.sugar || 'needs',
     protein: answers.value.protein || 'needs',
   };
-  
-  // Calculate overall score
+
   const scoreMap = { excellent: 4, good: 3, needs: 2, poor: 1 };
   const totalScore = Object.values(insights).reduce((sum, val) => sum + scoreMap[val], 0);
   const maxScore = Object.keys(insights).length * 4;
   const percentage = (totalScore / maxScore) * 100;
-  
-  // Save results
-  localStorage.setItem('nutriguide_nutrition_check', JSON.stringify({
-    answers: answers.value,
+
+  nutritionCheckStore.setResult({
+    answers: { ...answers.value },
     nutritionInsights: insights,
     score: percentage,
     completedAt: new Date().toISOString(),
-  }));
-  
-  // Navigate to insights
+  });
+
   router.push('/nutrition-insights');
 };
 </script>
