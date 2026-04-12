@@ -1,1 +1,40 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# Environment variables
 .env
+
+# Logs
+*.log
+
+# Database
+*.db
+*.sqlite3
+
+# Testing / coverage
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Build / dist
+build/
+dist/
+
+# VSCode
+.vscode/
+
+# JetBrains IDE
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
