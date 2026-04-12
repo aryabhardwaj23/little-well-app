@@ -91,24 +91,26 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { Sparkles, Check, ChevronRight, Lightbulb, Apple, Droplet, Cookie, Carrot } from 'lucide-vue-next';
+import { useNutritionCheckStore } from '../stores/nutritionCheck';
 
 const router = useRouter();
+const nutritionCheckStore = useNutritionCheckStore();
 
 const score = ref(0);
 const insights = ref({});
 const recommendations = ref([]);
 
 onMounted(() => {
-  const checkData = localStorage.getItem('nutriguide_nutrition_check');
-  if (checkData) {
-    const data = JSON.parse(checkData);
-    score.value = data.score || 0;
-    insights.value = data.nutritionInsights || {};
-    recommendations.value = generateRecommendations(insights.value);
-  } else {
-    // No data, redirect to check page
+  const result = nutritionCheckStore.result;
+
+  if (!result || !result.nutritionInsights) {
     router.push('/nutrition-check');
+    return;
   }
+
+  score.value = result.score || 0;
+  insights.value = result.nutritionInsights || {};
+  recommendations.value = generateRecommendations(insights.value);
 });
 
 const getScoreColor = (score) => {
