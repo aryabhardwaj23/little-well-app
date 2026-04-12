@@ -2,14 +2,14 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 // Views
 import HomePage from '../views/HomePage.vue';
-// import AboutPage from '../views/AboutPage.vue';
+import AboutPage from '../views/AboutPage.vue';
 import QuickStartPage from '../views/QuickStartPage.vue';
 import ChildProfilePage from '../views/ChildProfilePage.vue';
 import ChildInfoPage from '../views/ChildInfoPage.vue';
 // import NutritionNeedsPage from '../views/NutritionNeedsPage.vue';
 // import ProfileSummaryPage from '../views/ProfileSummaryPage.vue';
-// import NutritionCheckPage from '../views/NutritionCheckPage.vue';
-// import NutritionInsightsPage from '../views/NutritionInsightsPage.vue';
+import NutritionCheckPage from '../views/NutritionCheckPage.vue';
+import NutritionInsightsPage from '../views/NutritionInsightsPage.vue';
 import ResultsPage from '../views/ResultsPage.vue';
 import RecipePage from '../views/RecipePage.vue';
 
@@ -20,12 +20,12 @@ const routes = [
     component: HomePage,
     meta: { title: 'Home - LittleWell' }
   },
-//   {
-//     path: '/about',
-//     name: 'About',
-//     component: AboutPage,
-//     meta: { title: 'About Us - LittleWell' }
-//   },
+  {
+    path: '/about',
+    name: 'About',
+    component: AboutPage,
+    meta: { title: 'About Us - LittleWell' }
+  },
   {
     path: '/quick-start',
     name: 'QuickStart',
@@ -56,18 +56,18 @@ const routes = [
 //     component: ProfileSummaryPage,
 //     meta: { title: 'Profile Summary - LittleWell' }
 //   },
-//   {
-//     path: '/nutrition-check',
-//     name: 'NutritionCheck',
-//     component: NutritionCheckPage,
-//     meta: { title: 'Nutrition Check - LittleWell' }
-//   },
-//   {
-//     path: '/nutrition-insights',
-//     name: 'NutritionInsights',
-//     component: NutritionInsightsPage,
-//     meta: { title: 'Nutrition Insights - LittleWell' }
-//   },
+  {
+    path: '/nutrition-check',
+    name: 'NutritionCheck',
+    component: NutritionCheckPage,
+    meta: { title: 'Nutrition Check - LittleWell' }
+  },
+  {
+    path: '/nutrition-insights',
+    name: 'NutritionInsights',
+    component: NutritionInsightsPage,
+    meta: { title: 'Nutrition Insights - LittleWell' }
+  },
   {
     path: '/results',
     name: 'Results',
@@ -80,10 +80,10 @@ const routes = [
     component: RecipePage,
     meta: { title: 'Recipe Details - LittleWell' }
   },
-//   {
-//     path: '/:pathMatch(.*)*',
-//     redirect: '/',
-//   },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/',
+  },
 ];
 
 const router = createRouter({
