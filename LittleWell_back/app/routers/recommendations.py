@@ -1,31 +1,335 @@
+from datetime import date
 from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from ..db import get_db
 from .. import models
 
 router = APIRouter(prefix="/products/recommended", tags=["recommendations"])
 
 
-def build_lunchbox_from_product(product, child_name=None, support_type="general", nutrition_focus=None):
-    if nutrition_focus is None:
-        nutrition_focus = ["Balanced nutrition"]
+# ---------- helpers ----------
+
+def get_current_season_name() -> str:
+    month = date.today().month
+    if month in [9, 10, 11]:
+        return "spring"
+    if month in [12, 1, 2]:
+        return "summer"
+    if month in [3, 4, 5]:
+        return "autumn"
+    return "winter"
+
+
+def get_needs_support(child) -> list[str]:
+    needs = []
+    if int(child.iron_status or 0) == 1:
+        needs.append("iron")
+    if int(child.calcium_status or 0) == 1:
+        needs.append("calcium")
+    if int(child.vitamin_d_status or 0) == 1:
+        needs.append("vitamin_d")
+    if int(child.variety_status or 0) == 1:
+        needs.append("variety")
+    return needs
+
+
+def focus_labels(needs: list[str]) -> list[str]:
+    if not needs:
+        return ["Balanced nutrition"]
+    return [f"{n.replace('_', ' ').title()} Support" for n in needs]
+
+
+def product_text(product) -> str:
+    parts = [
+        product.name or "",
+        product.brand or "",
+        product.category or "",
+        product.ingredients_list or "",
+    ]
+    return " ".join(parts).lower()
+
+
+def is_valid_product_name(name: str | None) -> bool:
+    if not name:
+        return False
+    cleaned = name.strip()
+    if len(cleaned) < 3:
+        return False
+    if cleaned.lower() in {"a", "n/a", "unknown", "test"}:
+        return False
+    return True
+
+
+def score_product_for_slot(product, slot: str, needs: list[str]) -> int:
+    text = product_text(product)
+    score = 0
+
+    # Generic quality filters
+    if int(product.has_added_preservatives or 0) == 0:
+        score += 1
+    if int(product.has_added_sugar or 0) == 0:
+        score += 1
+    if int(product.has_food_color or 0) == 0:
+        score += 1
+
+    # Slot-based heuristics
+    if slot == "protein":
+        keywords = [
+            "protein", "peanut butter", "nut butter", "tofu", "beans",
+            "lentil", "chickpea", "yogurt", "milk", "cheese", "egg"
+        ]
+        if any(k in text for k in keywords):
+            score += 6
+
+    elif slot == "carbs":
+        keywords = [
+            "bread", "rice", "oat", "cracker", "cereal", "wrap",
+            "pasta", "grain", "wholegrain", "whole grain"
+        ]
+        if any(k in text for k in keywords):
+            score += 6
+
+    # Nutrition support heuristics
+    if "iron" in needs:
+        iron_keywords = ["iron", "protein", "beans", "lentil", "chickpea", "peanut butter"]
+        if any(k in text for k in iron_keywords):
+            score += 3
+
+    if "calcium" in needs:
+        calcium_keywords = ["calcium", "milk", "cheese", "yogurt"]
+        if any(k in text for k in calcium_keywords):
+            score += 3
+
+    if "vitamin_d" in needs:
+        vitamin_d_keywords = ["vitamin d", "fortified", "milk", "egg"]
+        if any(k in text for k in vitamin_d_keywords):
+            score += 2
+
+    if "variety" in needs:
+        if int(product.has_added_preservatives or 0) == 0:
+            score += 2
+        if int(product.has_food_color or 0) == 0:
+            score += 2
+
+    return score
+
+
+def get_child_allergen_ids(db: Session, child_id: int) -> list[int]:
+    rows = (
+        db.query(models.UserSearchAllergen)
+        .filter(models.UserSearchAllergen.child_id == child_id)
+        .all()
+    )
+    return [int(row.allergen_id) for row in rows]
+
+
+def get_blocked_product_ids_by_allergens(db: Session, allergen_ids: list[int]) -> set[int]:
+    if not allergen_ids:
+        return set()
+
+    rows = (
+        db.query(models.ProductAllergen)
+        .filter(models.ProductAllergen.allergen_id.in_(allergen_ids))
+        .all()
+    )
+    return {int(row.product_id) for row in rows}
+
+
+def get_candidate_products(db: Session, blocked_product_ids: set[int]) -> list:
+    query = db.query(models.PackagedProduct)
+
+    if blocked_product_ids:
+        query = query.filter(~models.PackagedProduct.product_id.in_(blocked_product_ids))
+
+    products = query.limit(200).all()
+
+    cleaned = []
+    for p in products:
+        if not is_valid_product_name(p.name):
+            continue
+        cleaned.append(p)
+
+    return cleaned
+
+
+def choose_best_product(products: list, slot: str, needs: list[str], used_ids: set[int]):
+    ranked = []
+
+    for p in products:
+        if int(p.product_id) in used_ids:
+            continue
+        ranked.append((score_product_for_slot(p, slot, needs), p))
+
+    ranked.sort(key=lambda x: x[0], reverse=True)
+
+    for _, p in ranked:
+        return p
+    return None
+
+
+def get_seasonal_items(db: Session, seasonal: bool = True):
+    current_season = get_current_season_name()
+
+    query = db.query(models.SeasonalProduce)
+
+    if seasonal:
+        season_row = (
+            db.query(models.Season)
+            .filter(func.lower(models.Season.season) == current_season)
+            .first()
+        )
+        if season_row:
+            query = query.filter(models.SeasonalProduce.season_id == season_row.season_id)
+
+    rows = query.limit(200).all()
+
+    fruits = []
+    veggies = []
+
+    for row in rows:
+        ptype = (row.produce_type or "").lower()
+        name = row.produce_name or ""
+        if not is_valid_product_name(name):
+            continue
+
+        if "fruit" in ptype:
+            fruits.append(name)
+        elif "veg" in ptype or "vegetable" in ptype:
+            veggies.append(name)
+
+    return fruits, veggies
+
+
+def fallback_fruits():
+    return ["Gala Apple", "Banana", "Pear", "Mandarin"]
+
+
+def fallback_veggies():
+    return ["Carrot Sticks", "Cucumber", "Buk Choy", "Baby Broccoli"]
+
+
+def make_item(name: str, amount: str, section: str):
+    return {
+        "name": name,
+        "amount": amount,
+        "image": "https://via.placeholder.com/300",
+        "section": section,
+    }
+
+
+def build_lunchbox(child_name: str | None, lunchbox_id: str, protein_product, carb_product, fruit_name: str, veg_name: str, needs: list[str]):
+    support_type = needs[0] if needs else "general"
+
+    items = []
+
+    if protein_product:
+        items.append(
+            make_item(
+                name=protein_product.name,
+                amount=protein_product.serving_size or "1 serving",
+                section="protein",
+            )
+        )
+
+    if carb_product:
+        items.append(
+            make_item(
+                name=carb_product.name,
+                amount=carb_product.serving_size or "1 serving",
+                section="carbs",
+            )
+        )
+
+    items.append(make_item(name=fruit_name, amount="1 serving", section="fruit"))
+    items.append(make_item(name=veg_name, amount="1 serving", section="veggies"))
 
     return {
-        "id": str(product.product_id),
+        "id": lunchbox_id,
         "childName": child_name,
-        "items": [
-            {
-                "name": product.name,
-                "amount": product.serving_size or "1 serving",
-                "image": "https://via.placeholder.com/300",
-                "section": "protein",
-            }
-        ],
-        "nutritionFocus": nutrition_focus,
-        "whyThisMeal": f"{product.name} was selected based on the current nutrition and filtering rules.",
+        "items": items,
+        "nutritionFocus": focus_labels(needs),
+        "whyThisMeal": "This lunchbox combines a protein item, a carbohydrate item, and seasonal fruit and vegetables filtered by the child's needs.",
         "supportType": support_type,
     }
 
+
+def generate_lunchboxes_for_child(db: Session, child, seasonal: bool = True, max_boxes: int = 3):
+    needs = get_needs_support(child)
+    allergen_ids = get_child_allergen_ids(db, child.child_id)
+    blocked_product_ids = get_blocked_product_ids_by_allergens(db, allergen_ids)
+
+    products = get_candidate_products(db, blocked_product_ids)
+    fruits, veggies = get_seasonal_items(db, seasonal=seasonal)
+
+    if not fruits:
+        fruits = fallback_fruits()
+    if not veggies:
+        veggies = fallback_veggies()
+
+    lunchboxes = []
+    used_ids = set()
+
+    protein_candidates = sorted(
+        products,
+        key=lambda p: score_product_for_slot(p, "protein", needs),
+        reverse=True,
+    )
+
+    carb_candidates = sorted(
+        products,
+        key=lambda p: score_product_for_slot(p, "carbs", needs),
+        reverse=True,
+    )
+
+    box_index = 0
+    fruit_index = 0
+    veg_index = 0
+
+    for i in range(max_boxes):
+        protein_product = None
+        carb_product = None
+
+        for p in protein_candidates:
+            if int(p.product_id) not in used_ids:
+                protein_product = p
+                used_ids.add(int(p.product_id))
+                break
+
+        for p in carb_candidates:
+            if int(p.product_id) not in used_ids:
+                carb_product = p
+                used_ids.add(int(p.product_id))
+                break
+
+        if not protein_product and not carb_product:
+            break
+
+        fruit_name = fruits[fruit_index % len(fruits)]
+        veg_name = veggies[veg_index % len(veggies)]
+        fruit_index += 1
+        veg_index += 1
+
+        lunchboxes.append(
+            build_lunchbox(
+                child_name=child.child_name,
+                lunchbox_id=f"{child.child_id}-box-{box_index + 1}",
+                protein_product=protein_product,
+                carb_product=carb_product,
+                fruit_name=fruit_name,
+                veg_name=veg_name,
+                needs=needs,
+            )
+        )
+        box_index += 1
+
+    return {
+        "needsSupport": needs,
+        "lunchboxes": lunchboxes,
+    }
+
+
+# ---------- routes ----------
 
 @router.get("")
 def get_recommended_products(
@@ -37,37 +341,7 @@ def get_recommended_products(
     if not child:
         raise HTTPException(status_code=404, detail="Child not found")
 
-    query = db.query(models.PackagedProduct)
-
-    if int(child.variety_status or 0) == 1:
-        query = query.filter(models.PackagedProduct.has_added_preservatives == 0)
-
-    products = query.limit(6).all()
-
-    needs_support = []
-    if int(child.iron_status or 0) == 1:
-        needs_support.append("iron")
-    if int(child.calcium_status or 0) == 1:
-        needs_support.append("calcium")
-    if int(child.vitamin_d_status or 0) == 1:
-        needs_support.append("vitamin_d")
-    if int(child.variety_status or 0) == 1:
-        needs_support.append("variety")
-
-    lunchboxes = [
-        build_lunchbox_from_product(
-            product=p,
-            child_name=child.child_name,
-            support_type="general" if not needs_support else needs_support[0],
-            nutrition_focus=[f"{n.replace('_', ' ').title()} Support" for n in needs_support] or ["Balanced nutrition"],
-        )
-        for p in products
-    ]
-
-    return {
-        "needsSupport": needs_support,
-        "lunchboxes": lunchboxes,
-    }
+    return generate_lunchboxes_for_child(db=db, child=child, seasonal=seasonal, max_boxes=3)
 
 
 @router.get("/family")
@@ -82,36 +356,19 @@ def get_family_recommended_products(
     if not children:
         raise HTTPException(status_code=404, detail="No children found")
 
-    products = db.query(models.PackagedProduct).limit(6).all()
+    # family mode: merge support flags
+    class FamilyChild:
+        pass
 
-    combined_support = set()
-    names = []
+    family = FamilyChild()
+    family.child_id = ids[0]
+    family.child_name = " + ".join([c.child_name for c in children])
+    family.iron_status = 1 if any(int(c.iron_status or 0) == 1 for c in children) else 0
+    family.calcium_status = 1 if any(int(c.calcium_status or 0) == 1 for c in children) else 0
+    family.vitamin_d_status = 1 if any(int(c.vitamin_d_status or 0) == 1 for c in children) else 0
+    family.variety_status = 1 if any(int(c.variety_status or 0) == 1 for c in children) else 0
 
-    for child in children:
-        names.append(child.child_name)
-        if int(child.iron_status or 0) == 1:
-            combined_support.add("iron")
-        if int(child.calcium_status or 0) == 1:
-            combined_support.add("calcium")
-        if int(child.vitamin_d_status or 0) == 1:
-            combined_support.add("vitamin_d")
-        if int(child.variety_status or 0) == 1:
-            combined_support.add("variety")
-
-    lunchboxes = [
-        build_lunchbox_from_product(
-            product=p,
-            child_name=" + ".join(names),
-            support_type="general",
-            nutrition_focus=[f"{n.replace('_', ' ').title()} Support" for n in combined_support] or ["Balanced nutrition"],
-        )
-        for p in products
-    ]
-
-    return {
-        "needsSupport": list(combined_support),
-        "lunchboxes": lunchboxes,
-    }
+    return generate_lunchboxes_for_child(db=db, child=family, seasonal=seasonal, max_boxes=3)
 
 
 @router.get("/quick")
@@ -123,20 +380,61 @@ def get_quick_recommended_products(
 ):
     allergy_list = [a.strip() for a in allergies.split(",") if a.strip()]
 
-    query = db.query(models.PackagedProduct)
+    fruits, veggies = get_seasonal_items(db, seasonal=seasonal)
+    if not fruits:
+        fruits = fallback_fruits()
+    if not veggies:
+        veggies = fallback_veggies()
 
-    # TODO: later add actual allergy filtering / age-based filtering / seasonal filtering
-    products = query.limit(6).all()
+    products = get_candidate_products(db, blocked_product_ids=set())
 
-    lunchboxes = [
-        build_lunchbox_from_product(
-            product=p,
-            child_name=None,
-            support_type="general",
-            nutrition_focus=["Balanced nutrition"],
+    protein_candidates = sorted(
+        products,
+        key=lambda p: score_product_for_slot(p, "protein", []),
+        reverse=True,
+    )
+    carb_candidates = sorted(
+        products,
+        key=lambda p: score_product_for_slot(p, "carbs", []),
+        reverse=True,
+    )
+
+    lunchboxes = []
+    used_ids = set()
+
+    for i in range(3):
+        protein_product = None
+        carb_product = None
+
+        for p in protein_candidates:
+            if int(p.product_id) not in used_ids:
+                protein_product = p
+                used_ids.add(int(p.product_id))
+                break
+
+        for p in carb_candidates:
+            if int(p.product_id) not in used_ids:
+                carb_product = p
+                used_ids.add(int(p.product_id))
+                break
+
+        if not protein_product and not carb_product:
+            break
+
+        fruit_name = fruits[i % len(fruits)]
+        veg_name = veggies[i % len(veggies)]
+
+        lunchboxes.append(
+            build_lunchbox(
+                child_name=None,
+                lunchbox_id=f"quick-box-{i + 1}",
+                protein_product=protein_product,
+                carb_product=carb_product,
+                fruit_name=fruit_name,
+                veg_name=veg_name,
+                needs=[],
+            )
         )
-        for p in products
-    ]
 
     return {
         "needsSupport": [],

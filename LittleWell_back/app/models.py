@@ -79,3 +79,20 @@ class ProductAllergen(Base):
     product_id = Column(Integer, nullable=False)
     allergen_name = Column(String(100), nullable=True)
     canonical_allergen = Column(String(100), nullable=True)
+
+class SeasonalProduce(Base):
+    __tablename__ = "seasonal_produce"
+
+    produce_name = Column(String(255), primary_key=True)
+    produce_type = Column(String(100), nullable=True)   # fruit / vegetable / veggie ...
+    season_id = Column(Integer, nullable=False)
+    season_status = Column(String(100), nullable=True)
+
+
+class Season(Base):
+    __tablename__ = "seasons"
+
+    season_id = Column(Integer, primary_key=True, index=True)
+    season = Column(String(50), nullable=False)
+    start_date = Column(Date, nullable=True)
+    end_date = Column(Date, nullable=True)
