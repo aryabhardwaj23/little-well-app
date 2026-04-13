@@ -3,7 +3,6 @@ from typing import List, Optional
 
 
 class ChildBase(BaseModel):
-    user_id: int
     child_name: str
     age_band: str
     band_id: Optional[int] = None
@@ -15,10 +14,13 @@ class ChildBase(BaseModel):
 
 
 class ChildCreate(ChildBase):
+    parent_name: str
+    email: Optional[str] = None
     allergies: List[str] = []
 
 
 class ChildUpdate(ChildBase):
+    user_id: int
     allergies: List[str] = []
 
 

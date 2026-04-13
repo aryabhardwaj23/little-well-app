@@ -11,8 +11,28 @@ def get_child_by_id(db: Session, child_id: int):
 
 
 def create_child(db: Session, child: schemas.ChildCreate):
+    existing_user = None
+    if child.email:
+        existing_user = (
+            db.query(models.User)
+            .filter(models.User.email == child.email)
+            .first()
+        )
+
+
+    if existing_user:
+        user = existing_user
+    else:
+        user = models.User(
+            parent_name=child.parent_name,
+            email=child.email,
+        )
+        db.add(user)
+        db.flush()
+
+
     db_child = models.UserChild(
-        user_id=child.user_id,
+        user_id=user.user_id,
         child_name=child.child_name,
         age_band=child.age_band,
         band_id=child.band_id,
@@ -22,6 +42,7 @@ def create_child(db: Session, child: schemas.ChildCreate):
         variety_status=child.variety_status,
         religious_needs=child.religious_needs,
     )
+
     db.add(db_child)
     db.commit()
     db.refresh(db_child)
