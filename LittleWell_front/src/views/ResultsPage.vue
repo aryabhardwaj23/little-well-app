@@ -86,14 +86,14 @@
           class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
           @click="handleLunchboxClick(lunchbox.id)"
         >
-         <!-- Child Name Badge (if exists) -->
-        <div v-if="lunchbox.childName" class="px-6 pt-4">
-          <span class="inline-flex items-center px-3 py-1 bg-[#CDE7F0]/30 text-[#1B4965] text-sm rounded-full">
-            For {{ lunchbox.childName }}
-          </span>
-        </div>
-          
-    <!-- Items Grid -->
+          <!-- Child Name Badge (if exists) -->
+          <div v-if="lunchbox.childName" class="px-6 pt-4">
+            <span class="inline-flex items-center px-3 py-1 bg-[#CDE7F0]/30 text-[#1B4965] text-sm rounded-full">
+              For {{ lunchbox.childName }}
+            </span>
+          </div>
+
+          <!-- Items Grid -->
           <div class="p-6">
             <div class="grid grid-cols-2 gap-3 mb-4">
               <div
@@ -154,7 +154,6 @@
           </div>
         </div>
       </div>
-    </div>
 
       <!-- Action Buttons -->
       <div class="mt-12 flex gap-4 justify-center">
