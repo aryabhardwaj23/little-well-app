@@ -14,7 +14,7 @@
       <div class="text-center mb-12">
         <h1 class="text-4xl mb-4">Tell Us About Your Child</h1>
         <p class="text-lg text-muted-foreground">
-          We'll use this information to personalize meal suggestions
+          We'll use this information to personalise meal suggestions
         </p>
       </div>
 
@@ -23,7 +23,6 @@
         <!-- Basic Info -->
         <div class="p-8 rounded-2xl shadow-sm bg-white">
           <h2 class="text-2xl mb-6">Basic Information</h2>
-          
           <div class="space-y-6">
             <div>
               <label class="block text-sm font-medium mb-2">Child's Name (or nickname)</label>
@@ -33,7 +32,7 @@
                 placeholder="e.g. Emma"
                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8D5BA] focus:border-transparent"
               />
-              <p class="text-xs text-muted-foreground mt-1">We use nicknames only—no last names needed</p>
+              <p class="text-xs text-muted-foreground mt-1">We use nicknames only — no last names needed</p>
             </div>
 
             <div>
@@ -41,16 +40,16 @@
               <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
                 <button
                   v-for="age in ageGroups"
-                  :key="age"
-                  @click="formData.ageGroup = age"
+                  :key="age.label"
+                  @click="formData.ageGroup = age.value"
                   :class="[
                     'p-4 rounded-lg border-2 transition-all text-center',
-                    formData.ageGroup === age
+                    formData.ageGroup === age.value
                       ? 'border-[#A8D5BA] bg-[#A8D5BA]/10 text-[#2C5F2D]'
                       : 'border-gray-200 hover:border-[#A8D5BA]/50'
                   ]"
                 >
-                  {{ age }}
+                  {{ age.label }}
                 </button>
               </div>
             </div>
@@ -79,7 +78,6 @@
         <!-- Health Information -->
         <div class="p-8 rounded-2xl shadow-sm bg-white">
           <h2 class="text-2xl mb-6">Health & Dietary Information</h2>
-          
           <div class="space-y-6">
             <div>
               <label class="block text-sm font-medium mb-2">Any food allergies?</label>
@@ -142,7 +140,6 @@
         <!-- Eating Habits -->
         <div class="p-8 rounded-2xl shadow-sm bg-white">
           <h2 class="text-2xl mb-6">Eating Habits</h2>
-          
           <div class="space-y-4">
             <div>
               <label class="block text-sm font-medium mb-2">How would you describe your child's eating habits?</label>
@@ -153,12 +150,7 @@
                   class="flex items-center p-3 border-2 rounded-lg cursor-pointer hover:border-[#A8D5BA]/50 transition-colors"
                   :class="formData.eatingHabit === habit ? 'border-[#A8D5BA] bg-[#A8D5BA]/5' : 'border-gray-200'"
                 >
-                  <input
-                    type="radio"
-                    :value="habit"
-                    v-model="formData.eatingHabit"
-                    class="mr-3"
-                  />
+                  <input type="radio" :value="habit" v-model="formData.eatingHabit" class="mr-3" />
                   <span>{{ habit }}</span>
                 </label>
               </div>
@@ -182,7 +174,7 @@
           :disabled="!formData.name || !formData.ageGroup"
           class="w-full bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg py-4 text-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          Continue to Nutrition Focus
+          Get My Meal Recommendations
         </button>
       </div>
     </div>
@@ -210,13 +202,18 @@ const formData = ref({
 });
 
 onMounted(() => {
-  formData.value = {
-    ...formData.value,
-    ...childProfileStore.childProfileDraft,
-  };
+  formData.value = { ...formData.value, ...childProfileStore.childProfileDraft };
 });
 
-const ageGroups = ['0-3 years', '3-6 years', '6-9 years', '9-12 years', '12+ years'];
+// value matches api.js getQuickRecommendedProducts ageMap
+const ageGroups = [
+  { label: '0–3 years',  value: '5-7'   },
+  { label: '3–6 years',  value: '5-7'   },
+  { label: '6–9 years',  value: '8-10'  },
+  { label: '9–12 years', value: '11-12' },
+  { label: '12+ years',  value: '11-12' },
+];
+
 const genderOptions = ['Boy', 'Girl', 'Prefer not to say'];
 
 const commonAllergies = [
@@ -225,9 +222,9 @@ const commonAllergies = [
 ];
 
 const activityLevels = [
-  { value: 'low', label: 'Light', icon: '🚶' },
+  { value: 'low',      label: 'Light',    icon: '🚶' },
   { value: 'moderate', label: 'Moderate', icon: '🏃' },
-  { value: 'high', label: 'Active', icon: '⚡' },
+  { value: 'high',     label: 'Active',   icon: '⚡' },
 ];
 
 const eatingHabits = [
@@ -247,12 +244,16 @@ const toggleAllergy = (allergy) => {
 
 const handleContinue = () => {
   childProfileStore.updateDraft(formData.value);
-  router.push('/nutrition-needs');
+  // Build query params and go straight to results
+  const query = new URLSearchParams({
+    quick: '1',
+    ageGroup: formData.value.ageGroup,
+    allergies: formData.value.allergies.join(','),
+  });
+  router.push(`/results?${query.toString()}`);
 };
 </script>
 
 <style scoped>
-.text-muted-foreground {
-  color: #6b7280;
-}
+.text-muted-foreground { color: #6b7280; }
 </style>

@@ -195,26 +195,24 @@ const toggleNutritionFocus = (focus) => {
 
 const handleSave = async () => {
   try {
-    const payload = {
-      user_id: 1,
-      child_name: formData.value.name,
-      age_band: formData.value.ageGroup,
-      band_id: null,
-      iron_status: formData.value.nutritionFocus.includes('Iron support') ? 'needs_support' : 'normal',
-      calcium_status: formData.value.nutritionFocus.includes('Calcium support') ? 'needs_support' : 'normal',
-      vitamin_d_status: formData.value.nutritionFocus.includes('Immune support') ? 'needs_support' : 'normal',
-      variety_status: formData.value.nutritionFocus.includes('Diet variety') ? 'needs_support' : 'normal',
-      religious_needs: formData.value.dietaryRestriction || '',
-      allergies: formData.value.allergies,
+    const ageMap = {
+      '0-3 years': '5-7',
+      '3-6 years': '5-7',
+      '6-9 years': '8-10',
+      '9-12 years': '11-12',
+      '12+ years': '11-12',
     };
 
-    if (isEditing.value && editingChildId.value) {
-      await updateChild(editingChildId.value, payload);
-    } else {
-      await createChild(payload);
-    }
+    const mappedAge = ageMap[formData.value.ageGroup] || '8-10';
 
-    router.push('/');
+    const query = new URLSearchParams({
+      quick: '1',
+      ageGroup: mappedAge,
+      allergies: formData.value.allergies.join(','),
+    });
+
+    router.push(`/results?${query.toString()}`);
+
   } catch (error) {
     console.error('Failed to save child profile:', error);
     alert(`Failed to save profile: ${error.message}`);

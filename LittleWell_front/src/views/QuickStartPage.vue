@@ -24,16 +24,16 @@
         <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
           <button
             v-for="age in ageGroups"
-            :key="age"
-            @click="ageGroup = age"
+            :key="age.label"
+            @click="ageGroup = age.value"
             :class="[
               'p-4 rounded-lg border-2 transition-all',
-              ageGroup === age
+              ageGroup === age.value
                 ? 'border-[#A8D5BA] bg-[#A8D5BA]/10 text-[#2C5F2D]'
                 : 'border-gray-200 hover:border-[#A8D5BA]/50'
             ]"
           >
-            {{ age }}
+            {{ age.label }}
           </button>
         </div>
       </div>
@@ -43,9 +43,7 @@
         <label class="text-lg mb-4 block font-medium">
           Any allergies or intolerances? (optional)
         </label>
-        <p class="text-sm text-muted-foreground mb-4">
-          Select all that apply
-        </p>
+        <p class="text-sm text-muted-foreground mb-4">Select all that apply</p>
         <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
           <button
             v-for="allergy in commonAllergies"
@@ -85,17 +83,18 @@ const router = useRouter();
 const ageGroup = ref('');
 const allergies = ref([]);
 
-const ageGroups = ['0-3 years', '3-6 years', '6-9 years', '9-12 years', '12+ years'];
+// value matches what api.js getQuickRecommendedProducts ageMap expects
+const ageGroups = [
+  { label: '0–3 years',  value: '5-7'   },
+  { label: '3–6 years',  value: '5-7'   },
+  { label: '6–9 years',  value: '8-10'  },
+  { label: '9–12 years', value: '11-12' },
+  { label: '12+ years',  value: '11-12' },
+];
 
 const commonAllergies = [
-  'Peanuts',
-  'Tree nuts',
-  'Milk',
-  'Eggs',
-  'Wheat',
-  'Soy',
-  'Fish',
-  'Shellfish',
+  'Peanuts', 'Tree nuts', 'Milk', 'Eggs',
+  'Wheat', 'Soy', 'Fish', 'Shellfish',
 ];
 
 const toggleAllergy = (allergy) => {
@@ -112,13 +111,10 @@ const handleContinue = () => {
     ageGroup: ageGroup.value,
     allergies: allergies.value.join(','),
   });
-
   router.push(`/results?${query.toString()}`);
 };
 </script>
 
 <style scoped>
-.text-muted-foreground {
-  color: #6b7280;
-}
+.text-muted-foreground { color: #6b7280; }
 </style>
