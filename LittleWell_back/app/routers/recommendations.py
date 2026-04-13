@@ -1,4 +1,6 @@
 from datetime import date
+import random
+
 from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import func
@@ -53,11 +55,14 @@ def product_text(product) -> str:
 def is_valid_product_name(name: str | None) -> bool:
     if not name:
         return False
+
     cleaned = name.strip()
     if len(cleaned) < 3:
         return False
+
     if cleaned.lower() in {"a", "n/a", "unknown", "test"}:
         return False
+
     return True
 
 
@@ -142,7 +147,8 @@ def get_candidate_products(db: Session, blocked_product_ids: set[int]) -> list:
     if blocked_product_ids:
         query = query.filter(~models.PackagedProduct.product_id.in_(blocked_product_ids))
 
-    products = query.limit(200).all()
+    # 多取一点，方便随机
+    products = query.limit(300).all()
 
     cleaned = []
     for p in products:
@@ -151,21 +157,6 @@ def get_candidate_products(db: Session, blocked_product_ids: set[int]) -> list:
         cleaned.append(p)
 
     return cleaned
-
-
-def choose_best_product(products: list, slot: str, needs: list[str], used_ids: set[int]):
-    ranked = []
-
-    for p in products:
-        if int(p.product_id) in used_ids:
-            continue
-        ranked.append((score_product_for_slot(p, slot, needs), p))
-
-    ranked.sort(key=lambda x: x[0], reverse=True)
-
-    for _, p in ranked:
-        return p
-    return None
 
 
 def get_seasonal_items(db: Session, seasonal: bool = True):
@@ -190,6 +181,7 @@ def get_seasonal_items(db: Session, seasonal: bool = True):
     for row in rows:
         ptype = (row.produce_type or "").lower()
         name = row.produce_name or ""
+
         if not is_valid_product_name(name):
             continue
 
@@ -213,12 +205,21 @@ def make_item(name: str, amount: str, section: str):
     return {
         "name": name,
         "amount": amount,
-        "image": "https://via.placeholder.com/300",
+        # 改成本地图，避免外部 placeholder 连接失败
+        "image": "/placeholder-lunchbox.png",
         "section": section,
     }
 
 
-def build_lunchbox(child_name: str | None, lunchbox_id: str, protein_product, carb_product, fruit_name: str, veg_name: str, needs: list[str]):
+def build_lunchbox(
+    child_name: str | None,
+    lunchbox_id: str,
+    protein_product,
+    carb_product,
+    fruit_name: str,
+    veg_name: str,
+    needs: list[str],
+):
     support_type = needs[0] if needs else "general"
 
     items = []
@@ -254,6 +255,31 @@ def build_lunchbox(child_name: str | None, lunchbox_id: str, protein_product, ca
     }
 
 
+def get_randomised_candidates(products: list, slot: str, needs: list[str], top_n: int = 20) -> list:
+    """
+    先按分数排序，再从前 top_n 名里随机打乱。
+    这样既不会完全乱推，也不会每次都一模一样。
+    """
+    ranked = sorted(
+        products,
+        key=lambda p: score_product_for_slot(p, slot, needs),
+        reverse=True,
+    )
+
+    shortlisted = ranked[:top_n]
+    random.shuffle(shortlisted)
+    return shortlisted
+
+
+def pick_next_unused(candidates: list, used_ids: set[int]):
+    for p in candidates:
+        pid = int(p.product_id)
+        if pid not in used_ids:
+            used_ids.add(pid)
+            return p
+    return None
+
+
 def generate_lunchboxes_for_child(db: Session, child, seasonal: bool = True, max_boxes: int = 3):
     needs = get_needs_support(child)
     allergen_ids = get_child_allergen_ids(db, child.child_id)
@@ -270,50 +296,24 @@ def generate_lunchboxes_for_child(db: Session, child, seasonal: bool = True, max
     lunchboxes = []
     used_ids = set()
 
-    protein_candidates = sorted(
-        products,
-        key=lambda p: score_product_for_slot(p, "protein", needs),
-        reverse=True,
-    )
-
-    carb_candidates = sorted(
-        products,
-        key=lambda p: score_product_for_slot(p, "carbs", needs),
-        reverse=True,
-    )
-
-    box_index = 0
-    fruit_index = 0
-    veg_index = 0
+    # 每次请求都重新随机一批候选
+    protein_candidates = get_randomised_candidates(products, "protein", needs, top_n=20)
+    carb_candidates = get_randomised_candidates(products, "carbs", needs, top_n=20)
 
     for i in range(max_boxes):
-        protein_product = None
-        carb_product = None
-
-        for p in protein_candidates:
-            if int(p.product_id) not in used_ids:
-                protein_product = p
-                used_ids.add(int(p.product_id))
-                break
-
-        for p in carb_candidates:
-            if int(p.product_id) not in used_ids:
-                carb_product = p
-                used_ids.add(int(p.product_id))
-                break
+        protein_product = pick_next_unused(protein_candidates, used_ids)
+        carb_product = pick_next_unused(carb_candidates, used_ids)
 
         if not protein_product and not carb_product:
             break
 
-        fruit_name = fruits[fruit_index % len(fruits)]
-        veg_name = veggies[veg_index % len(veggies)]
-        fruit_index += 1
-        veg_index += 1
+        fruit_name = random.choice(fruits)
+        veg_name = random.choice(veggies)
 
         lunchboxes.append(
             build_lunchbox(
                 child_name=child.child_name,
-                lunchbox_id=f"{child.child_id}-box-{box_index + 1}",
+                lunchbox_id=f"{child.child_id}-box-{i + 1}",
                 protein_product=protein_product,
                 carb_product=carb_product,
                 fruit_name=fruit_name,
@@ -321,7 +321,6 @@ def generate_lunchboxes_for_child(db: Session, child, seasonal: bool = True, max
                 needs=needs,
             )
         )
-        box_index += 1
 
     return {
         "needsSupport": needs,
@@ -341,7 +340,12 @@ def get_recommended_products(
     if not child:
         raise HTTPException(status_code=404, detail="Child not found")
 
-    return generate_lunchboxes_for_child(db=db, child=child, seasonal=seasonal, max_boxes=3)
+    return generate_lunchboxes_for_child(
+        db=db,
+        child=child,
+        seasonal=seasonal,
+        max_boxes=3,
+    )
 
 
 @router.get("/family")
@@ -368,7 +372,12 @@ def get_family_recommended_products(
     family.vitamin_d_status = 1 if any(int(c.vitamin_d_status or 0) == 1 for c in children) else 0
     family.variety_status = 1 if any(int(c.variety_status or 0) == 1 for c in children) else 0
 
-    return generate_lunchboxes_for_child(db=db, child=family, seasonal=seasonal, max_boxes=3)
+    return generate_lunchboxes_for_child(
+        db=db,
+        child=family,
+        seasonal=seasonal,
+        max_boxes=3,
+    )
 
 
 @router.get("/quick")
@@ -386,43 +395,24 @@ def get_quick_recommended_products(
     if not veggies:
         veggies = fallback_veggies()
 
+    # quick mode 暂时不做 allergens -> product 过滤
     products = get_candidate_products(db, blocked_product_ids=set())
 
-    protein_candidates = sorted(
-        products,
-        key=lambda p: score_product_for_slot(p, "protein", []),
-        reverse=True,
-    )
-    carb_candidates = sorted(
-        products,
-        key=lambda p: score_product_for_slot(p, "carbs", []),
-        reverse=True,
-    )
+    protein_candidates = get_randomised_candidates(products, "protein", [], top_n=20)
+    carb_candidates = get_randomised_candidates(products, "carbs", [], top_n=20)
 
     lunchboxes = []
     used_ids = set()
 
     for i in range(3):
-        protein_product = None
-        carb_product = None
-
-        for p in protein_candidates:
-            if int(p.product_id) not in used_ids:
-                protein_product = p
-                used_ids.add(int(p.product_id))
-                break
-
-        for p in carb_candidates:
-            if int(p.product_id) not in used_ids:
-                carb_product = p
-                used_ids.add(int(p.product_id))
-                break
+        protein_product = pick_next_unused(protein_candidates, used_ids)
+        carb_product = pick_next_unused(carb_candidates, used_ids)
 
         if not protein_product and not carb_product:
             break
 
-        fruit_name = fruits[i % len(fruits)]
-        veg_name = veggies[i % len(veggies)]
+        fruit_name = random.choice(fruits)
+        veg_name = random.choice(veggies)
 
         lunchboxes.append(
             build_lunchbox(
