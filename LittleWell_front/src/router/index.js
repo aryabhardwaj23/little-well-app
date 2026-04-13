@@ -4,7 +4,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import HomePage from '../views/HomePage.vue';
 import AboutPage from '../views/AboutPage.vue';
 import QuickStartPage from '../views/QuickStartPage.vue';
-import ChildProfilePage from '../views/ChildProfilePage.vue';
+// import ChildProfilePage from '../views/ChildProfilePage.vue';
 import ChildInfoPage from '../views/ChildInfoPage.vue';
 import NutritionNeedsPage from '../views/NutritionNeedsPage.vue';
 import ProfileSummaryPage from '../views/ProfileSummaryPage.vue';
@@ -38,12 +38,12 @@ const routes = [
     component: NutritionNeedsPage,
     meta: { title: 'Nutrition Needs - LittleWell' }
   },
-  {
-    path: '/child-profile',
-    name: 'ChildProfile',
-    component: ChildProfilePage,
-    meta: { title: 'Child Profile - LittleWell' }
-  },
+  // {
+  //   path: '/child-profile',
+  //   name: 'ChildProfile',
+  //   component: ChildProfilePage,
+  //   meta: { title: 'Child Profile - LittleWell' }
+  // },
   {
     path: '/child-info',
     name: 'ChildInfo',
