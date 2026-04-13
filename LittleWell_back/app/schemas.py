@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List, Optional
 
 
@@ -14,12 +14,11 @@ class ChildBase(BaseModel):
 
 
 class ChildCreate(ChildBase):
-    allergies: List[int] = []
+    allergies: List[int] = Field(default_factory=list)
 
 
 class ChildUpdate(ChildBase):
-    user_id: int
-    allergies: List[int] = []
+    allergies: List[int] = Field(default_factory=list)
 
 
 class ChildResponse(BaseModel):
@@ -33,7 +32,7 @@ class ChildResponse(BaseModel):
     vitamin_d_status: int
     variety_status: int
     religious_needs: Optional[str] = ""
-    allergies: List[int] = []
+    allergies: List[int] = Field(default_factory=list)
 
     class Config:
         from_attributes = True

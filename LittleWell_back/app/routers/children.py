@@ -10,7 +10,10 @@ router = APIRouter(prefix="/children", tags=["children"])
 def read_children(db: Session = Depends(get_db)):
     children = crud.get_children(db)
     result = []
+
     for child in children:
+        allergies = crud.get_child_allergen_ids(db, child.child_id)
+
         result.append(
             schemas.ChildResponse(
                 child_id=child.child_id,
@@ -23,9 +26,10 @@ def read_children(db: Session = Depends(get_db)):
                 vitamin_d_status=child.vitamin_d_status,
                 variety_status=child.variety_status,
                 religious_needs=child.religious_needs or "",
-                allergies=[],
+                allergies=allergies,
             )
         )
+
     return result
 
 
@@ -34,6 +38,8 @@ def read_child(child_id: int, db: Session = Depends(get_db)):
     child = crud.get_child_by_id(db, child_id)
     if not child:
         raise HTTPException(status_code=404, detail="Child not found")
+
+    allergies = crud.get_child_allergen_ids(db, child.child_id)
 
     return schemas.ChildResponse(
         child_id=child.child_id,
@@ -46,13 +52,14 @@ def read_child(child_id: int, db: Session = Depends(get_db)):
         vitamin_d_status=child.vitamin_d_status,
         variety_status=child.variety_status,
         religious_needs=child.religious_needs or "",
-        allergies=[],
+        allergies=allergies,
     )
 
 
 @router.post("", response_model=schemas.ChildResponse)
 def create_child(child: schemas.ChildCreate, db: Session = Depends(get_db)):
     new_child = crud.create_child(db, child)
+
     return schemas.ChildResponse(
         child_id=new_child.child_id,
         user_id=new_child.user_id,
@@ -64,7 +71,7 @@ def create_child(child: schemas.ChildCreate, db: Session = Depends(get_db)):
         vitamin_d_status=new_child.vitamin_d_status,
         variety_status=new_child.variety_status,
         religious_needs=new_child.religious_needs or "",
-        allergies=child.allergies,
+        allergies=crud.get_child_allergen_ids(db, new_child.child_id),
     )
 
 
@@ -85,5 +92,5 @@ def update_child(child_id: int, child: schemas.ChildUpdate, db: Session = Depend
         vitamin_d_status=updated_child.vitamin_d_status,
         variety_status=updated_child.variety_status,
         religious_needs=updated_child.religious_needs or "",
-        allergies=child.allergies,
+        allergies=crud.get_child_allergen_ids(db, updated_child.child_id),
     )

@@ -2,7 +2,6 @@ from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy.orm import Session
 from ..db import get_db
 from .. import models
-from typing import List
 
 router = APIRouter(prefix="/products/recommended", tags=["recommendations"])
 
@@ -40,19 +39,19 @@ def get_recommended_products(
 
     query = db.query(models.PackagedProduct)
 
-    if child.variety_status == "needs_support":
+    if int(child.variety_status or 0) == 1:
         query = query.filter(models.PackagedProduct.has_added_preservatives == 0)
 
     products = query.limit(6).all()
 
     needs_support = []
-    if child.iron_status == "needs_support":
+    if int(child.iron_status or 0) == 1:
         needs_support.append("iron")
-    if child.calcium_status == "needs_support":
+    if int(child.calcium_status or 0) == 1:
         needs_support.append("calcium")
-    if child.vitamin_d_status == "needs_support":
+    if int(child.vitamin_d_status or 0) == 1:
         needs_support.append("vitamin_d")
-    if child.variety_status == "needs_support":
+    if int(child.variety_status or 0) == 1:
         needs_support.append("variety")
 
     lunchboxes = [
@@ -83,21 +82,20 @@ def get_family_recommended_products(
     if not children:
         raise HTTPException(status_code=404, detail="No children found")
 
-    query = db.query(models.PackagedProduct).limit(6)
-    products = query.all()
+    products = db.query(models.PackagedProduct).limit(6).all()
 
     combined_support = set()
     names = []
 
     for child in children:
         names.append(child.child_name)
-        if child.iron_status == "needs_support":
+        if int(child.iron_status or 0) == 1:
             combined_support.add("iron")
-        if child.calcium_status == "needs_support":
+        if int(child.calcium_status or 0) == 1:
             combined_support.add("calcium")
-        if child.vitamin_d_status == "needs_support":
+        if int(child.vitamin_d_status or 0) == 1:
             combined_support.add("vitamin_d")
-        if child.variety_status == "needs_support":
+        if int(child.variety_status or 0) == 1:
             combined_support.add("variety")
 
     lunchboxes = [
@@ -127,7 +125,7 @@ def get_quick_recommended_products(
 
     query = db.query(models.PackagedProduct)
 
-
+    # TODO: later add actual allergy filtering / age-based filtering / seasonal filtering
     products = query.limit(6).all()
 
     lunchboxes = [

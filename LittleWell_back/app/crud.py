@@ -10,11 +10,34 @@ def get_child_by_id(db: Session, child_id: int):
     return db.query(models.UserChild).filter(models.UserChild.child_id == child_id).first()
 
 
-def create_child(db: Session, child: schemas.ChildCreate):
+def get_child_allergen_ids(db: Session, child_id: int):
+    rows = (
+        db.query(models.UserSearchAllergen)
+        .filter(models.UserSearchAllergen.child_id == child_id)
+        .all()
+    )
+    return [row.allergen_id for row in rows]
 
+
+def replace_child_allergens(db: Session, child_id: int, user_id: int, allergen_ids: list[int]):
+    db.query(models.UserSearchAllergen).filter(
+        models.UserSearchAllergen.child_id == child_id
+    ).delete()
+
+    for allergen_id in allergen_ids:
+        db.add(
+            models.UserSearchAllergen(
+                user_id=user_id,
+                child_id=child_id,
+                allergen_id=allergen_id,
+            )
+        )
+
+
+def create_child(db: Session, child: schemas.ChildCreate):
     new_user = models.UserSearch()
     db.add(new_user)
-    db.flush()  
+    db.flush()
 
     db_child = models.UserChild(
         user_id=new_user.user_id,
@@ -28,15 +51,16 @@ def create_child(db: Session, child: schemas.ChildCreate):
         religious_needs=child.religious_needs,
     )
     db.add(db_child)
-    db.flush() 
+    db.flush()
 
     for allergen_id in child.allergies:
-        db_link = models.UserSearchAllergen(
-            user_id=new_user.user_id,
-            child_id=db_child.child_id,
-            allergen_id=allergen_id,
+        db.add(
+            models.UserSearchAllergen(
+                user_id=new_user.user_id,
+                child_id=db_child.child_id,
+                allergen_id=allergen_id,
+            )
         )
-        db.add(db_link)
 
     db.commit()
     db.refresh(db_child)
@@ -48,7 +72,6 @@ def update_child(db: Session, child_id: int, child: schemas.ChildUpdate):
     if not db_child:
         return None
 
-    db_child.user_id = child.user_id
     db_child.child_name = child.child_name
     db_child.age_band = child.age_band
     db_child.band_id = child.band_id
@@ -57,6 +80,13 @@ def update_child(db: Session, child_id: int, child: schemas.ChildUpdate):
     db_child.vitamin_d_status = child.vitamin_d_status
     db_child.variety_status = child.variety_status
     db_child.religious_needs = child.religious_needs
+
+    replace_child_allergens(
+        db=db,
+        child_id=db_child.child_id,
+        user_id=db_child.user_id,
+        allergen_ids=child.allergies,
+    )
 
     db.commit()
     db.refresh(db_child)

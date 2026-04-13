@@ -19,10 +19,10 @@ class UserChild(Base):
     age_band = Column(String(50), nullable=False)
     band_id = Column(Integer, nullable=True)
 
-    iron_status = Column(String(50), default="normal")
-    calcium_status = Column(String(50), default="normal")
-    vitamin_d_status = Column(String(50), default="normal")
-    variety_status = Column(String(50), default="normal")
+    iron_status = Column(Integer, default=0)
+    calcium_status = Column(Integer, default=0)
+    vitamin_d_status = Column(Integer, default=0)
+    variety_status = Column(Integer, default=0)
 
     religious_needs = Column(String(100), nullable=True)
     created_at = Column(DateTime, server_default=func.now())
