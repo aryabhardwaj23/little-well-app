@@ -62,3 +62,10 @@ class ProductAllergen(Base):
     product_id = Column(Integer, nullable=False)
     allergen_name = Column(String(100), nullable=True)
     canonical_allergen = Column(String(100), nullable=True)
+
+class User(Base):
+    __tablename__ = "users"
+
+    user_id = Column(Integer, primary_key=True, index=True)
+    parent_name = Column(String(100), nullable=False)
+    email = Column(String(255), nullable=True)
