@@ -125,6 +125,17 @@ const route = useRoute();
 const isEditing = ref(false);
 const editingChildId = ref(null);
 
+const allergyMap = {
+  'Peanuts': 47,
+  'Tree nuts': 40,
+  'Milk': 16,
+  'Eggs': 18,
+  'Wheat': 24,
+  'Soy': 50,
+  'Fish': 22,
+  'Shellfish': 15,
+};
+
 const formData = ref({
   name: '',
   ageGroup: '',
@@ -196,16 +207,18 @@ const toggleNutritionFocus = (focus) => {
 const handleSave = async () => {
   try {
     const payload = {
-      user_id: 1,
       child_name: formData.value.name,
       age_band: formData.value.ageGroup,
       band_id: null,
+
       iron_status: formData.value.nutritionFocus.includes('Iron support') ? 'needs_support' : 'normal',
       calcium_status: formData.value.nutritionFocus.includes('Calcium support') ? 'needs_support' : 'normal',
       vitamin_d_status: formData.value.nutritionFocus.includes('Immune support') ? 'needs_support' : 'normal',
       variety_status: formData.value.nutritionFocus.includes('Diet variety') ? 'needs_support' : 'normal',
+
       religious_needs: formData.value.dietaryRestriction || '',
-      allergies: formData.value.allergies,
+
+      allergies: formData.value.allergies.map(a => allergyMap[a]),
     };
 
     if (isEditing.value && editingChildId.value) {
