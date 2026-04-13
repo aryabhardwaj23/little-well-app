@@ -94,3 +94,11 @@ def update_child(child_id: int, child: schemas.ChildUpdate, db: Session = Depend
         religious_needs=updated_child.religious_needs or "",
         allergies=crud.get_child_allergen_ids(db, updated_child.child_id),
     )
+
+@router.delete("/{child_id}")
+def delete_child(child_id: int, db: Session = Depends(get_db)):
+    deleted_child = crud.delete_child(db, child_id)
+    if not deleted_child:
+        raise HTTPException(status_code=404, detail="Child not found")
+
+    return {"message": "Child deleted successfully", "child_id": child_id}

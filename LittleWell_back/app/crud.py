@@ -91,3 +91,17 @@ def update_child(db: Session, child_id: int, child: schemas.ChildUpdate):
     db.commit()
     db.refresh(db_child)
     return db_child
+
+def delete_child(db: Session, child_id: int):
+    db_child = get_child_by_id(db, child_id)
+    if not db_child:
+        return None
+
+    db.query(models.UserSearchAllergen).filter(
+        models.UserSearchAllergen.child_id == child_id
+    ).delete()
+
+    db.delete(db_child)
+    db.commit()
+
+    return db_child
