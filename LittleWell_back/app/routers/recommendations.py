@@ -147,7 +147,6 @@ def get_candidate_products(db: Session, blocked_product_ids: set[int]) -> list:
     if blocked_product_ids:
         query = query.filter(~models.PackagedProduct.product_id.in_(blocked_product_ids))
 
-    # 多取一点，方便随机
     products = query.limit(300).all()
 
     cleaned = []
@@ -205,7 +204,7 @@ def make_item(name: str, amount: str, section: str):
     return {
         "name": name,
         "amount": amount,
-        # 改成本地图，避免外部 placeholder 连接失败
+        # Placeholder image for now - in future we could add product images or generic icons
         "image": "/placeholder-lunchbox.png",
         "section": section,
     }
@@ -257,8 +256,7 @@ def build_lunchbox(
 
 def get_randomised_candidates(products: list, slot: str, needs: list[str], top_n: int = 20) -> list:
     """
-    先按分数排序，再从前 top_n 名里随机打乱。
-    这样既不会完全乱推，也不会每次都一模一样。
+    Get top N candidates for a given slot, sorted by score, then randomised within that top N to add variety.
     """
     ranked = sorted(
         products,
@@ -296,7 +294,6 @@ def generate_lunchboxes_for_child(db: Session, child, seasonal: bool = True, max
     lunchboxes = []
     used_ids = set()
 
-    # 每次请求都重新随机一批候选
     protein_candidates = get_randomised_candidates(products, "protein", needs, top_n=20)
     carb_candidates = get_randomised_candidates(products, "carbs", needs, top_n=20)
 
@@ -395,7 +392,7 @@ def get_quick_recommended_products(
     if not veggies:
         veggies = fallback_veggies()
 
-    # quick mode 暂时不做 allergens -> product 过滤
+
     products = get_candidate_products(db, blocked_product_ids=set())
 
     protein_candidates = get_randomised_candidates(products, "protein", [], top_n=20)
