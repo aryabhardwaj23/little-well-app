@@ -86,3 +86,9 @@ export function getQuickRecommendedProducts({ ageGroup, allergies = [], seasonal
 
   return request(`/products/recommended/quick?${query.toString()}`);
 }
+
+export function deleteChild(childId) {
+  return request(`/children/${childId}`, {
+    method: 'DELETE',
+  });
+}

@@ -107,12 +107,25 @@
                   {{ profile.name }} <span class="text-muted-foreground text-base">({{ profile.ageGroup }})</span>
                 </h3>
               </div>
-              <button
-                @click="handleEditProfile(profile.id)"
-                class="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                <Edit class="w-4 h-4" />
-              </button>
+              <div class="flex items-center gap-2">
+
+                <button
+                  @click.stop="handleEditProfile(profile.id)"
+                  class="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  title="Edit profile"
+                >
+                  <Edit class="w-4 h-4" />
+                </button>
+
+                <button
+                  @click.stop="handleDeleteProfile(profile.id, profile.name)"
+                  class="p-2 hover:bg-red-50 rounded-lg transition-colors text-red-600"
+                  title="Delete profile"
+                >
+                  <Trash2 class="w-4 h-4" />
+                </button>
+
+              </div>
             </div>
 
             <!-- Profile Info -->
@@ -401,10 +414,10 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { 
-  Heart, Plus, Zap, Edit, ChevronRight, Leaf, Clock, 
+  Heart, Plus, Zap, Edit, Trash2, ChevronRight, Leaf, Clock, 
   BookOpen, ScanLine, Menu 
 } from 'lucide-vue-next';
-import { getChildren } from '../services/api';
+import { getChildren, deleteChild } from '../services/api';
 
 const router = useRouter();
 
@@ -489,6 +502,33 @@ const handleGenerateFamilyPlan = () => {
 
 const handleViewMeals = (profileId) => {
   router.push(`/results?childId=${profileId}`);
+};
+
+const handleDeleteProfile = async (profileId, profileName) => {
+  const confirmed = window.confirm(
+    `Are you sure you want to delete ${profileName}'s profile? This action cannot be undone.`
+  );
+
+  if (!confirmed) return;
+
+  try {
+    await deleteChild(profileId);
+
+    const activeChildId = localStorage.getItem('littlewell_active_child_id');
+    if (activeChildId && String(activeChildId) === String(profileId)) {
+      localStorage.removeItem('littlewell_active_child_id');
+    }
+
+    const editingChildId = localStorage.getItem('littlewell_edit_child_id');
+    if (editingChildId && String(editingChildId) === String(profileId)) {
+      localStorage.removeItem('littlewell_edit_child_id');
+    }
+
+    await loadProfiles();
+  } catch (error) {
+    console.error('Failed to delete child profile:', error);
+    alert(`Failed to delete profile: ${error.message}`);
+  }
 };
 
 const handleEditProfile = (profileId) => {
