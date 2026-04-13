@@ -211,11 +211,10 @@ const handleSave = async () => {
       age_band: formData.value.ageGroup,
       band_id: null,
 
-      iron_status: nutritionFocus.value.includes('iron') ? 1 : 0,
-      calcium_status: nutritionFocus.value.includes('calcium') ? 1 : 0,
-      vitamin_d_status: nutritionFocus.value.includes('immunity') ? 1 : 0,
-      variety_status: nutritionFocus.value.includes('variety') ? 1 : 0,
-      religious_needs: formData.value.dietaryRestriction || '',
+    iron_status: formData.value.nutritionFocus.includes('Iron support') ? 1 : 0,
+    calcium_status: formData.value.nutritionFocus.includes('Calcium support') ? 1 : 0,
+    vitamin_d_status: formData.value.nutritionFocus.includes('Immune support') ? 1 : 0,
+    variety_status: formData.value.nutritionFocus.includes('Diet variety') ? 1 : 0,
 
       allergies: formData.value.allergies.map(a => allergyMap[a]),
     };
