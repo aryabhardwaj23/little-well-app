@@ -71,28 +71,27 @@
       </div>
 
       <!-- Lunchbox Grid -->
-      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div v-if="isLoading" class="text-center py-10 text-muted-foreground">
-          Loading personalised lunchbox recommendations...
-        </div>
+      <div v-if="isLoading" class="text-center py-10 text-muted-foreground">
+        Loading personalised lunchbox recommendations...
+      </div>
 
-        <div v-else-if="lunchboxes.length === 0" class="text-center py-10 text-muted-foreground">
-          No recommendations available yet. Please create a child profile first.
-        </div>
+      <div v-else-if="lunchboxes.length === 0" class="text-center py-10 text-muted-foreground">
+        No recommendations available yet. Please create a child profile first.
+      </div>
 
-        <div v-else class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div
-            v-for="lunchbox in lunchboxes"
-            :key="lunchbox.id"
-            class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
-            @click="handleLunchboxClick(lunchbox.id)"
-          >
-          <!-- Child Name Badge (if exists) -->
-          <div v-if="lunchbox.childName" class="px-6 pt-4">
-            <span class="inline-flex items-center px-3 py-1 bg-[#CDE7F0]/30 text-[#1B4965] text-sm rounded-full">
-              For {{ lunchbox.childName }}
-            </span>
-          </div>
+      <div v-else class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div
+          v-for="lunchbox in lunchboxes"
+          :key="lunchbox.id"
+          class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+          @click="handleLunchboxClick(lunchbox.id)"
+        >
+         <!-- Child Name Badge (if exists) -->
+        <div v-if="lunchbox.childName" class="px-6 pt-4">
+          <span class="inline-flex items-center px-3 py-1 bg-[#CDE7F0]/30 text-[#1B4965] text-sm rounded-full">
+            For {{ lunchbox.childName }}
+          </span>
+        </div>
           
     <!-- Items Grid -->
           <div class="p-6">
