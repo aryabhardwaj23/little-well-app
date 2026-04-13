@@ -6,8 +6,8 @@ import AboutPage from '../views/AboutPage.vue';
 import QuickStartPage from '../views/QuickStartPage.vue';
 import ChildProfilePage from '../views/ChildProfilePage.vue';
 import ChildInfoPage from '../views/ChildInfoPage.vue';
-// import NutritionNeedsPage from '../views/NutritionNeedsPage.vue';
-// import ProfileSummaryPage from '../views/ProfileSummaryPage.vue';
+import NutritionNeedsPage from '../views/NutritionNeedsPage.vue';
+import ProfileSummaryPage from '../views/ProfileSummaryPage.vue';
 import NutritionCheckPage from '../views/NutritionCheckPage.vue';
 import NutritionInsightsPage from '../views/NutritionInsightsPage.vue';
 import ResultsPage from '../views/ResultsPage.vue';
@@ -32,12 +32,12 @@ const routes = [
     component: QuickStartPage,
     meta: { title: 'Quick Start - LittleWell' }
   },
-//   {
-//     path: '/nutrition-needs',
-//     name: 'NutritionNeeds',
-//     component: NutritionNeedsPage,
-//     meta: { title: 'Nutrition Needs - LittleWell' }
-//   },
+  {
+    path: '/nutrition-needs',
+    name: 'NutritionNeeds',
+    component: NutritionNeedsPage,
+    meta: { title: 'Nutrition Needs - LittleWell' }
+  },
   {
     path: '/child-profile',
     name: 'ChildProfile',
@@ -50,12 +50,12 @@ const routes = [
     component: ChildInfoPage,
     meta: { title: 'Child Information - LittleWell' }
   },
-//   {
-//     path: '/profile-summary',
-//     name: 'ProfileSummary',
-//     component: ProfileSummaryPage,
-//     meta: { title: 'Profile Summary - LittleWell' }
-//   },
+  {
+    path: '/profile-summary',
+    name: 'ProfileSummary',
+    component: ProfileSummaryPage,
+    meta: { title: 'Profile Summary - LittleWell' }
+  },
   {
     path: '/nutrition-check',
     name: 'NutritionCheck',
