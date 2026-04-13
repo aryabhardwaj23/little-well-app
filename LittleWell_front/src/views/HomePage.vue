@@ -425,6 +425,30 @@ const profiles = ref([]);
 const selectedForFamily = ref([]);
 const isLoadingProfiles = ref(false);
 
+const allergenIdToName = {
+  47: 'Peanuts',
+  40: 'Tree nuts',
+  16: 'Milk',
+  18: 'Eggs',
+  24: 'Wheat',
+  50: 'Soy',
+  22: 'Fish',
+  15: 'Shellfish',
+};
+
+const mapAllergiesToNames = (allergies) => {
+  if (!Array.isArray(allergies)) return [];
+
+  return allergies.map((allergy) => {
+    if (typeof allergy === 'string' && isNaN(Number(allergy))) {
+      return allergy;
+    }
+
+    const id = Number(allergy);
+    return allergenIdToName[id] || String(allergy);
+  });
+};
+
 const handleAddChild = () => {
   localStorage.removeItem('littlewell_edit_child_id');
   router.push('/child-info');
@@ -463,7 +487,7 @@ const mapChildToProfileCard = (child) => {
     id: child.child_id,
     name: child.child_name,
     ageGroup: child.age_band,
-    allergies: child.allergies || [],
+    allergies: mapAllergiesToNames(child.allergies),
     dietaryRestriction: child.religious_needs || '',
     nutritionFocus: focusIds.map((id) => nutritionFocusLabels[id]),
   };
