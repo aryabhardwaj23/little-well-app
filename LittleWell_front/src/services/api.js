@@ -10,13 +10,29 @@ async function request(path, options = {}) {
   });
 
   if (!response.ok) {
-    let message = 'Request failed';
+    let message = `Request failed: ${response.status}`;
+
     try {
       const errorData = await response.json();
-      message = errorData.detail || JSON.stringify(errorData);
+
+      if (typeof errorData.detail === 'string') {
+        message = errorData.detail;
+      } else if (Array.isArray(errorData.detail)) {
+        message = errorData.detail
+          .map((item) => {
+            const field = item.loc ? item.loc.join(' -> ') : 'field';
+            return `${field}: ${item.msg}`;
+          })
+          .join('\n');
+      } else if (errorData.detail) {
+        message = JSON.stringify(errorData.detail);
+      } else {
+        message = JSON.stringify(errorData);
+      }
     } catch {
       message = await response.text();
     }
+
     throw new Error(message);
   }
 
