@@ -207,12 +207,10 @@ const handleSave = async () => {
       age_band: profile.value.ageGroup,
       band_id: null,
 
-      iron_status: nutritionFocus.value.includes('iron') ? 'needs_support' : 'normal',
-      calcium_status: nutritionFocus.value.includes('calcium') ? 'needs_support' : 'normal',
-
-      vitamin_d_status: nutritionFocus.value.includes('immunity') ? 'needs_support' : 'normal',
-
-      variety_status: nutritionFocus.value.includes('variety') ? 'needs_support' : 'normal',
+      iron_status: nutritionFocus.value.includes('iron') ? 1 : 0,
+      calcium_status: nutritionFocus.value.includes('calcium') ? 1 : 0,
+      vitamin_d_status: nutritionFocus.value.includes('immunity') ? 1 : 0,
+      variety_status: nutritionFocus.value.includes('variety') ? 1 : 0,
 
       religious_needs: profile.value.dietaryRestriction || '',
 
