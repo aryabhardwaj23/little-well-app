@@ -6,10 +6,10 @@ class ChildBase(BaseModel):
     child_name: str
     age_band: str
     band_id: Optional[int] = None
-    iron_status: str = "normal"
-    calcium_status: str = "normal"
-    vitamin_d_status: str = "normal"
-    variety_status: str = "normal"
+    iron_status: int = 0
+    calcium_status: int = 0
+    vitamin_d_status: int = 0
+    variety_status: int = 0
     religious_needs: Optional[str] = ""
 
 
@@ -28,10 +28,10 @@ class ChildResponse(BaseModel):
     child_name: str
     age_band: str
     band_id: Optional[int] = None
-    iron_status: str
-    calcium_status: str
-    vitamin_d_status: str
-    variety_status: str
+    iron_status: int
+    calcium_status: int
+    vitamin_d_status: int
+    variety_status: int
     religious_needs: Optional[str] = ""
     allergies: List[int] = []
 
