@@ -194,6 +194,7 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { ArrowLeft } from 'lucide-vue-next';
 import { useChildProfileStore } from '../stores/childProfile';
+import { getChildById } from '../services/api';
 
 const router = useRouter();
 const childProfileStore = useChildProfileStore();
@@ -207,17 +208,56 @@ const formData = ref({
   activityLevel: 'moderate',
   eatingHabit: '',
   dislikes: '',
+  nutritionFocus: [],
 });
 
-onMounted(() => {
-  formData.value = {
-    ...formData.value,
-    ...childProfileStore.childProfileDraft,
-  };
+onMounted(async () => {
+  const editingChildId = localStorage.getItem('littlewell_edit_child_id');
+
+  if (editingChildId) {
+    try {
+      const child = await getChildById(editingChildId);
+
+      const draftData = {
+        name: child.child_name || '',
+        ageGroup: child.age_band || '',
+        gender: child.gender || '',
+        allergies: child.allergies || [],
+        dietaryRestriction: child.religious_needs || '',
+        activityLevel: child.activity_level || 'moderate',
+        eatingHabit: child.eating_habit || '',
+        dislikes: child.dislikes || '',
+        nutritionFocus: mapStatusToNutritionFocus(child),
+      };
+
+      childProfileStore.updateDraft(draftData);
+
+      formData.value = {
+        ...formData.value,
+        ...draftData,
+      };
+    } catch (error) {
+      console.error('Failed to load child info for editing:', error);
+    }
+  } else {
+    formData.value = {
+      ...formData.value,
+      ...childProfileStore.childProfileDraft,
+    };
+  }
 });
 
 const ageGroups = ['0-3 years', '3-6 years', '6-9 years', '9-12 years', '12+ years'];
 const genderOptions = ['Boy', 'Girl', 'Prefer not to say'];
+
+const mapStatusToNutritionFocus = (child) => {
+  return [
+    Number(child.iron_status) === 1 ? 'iron' : null,
+    Number(child.calcium_status) === 1 ? 'calcium' : null,
+    Number(child.vitamin_d_status) === 1 ? 'immunity' : null,
+    Number(child.variety_status) === 1 ? 'variety' : null,
+  ].filter(Boolean);
+};
 
 const commonAllergies = [
   'Peanuts', 'Tree nuts', 'Milk', 'Eggs',

@@ -200,7 +200,7 @@ const selectedChildIds = ref([]);
 const needsSupport = ref([]);
 
 const loadRecommendations = async () => {
-  const childId = route.query.childId;
+  const childId = route.query.childId || localStorage.getItem('littlewell_active_child_id');
   const childIdsParam = route.query.childIds;
   const family = route.query.family;
 

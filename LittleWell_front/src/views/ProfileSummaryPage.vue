@@ -133,7 +133,7 @@
               Take our quick nutrition check to get even more tailored meal recommendations based on your child's current diet.
             </p>
             <button
-              @click="router.push('/nutrition-check')"
+              @click="handleNutritionCheck"
               class="text-sm text-[#2C5F2D] font-medium hover:underline inline-flex items-center gap-1"
             >
               Take Nutrition Check
@@ -151,7 +151,7 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { Check, User, Apple, Sparkles, Edit, ChevronRight, ClipboardCheck } from 'lucide-vue-next';
 import { useChildProfileStore } from '../stores/childProfile';
-import { createChild } from '../services/api';
+import { createChild, updateChild } from '../services/api';
 
 const router = useRouter();
 const childProfileStore = useChildProfileStore();
@@ -198,9 +198,20 @@ const handleEdit = () => {
   router.push('/child-info');
 };
 
+const handleNutritionCheck = () => {
+  const editingChildId = localStorage.getItem('littlewell_edit_child_id');
+  if (editingChildId) {
+    router.push(`/nutrition-check?childId=${editingChildId}`);
+  } else {
+    router.push('/nutrition-check');
+  }
+};
+
 const handleSave = async () => {
   try {
     saving.value = true;
+
+    const editingChildId = localStorage.getItem('littlewell_edit_child_id');
 
     const payload = {
       child_name: profile.value.name,
@@ -219,13 +230,19 @@ const handleSave = async () => {
         .filter(Boolean),
     };
 
-    const createdChild = await createChild(payload);
+    let savedChild;
 
-    localStorage.setItem('littlewell_active_child_id', String(createdChild.child_id));
+    if (editingChildId) {
+      await updateChild(editingChildId, payload);
+      savedChild = { child_id: editingChildId };
+    } else {
+      savedChild = await createChild(payload);
+    }
 
+    localStorage.removeItem('littlewell_edit_child_id');
     childProfileStore.resetDraft();
 
-    router.push('/results');
+    router.push(`/results?childId=${savedChild.child_id}`);
   } catch (error) {
     console.error('Failed to save child profile:', error);
     alert(`Failed to save profile: ${error.message}`);

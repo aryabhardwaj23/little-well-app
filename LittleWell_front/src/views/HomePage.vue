@@ -164,7 +164,7 @@
           <!-- Add New Profile Card -->
           <div class="flex-shrink-0 w-[340px] p-6 rounded-2xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center hover:border-[#A8D5BA] transition-colors cursor-pointer">
             <button
-              @click="router.push('/child-profile')"
+              @click="handleAddChild"
               class="flex flex-col items-center gap-3"
             >
               <div class="w-16 h-16 bg-[#A8D5BA]/10 rounded-full flex items-center justify-center">
@@ -412,6 +412,11 @@ const profiles = ref([]);
 const selectedForFamily = ref([]);
 const isLoadingProfiles = ref(false);
 
+const handleAddChild = () => {
+  localStorage.removeItem('littlewell_edit_child_id');
+  router.push('/child-info');
+};
+
 const handleLunchboxPlan = () => {
   if (profiles.value.length > 0) {
     router.push(`/results?childId=${profiles.value[0].id}`);
@@ -420,19 +425,34 @@ const handleLunchboxPlan = () => {
   }
 };
 
+const nutritionFocusLabels = {
+  iron: 'Iron Support',
+  calcium: 'Calcium Support',
+  brain: 'Brain Development',
+  immunity: 'Immune Support',
+  energy: 'Sustained Energy',
+  variety: 'Diet Variety',
+};
+
+const mapStatusToNutritionFocus = (child) => {
+  return [
+    Number(child.iron_status) === 1 ? 'iron' : null,
+    Number(child.calcium_status) === 1 ? 'calcium' : null,
+    Number(child.vitamin_d_status) === 1 ? 'immunity' : null,
+    Number(child.variety_status) === 1 ? 'variety' : null,
+  ].filter(Boolean);
+};
+
 const mapChildToProfileCard = (child) => {
+  const focusIds = mapStatusToNutritionFocus(child);
+
   return {
     id: child.child_id,
     name: child.child_name,
     ageGroup: child.age_band,
     allergies: child.allergies || [],
     dietaryRestriction: child.religious_needs || '',
-    nutritionFocus: [
-      child.iron_status === 'needs_support' ? 'Iron support' : null,
-      child.calcium_status === 'needs_support' ? 'Calcium support' : null,
-      child.vitamin_d_status === 'needs_support' ? 'Immune support' : null,
-      child.variety_status === 'needs_support' ? 'Diet variety' : null,
-    ].filter(Boolean),
+    nutritionFocus: focusIds.map((id) => nutritionFocusLabels[id]),
   };
 };
 
@@ -472,7 +492,8 @@ const handleViewMeals = (profileId) => {
 };
 
 const handleEditProfile = (profileId) => {
-  router.push(`/child-profile?childId=${profileId}`);
+  localStorage.setItem('littlewell_edit_child_id', String(profileId));
+  router.push('/child-info');
 };
 </script>
 

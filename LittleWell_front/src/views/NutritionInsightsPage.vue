@@ -70,7 +70,7 @@
       <!-- Action Buttons -->
       <div class="flex flex-col sm:flex-row gap-4">
         <button
-          @click="router.push('/results')"
+          @click="handleViewResults"
           class="flex-1 px-8 py-4 bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg transition-colors inline-flex items-center justify-center gap-2"
         >
           <ChevronRight class="w-4 h-4" />
@@ -112,6 +112,17 @@ onMounted(() => {
   insights.value = result.nutritionInsights || {};
   recommendations.value = generateRecommendations(insights.value);
 });
+
+const handleViewResults = () => {
+  const childId = localStorage.getItem('littlewell_edit_child_id')
+    || localStorage.getItem('littlewell_active_child_id');
+
+  if (childId) {
+    router.push(`/results?childId=${childId}`);
+  } else {
+    router.push('/');
+  }
+};
 
 const getScoreColor = (score) => {
   if (score >= 75) return 'bg-gradient-to-br from-[#A8D5BA] to-[#8FC2A4]';
