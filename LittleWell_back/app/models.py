@@ -1,5 +1,13 @@
-from sqlalchemy import Column, Integer, String, Text
+from sqlalchemy import Column, Integer, String, Text, DateTime, func
 from .db import Base
+
+
+class UserSearch(Base):
+    __tablename__ = "user_search"
+
+    user_id = Column(Integer, primary_key=True, index=True)
+    created_at = Column(DateTime, server_default=func.now())
+    updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
 
 
 class UserChild(Base):
@@ -17,6 +25,15 @@ class UserChild(Base):
     variety_status = Column(String(50), default="normal")
 
     religious_needs = Column(String(100), nullable=True)
+    created_at = Column(DateTime, server_default=func.now())
+
+
+class UserSearchAllergen(Base):
+    __tablename__ = "user_search_allergen"
+
+    user_id = Column(Integer, primary_key=True)
+    child_id = Column(Integer, primary_key=True)
+    allergen_id = Column(Integer, primary_key=True)
 
 
 class PackagedProduct(Base):
@@ -62,10 +79,3 @@ class ProductAllergen(Base):
     product_id = Column(Integer, nullable=False)
     allergen_name = Column(String(100), nullable=True)
     canonical_allergen = Column(String(100), nullable=True)
-
-class User(Base):
-    __tablename__ = "users"
-
-    user_id = Column(Integer, primary_key=True, index=True)
-    parent_name = Column(String(100), nullable=False)
-    email = Column(String(255), nullable=True)

@@ -14,14 +14,12 @@ class ChildBase(BaseModel):
 
 
 class ChildCreate(ChildBase):
-    parent_name: str
-    email: Optional[str] = None
-    allergies: List[str] = []
+    allergies: List[int] = []
 
 
 class ChildUpdate(ChildBase):
     user_id: int
-    allergies: List[str] = []
+    allergies: List[int] = []
 
 
 class ChildResponse(BaseModel):
@@ -35,7 +33,7 @@ class ChildResponse(BaseModel):
     vitamin_d_status: str
     variety_status: str
     religious_needs: Optional[str] = ""
-    allergies: List[str] = []
+    allergies: List[int] = []
 
     class Config:
         from_attributes = True
