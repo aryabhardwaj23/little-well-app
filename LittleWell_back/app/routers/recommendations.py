@@ -1,16 +1,55 @@
 from datetime import date
 import random
+import asyncio
+from typing import Optional
 
 from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import func
+
 from ..db import get_db
 from .. import models
+
+from ..services.mealdb_service import (
+    filter_meals_by_category,
+    get_meal_by_id,
+    get_random_meal,
+    list_categories,
+    format_meal_card,
+    search_meals_by_name,
+)
+from ..services.ausnut_service import (
+    filter_by_nutrition,
+    get_food_by_name,
+)
 
 router = APIRouter(prefix="/products/recommended", tags=["recommendations"])
 
 
-# ---------- helpers ----------
+# Config / mappings
+
+STATUS_TO_CATEGORY = {
+    "iron": ["Chicken", "Lamb", "Seafood", "Beef"],
+    "calcium": ["Pasta", "Vegetarian", "Breakfast"],
+    "vitamin_d": ["Seafood", "Breakfast"],
+    "variety": ["Vegan", "Vegetarian", "Pasta", "Side"],
+}
+
+CHILD_AGE_BAND_TO_CATEGORY = {
+    "0-3 years": ["Breakfast", "Vegetarian", "Pasta"],
+    "3-6 years": ["Chicken", "Pasta", "Vegetarian", "Seafood"],
+    "6-9 years": ["Chicken", "Beef", "Seafood", "Pasta"],
+    "9-12 years": ["Beef", "Chicken", "Seafood", "Lamb"],
+    "12+ years": ["Beef", "Chicken", "Seafood", "Lamb"],
+    # Backward compatibility
+    "2-3": ["Breakfast", "Vegetarian", "Pasta"],
+    "4-8": ["Chicken", "Pasta", "Vegetarian", "Seafood"],
+    "9-13": ["Chicken", "Beef", "Seafood", "Pasta"],
+    "14-18": ["Beef", "Chicken", "Seafood", "Lamb"],
+}
+
+
+# Core helpers
 
 def get_current_season_name() -> str:
     month = date.today().month
@@ -52,17 +91,14 @@ def product_text(product) -> str:
     return " ".join(parts).lower()
 
 
-def is_valid_product_name(name: str | None) -> bool:
+def is_valid_product_name(name: Optional[str]) -> bool:
     if not name:
         return False
-
     cleaned = name.strip()
     if len(cleaned) < 3:
         return False
-
     if cleaned.lower() in {"a", "n/a", "unknown", "test"}:
         return False
-
     return True
 
 
@@ -70,7 +106,7 @@ def score_product_for_slot(product, slot: str, needs: list[str]) -> int:
     text = product_text(product)
     score = 0
 
-    # Generic quality filters
+    # General quality
     if int(product.has_added_preservatives or 0) == 0:
         score += 1
     if int(product.has_added_sugar or 0) == 0:
@@ -78,7 +114,7 @@ def score_product_for_slot(product, slot: str, needs: list[str]) -> int:
     if int(product.has_food_color or 0) == 0:
         score += 1
 
-    # Slot-based heuristics
+    # Slot heuristics
     if slot == "protein":
         keywords = [
             "protein", "peanut butter", "nut butter", "tofu", "beans",
@@ -95,7 +131,7 @@ def score_product_for_slot(product, slot: str, needs: list[str]) -> int:
         if any(k in text for k in keywords):
             score += 6
 
-    # Nutrition support heuristics
+    # Nutrition support
     if "iron" in needs:
         iron_keywords = ["iron", "protein", "beans", "lentil", "chickpea", "peanut butter"]
         if any(k in text for k in iron_keywords):
@@ -160,7 +196,6 @@ def get_candidate_products(db: Session, blocked_product_ids: set[int]) -> list:
 
 def get_seasonal_items(db: Session, seasonal: bool = True):
     current_season = get_current_season_name()
-
     query = db.query(models.SeasonalProduce)
 
     if seasonal:
@@ -200,19 +235,19 @@ def fallback_veggies():
     return ["Carrot Sticks", "Cucumber", "Buk Choy", "Baby Broccoli"]
 
 
-def make_item(name: str, amount: str, section: str):
+def make_item(name: str, amount: str, section: str, image: Optional[str] = None):
     return {
         "name": name,
         "amount": amount,
-        # Placeholder image for now - in future we could add product images or generic icons
-        "image": "/placeholder-lunchbox.png",
+        "image": image,  # no placeholder; frontend decides whether to render
         "section": section,
     }
 
 
 def build_lunchbox(
-    child_name: str | None,
+    child_name: Optional[str],
     lunchbox_id: str,
+    index: int,
     protein_product,
     carb_product,
     fruit_name: str,
@@ -229,6 +264,7 @@ def build_lunchbox(
                 name=protein_product.name,
                 amount=protein_product.serving_size or "1 serving",
                 section="protein",
+                image=None,
             )
         )
 
@@ -238,14 +274,18 @@ def build_lunchbox(
                 name=carb_product.name,
                 amount=carb_product.serving_size or "1 serving",
                 section="carbs",
+                image=None,
             )
         )
 
-    items.append(make_item(name=fruit_name, amount="1 serving", section="fruit"))
-    items.append(make_item(name=veg_name, amount="1 serving", section="veggies"))
+    items.append(make_item(name=fruit_name, amount="1 serving", section="fruit", image=None))
+    items.append(make_item(name=veg_name, amount="1 serving", section="veggies", image=None))
 
     return {
         "id": lunchbox_id,
+        "source": "database",
+        "title": f"Lunchbox Option {index}",
+        "heroImage": None,
         "childName": child_name,
         "items": items,
         "nutritionFocus": focus_labels(needs),
@@ -255,15 +295,11 @@ def build_lunchbox(
 
 
 def get_randomised_candidates(products: list, slot: str, needs: list[str], top_n: int = 20) -> list:
-    """
-    Get top N candidates for a given slot, sorted by score, then randomised within that top N to add variety.
-    """
     ranked = sorted(
         products,
         key=lambda p: score_product_for_slot(p, slot, needs),
         reverse=True,
     )
-
     shortlisted = ranked[:top_n]
     random.shuffle(shortlisted)
     return shortlisted
@@ -311,6 +347,7 @@ def generate_lunchboxes_for_child(db: Session, child, seasonal: bool = True, max
             build_lunchbox(
                 child_name=child.child_name,
                 lunchbox_id=f"{child.child_id}-box-{i + 1}",
+                index=i + 1,
                 protein_product=protein_product,
                 carb_product=carb_product,
                 fruit_name=fruit_name,
@@ -325,7 +362,70 @@ def generate_lunchboxes_for_child(db: Session, child, seasonal: bool = True, max
     }
 
 
-# ---------- routes ----------
+# MealDB + AUSNUT helpers
+
+def get_nutrition_labels(nutrients: dict) -> list[str]:
+    labels = []
+    if nutrients.get("iron_mg", 0) >= 2.5:
+        labels.append("High Iron")
+    if nutrients.get("calcium_mg", 0) >= 120:
+        labels.append("High Calcium")
+    if nutrients.get("sugar_g", 0) <= 5:
+        labels.append("Low Sugar")
+    if nutrients.get("protein_g", 0) >= 10:
+        labels.append("High Protein")
+    if nutrients.get("fibre_g", 0) >= 3:
+        labels.append("Good Source of Fibre")
+    if nutrients.get("vitamin_c_mg", 0) >= 7:
+        labels.append("Contains Vitamin C")
+    return labels
+
+
+async def build_lunchbox_from_meal(meal, child_name=None, support_type="general", nutrition_focus=None):
+    if nutrition_focus is None:
+        nutrition_focus = ["Balanced nutrition"]
+
+    card = format_meal_card(meal)
+
+    nutrition_labels = []
+    ausnut_nutrition = None
+
+    if card.get("ingredients"):
+        main_ingredient = card["ingredients"][0]["ingredient"]
+        ausnut_nutrition = get_food_by_name(main_ingredient)
+        if ausnut_nutrition:
+            nutrition_labels = get_nutrition_labels(ausnut_nutrition)
+
+    items = []
+    for ing in card.get("ingredients", [])[:4]:
+        items.append({
+            "name": ing["ingredient"],
+            "amount": ing["measure"],
+            "image": ing.get("image"),
+            "section": "ingredient",
+        })
+
+    return {
+        "id": card["id"],
+        "source": "mealdb",
+        "title": card.get("name", "Meal Recommendation"),
+        "heroImage": card.get("image"),
+        "childName": child_name,
+        "mealName": card.get("name"),
+        "mealImage": card.get("image"),
+        "category": card.get("category"),
+        "area": card.get("area"),
+        "items": items,
+        "nutritionFocus": nutrition_focus + nutrition_labels,
+        "whyThisMeal": f"{card.get('name', 'This meal')} provides {', '.join(nutrition_focus).lower()} and is suitable for children's lunchboxes.",
+        "supportType": support_type,
+        "instructions": card.get("instructions"),
+        "tags": card.get("tags"),
+        "ausnutData": ausnut_nutrition,
+    }
+
+
+# Main database routes
 
 @router.get("")
 def get_recommended_products(
@@ -357,7 +457,6 @@ def get_family_recommended_products(
     if not children:
         raise HTTPException(status_code=404, detail="No children found")
 
-    # family mode: merge support flags
     class FamilyChild:
         pass
 
@@ -392,7 +491,6 @@ def get_quick_recommended_products(
     if not veggies:
         veggies = fallback_veggies()
 
-
     products = get_candidate_products(db, blocked_product_ids=set())
 
     protein_candidates = get_randomised_candidates(products, "protein", [], top_n=20)
@@ -415,6 +513,7 @@ def get_quick_recommended_products(
             build_lunchbox(
                 child_name=None,
                 lunchbox_id=f"quick-box-{i + 1}",
+                index=i + 1,
                 protein_product=protein_product,
                 carb_product=carb_product,
                 fruit_name=fruit_name,
@@ -430,5 +529,139 @@ def get_quick_recommended_products(
             "ageGroup": ageGroup,
             "allergies": allergy_list,
             "seasonal": seasonal,
+        },
+    }
+
+
+# MealDB + AUSNUT enhancement routes
+
+@router.get("/meals/search")
+async def search_meals(q: str = Query(...), limit: int = Query(10, ge=1, le=50)):
+    try:
+        meals = await search_meals_by_name(q)
+        full_meals = await asyncio.gather(
+            *[get_meal_by_id(m["idMeal"]) for m in meals[:limit]],
+            return_exceptions=True,
+        )
+        return {"meals": [format_meal_card(m) for m in full_meals if isinstance(m, dict)]}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/meals/random")
+async def random_meal():
+    try:
+        meal = await get_random_meal()
+        if not meal:
+            raise HTTPException(status_code=404, detail="No meal found")
+        return format_meal_card(meal)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/meals/categories")
+async def meal_categories():
+    try:
+        return {"categories": await list_categories()}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/nutrition/filter")
+async def nutrition_filter(
+    high_iron: bool = Query(False),
+    high_calcium: bool = Query(False),
+    low_sugar: bool = Query(False),
+    high_protein: bool = Query(False),
+    high_fibre: bool = Query(False),
+    limit: int = Query(20, ge=1, le=100),
+):
+    try:
+        foods = filter_by_nutrition(
+            high_iron=high_iron,
+            high_calcium=high_calcium,
+            low_sugar=low_sugar,
+            high_protein=high_protein,
+            high_fibre=high_fibre,
+            limit=limit,
+        )
+
+        for food in foods:
+            food["labels"] = get_nutrition_labels(food)
+
+        return {
+            "foods": foods,
+            "total": len(foods),
+            "data_source": "AUSNUT 2011-13 (FSANZ, CC BY 4.0)",
+        }
+    except FileNotFoundError as e:
+        raise HTTPException(status_code=503, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/mealdb/child")
+async def get_child_meal_recommendations(
+    child_id: int,
+    db: Session = Depends(get_db),
+):
+    """
+    Enhancement endpoint:
+    returns recipe-style lunchbox suggestions using MealDB + AUSNUT.
+    Does not replace the main database-driven /products/recommended endpoint.
+    """
+    child = db.query(models.UserChild).filter(models.UserChild.child_id == child_id).first()
+    if not child:
+        raise HTTPException(status_code=404, detail="Child not found")
+
+    needs_support = get_needs_support(child)
+
+    if needs_support:
+        categories = STATUS_TO_CATEGORY.get(needs_support[0], ["Chicken", "Vegetarian"])
+    else:
+        categories = CHILD_AGE_BAND_TO_CATEGORY.get(child.age_band, ["Chicken", "Pasta", "Vegetarian"])
+
+    all_meals = []
+    for cat in categories[:2]:
+        meals = await filter_meals_by_category(cat)
+        all_meals.extend(meals[:3])
+
+    meal_ids = [m["idMeal"] for m in all_meals[:6]]
+    full_meals = await asyncio.gather(
+        *[get_meal_by_id(mid) for mid in meal_ids],
+        return_exceptions=True,
+    )
+
+    nutrition_focus = focus_labels(needs_support)
+
+    lunchboxes = []
+    for meal in full_meals:
+        if not isinstance(meal, dict):
+            continue
+
+        card = await build_lunchbox_from_meal(
+            meal=meal,
+            child_name=child.child_name,
+            support_type=needs_support[0] if needs_support else "general",
+            nutrition_focus=nutrition_focus,
+        )
+        lunchboxes.append(card)
+
+    return {
+        "needsSupport": needs_support,
+        "lunchboxes": lunchboxes,
+        "child": {"name": child.child_name, "age_band": child.age_band},
+        "dataSource": "TheMealDB + AUSNUT 2011-13 FSANZ",
+    }
+
+
+@router.get("/health")
+async def api_health():
+    return {
+        "status": "ok",
+        "services": {
+            "mealdb": "TheMealDB",
+            "ausnut": "AUSNUT",
+            "backend": "FastAPI + SQLAlchemy + MySQL",
         },
     }
