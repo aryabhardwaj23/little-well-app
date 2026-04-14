@@ -20,7 +20,7 @@ from ..services.mealdb_service import (
 )
 from ..services.ausnut_service import (
     filter_by_nutrition,
-    get_food_by_name,
+    get_food_by_name_fuzzy,
 )
 
 router = APIRouter(prefix="/products/recommended", tags=["recommendations"])
@@ -403,44 +403,69 @@ def get_nutrition_labels(nutrients: dict) -> list[str]:
 
 def dedupe_meals_by_id(meals: list[dict]) -> list[dict]:
     seen = set()
-    result = []
+    unique_meals = []
+
     for meal in meals:
         meal_id = meal.get("idMeal")
         if meal_id and meal_id not in seen:
             seen.add(meal_id)
-            result.append(meal)
-    return result
+            unique_meals.append(meal)
+
+    return unique_meals
 
 
 async def fetch_full_meals_from_categories(
     categories: list[str],
     category_limit: int = 3,
-    per_category_limit: int = 6,
+    per_category_limit: int = 8,
     final_limit: int = 6,
-):
+) -> list[dict]:
+    if not categories:
+        return []
+
+    # random categories
     shuffled_categories = categories[:]
     random.shuffle(shuffled_categories)
+    selected_categories = shuffled_categories[:category_limit]
 
-    raw_meals = []
-    for cat in shuffled_categories[:category_limit]:
-        try:
-            meals = await filter_meals_by_category(cat)
-            meals = meals or []
-            random.shuffle(meals)
-            raw_meals.extend(meals[:per_category_limit])
-        except Exception:
-            continue
-
-    raw_meals = dedupe_meals_by_id(raw_meals)
-    random.shuffle(raw_meals)
-    selected = raw_meals[:final_limit]
-
-    full_meals = await asyncio.gather(
-        *[get_meal_by_id(m["idMeal"]) for m in selected if m.get("idMeal")],
+    # parallel fetch category meal lists
+    category_results = await asyncio.gather(
+        *[filter_meals_by_category(cat) for cat in selected_categories],
         return_exceptions=True,
     )
 
-    return [m for m in full_meals if isinstance(m, dict)]
+    raw_meals = []
+    for result in category_results:
+        if isinstance(result, list):
+            meals = result[:]
+            random.shuffle(meals)   # shuffle each category result first
+            raw_meals.extend(meals[:per_category_limit])
+
+    if not raw_meals:
+        return []
+
+    # dedupe by meal id
+    raw_meals = dedupe_meals_by_id(raw_meals)
+
+    # shuffle combined pool
+    random.shuffle(raw_meals)
+
+    # take a random subset before detail lookup
+    selected_meals = raw_meals[:final_limit]
+
+    # parallel fetch full meal details
+    full_meals = await asyncio.gather(
+        *[get_meal_by_id(m["idMeal"]) for m in selected_meals if m.get("idMeal")],
+        return_exceptions=True,
+    )
+
+    # filter failed results
+    final_meals = [m for m in full_meals if isinstance(m, dict)]
+
+    # optional final shuffle again
+    random.shuffle(final_meals)
+
+    return final_meals
 
 
 async def build_lunchbox_from_meal(
@@ -461,7 +486,7 @@ async def build_lunchbox_from_meal(
 
     for ingredient in candidate_ingredients:
         try:
-            result = get_food_by_name(ingredient)
+            result = get_food_by_name_fuzzy(ingredient)
             if result:
                 ausnut_nutrition = result
                 nutrition_labels = get_nutrition_labels(result)
