@@ -92,3 +92,7 @@ export function deleteChild(childId) {
     method: 'DELETE',
   });
 }
+
+export function getChildMealRecommendations(childId) {
+  return request(`/products/recommended/mealdb/child?child_id=${childId}`);
+}
