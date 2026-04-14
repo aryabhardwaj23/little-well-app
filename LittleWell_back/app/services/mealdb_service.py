@@ -77,19 +77,21 @@ async def list_categories() -> list[dict]:
 def parse_ingredients(meal: dict) -> list[dict]:
     """
     TheMealDB stores ingredients as strIngredient1..20 and strMeasure1..20.
-    This parses them into a clean list.
+    This parses them into a clean list safely, even when values are None.
     """
     ingredients = []
+
     for i in range(1, 21):
-        ingredient = meal.get(f"strIngredient{i}", "").strip()
-        measure    = meal.get(f"strMeasure{i}", "").strip()
+        ingredient = (meal.get(f"strIngredient{i}") or "").strip()
+        measure = (meal.get(f"strMeasure{i}") or "").strip()
+
         if ingredient:
             ingredients.append({
                 "ingredient": ingredient,
-                "measure":    measure,
-                # Ingredient thumbnail image from TheMealDB
+                "measure": measure,
                 "image": f"https://www.themealdb.com/images/ingredients/{ingredient}-Small.png"
             })
+
     return ingredients
 
 
