@@ -563,6 +563,7 @@ const handleLunchboxClick = (lunchbox) => {
     query: {
       childId: selectedChildId.value || '',
       source: lunchbox.source || '',
+      childName: lunchbox.childName || '',
     },
     state: {
       lunchbox,

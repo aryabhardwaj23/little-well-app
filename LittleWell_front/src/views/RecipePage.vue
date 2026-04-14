@@ -440,31 +440,29 @@ const handleItemImageError = (event) => {
 
 const fetchRecipeFromApi = async () => {
   const recipeId = route.params.id;
-  const childId = route.query.childId;
+  const childName = route.query.childName || '';
 
-  if (!recipeId || !childId) {
-    throw new Error('Missing recipe ID or child ID');
+  if (!recipeId) {
+    throw new Error('Missing recipe ID');
   }
 
   const response = await fetch(
-    `${API_BASE}/products/recommended/mealdb/child?child_id=${childId}`
+    `${API_BASE}/products/recommended/mealdb/recipe/${encodeURIComponent(recipeId)}?child_name=${encodeURIComponent(childName)}`
   );
 
   if (!response.ok) {
-    const err = await response.text();
-    throw new Error(err || 'Failed to fetch recipe data');
+    let message = 'Failed to fetch recipe data';
+    try {
+      const errorData = await response.json();
+      message = errorData.detail || JSON.stringify(errorData);
+    } catch {
+      message = await response.text();
+    }
+    throw new Error(message);
   }
 
   const data = await response.json();
-  const found = Array.isArray(data?.lunchboxes)
-    ? data.lunchboxes.find((item) => String(item.id) === String(recipeId))
-    : null;
-
-  if (!found) {
-    throw new Error('Recipe not found');
-  }
-
-  return mapRouteStateToRecipe(found);
+  return mapRouteStateToRecipe(data);
 };
 
 onMounted(async () => {
