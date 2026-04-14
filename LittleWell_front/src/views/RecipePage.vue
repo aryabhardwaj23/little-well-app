@@ -23,7 +23,20 @@
 
     <!-- Hero Image Section -->
     <div class="relative h-[400px] overflow-hidden">
-      <div class="absolute inset-0 bg-gradient-to-br from-[#A8D5BA] to-[#8FC2A4] flex items-center justify-center">
+      <div v-if="recipe.heroImage" class="absolute inset-0">
+        <img
+          :src="recipe.heroImage"
+          :alt="recipe.name"
+          class="w-full h-full object-cover"
+          @error="handleHeroImageError"
+        />
+        <div class="absolute inset-0 bg-black/20"></div>
+      </div>
+
+      <div
+        v-else
+        class="absolute inset-0 bg-gradient-to-br from-[#A8D5BA] to-[#8FC2A4] flex items-center justify-center"
+      >
         <UtensilsCrossed class="w-32 h-32 text-white/30" />
       </div>
     </div>
@@ -34,12 +47,18 @@
         <!-- Recipe Header -->
         <div class="bg-white rounded-2xl shadow-lg p-8 -mt-32 relative z-10 mb-8">
           <div class="mb-6">
+            <div v-if="recipe.childName" class="mb-3">
+              <span class="inline-flex items-center px-3 py-1 bg-[#CDE7F0]/30 text-[#1B4965] text-sm rounded-full">
+                For {{ recipe.childName }}
+              </span>
+            </div>
+
             <h1 class="text-4xl mb-4">{{ recipe.name }}</h1>
             <p class="text-lg text-muted-foreground">{{ recipe.description }}</p>
           </div>
 
           <!-- Tags -->
-          <div class="flex flex-wrap gap-2 mb-6">
+          <div v-if="recipe.tags.length > 0" class="flex flex-wrap gap-2 mb-6">
             <span
               v-for="tag in recipe.tags"
               :key="tag"
@@ -63,7 +82,9 @@
             </div>
             <div class="text-center">
               <Gauge class="w-6 h-6 text-[#A8D5BA] mx-auto mb-2" />
-              <p class="text-sm text-muted-foreground mb-1">Difficulty</p>
+              <p class="text-sm text-muted-foreground mb-1">
+                {{ recipe.difficultyLabel }}
+              </p>
               <p class="font-medium">{{ recipe.difficulty }}</p>
             </div>
           </div>
@@ -89,23 +110,52 @@
             <ShoppingCart class="w-6 h-6 text-[#A8D5BA]" />
             Ingredients
           </h2>
+
           <div class="grid md:grid-cols-2 gap-6">
             <div
-              v-for="section in recipe.ingredients"
+              v-for="section in normalizedIngredients"
               :key="section.section"
               class="space-y-3"
             >
               <h3 :class="['text-lg font-medium pb-2 border-b-2', getSectionBorderColor(section.section)]">
                 {{ getSectionTitle(section.section) }}
               </h3>
-              <ul class="space-y-2">
+
+              <ul class="space-y-3">
                 <li
                   v-for="(item, idx) in section.items"
                   :key="idx"
-                  class="flex items-start gap-2"
+                  class="flex items-start gap-3"
                 >
-                  <div :class="['w-2 h-2 rounded-full mt-2 flex-shrink-0', getSectionDotColor(section.section)]"></div>
-                  <span class="text-muted-foreground">{{ item }}</span>
+                  <div
+                    v-if="item.image"
+                    class="w-14 h-14 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0"
+                  >
+                    <img
+                      :src="item.image"
+                      :alt="item.name"
+                      class="w-full h-full object-cover"
+                      @error="handleItemImageError"
+                    />
+                  </div>
+
+                  <div
+                    v-else
+                    :class="[
+                      'w-14 h-14 rounded-lg border border-dashed flex items-center justify-center text-[10px] text-center p-1 flex-shrink-0',
+                      getSectionPlaceholderStyle(section.section)
+                    ]"
+                  >
+                    {{ formatSectionLabel(section.section) }}
+                  </div>
+
+                  <div class="flex-1 flex items-start gap-2">
+                    <div :class="['w-2 h-2 rounded-full mt-2 flex-shrink-0', getSectionDotColor(section.section)]"></div>
+                    <div>
+                      <p class="text-muted-foreground font-medium">{{ item.name }}</p>
+                      <p v-if="item.amount" class="text-sm text-muted-foreground/80">{{ item.amount }}</p>
+                    </div>
+                  </div>
                 </li>
               </ul>
             </div>
@@ -118,7 +168,8 @@
             <ChefHat class="w-6 h-6 text-[#F7B267]" />
             Instructions
           </h2>
-          <div class="space-y-4">
+
+          <div v-if="recipe.instructions.length > 0" class="space-y-4">
             <div
               v-for="(step, idx) in recipe.instructions"
               :key="idx"
@@ -129,6 +180,12 @@
               </div>
               <p class="flex-1 pt-2 text-muted-foreground">{{ step }}</p>
             </div>
+          </div>
+
+          <div v-else class="text-muted-foreground">
+            <p>
+              This lunchbox is ready to use as a practical meal suggestion. You can mix and match the recommended items to suit your child’s preferences.
+            </p>
           </div>
         </div>
 
@@ -169,7 +226,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import {
   ArrowLeft, Heart, Clock, Users, Sparkles, ShoppingCart,
@@ -179,46 +236,51 @@ import {
 const router = useRouter();
 const route = useRoute();
 
-const recipe = ref({
+const defaultRecipe = {
   name: 'Honey Glazed Chicken with Rice',
   description: 'A colorful, balanced meal packed with protein and nutrients',
   prepTime: '30 mins',
   servings: '1 child',
   difficulty: 'Easy',
+  difficultyLabel: 'Difficulty',
+  heroImage: null,
+  childName: null,
   tags: ['High in Iron', 'Balanced Protein', 'Kid-Friendly'],
-  whyThisMeal: 'Chicken provides quality protein and iron to support energy levels throughout the day. Carrots are rich in beta-carotene for healthy vision, while rice offers sustained energy.',
-  colorInsight: '💛 Kids love bright colors! The golden chicken and orange carrots create an appetizing, vibrant meal that research shows can naturally boost a child\'s appetite.',
+  whyThisMeal:
+    'Chicken provides quality protein and iron to support energy levels throughout the day. Carrots are rich in beta-carotene for healthy vision, while rice offers sustained energy.',
+  colorInsight:
+    "💛 Kids love bright colors! The golden chicken and orange carrots create an appetizing, vibrant meal that research shows can naturally boost a child's appetite.",
   ingredients: [
     {
       section: 'carbs',
       items: [
-        '150g white or brown rice',
-        '2 cups water',
-        'Pinch of salt',
+        { name: '150g white or brown rice', amount: '', image: null },
+        { name: '2 cups water', amount: '', image: null },
+        { name: 'Pinch of salt', amount: '', image: null },
       ],
     },
     {
       section: 'protein',
       items: [
-        '1 chicken wing (about 80g)',
-        '1 tbsp honey',
-        '1 tsp soy sauce',
-        '½ tsp garlic powder',
+        { name: '1 chicken wing (about 80g)', amount: '', image: null },
+        { name: '1 tbsp honey', amount: '', image: null },
+        { name: '1 tsp soy sauce', amount: '', image: null },
+        { name: '½ tsp garlic powder', amount: '', image: null },
       ],
     },
     {
       section: 'veggies',
       items: [
-        '½ carrot, cut into sticks',
-        '1 tsp cooking oil',
-        'Pinch of salt',
+        { name: '½ carrot, cut into sticks', amount: '', image: null },
+        { name: '1 tsp cooking oil', amount: '', image: null },
+        { name: 'Pinch of salt', amount: '', image: null },
       ],
     },
     {
       section: 'fruit',
       items: [
-        '½ apple',
-        'Lemon juice (optional, to prevent browning)',
+        { name: '½ apple', amount: '', image: null },
+        { name: 'Lemon juice (optional, to prevent browning)', amount: '', image: null },
       ],
     },
   ],
@@ -234,11 +296,115 @@ const recipe = ref({
   tips: [
     'You can prepare the rice and chicken the night before and refrigerate.',
     'Let your child help cut the apple with a safe, child-friendly cutter.',
-    'If your child doesn\'t like carrots, try cucumber sticks or cherry tomatoes instead.',
+    "If your child doesn't like carrots, try cucumber sticks or cherry tomatoes instead.",
     'The honey glaze can be made in batches and stored in the fridge for up to a week.',
   ],
   nutritionFocus: ['High in Iron', 'Balanced Protein', 'Rich in Vitamin A'],
+};
+
+const recipe = ref({ ...defaultRecipe });
+
+const normalizeInstructions = (instructions) => {
+  if (Array.isArray(instructions)) return instructions.filter(Boolean);
+
+  if (typeof instructions === 'string' && instructions.trim()) {
+    return instructions
+      .split(/\r?\n+/)
+      .map((line) => line.trim())
+      .filter(Boolean);
+  }
+
+  return [];
+};
+
+const normalizeIngredients = (raw) => {
+  if (!Array.isArray(raw)) return [];
+
+  if (raw.length > 0 && raw[0]?.section && Array.isArray(raw[0]?.items)) {
+    return raw.map((section) => ({
+      section: section.section,
+      items: section.items.map((item) => {
+        if (typeof item === 'string') {
+          return { name: item, amount: '', image: null };
+        }
+        return {
+          name: item.name || '',
+          amount: item.amount || '',
+          image: item.image || null,
+        };
+      }),
+    }));
+  }
+
+  const grouped = {};
+
+  raw.forEach((item) => {
+    const section = item.section || 'other';
+    if (!grouped[section]) grouped[section] = [];
+
+    grouped[section].push({
+      name: item.name || '',
+      amount: item.amount || '',
+      image: item.image || null,
+    });
+  });
+
+  return Object.entries(grouped).map(([section, items]) => ({
+    section,
+    items,
+  }));
+};
+
+const normalizedIngredients = computed(() => {
+  return normalizeIngredients(recipe.value.ingredients);
 });
+
+const mapRouteStateToRecipe = (raw) => {
+  if (!raw) return null;
+
+  const title =
+    raw.title ||
+    raw.mealName ||
+    raw.name ||
+    'Lunchbox Recommendation';
+
+  const heroImage = raw.heroImage || raw.mealImage || null;
+
+  return {
+    name: title,
+    description:
+      raw.description ||
+      (raw.source === 'mealdb'
+        ? 'A recipe-inspired lunchbox idea with practical ingredients.'
+        : 'A practical lunchbox recommendation based on your child’s needs.'),
+    prepTime: raw.prepTime || (raw.source === 'mealdb' ? '25 mins' : '15 mins'),
+    servings: raw.servings || '1 child',
+    difficulty: raw.source === 'mealdb' ? 'Recipe' : 'Easy',
+    difficultyLabel: raw.source === 'mealdb' ? 'Type' : 'Difficulty',
+    heroImage,
+    childName: raw.childName || null,
+    tags: Array.isArray(raw.tags)
+      ? raw.tags
+      : raw.category
+        ? [raw.category]
+        : [],
+    whyThisMeal:
+      raw.whyThisMeal ||
+      'This option was selected to provide a balanced and practical lunchbox suggestion.',
+    colorInsight: raw.colorInsight || '',
+    ingredients: raw.ingredients || raw.items || [],
+    instructions: normalizeInstructions(raw.instructions),
+    tips:
+      Array.isArray(raw.tips) && raw.tips.length > 0
+        ? raw.tips
+        : [
+            'Pack items separately if your child prefers different textures.',
+            'Combine familiar foods with one new item for better acceptance.',
+            'Use colorful fruit and vegetables to make lunchboxes more appealing.',
+          ],
+    nutritionFocus: Array.isArray(raw.nutritionFocus) ? raw.nutritionFocus : [],
+  };
+};
 
 const getSectionTitle = (section) => {
   const titles = {
@@ -246,6 +412,8 @@ const getSectionTitle = (section) => {
     protein: 'Protein',
     veggies: 'Vegetables',
     fruit: 'Fruit',
+    ingredient: 'Ingredients',
+    other: 'Other Items',
   };
   return titles[section] || section;
 };
@@ -256,6 +424,8 @@ const getSectionBorderColor = (section) => {
     protein: 'border-[#A8D5BA]',
     veggies: 'border-[#8BC34A]',
     fruit: 'border-[#FF6B9D]',
+    ingredient: 'border-[#CDE7F0]',
+    other: 'border-gray-300',
   };
   return colors[section] || 'border-gray-300';
 };
@@ -266,13 +436,52 @@ const getSectionDotColor = (section) => {
     protein: 'bg-[#A8D5BA]',
     veggies: 'bg-[#8BC34A]',
     fruit: 'bg-[#FF6B9D]',
+    ingredient: 'bg-[#CDE7F0]',
+    other: 'bg-gray-300',
   };
   return colors[section] || 'bg-gray-300';
 };
 
+const getSectionPlaceholderStyle = (section) => {
+  const styles = {
+    carbs: 'border-[#F7B267]/40 text-[#8B4513] bg-[#F7B267]/10',
+    protein: 'border-[#A8D5BA]/40 text-[#2C5F2D] bg-[#A8D5BA]/10',
+    veggies: 'border-[#8BC34A]/40 text-green-700 bg-green-50',
+    fruit: 'border-[#FF6B9D]/40 text-pink-700 bg-pink-50',
+    ingredient: 'border-[#CDE7F0]/40 text-[#1B4965] bg-[#CDE7F0]/20',
+    other: 'border-gray-200 text-gray-500 bg-gray-50',
+  };
+  return styles[section] || styles.other;
+};
+
+const formatSectionLabel = (section) => {
+  const labels = {
+    carbs: 'Carbs',
+    protein: 'Protein',
+    veggies: 'Veggies',
+    fruit: 'Fruit',
+    ingredient: 'Ingredient',
+    other: 'Item',
+  };
+  return labels[section] || 'Item';
+};
+
+const handleHeroImageError = (event) => {
+  event.target.style.display = 'none';
+};
+
+const handleItemImageError = (event) => {
+  event.target.style.display = 'none';
+};
+
 onMounted(() => {
-  // In a real app, you would fetch recipe data based on route.params.id
   console.log('Recipe ID:', route.params.id);
+
+  const stateRecipe = history.state?.lunchbox;
+
+  if (stateRecipe) {
+    recipe.value = mapRouteStateToRecipe(stateRecipe);
+  }
 });
 </script>
 
