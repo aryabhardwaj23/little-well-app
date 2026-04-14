@@ -26,7 +26,6 @@ from ..services.ausnut_service import (
 router = APIRouter(prefix="/products/recommended", tags=["recommendations"])
 
 
-# Config / mappings
 
 STATUS_TO_CATEGORY = {
     "iron": ["Chicken", "Lamb", "Seafood", "Beef"],
@@ -49,7 +48,7 @@ CHILD_AGE_BAND_TO_CATEGORY = {
 }
 
 
-# Core helpers
+
 
 def get_current_season_name() -> str:
     month = date.today().month
@@ -81,6 +80,31 @@ def focus_labels(needs: list[str]) -> list[str]:
     return [f"{n.replace('_', ' ').title()} Support" for n in needs]
 
 
+def get_categories_for_child(child) -> list[str]:
+    needs_support = get_needs_support(child)
+
+    if not needs_support:
+        return CHILD_AGE_BAND_TO_CATEGORY.get(
+            child.age_band,
+            ["Chicken", "Pasta", "Vegetarian"]
+        )
+
+    categories = []
+    for need in needs_support:
+        categories.extend(STATUS_TO_CATEGORY.get(need, []))
+
+    # de-duplicate while preserving order
+    deduped = list(dict.fromkeys(categories))
+    return deduped or ["Chicken", "Vegetarian"]
+
+
+def get_child_or_404(db: Session, child_id: int):
+    child = db.query(models.UserChild).filter(models.UserChild.child_id == child_id).first()
+    if not child:
+        raise HTTPException(status_code=404, detail="Child not found")
+    return child
+
+
 def product_text(product) -> str:
     parts = [
         product.name or "",
@@ -106,7 +130,6 @@ def score_product_for_slot(product, slot: str, needs: list[str]) -> int:
     text = product_text(product)
     score = 0
 
-    # General quality
     if int(product.has_added_preservatives or 0) == 0:
         score += 1
     if int(product.has_added_sugar or 0) == 0:
@@ -114,7 +137,6 @@ def score_product_for_slot(product, slot: str, needs: list[str]) -> int:
     if int(product.has_food_color or 0) == 0:
         score += 1
 
-    # Slot heuristics
     if slot == "protein":
         keywords = [
             "protein", "peanut butter", "nut butter", "tofu", "beans",
@@ -131,7 +153,6 @@ def score_product_for_slot(product, slot: str, needs: list[str]) -> int:
         if any(k in text for k in keywords):
             score += 6
 
-    # Nutrition support
     if "iron" in needs:
         iron_keywords = ["iron", "protein", "beans", "lentil", "chickpea", "peanut butter"]
         if any(k in text for k in iron_keywords):
@@ -187,9 +208,8 @@ def get_candidate_products(db: Session, blocked_product_ids: set[int]) -> list:
 
     cleaned = []
     for p in products:
-        if not is_valid_product_name(p.name):
-            continue
-        cleaned.append(p)
+        if is_valid_product_name(p.name):
+            cleaned.append(p)
 
     return cleaned
 
@@ -232,14 +252,14 @@ def fallback_fruits():
 
 
 def fallback_veggies():
-    return ["Carrot Sticks", "Cucumber", "Buk Choy", "Baby Broccoli"]
+    return ["Carrot Sticks", "Cucumber", "Bok Choy", "Baby Broccoli"]
 
 
 def make_item(name: str, amount: str, section: str, image: Optional[str] = None):
     return {
         "name": name,
         "amount": amount,
-        "image": image,  # no placeholder; frontend decides whether to render
+        "image": image,
         "section": section,
     }
 
@@ -362,7 +382,7 @@ def generate_lunchboxes_for_child(db: Session, child, seasonal: bool = True, max
     }
 
 
-# MealDB + AUSNUT helpers
+
 
 def get_nutrition_labels(nutrients: dict) -> list[str]:
     labels = []
@@ -381,7 +401,54 @@ def get_nutrition_labels(nutrients: dict) -> list[str]:
     return labels
 
 
-async def build_lunchbox_from_meal(meal, child_name=None, support_type="general", nutrition_focus=None):
+def dedupe_meals_by_id(meals: list[dict]) -> list[dict]:
+    seen = set()
+    result = []
+    for meal in meals:
+        meal_id = meal.get("idMeal")
+        if meal_id and meal_id not in seen:
+            seen.add(meal_id)
+            result.append(meal)
+    return result
+
+
+async def fetch_full_meals_from_categories(
+    categories: list[str],
+    category_limit: int = 3,
+    per_category_limit: int = 6,
+    final_limit: int = 6,
+):
+    shuffled_categories = categories[:]
+    random.shuffle(shuffled_categories)
+
+    raw_meals = []
+    for cat in shuffled_categories[:category_limit]:
+        try:
+            meals = await filter_meals_by_category(cat)
+            meals = meals or []
+            random.shuffle(meals)
+            raw_meals.extend(meals[:per_category_limit])
+        except Exception:
+            continue
+
+    raw_meals = dedupe_meals_by_id(raw_meals)
+    random.shuffle(raw_meals)
+    selected = raw_meals[:final_limit]
+
+    full_meals = await asyncio.gather(
+        *[get_meal_by_id(m["idMeal"]) for m in selected if m.get("idMeal")],
+        return_exceptions=True,
+    )
+
+    return [m for m in full_meals if isinstance(m, dict)]
+
+
+async def build_lunchbox_from_meal(
+    meal,
+    child_name: Optional[str] = None,
+    support_type: str = "general",
+    nutrition_focus: Optional[list[str]] = None,
+):
     if nutrition_focus is None:
         nutrition_focus = ["Balanced nutrition"]
 
@@ -390,11 +457,21 @@ async def build_lunchbox_from_meal(meal, child_name=None, support_type="general"
     nutrition_labels = []
     ausnut_nutrition = None
 
-    if card.get("ingredients"):
-        main_ingredient = card["ingredients"][0]["ingredient"]
-        ausnut_nutrition = get_food_by_name(main_ingredient)
-        if ausnut_nutrition:
-            nutrition_labels = get_nutrition_labels(ausnut_nutrition)
+    candidate_ingredients = [ing["ingredient"] for ing in card.get("ingredients", [])[:3]]
+
+    for ingredient in candidate_ingredients:
+        try:
+            result = get_food_by_name(ingredient)
+            if result:
+                ausnut_nutrition = result
+                nutrition_labels = get_nutrition_labels(result)
+                break
+        except FileNotFoundError:
+            ausnut_nutrition = None
+            nutrition_labels = []
+            break
+        except Exception:
+            continue
 
     items = []
     for ing in card.get("ingredients", [])[:4]:
@@ -404,6 +481,8 @@ async def build_lunchbox_from_meal(meal, child_name=None, support_type="general"
             "image": ing.get("image"),
             "section": "ingredient",
         })
+
+    merged_focus = list(dict.fromkeys(nutrition_focus + nutrition_labels))
 
     return {
         "id": card["id"],
@@ -416,7 +495,7 @@ async def build_lunchbox_from_meal(meal, child_name=None, support_type="general"
         "category": card.get("category"),
         "area": card.get("area"),
         "items": items,
-        "nutritionFocus": nutrition_focus + nutrition_labels,
+        "nutritionFocus": merged_focus,
         "whyThisMeal": f"{card.get('name', 'This meal')} provides {', '.join(nutrition_focus).lower()} and is suitable for children's lunchboxes.",
         "supportType": support_type,
         "instructions": card.get("instructions"),
@@ -425,7 +504,7 @@ async def build_lunchbox_from_meal(meal, child_name=None, support_type="general"
     }
 
 
-# Main database routes
+
 
 @router.get("")
 def get_recommended_products(
@@ -433,9 +512,7 @@ def get_recommended_products(
     seasonal: bool = True,
     db: Session = Depends(get_db),
 ):
-    child = db.query(models.UserChild).filter(models.UserChild.child_id == child_id).first()
-    if not child:
-        raise HTTPException(status_code=404, detail="Child not found")
+    child = get_child_or_404(db, child_id)
 
     return generate_lunchboxes_for_child(
         db=db,
@@ -533,19 +610,23 @@ def get_quick_recommended_products(
     }
 
 
-# MealDB + AUSNUT enhancement routes
 
 @router.get("/meals/search")
 async def search_meals(q: str = Query(...), limit: int = Query(10, ge=1, le=50)):
     try:
         meals = await search_meals_by_name(q)
         full_meals = await asyncio.gather(
-            *[get_meal_by_id(m["idMeal"]) for m in meals[:limit]],
+            *[get_meal_by_id(m["idMeal"]) for m in meals[:limit] if m.get("idMeal")],
             return_exceptions=True,
         )
-        return {"meals": [format_meal_card(m) for m in full_meals if isinstance(m, dict)]}
+        return {
+            "meals": [format_meal_card(m) for m in full_meals if isinstance(m, dict)],
+            "total": len([m for m in full_meals if isinstance(m, dict)]),
+        }
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Failed to search meals: {e}")
 
 
 @router.get("/meals/random")
@@ -555,16 +636,59 @@ async def random_meal():
         if not meal:
             raise HTTPException(status_code=404, detail="No meal found")
         return format_meal_card(meal)
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Failed to fetch random meal: {e}")
 
 
 @router.get("/meals/categories")
 async def meal_categories():
     try:
         return {"categories": await list_categories()}
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Failed to fetch meal categories: {e}")
+
+
+@router.get("/mealdb/recommend")
+async def get_general_meal_recommendations(
+    category: Optional[str] = None,
+    child_age: Optional[int] = None,
+    limit: int = Query(6, ge=1, le=12),
+):
+    try:
+        search_terms = ["chicken", "pasta", "vegetable", "rice", "fish", "egg"]
+
+        if category:
+            full_meals = await fetch_full_meals_from_categories(
+                categories=[category],
+                category_limit=1,
+                per_category_limit=max(limit * 2, 6),
+                final_limit=limit,
+            )
+            recommendations = [format_meal_card(m) for m in full_meals]
+        else:
+            term = random.choice(search_terms)
+            meals = await search_meals_by_name(term)
+            random.shuffle(meals)
+            selected = meals[:limit]
+            recommendations = [format_meal_card(m) for m in selected if isinstance(m, dict)]
+
+        return {
+            "recommendations": recommendations,
+            "total": len(recommendations),
+            "filters_applied": {
+                "category": category,
+                "child_age": child_age,
+            },
+            "data_sources": ["TheMealDB"],
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to generate meal recommendations: {e}")
 
 
 @router.get("/nutrition/filter")
@@ -596,63 +720,61 @@ async def nutrition_filter(
         }
     except FileNotFoundError as e:
         raise HTTPException(status_code=503, detail=str(e))
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Failed to filter nutrition data: {e}")
 
 
 @router.get("/mealdb/child")
 async def get_child_meal_recommendations(
     child_id: int,
+    limit: int = Query(6, ge=1, le=12),
     db: Session = Depends(get_db),
 ):
     """
-    Enhancement endpoint:
-    returns recipe-style lunchbox suggestions using MealDB + AUSNUT.
-    Does not replace the main database-driven /products/recommended endpoint.
+    Returns recipe-style lunchbox suggestions using MealDB + AUSNUT.
+    More randomised than the original version:
+    - categories are shuffled
+    - meal candidates are shuffled
+    - duplicate meals are removed
     """
-    child = db.query(models.UserChild).filter(models.UserChild.child_id == child_id).first()
-    if not child:
-        raise HTTPException(status_code=404, detail="Child not found")
+    try:
+        child = get_child_or_404(db, child_id)
+        needs_support = get_needs_support(child)
+        categories = get_categories_for_child(child)
 
-    needs_support = get_needs_support(child)
-
-    if needs_support:
-        categories = STATUS_TO_CATEGORY.get(needs_support[0], ["Chicken", "Vegetarian"])
-    else:
-        categories = CHILD_AGE_BAND_TO_CATEGORY.get(child.age_band, ["Chicken", "Pasta", "Vegetarian"])
-
-    all_meals = []
-    for cat in categories[:2]:
-        meals = await filter_meals_by_category(cat)
-        all_meals.extend(meals[:3])
-
-    meal_ids = [m["idMeal"] for m in all_meals[:6]]
-    full_meals = await asyncio.gather(
-        *[get_meal_by_id(mid) for mid in meal_ids],
-        return_exceptions=True,
-    )
-
-    nutrition_focus = focus_labels(needs_support)
-
-    lunchboxes = []
-    for meal in full_meals:
-        if not isinstance(meal, dict):
-            continue
-
-        card = await build_lunchbox_from_meal(
-            meal=meal,
-            child_name=child.child_name,
-            support_type=needs_support[0] if needs_support else "general",
-            nutrition_focus=nutrition_focus,
+        full_meals = await fetch_full_meals_from_categories(
+            categories=categories,
+            category_limit=min(3, len(categories)),
+            per_category_limit=max(limit * 2, 6),
+            final_limit=limit,
         )
-        lunchboxes.append(card)
 
-    return {
-        "needsSupport": needs_support,
-        "lunchboxes": lunchboxes,
-        "child": {"name": child.child_name, "age_band": child.age_band},
-        "dataSource": "TheMealDB + AUSNUT 2011-13 FSANZ",
-    }
+        nutrition_focus = focus_labels(needs_support)
+        support_type = needs_support[0] if needs_support else "general"
+
+        lunchboxes = []
+        for meal in full_meals:
+            card = await build_lunchbox_from_meal(
+                meal=meal,
+                child_name=child.child_name,
+                support_type=support_type,
+                nutrition_focus=nutrition_focus,
+            )
+            lunchboxes.append(card)
+
+        return {
+            "needsSupport": needs_support,
+            "lunchboxes": lunchboxes,
+            "child": {"name": child.child_name, "age_band": child.age_band},
+            "dataSource": "TheMealDB + AUSNUT 2011-13 FSANZ",
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to generate child meal recommendations: {e}")
 
 
 @router.get("/health")
