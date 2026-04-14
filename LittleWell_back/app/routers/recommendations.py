@@ -812,3 +812,26 @@ async def api_health():
             "backend": "FastAPI + SQLAlchemy + MySQL",
         },
     }
+
+@router.get("/mealdb/recipe/{meal_id}")
+async def get_meal_recipe_detail(
+    meal_id: str,
+    child_name: Optional[str] = None,
+):
+    try:
+        meal = await get_meal_by_id(meal_id)
+        if not meal:
+            raise HTTPException(status_code=404, detail="Recipe not found")
+
+        card = await build_lunchbox_from_meal(
+            meal=meal,
+            child_name=child_name,
+            support_type="general",
+            nutrition_focus=["Balanced nutrition"],
+        )
+        return card
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to load recipe detail: {e}")
