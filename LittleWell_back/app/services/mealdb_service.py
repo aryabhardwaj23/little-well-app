@@ -4,10 +4,14 @@ Fetches meal recipes, images, and ingredient data.
 Free, unlimited, no API key required for educational use.
 API key "1" is the public test key.
 """
-import httpx
+
+import re
 from typing import Optional
 
+import httpx
+
 BASE_URL = "https://www.themealdb.com/api/json/v1/1"
+
 
 # ── SEARCH ────────────────────────────────────────────────────────────────────
 
@@ -24,7 +28,8 @@ async def filter_meals_by_category(category: str) -> list[dict]:
     """
     Filter meals by category.
     Available: Beef, Chicken, Dessert, Lamb, Miscellaneous,
-               Pasta, Pork, Seafood, Side, Starter, Vegan, Vegetarian, Breakfast, Goat
+               Pasta, Pork, Seafood, Side, Starter, Vegan,
+               Vegetarian, Breakfast, Goat
     Returns: list with idMeal, strMeal, strMealThumb (image URL)
     """
     async with httpx.AsyncClient(timeout=10) as client:
@@ -35,7 +40,7 @@ async def filter_meals_by_category(category: str) -> list[dict]:
 
 
 async def filter_meals_by_ingredient(ingredient: str) -> list[dict]:
-    """Filter meals by main ingredient e.g. 'chicken', 'salmon', 'lentils'."""
+    """Filter meals by main ingredient, e.g. chicken, salmon, lentils."""
     async with httpx.AsyncClient(timeout=10) as client:
         r = await client.get(f"{BASE_URL}/filter.php", params={"i": ingredient})
         r.raise_for_status()
@@ -44,7 +49,7 @@ async def filter_meals_by_ingredient(ingredient: str) -> list[dict]:
 
 
 async def get_meal_by_id(meal_id: str) -> Optional[dict]:
-    """Get full meal details including ingredients, instructions, image."""
+    """Get full meal details including ingredients, instructions, and image."""
     async with httpx.AsyncClient(timeout=10) as client:
         r = await client.get(f"{BASE_URL}/lookup.php", params={"i": meal_id})
         r.raise_for_status()
@@ -89,27 +94,73 @@ def parse_ingredients(meal: dict) -> list[dict]:
             ingredients.append({
                 "ingredient": ingredient,
                 "measure": measure,
-                "image": f"https://www.themealdb.com/images/ingredients/{ingredient}-Small.png"
+                "image": f"https://www.themealdb.com/images/ingredients/{ingredient}-Small.png",
             })
 
     return ingredients
 
 
+def parse_instructions(instructions: Optional[str]) -> list[str]:
+    """
+    Clean MealDB instructions into a step list.
+
+    Handles cases like:
+    - blank lines
+    - standalone numbering lines: "1", "2", "3"
+    - prefixes like "Step 1", "STEP 2 -", etc.
+    """
+    if not instructions:
+        return []
+
+    # Normalize line breaks
+    text = instructions.replace("\r\n", "\n").replace("\r", "\n").strip()
+    if not text:
+        return []
+
+    lines = [line.strip() for line in text.split("\n") if line.strip()]
+    cleaned_steps = []
+
+    for line in lines:
+        # Skip pure numbers like "1", "2", "3"
+        if line.isdigit():
+            continue
+
+        # Remove prefixes like "Step 1", "STEP 2 -", "3.", "4)"
+        line = re.sub(r"^step\s*\d+\s*[-:.)]?\s*", "", line, flags=re.IGNORECASE)
+        line = re.sub(r"^\d+\s*[-:.)]\s*", "", line)
+
+        line = line.strip()
+        if line:
+            cleaned_steps.append(line)
+
+    return cleaned_steps
+
+
+def parse_tags(tags: Optional[str]) -> list[str]:
+    """Convert comma-separated tag string into a clean list."""
+    if not tags:
+        return []
+
+    return [tag.strip() for tag in tags.split(",") if tag.strip()]
+
+
 def format_meal_card(meal: dict) -> dict:
     """
-    Returns a clean meal card dict ready to send to the Vue frontend.
-    Compatible with LittleWell's meal browse page card component.
+    Returns a clean meal card dict ready for the Vue frontend.
+    Compatible with LittleWell's meal browse page and recipe page.
     """
+    image = meal.get("strMealThumb")
+
     return {
-        "id":           meal.get("idMeal"),
-        "name":         meal.get("strMeal"),
-        "category":     meal.get("strCategory"),
-        "area":         meal.get("strArea"),
-        "image":        meal.get("strMealThumb"),
-        "thumbnail":    meal.get("strMealThumb") + "/preview" if meal.get("strMealThumb") else None,
-        "instructions": meal.get("strInstructions"),
-        "ingredients":  parse_ingredients(meal) if "strIngredient1" in meal else [],
-        "tags":         meal.get("strTags", "").split(",") if meal.get("strTags") else [],
-        "youtube":      meal.get("strYoutube"),
-        "source":       meal.get("strSource"),
+        "id": meal.get("idMeal"),
+        "name": meal.get("strMeal"),
+        "category": meal.get("strCategory"),
+        "area": meal.get("strArea"),
+        "image": image,
+        "thumbnail": f"{image}/preview" if image else None,
+        "instructions": parse_instructions(meal.get("strInstructions")),
+        "ingredients": parse_ingredients(meal),
+        "tags": parse_tags(meal.get("strTags")),
+        "youtube": meal.get("strYoutube"),
+        "source": meal.get("strSource"),
     }
