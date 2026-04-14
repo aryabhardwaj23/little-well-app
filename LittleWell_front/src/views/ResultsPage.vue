@@ -95,22 +95,8 @@
           <div
             v-for="lunchbox in lunchboxes"
             :key="lunchbox.id"
-            class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
-            @click="handleLunchboxClick(lunchbox)"
+            class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-shadow"
           >
-            <!-- Hero Image -->
-            <div
-              v-if="lunchbox.heroImage"
-              class="aspect-[16/9] bg-gray-100 overflow-hidden"
-            >
-              <img
-                :src="lunchbox.heroImage"
-                :alt="lunchbox.title || lunchbox.mealName || 'Lunchbox image'"
-                class="w-full h-full object-cover"
-                @error="handleImageError"
-              />
-            </div>
-
             <!-- Child Badge -->
             <div v-if="lunchbox.childName" class="px-6 pt-4">
               <span class="inline-flex items-center px-3 py-1 bg-[#CDE7F0]/30 text-[#1B4965] text-sm rounded-full">
@@ -136,41 +122,6 @@
                 >
                   {{ lunchbox.category }}
                 </span>
-              </div>
-
-              <!-- Items Grid -->
-              <div class="grid grid-cols-2 gap-3 mb-4">
-                <div
-                  v-for="(item, idx) in lunchbox.items"
-                  :key="idx"
-                  class="relative"
-                >
-                  <div
-                    v-if="item.image"
-                    class="aspect-square rounded-lg overflow-hidden bg-gray-100"
-                  >
-                    <img
-                      :src="item.image"
-                      :alt="item.name"
-                      class="w-full h-full object-cover"
-                      @error="handleImageError"
-                    />
-                  </div>
-
-                  <div
-                    v-else
-                    class="aspect-square rounded-lg border border-dashed border-gray-200 bg-[#FAF9F6] flex items-center justify-center text-xs text-muted-foreground text-center p-2"
-                  >
-                    {{ formatSectionLabel(item.section) }}
-                  </div>
-
-                  <div
-                    :class="[
-                      'absolute top-2 left-2 w-3 h-3 rounded-full',
-                      getSectionColor(item.section)
-                    ]"
-                  ></div>
-                </div>
               </div>
 
               <!-- Food Items List -->
@@ -232,6 +183,7 @@
           <button
             @click="loadRecipeInspiration"
             class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+            type="button"
           >
             Refresh Recipes
           </button>
@@ -246,7 +198,7 @@
             v-for="meal in recipeMeals"
             :key="meal.id"
             class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
-            @click="handleLunchboxClick(meal)"
+            @click="handleRecipeClick(meal)"
           >
             <div
               v-if="meal.heroImage || meal.mealImage"
@@ -299,6 +251,10 @@
             </div>
           </div>
         </div>
+
+        <div v-else class="text-center py-8 text-muted-foreground">
+          No recipe inspiration available right now.
+        </div>
       </div>
 
       <!-- Action Buttons -->
@@ -306,6 +262,7 @@
         <button
           @click="router.push('/')"
           class="px-8 py-3 bg-white border-2 border-[#A8D5BA] text-[#2C5F2D] rounded-lg hover:bg-[#A8D5BA]/10 transition-colors"
+          type="button"
         >
           Back to Home
         </button>
@@ -313,6 +270,7 @@
         <button
           @click="loadEverything"
           class="px-8 py-3 bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg transition-colors inline-flex items-center gap-2"
+          type="button"
         >
           <RefreshCw class="w-4 h-4" />
           Generate New Meals
