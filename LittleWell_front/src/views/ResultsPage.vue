@@ -560,6 +560,10 @@ const handleImageError = (event) => {
 const handleLunchboxClick = (lunchbox) => {
   router.push({
     path: `/recipe/${lunchbox.id}`,
+    query: {
+      childId: selectedChildId.value || '',
+      source: lunchbox.source || '',
+    },
     state: {
       lunchbox,
     },
