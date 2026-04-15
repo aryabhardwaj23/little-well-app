@@ -469,14 +469,6 @@ onMounted(async () => {
   try {
     loading.value = true;
     error.value = '';
-
-    const stateRecipe = history.state?.lunchbox;
-
-    if (stateRecipe) {
-      recipe.value = mapRouteStateToRecipe(stateRecipe);
-      return;
-    }
-
     recipe.value = await fetchRecipeFromApi();
   } catch (err) {
     console.error('Failed to load recipe:', err);
@@ -487,6 +479,16 @@ onMounted(async () => {
 });
 
 const goBack = () => {
+  if (route.query.from === 'results') {
+    router.push({
+      path: '/results',
+      query: {
+        childId: route.query.childId || '',
+      },
+    });
+    return;
+  }
+
   if (window.history.length > 1) {
     router.back();
   } else {

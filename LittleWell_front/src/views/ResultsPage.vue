@@ -517,28 +517,24 @@ const handleImageError = (event) => {
 
 const handleLunchboxClick = (lunchbox) => {
   router.push({
-    path: `/recipe/${lunchbox.id}`,
+    path: `/recipe/${encodeURIComponent(lunchbox.id)}`,
     query: {
       childId: selectedChildId.value || '',
-      source: lunchbox.source || '',
+      source: lunchbox.source || 'lunchbox',
       childName: lunchbox.childName || '',
-    },
-    state: {
-      lunchbox,
+      from: 'results',
     },
   });
 };
 
 const handleRecipeClick = (meal) => {
   router.push({
-    path: `/recipe/${meal.id || meal.idMeal}`,
+    path: `/recipe/${encodeURIComponent(meal.id || meal.idMeal)}`,
     query: {
       childId: selectedChildId.value || '',
       source: 'mealdb',
       childName: meal.childName || '',
-    },
-    state: {
-      lunchbox: meal,
+      from: 'results',
     },
   });
 };
