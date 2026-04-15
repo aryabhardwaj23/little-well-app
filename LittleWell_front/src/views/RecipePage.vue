@@ -485,6 +485,14 @@ onMounted(async () => {
     loading.value = false;
   }
 });
+
+const goBack = () => {
+  if (window.history.length > 1) {
+    router.back();
+  } else {
+    router.push('/');
+  }
+};
 </script>
 
 <style scoped>

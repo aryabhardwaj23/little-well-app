@@ -528,6 +528,20 @@ const handleLunchboxClick = (lunchbox) => {
     },
   });
 };
+
+const handleRecipeClick = (meal) => {
+  router.push({
+    path: `/recipe/${meal.id || meal.idMeal}`,
+    query: {
+      childId: selectedChildId.value || '',
+      source: 'mealdb',
+      childName: meal.childName || '',
+    },
+    state: {
+      lunchbox: meal,
+    },
+  });
+};
 </script>
 
 <style scoped>
