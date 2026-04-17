@@ -208,8 +208,6 @@ const buildPayload = () => {
     vitamin_d_status: nutritionFocus.value.includes('immunity') ? 1 : 0,
     variety_status: nutritionFocus.value.includes('variety') ? 1 : 0,
 
-    religious_needs: profile.value.dietaryRestriction || '',
-
     allergies: (profile.value.allergies || [])
       .map((allergy) => allergyMap[allergy])
       .filter(Boolean),
