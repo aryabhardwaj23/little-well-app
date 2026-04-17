@@ -88,12 +88,13 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, onMounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import { Sparkles, Check, ChevronRight, Lightbulb, Apple, Droplet, Cookie, Carrot } from 'lucide-vue-next';
 import { useNutritionCheckStore } from '../stores/nutritionCheck';
 
 const router = useRouter();
+const route = useRoute();
 const nutritionCheckStore = useNutritionCheckStore();
 
 const score = ref(0);
@@ -104,7 +105,12 @@ onMounted(() => {
   const result = nutritionCheckStore.result;
 
   if (!result || !result.nutritionInsights) {
-    router.push('/nutrition-check');
+    const childId = route.query.childId || '';
+    if (childId) {
+      router.push(`/nutrition-check?childId=${childId}`);
+    } else {
+      router.push('/nutrition-check');
+    }
     return;
   }
 
@@ -114,8 +120,10 @@ onMounted(() => {
 });
 
 const handleViewResults = () => {
-  const childId = localStorage.getItem('littlewell_edit_child_id')
-    || localStorage.getItem('littlewell_active_child_id');
+  const childId =
+    route.query.childId ||
+    localStorage.getItem('littlewell_edit_child_id') ||
+    localStorage.getItem('littlewell_active_child_id');
 
   if (childId) {
     router.push(`/results?childId=${childId}`);
@@ -224,26 +232,26 @@ const getAreaAdvice = (area, status) => {
 
 const generateRecommendations = (insights) => {
   const recs = [];
-  
+
   if (insights.fruits === 'needs' || insights.fruits === 'poor') {
     recs.push('Add colorful vegetables to lunchboxes - children eat with their eyes first!');
   }
-  
+
   if (insights.water === 'needs' || insights.water === 'poor') {
     recs.push('Send a fun, reusable water bottle to school every day.');
   }
-  
+
   if (insights.sugar === 'needs' || insights.sugar === 'poor') {
     recs.push('Replace sugary snacks with naturally sweet fruits like berries and melon.');
   }
-  
+
   if (insights.protein === 'needs' || insights.protein === 'poor') {
     recs.push('Include protein in every meal - try hard-boiled eggs, cheese, or nut butter.');
   }
-  
+
   recs.push('Involve your child in meal planning - they\'re more likely to eat what they help choose!');
   recs.push('Make meals colorful and fun with different shapes and arrangements.');
-  
+
   return recs;
 };
 </script>

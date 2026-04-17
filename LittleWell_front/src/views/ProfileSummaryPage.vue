@@ -170,21 +170,19 @@ const nutritionAreaNames = {
   variety: 'Diet Variety',
 };
 
-// Map front-end allergy labels to DB allergen_id
 const allergyMap = {
-  'Peanuts': 47,
+  Peanuts: 47,
   'Tree nuts': 40,
-  'Milk': 16,
-  'Eggs': 18,
-  'Wheat': 24,
-  'Soy': 50,
-  'Fish': 22,
-  'Shellfish': 15,
+  Milk: 16,
+  Eggs: 18,
+  Wheat: 24,
+  Soy: 50,
+  Fish: 22,
+  Shellfish: 15,
 };
 
 onMounted(() => {
   const draft = childProfileStore.childProfileDraft;
-
   profile.value = draft;
   childName.value = draft.name || 'your child';
   nutritionFocus.value = draft.nutritionFocus || [];
@@ -200,6 +198,7 @@ const handleEdit = () => {
 
 const handleNutritionCheck = () => {
   const editingChildId = localStorage.getItem('littlewell_edit_child_id');
+
   if (editingChildId) {
     router.push(`/nutrition-check?childId=${editingChildId}`);
   } else {
@@ -214,9 +213,14 @@ const handleSave = async () => {
     const editingChildId = localStorage.getItem('littlewell_edit_child_id');
 
     const payload = {
-      child_name: profile.value.name,
-      age_band: profile.value.ageGroup,
+      child_name: profile.value.name || '',
+      age_band: profile.value.ageGroup || '',
       band_id: null,
+
+      gender: profile.value.gender || '',
+      activity_level: profile.value.activityLevel || 'moderate',
+      eating_habit: profile.value.eatingHabit || '',
+      dislikes: profile.value.dislikes || '',
 
       iron_status: nutritionFocus.value.includes('iron') ? 1 : 0,
       calcium_status: nutritionFocus.value.includes('calcium') ? 1 : 0,
@@ -226,23 +230,34 @@ const handleSave = async () => {
       religious_needs: profile.value.dietaryRestriction || '',
 
       allergies: (profile.value.allergies || [])
-        .map((allergy) => allergyMap[allergy])
+        .map((allergy) => allergyMap[allergy] ?? allergy)
         .filter(Boolean),
     };
 
-    let savedChild;
+    let savedChildId = null;
 
     if (editingChildId) {
       await updateChild(editingChildId, payload);
-      savedChild = { child_id: editingChildId };
+      savedChildId = editingChildId;
     } else {
-      savedChild = await createChild(payload);
+      const savedChild = await createChild(payload);
+      savedChildId =
+        savedChild?.child_id ||
+        savedChild?.id ||
+        savedChild?.child?.child_id ||
+        savedChild?.child?.id ||
+        null;
     }
 
+    if (!savedChildId) {
+      throw new Error('Profile was saved, but no child ID was returned.');
+    }
+
+    localStorage.setItem('littlewell_active_child_id', String(savedChildId));
     localStorage.removeItem('littlewell_edit_child_id');
     childProfileStore.resetDraft();
 
-    router.push(`/results?childId=${savedChild.child_id}`);
+    router.push(`/results?childId=${savedChildId}`);
   } catch (error) {
     console.error('Failed to save child profile:', error);
     alert(`Failed to save profile: ${error.message}`);

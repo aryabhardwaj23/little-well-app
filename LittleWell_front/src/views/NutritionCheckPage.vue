@@ -3,11 +3,11 @@
     <div class="container mx-auto px-6 max-w-4xl">
       <!-- Back Button -->
       <button
-        @click="router.push('/')"
+        @click="goBack"
         class="mb-6 px-4 py-2 hover:bg-white rounded-lg transition-colors inline-flex items-center gap-2"
       >
         <ArrowLeft class="w-4 h-4" />
-        Back to Home
+        Back
       </button>
 
       <!-- Header -->
@@ -111,11 +111,12 @@
 
 <script setup>
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import { ArrowLeft, Check, ClipboardCheck, Apple, Droplet, Cookie, Carrot } from 'lucide-vue-next';
 import { useNutritionCheckStore } from '../stores/nutritionCheck';
 
 const router = useRouter();
+const route = useRoute();
 const nutritionCheckStore = useNutritionCheckStore();
 
 const currentQuestion = ref(0);
@@ -192,6 +193,15 @@ const previousQuestion = () => {
   }
 };
 
+const goBack = () => {
+  const childId = route.query.childId;
+  if (childId) {
+    router.push(`/profile-summary?childId=${childId}`);
+  } else {
+    router.push('/profile-summary');
+  }
+};
+
 const handleComplete = () => {
   const insights = {
     fruits: answers.value.fruits || 'needs',
@@ -212,7 +222,12 @@ const handleComplete = () => {
     completedAt: new Date().toISOString(),
   });
 
-  router.push('/nutrition-insights');
+  const childId = route.query.childId || '';
+  if (childId) {
+    router.push(`/nutrition-insights?childId=${childId}`);
+  } else {
+    router.push('/nutrition-insights');
+  }
 };
 </script>
 
