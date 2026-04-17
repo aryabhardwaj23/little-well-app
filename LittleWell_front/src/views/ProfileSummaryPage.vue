@@ -121,7 +121,7 @@
         </button>
       </div>
 
-      <!-- Optional: Nutrition Check Prompt -->
+      <!-- Nutrition Check Prompt -->
       <div class="mt-8 p-6 bg-gradient-to-r from-[#CDE7F0]/30 to-[#A8D5BA]/20 rounded-2xl border border-[#A8D5BA]/30">
         <div class="flex items-start gap-4">
           <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center flex-shrink-0">
@@ -134,7 +134,8 @@
             </p>
             <button
               @click="handleNutritionCheck"
-              class="text-sm text-[#2C5F2D] font-medium hover:underline inline-flex items-center gap-1"
+              :disabled="saving"
+              class="text-sm text-[#2C5F2D] font-medium hover:underline inline-flex items-center gap-1 disabled:opacity-50"
             >
               Take Nutrition Check
               <ChevronRight class="w-4 h-4" />
@@ -196,70 +197,75 @@ const handleEdit = () => {
   router.push('/child-info');
 };
 
-const handleNutritionCheck = () => {
+const buildPayload = () => {
+  return {
+    child_name: profile.value.name || '',
+    age_band: profile.value.ageGroup || '',
+    band_id: null,
+
+    iron_status: nutritionFocus.value.includes('iron') ? 1 : 0,
+    calcium_status: nutritionFocus.value.includes('calcium') ? 1 : 0,
+    vitamin_d_status: nutritionFocus.value.includes('immunity') ? 1 : 0,
+    variety_status: nutritionFocus.value.includes('variety') ? 1 : 0,
+
+    religious_needs: profile.value.dietaryRestriction || '',
+
+    allergies: (profile.value.allergies || [])
+      .map((allergy) => allergyMap[allergy])
+      .filter(Boolean),
+  };
+};
+
+const saveProfile = async () => {
   const editingChildId = localStorage.getItem('littlewell_edit_child_id');
+  const payload = buildPayload();
+
+  let savedChildId = null;
 
   if (editingChildId) {
-    router.push(`/nutrition-check?childId=${editingChildId}`);
+    await updateChild(editingChildId, payload);
+    savedChildId = editingChildId;
   } else {
-    router.push('/nutrition-check');
+    const savedChild = await createChild(payload);
+    savedChildId =
+      savedChild?.child_id ||
+      savedChild?.id ||
+      savedChild?.child?.child_id ||
+      savedChild?.child?.id ||
+      null;
   }
+
+  if (!savedChildId) {
+    throw new Error('Profile was saved, but no child ID was returned.');
+  }
+
+  localStorage.setItem('littlewell_active_child_id', String(savedChildId));
+  localStorage.removeItem('littlewell_edit_child_id');
+  childProfileStore.resetDraft();
+
+  return String(savedChildId);
 };
 
 const handleSave = async () => {
   try {
     saving.value = true;
-
-    const editingChildId = localStorage.getItem('littlewell_edit_child_id');
-
-    const payload = {
-      child_name: profile.value.name || '',
-      age_band: profile.value.ageGroup || '',
-      band_id: null,
-
-      gender: profile.value.gender || '',
-      activity_level: profile.value.activityLevel || 'moderate',
-      eating_habit: profile.value.eatingHabit || '',
-      dislikes: profile.value.dislikes || '',
-
-      iron_status: nutritionFocus.value.includes('iron') ? 1 : 0,
-      calcium_status: nutritionFocus.value.includes('calcium') ? 1 : 0,
-      vitamin_d_status: nutritionFocus.value.includes('immunity') ? 1 : 0,
-      variety_status: nutritionFocus.value.includes('variety') ? 1 : 0,
-
-      religious_needs: profile.value.dietaryRestriction || '',
-
-      allergies: (profile.value.allergies || [])
-        .map((allergy) => allergyMap[allergy] ?? allergy)
-        .filter(Boolean),
-    };
-
-    let savedChildId = null;
-
-    if (editingChildId) {
-      await updateChild(editingChildId, payload);
-      savedChildId = editingChildId;
-    } else {
-      const savedChild = await createChild(payload);
-      savedChildId =
-        savedChild?.child_id ||
-        savedChild?.id ||
-        savedChild?.child?.child_id ||
-        savedChild?.child?.id ||
-        null;
-    }
-
-    if (!savedChildId) {
-      throw new Error('Profile was saved, but no child ID was returned.');
-    }
-
-    localStorage.setItem('littlewell_active_child_id', String(savedChildId));
-    localStorage.removeItem('littlewell_edit_child_id');
-    childProfileStore.resetDraft();
-
-    router.push(`/results?childId=${savedChildId}`);
+    const childId = await saveProfile();
+    router.push(`/results?childId=${childId}`);
   } catch (error) {
     console.error('Failed to save child profile:', error);
+    alert(`Failed to save profile: ${error.message}`);
+  } finally {
+    saving.value = false;
+  }
+};
+
+const handleNutritionCheck = async () => {
+  try {
+    saving.value = true;
+    const childId = await saveProfile();
+    router.push(`/nutrition-check?childId=${childId}`);
+  } catch (error) {
+    console.error('Failed to save before nutrition check:', error);
     alert(`Failed to save profile: ${error.message}`);
   } finally {
     saving.value = false;
