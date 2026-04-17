@@ -177,7 +177,9 @@
           <div>
             <h2 class="text-2xl font-medium">Recipe Inspiration</h2>
             <p class="text-sm text-muted-foreground">
-              Extra recipe ideas powered by MealDB and AUSNUT
+              {{ isFamilyMode
+                ? 'Recipe ideas combined from multiple children in your family plan'
+                : 'Extra recipe ideas powered by MealDB and AUSNUT' }}
             </p>
           </div>
           <button
@@ -196,7 +198,7 @@
         <div v-else-if="recipeMeals.length > 0" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           <div
             v-for="meal in recipeMeals"
-            :key="meal.id"
+            :key="meal.id || meal.idMeal || meal.title || meal.mealName"
             class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
             @click="handleRecipeClick(meal)"
           >
@@ -217,7 +219,7 @@
                 {{ meal.title || meal.mealName || 'Recipe Inspiration' }}
               </h3>
 
-              <div v-if="meal.category || meal.area" class="flex flex-wrap gap-2 mb-3">
+              <div v-if="meal.category || meal.area || meal.childName" class="flex flex-wrap gap-2 mb-3">
                 <span
                   v-if="meal.category"
                   class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full"
@@ -229,6 +231,12 @@
                   class="text-xs bg-[#CDE7F0]/30 text-[#1B4965] px-2 py-1 rounded-full"
                 >
                   {{ meal.area }}
+                </span>
+                <span
+                  v-if="meal.childName && !isFamilyMode"
+                  class="text-xs bg-[#A8D5BA]/20 text-[#2C5F2D] px-2 py-1 rounded-full"
+                >
+                  For {{ meal.childName }}
                 </span>
               </div>
 
@@ -309,7 +317,9 @@ const selectedChildIds = ref([]);
 const needsSupport = ref([]);
 
 const showRecipeInspiration = computed(() => {
-  return !isQuickMode.value && !isFamilyMode.value && !!selectedChildId.value;
+  return !isQuickMode.value && (
+    !!selectedChildId.value || selectedChildIds.value.length > 0
+  );
 });
 
 const loadRecommendations = async () => {
@@ -379,7 +389,7 @@ const loadRecommendations = async () => {
 
     // Single child mode
     if (childId) {
-      selectedChildId.value = childId;
+      selectedChildId.value = String(childId);
 
       const data = await getRecommendedProducts(childId, seasonalMode.value);
 
@@ -401,16 +411,57 @@ const loadRecommendations = async () => {
   }
 };
 
+const dedupeMeals = (meals) => {
+  const uniqueMap = new Map();
+
+  for (const meal of meals) {
+    const key =
+      meal?.id ||
+      meal?.idMeal ||
+      meal?.title ||
+      meal?.mealName;
+
+    if (!key) continue;
+
+    if (!uniqueMap.has(key)) {
+      uniqueMap.set(key, meal);
+    }
+  }
+
+  return Array.from(uniqueMap.values());
+};
+
 const loadRecipeInspiration = async () => {
-  if (!selectedChildId.value || isQuickMode.value || isFamilyMode.value) {
+  if (isQuickMode.value) {
     recipeMeals.value = [];
     return;
   }
 
   try {
     recipeLoading.value = true;
-    const data = await getChildMealRecommendations(selectedChildId.value);
-    recipeMeals.value = Array.isArray(data?.lunchboxes) ? data.lunchboxes : [];
+
+    // Single child mode
+    if (!isFamilyMode.value && selectedChildId.value) {
+      const data = await getChildMealRecommendations(selectedChildId.value);
+      recipeMeals.value = Array.isArray(data?.lunchboxes) ? data.lunchboxes : [];
+      return;
+    }
+
+    // Family mode: fetch recipes for each child, then merge + dedupe
+    if (isFamilyMode.value && selectedChildIds.value.length > 0) {
+      const results = await Promise.all(
+        selectedChildIds.value.map((id) => getChildMealRecommendations(id))
+      );
+
+      const mergedMeals = results.flatMap((res) =>
+        Array.isArray(res?.lunchboxes) ? res.lunchboxes : []
+      );
+
+      recipeMeals.value = dedupeMeals(mergedMeals);
+      return;
+    }
+
+    recipeMeals.value = [];
   } catch (error) {
     console.error('Failed to load recipe inspiration:', error);
     recipeMeals.value = [];
@@ -463,11 +514,11 @@ const supportTextColors = {
 };
 
 const getCurrentSeason = () => {
-  const month = new Date().getMonth();
-  if (month >= 2 && month <= 4) return 'spring';
-  if (month >= 5 && month <= 7) return 'summer';
-  if (month >= 8 && month <= 10) return 'autumn';
-  return 'winter';
+  const month = new Date().getMonth(); // 0-11
+  if (month >= 8 && month <= 10) return 'spring'; // Sep-Nov
+  if (month === 11 || month === 0 || month === 1) return 'summer'; // Dec-Feb
+  if (month >= 2 && month <= 4) return 'autumn'; // Mar-May
+  return 'winter'; // Jun-Aug
 };
 
 const season = ref(getCurrentSeason());
@@ -490,17 +541,6 @@ const getSectionColor = (section) => {
   return colors[section] || 'bg-gray-300';
 };
 
-const formatSectionLabel = (section) => {
-  const labels = {
-    carbs: 'Carbs',
-    protein: 'Protein',
-    veggies: 'Veggies',
-    fruit: 'Fruit',
-    ingredient: 'Ingredient',
-  };
-  return labels[section] || 'Item';
-};
-
 const formatNeedLabel = (area) => {
   const labels = {
     iron: 'Iron Support',
@@ -515,26 +555,19 @@ const handleImageError = (event) => {
   event.target.style.display = 'none';
 };
 
-const handleLunchboxClick = (lunchbox) => {
-  router.push({
-    path: `/recipe/${encodeURIComponent(lunchbox.id)}`,
-    query: {
-      childId: selectedChildId.value || '',
-      source: lunchbox.source || 'lunchbox',
-      childName: lunchbox.childName || '',
-      from: 'results',
-    },
-  });
-};
-
 const handleRecipeClick = (meal) => {
+  const recipeBaseChildId =
+    selectedChildId.value ||
+    (selectedChildIds.value.length > 0 ? selectedChildIds.value[0] : '');
+
   router.push({
     path: `/recipe/${encodeURIComponent(meal.id || meal.idMeal)}`,
     query: {
-      childId: selectedChildId.value || '',
+      childId: recipeBaseChildId,
       source: 'mealdb',
       childName: meal.childName || '',
       from: 'results',
+      family: isFamilyMode.value ? '1' : '',
     },
   });
 };
