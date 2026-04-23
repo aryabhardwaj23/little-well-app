@@ -5,4 +5,5 @@ pymysql
 python-dotenv
 pydantic
 httpx
-pandas
+pandasscikit-learn
+numpy
