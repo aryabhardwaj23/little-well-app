@@ -268,12 +268,12 @@ def get_cluster_analysis():
                 profile.items(), key=lambda x: -x[1]
             )[:3]
             clusters.append({
-                "cluster_id":    cluster_id,
-                "size":          len(cluster_df),
-                "avg_nutrients": profile,
+                "cluster_id":    int(cluster_id),
+                "size":          int(len(cluster_df)),
+                "avg_nutrients": {k: float(v) for k, v in profile.items()},
                 "dominant":      [n for n, _ in top_nutrients],
-                "top_foods":     cluster_df["food_name"].head(5).tolist()
-                                  if "food_name" in cluster_df else [],
+                "top_foods":     cluster_df["Food name"].head(5).tolist() if "Food name" in cluster_df.columns else [],
+                "top_foods":     cluster_df["Food name"].head(5).tolist() if "Food name" in cluster_df.columns else [],
             })
 
         return {
