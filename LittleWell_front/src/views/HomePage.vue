@@ -560,6 +560,10 @@ const handleDeleteProfile = async (profileId, profileName) => {
 
   try {
     await deleteChild(profileId);
+    
+    selectedForFamily.value = selectedForFamily.value.filter(
+      (id) => String(id) !== String(profileId)
+    );
 
     const activeChildId = localStorage.getItem('littlewell_active_child_id');
     if (activeChildId && String(activeChildId) === String(profileId)) {
