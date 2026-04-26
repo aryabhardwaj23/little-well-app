@@ -20,22 +20,16 @@
             >
               Lunchbox Plan
             </button>
-            
-            <button
-              disabled
-              class="text-muted-foreground cursor-not-allowed relative px-4 py-2"
-            >
+
+            <button disabled class="text-muted-foreground cursor-not-allowed relative px-4 py-2">
               <BookOpen class="w-4 h-4 inline mr-2" />
               Knowledge Hub
               <span class="absolute -top-1 -right-2 bg-[#CDE7F0] text-[#1B4965] text-xs rounded-full px-1.5 py-0.5">
                 Soon
               </span>
             </button>
-            
-            <button
-              disabled
-              class="text-muted-foreground cursor-not-allowed relative px-4 py-2"
-            >
+
+            <button disabled class="text-muted-foreground cursor-not-allowed relative px-4 py-2">
               <ScanLine class="w-4 h-4 inline mr-2" />
               Label Reader
               <span class="absolute -top-1 -right-2 bg-[#CDE7F0] text-[#1B4965] text-xs rounded-full px-1.5 py-0.5">
@@ -59,6 +53,7 @@
       </div>
     </nav>
 
+    <!-- Hero Section -->
     <div class="relative h-[500px] overflow-hidden mt-16">
       <img
         src="https://images.unsplash.com/photo-1758874961000-d8b11690ce22?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwYXJlbnQlMjBjb29raW5nJTIwd2l0aCUyMGNoaWxkJTIwa2l0Y2hlbnxlbnwxfHx8fDE3NzQzNDI2MjF8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
@@ -66,7 +61,7 @@
         class="w-full h-full object-cover"
       />
       <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-black/30" />
-      
+
       <div class="absolute inset-0 flex items-center">
         <div class="container mx-auto px-6 max-w-6xl">
           <div class="max-w-2xl text-white">
@@ -76,6 +71,23 @@
             <p class="text-xl md:text-2xl text-white/90">
               Science-backed nutrition with fresh, seasonal ingredients.
             </p>
+
+            <!-- CTA Added -->
+            <div class="mt-8 flex flex-col sm:flex-row gap-4">
+              <button
+                @click="handleAddChild"
+                class="bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg px-8 py-4 text-lg font-semibold transition-colors shadow-md"
+              >
+                Add a Child
+              </button>
+
+              <button
+                @click="router.push('/quick-start')"
+                class="bg-white/20 hover:bg-white/30 text-white border border-white/40 rounded-lg px-8 py-4 text-lg font-semibold transition-colors"
+              >
+                Quick Start
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -95,6 +107,20 @@
 
         <!-- Horizontal Scroll Cards -->
         <div class="flex gap-6 overflow-x-auto pb-4 -mx-6 px-6">
+          <!-- Add Child moved to the front -->
+          <div
+            @click="handleAddChild"
+            class="flex-shrink-0 w-[340px] p-6 rounded-2xl border-2 border-dashed border-[#A8D5BA] bg-[#A8D5BA]/5 flex flex-col items-center justify-center hover:bg-[#A8D5BA]/10 transition-colors cursor-pointer"
+          >
+            <div class="w-16 h-16 bg-[#A8D5BA]/20 rounded-full flex items-center justify-center mb-3">
+              <Plus class="w-8 h-8 text-[#2C5F2D]" />
+            </div>
+            <p class="text-lg text-[#2C5F2D] font-semibold">Add a child</p>
+            <p class="text-sm text-muted-foreground text-center mt-2">
+              Create a profile to get personalised meal suggestions
+            </p>
+          </div>
+
           <div
             v-for="profile in profiles"
             :key="profile.id"
@@ -104,11 +130,12 @@
             <div class="flex items-start justify-between mb-4">
               <div>
                 <h3 class="text-xl mb-1">
-                  {{ profile.name }} <span class="text-muted-foreground text-base">({{ profile.ageGroup }})</span>
+                  {{ profile.name }}
+                  <span class="text-muted-foreground text-base">({{ profile.ageGroup }})</span>
                 </h3>
               </div>
-              <div class="flex items-center gap-2">
 
+              <div class="flex items-center gap-2">
                 <button
                   @click.stop="handleEditProfile(profile.id)"
                   class="p-2 hover:bg-gray-100 rounded-lg transition-colors"
@@ -124,7 +151,6 @@
                 >
                   <Trash2 class="w-4 h-4" />
                 </button>
-
               </div>
             </div>
 
@@ -171,22 +197,6 @@
             >
               View Lunchboxes
               <ChevronRight class="w-4 h-4" />
-            </button>
-          </div>
-
-          <!-- Add New Profile Card -->
-          <div class="flex-shrink-0 w-[340px] p-6 rounded-2xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center hover:border-[#A8D5BA] transition-colors cursor-pointer">
-            <button
-              @click="handleAddChild"
-              class="flex flex-col items-center gap-3"
-            >
-              <div class="w-16 h-16 bg-[#A8D5BA]/10 rounded-full flex items-center justify-center">
-                <Plus class="w-8 h-8 text-[#A8D5BA]" />
-              </div>
-              <p class="text-lg text-[#2C5F2D]">Add a child</p>
-              <p class="text-sm text-muted-foreground text-center">
-                Create a profile to get personalised meal suggestions
-              </p>
             </button>
           </div>
         </div>
@@ -300,7 +310,7 @@
             <span class="absolute top-4 right-4 bg-[#CDE7F0] text-[#1B4965] rounded-full px-3 py-1 text-sm">
               Coming Soon
             </span>
-            
+
             <div class="flex items-start gap-4 mb-4">
               <div class="w-14 h-14 bg-[#A8D5BA] rounded-full flex items-center justify-center flex-shrink-0">
                 <BookOpen class="w-7 h-7 text-[#2C5F2D]" />
@@ -312,7 +322,7 @@
                 </p>
               </div>
             </div>
-            
+
             <div class="mt-6 space-y-2 text-sm text-muted-foreground">
               <div class="flex items-center gap-2">
                 <div class="w-1.5 h-1.5 bg-[#A8D5BA] rounded-full"></div>
@@ -334,7 +344,7 @@
             <span class="absolute top-4 right-4 bg-[#CDE7F0] text-[#1B4965] rounded-full px-3 py-1 text-sm">
               Coming Soon
             </span>
-            
+
             <div class="flex items-start gap-4 mb-4">
               <div class="w-14 h-14 bg-[#F7B267] rounded-full flex items-center justify-center flex-shrink-0">
                 <ScanLine class="w-7 h-7 text-white" />
@@ -346,7 +356,7 @@
                 </p>
               </div>
             </div>
-            
+
             <div class="mt-6 space-y-2 text-sm text-muted-foreground">
               <div class="flex items-center gap-2">
                 <div class="w-1.5 h-1.5 bg-[#F7B267] rounded-full"></div>
@@ -413,9 +423,18 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { 
-  Heart, Plus, Zap, Edit, Trash2, ChevronRight, Leaf, Clock, 
-  BookOpen, ScanLine, Menu 
+import {
+  Heart,
+  Plus,
+  Zap,
+  Edit,
+  Trash2,
+  ChevronRight,
+  Leaf,
+  Clock,
+  BookOpen,
+  ScanLine,
+  Menu,
 } from 'lucide-vue-next';
 import { getChildren, deleteChild } from '../services/api';
 
@@ -471,12 +490,16 @@ const nutritionFocusLabels = {
   variety: 'Diet Variety',
 };
 
+const isActiveStatus = (value) => {
+  return value === 1 || value === '1' || value === true;
+};
+
 const mapStatusToNutritionFocus = (child) => {
   return [
-    Number(child.iron_status) === 1 ? 'iron' : null,
-    Number(child.calcium_status) === 1 ? 'calcium' : null,
-    Number(child.vitamin_d_status) === 1 ? 'immunity' : null,
-    Number(child.variety_status) === 1 ? 'variety' : null,
+    isActiveStatus(child.iron_status) ? 'iron' : null,
+    isActiveStatus(child.calcium_status) ? 'calcium' : null,
+    isActiveStatus(child.vitamin_d_status) ? 'immunity' : null,
+    isActiveStatus(child.variety_status) ? 'variety' : null,
   ].filter(Boolean);
 };
 
@@ -489,7 +512,7 @@ const mapChildToProfileCard = (child) => {
     ageGroup: child.age_band,
     allergies: mapAllergiesToNames(child.allergies),
     dietaryRestriction: child.religious_needs || '',
-    nutritionFocus: focusIds.map((id) => nutritionFocusLabels[id]),
+    nutritionFocus: focusIds.map((id) => nutritionFocusLabels[id]).filter(Boolean),
   };
 };
 
@@ -511,7 +534,7 @@ onMounted(() => {
 
 const toggleFamilySelection = (id) => {
   if (selectedForFamily.value.includes(id)) {
-    selectedForFamily.value = selectedForFamily.value.filter(p => p !== id);
+    selectedForFamily.value = selectedForFamily.value.filter((p) => p !== id);
   } else {
     selectedForFamily.value = [...selectedForFamily.value, id];
   }
