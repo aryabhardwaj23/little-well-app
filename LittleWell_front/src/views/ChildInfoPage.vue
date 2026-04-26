@@ -23,17 +23,21 @@
         <!-- Basic Info -->
         <div class="p-8 rounded-2xl shadow-sm bg-white">
           <h2 class="text-2xl mb-6">Basic Information</h2>
-          
+
           <div class="space-y-6">
             <div>
               <label class="block text-sm font-medium mb-2">Child's Name (or nickname)</label>
               <input
                 v-model="formData.name"
                 type="text"
+                maxlength="20"
                 placeholder="e.g. Emma"
                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8D5BA] focus:border-transparent"
+                @input="cleanNameInput"
               />
-              <p class="text-xs text-muted-foreground mt-1">We use nicknames only—no last names needed</p>
+              <p class="text-xs text-muted-foreground mt-1">
+                Letters only, maximum 20 characters. We use nicknames only—no last names needed.
+              </p>
             </div>
 
             <div>
@@ -79,7 +83,7 @@
         <!-- Health Information -->
         <div class="p-8 rounded-2xl shadow-sm bg-white">
           <h2 class="text-2xl mb-6">Health & Dietary Information</h2>
-          
+
           <div class="space-y-6">
             <div>
               <label class="block text-sm font-medium mb-2">Any food allergies?</label>
@@ -142,10 +146,13 @@
         <!-- Eating Habits -->
         <div class="p-8 rounded-2xl shadow-sm bg-white">
           <h2 class="text-2xl mb-6">Eating Habits</h2>
-          
+
           <div class="space-y-4">
             <div>
-              <label class="block text-sm font-medium mb-2">How would you describe your child's eating habits?</label>
+              <label class="block text-sm font-medium mb-2">
+                How would you describe your child's eating habits?
+              </label>
+
               <div class="space-y-2">
                 <label
                   v-for="habit in eatingHabits"
@@ -165,7 +172,9 @@
             </div>
 
             <div>
-              <label class="block text-sm font-medium mb-2">Any foods your child particularly dislikes?</label>
+              <label class="block text-sm font-medium mb-2">
+                Any foods your child particularly dislikes?
+              </label>
               <textarea
                 v-model="formData.dislikes"
                 rows="3"
@@ -211,58 +220,30 @@ const formData = ref({
   nutritionFocus: [],
 });
 
-onMounted(async () => {
-  const editingChildId = localStorage.getItem('littlewell_edit_child_id');
-
-  if (editingChildId) {
-    try {
-      const child = await getChildById(editingChildId);
-
-      const draftData = {
-        name: child.child_name || '',
-        ageGroup: child.age_band || '',
-        gender: child.gender || '',
-        allergies: child.allergies || [],
-        dietaryRestriction: child.religious_needs || '',
-        activityLevel: child.activity_level || 'moderate',
-        eatingHabit: child.eating_habit || '',
-        dislikes: child.dislikes || '',
-        nutritionFocus: mapStatusToNutritionFocus(child),
-      };
-
-      childProfileStore.updateDraft(draftData);
-
-      formData.value = {
-        ...formData.value,
-        ...draftData,
-      };
-    } catch (error) {
-      console.error('Failed to load child info for editing:', error);
-    }
-  } else {
-    formData.value = {
-      ...formData.value,
-      ...childProfileStore.childProfileDraft,
-    };
-  }
-});
-
-const ageGroups = ['0-3 years', '3-6 years', '6-9 years', '9-12 years', '12+ years'];
+const ageGroups = ['3-6 years', '6-9 years', '9-12 years', '12+ years'];
 const genderOptions = ['Boy', 'Girl', 'Prefer not to say'];
 
-const mapStatusToNutritionFocus = (child) => {
-  return [
-    Number(child.iron_status) === 1 ? 'iron' : null,
-    Number(child.calcium_status) === 1 ? 'calcium' : null,
-    Number(child.vitamin_d_status) === 1 ? 'immunity' : null,
-    Number(child.variety_status) === 1 ? 'variety' : null,
-  ].filter(Boolean);
-};
-
 const commonAllergies = [
-  'Peanuts', 'Tree nuts', 'Milk', 'Eggs',
-  'Wheat', 'Soy', 'Fish', 'Shellfish',
+  'Peanuts',
+  'Tree nuts',
+  'Milk',
+  'Eggs',
+  'Wheat',
+  'Soy',
+  'Fish',
+  'Shellfish',
 ];
+
+const allergenIdToName = {
+  47: 'Peanuts',
+  40: 'Tree nuts',
+  16: 'Milk',
+  18: 'Eggs',
+  24: 'Wheat',
+  50: 'Soy',
+  22: 'Fish',
+  15: 'Shellfish',
+};
 
 const activityLevels = [
   { value: 'low', label: 'Light', icon: '🚶' },
@@ -277,9 +258,73 @@ const eatingHabits = [
   'Very selective - limited food preferences',
 ];
 
+const isActiveStatus = (value) => {
+  return value === 1 || value === '1' || value === true;
+};
+
+const mapStatusToNutritionFocus = (child) => {
+  return [
+    isActiveStatus(child.iron_status) ? 'iron' : null,
+    isActiveStatus(child.calcium_status) ? 'calcium' : null,
+    isActiveStatus(child.vitamin_d_status) ? 'immunity' : null,
+    isActiveStatus(child.variety_status) ? 'variety' : null,
+  ].filter(Boolean);
+};
+
+const mapAllergiesToNames = (allergies) => {
+  if (!Array.isArray(allergies)) return [];
+
+  return allergies
+    .map((allergy) => {
+      if (typeof allergy === 'string' && commonAllergies.includes(allergy)) {
+        return allergy;
+      }
+
+      const id = Number(allergy);
+      return allergenIdToName[id] || null;
+    })
+    .filter(Boolean);
+};
+
+const cleanNameInput = () => {
+  formData.value.name = formData.value.name.replace(/[^A-Za-z\s]/g, '').slice(0, 20);
+};
+
+onMounted(async () => {
+  const editingChildId = localStorage.getItem('littlewell_edit_child_id');
+
+  if (editingChildId) {
+    try {
+      const child = await getChildById(editingChildId);
+
+      const draftData = {
+        name: child.child_name || '',
+        ageGroup: child.age_band || '',
+        gender: child.gender || '',
+        allergies: mapAllergiesToNames(child.allergies),
+        dietaryRestriction: child.religious_needs || '',
+        activityLevel: child.activity_level || 'moderate',
+        eatingHabit: child.eating_habit || '',
+        dislikes: child.dislikes || '',
+        nutritionFocus: mapStatusToNutritionFocus(child),
+      };
+
+      childProfileStore.updateDraft(draftData);
+      formData.value = JSON.parse(JSON.stringify(draftData));
+    } catch (error) {
+      console.error('Failed to load child info for editing:', error);
+    }
+  } else {
+    formData.value = {
+      ...formData.value,
+      ...childProfileStore.childProfileDraft,
+    };
+  }
+});
+
 const toggleAllergy = (allergy) => {
   if (formData.value.allergies.includes(allergy)) {
-    formData.value.allergies = formData.value.allergies.filter(a => a !== allergy);
+    formData.value.allergies = formData.value.allergies.filter((a) => a !== allergy);
   } else {
     formData.value.allergies = [...formData.value.allergies, allergy];
   }
