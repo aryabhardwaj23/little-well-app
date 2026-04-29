@@ -96,3 +96,45 @@ export function deleteChild(childId) {
 export function getChildMealRecommendations(childId) {
   return request(`/products/recommended/mealdb/child?child_id=${childId}`);
 }
+
+// weekly plans
+export function createWeeklyPlan(payload) {
+  return request('/weekly-plans', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+export function getWeeklyPlans() {
+  return request('/weekly-plans');
+}
+
+export function getWeeklyPlanById(planId) {
+  return request(`/weekly-plans/${planId}`);
+}
+
+export function updateWeeklyPlan(planId, payload) {
+  return request(`/weekly-plans/${planId}`, {
+    method: 'PUT',
+    body: JSON.stringify(payload),
+  });
+}
+
+export function deleteWeeklyPlan(planId) {
+  return request(`/weekly-plans/${planId}`, {
+    method: 'DELETE',
+  });
+}
+
+export function duplicateWeeklyPlan(planId) {
+  return request(`/weekly-plans/${planId}/duplicate`, {
+    method: 'POST',
+  });
+}
+
+export function swapWeeklyPlanMeal(planId, mealId, payload) {
+  return request(`/weekly-plans/${planId}/meals/${mealId}/swap`, {
+    method: 'PUT',
+    body: JSON.stringify(payload),
+  });
+}
