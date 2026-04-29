@@ -13,73 +13,92 @@ import NutritionInsightsPage from '../views/NutritionInsightsPage.vue';
 import ResultsPage from '../views/ResultsPage.vue';
 import RecipePage from '../views/RecipePage.vue';
 
+// New Weekly Plan pages
+import WeeklyPlanPage from '../views/WeeklyPlanPage.vue';
+import MyPlansPage from '../views/MyPlansPage.vue';
+
 const routes = [
   {
     path: '/',
     name: 'Home',
     component: HomePage,
-    meta: { title: 'Home - LittleWell' }
+    meta: { title: 'Home - LittleWell' },
   },
   {
     path: '/about',
     name: 'About',
     component: AboutPage,
-    meta: { title: 'About Us - LittleWell' }
+    meta: { title: 'About Us - LittleWell' },
   },
   {
     path: '/quick-start',
     name: 'QuickStart',
     component: QuickStartPage,
-    meta: { title: 'Quick Start - LittleWell' }
+    meta: { title: 'Quick Start - LittleWell' },
   },
   {
     path: '/nutrition-needs',
     name: 'NutritionNeeds',
     component: NutritionNeedsPage,
-    meta: { title: 'Nutrition Needs - LittleWell' }
+    meta: { title: 'Nutrition Needs - LittleWell' },
   },
   // {
   //   path: '/child-profile',
   //   name: 'ChildProfile',
   //   component: ChildProfilePage,
-  //   meta: { title: 'Child Profile - LittleWell' }
+  //   meta: { title: 'Child Profile - LittleWell' },
   // },
   {
     path: '/child-info',
     name: 'ChildInfo',
     component: ChildInfoPage,
-    meta: { title: 'Child Information - LittleWell' }
+    meta: { title: 'Child Information - LittleWell' },
   },
   {
     path: '/profile-summary',
     name: 'ProfileSummary',
     component: ProfileSummaryPage,
-    meta: { title: 'Profile Summary - LittleWell' }
+    meta: { title: 'Profile Summary - LittleWell' },
   },
   {
     path: '/nutrition-check',
     name: 'NutritionCheck',
     component: NutritionCheckPage,
-    meta: { title: 'Nutrition Check - LittleWell' }
+    meta: { title: 'Nutrition Check - LittleWell' },
   },
   {
     path: '/nutrition-insights',
     name: 'NutritionInsights',
     component: NutritionInsightsPage,
-    meta: { title: 'Nutrition Insights - LittleWell' }
+    meta: { title: 'Nutrition Insights - LittleWell' },
   },
   {
     path: '/results',
     name: 'Results',
     component: ResultsPage,
-    meta: { title: 'Lunchbox Results - LittleWell' }
+    meta: { title: 'Lunchbox Results - LittleWell' },
   },
   {
     path: '/recipe/:id',
     name: 'Recipe',
     component: RecipePage,
-    meta: { title: 'Recipe Details - LittleWell' }
+    meta: { title: 'Recipe Details - LittleWell' },
   },
+
+  // New Weekly Plan routes
+  {
+    path: '/weekly-plan',
+    name: 'WeeklyPlan',
+    component: WeeklyPlanPage,
+    meta: { title: 'Weekly Plan - LittleWell' },
+  },
+  {
+    path: '/my-plans',
+    name: 'MyPlans',
+    component: MyPlansPage,
+    meta: { title: 'My Plans - LittleWell' },
+  },
+
   {
     path: '/:pathMatch(.*)*',
     redirect: '/',

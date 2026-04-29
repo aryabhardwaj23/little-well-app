@@ -21,6 +21,22 @@
               Lunchbox Plan
             </button>
 
+            <button
+              @click="router.push('/weekly-plan')"
+              class="text-[#2C5F2D] hover:bg-[#A8D5BA]/10 rounded-lg px-4 py-2 transition-colors"
+            >
+              <CalendarDays class="w-4 h-4 inline mr-2" />
+              Weekly Plan
+            </button>
+
+            <button
+              @click="router.push('/my-plans')"
+              class="text-[#2C5F2D] hover:bg-[#A8D5BA]/10 rounded-lg px-4 py-2 transition-colors"
+            >
+              <BookmarkCheck class="w-4 h-4 inline mr-2" />
+              My Plans
+            </button>
+
             <button disabled class="text-muted-foreground cursor-not-allowed relative px-4 py-2">
               <BookOpen class="w-4 h-4 inline mr-2" />
               Knowledge Hub
@@ -72,7 +88,7 @@
               Science-backed nutrition with fresh, seasonal ingredients.
             </p>
 
-            <!-- CTA Added -->
+            <!-- CTA Buttons -->
             <div class="mt-8 flex flex-col sm:flex-row gap-4">
               <button
                 @click="handleAddChild"
@@ -86,6 +102,13 @@
                 class="bg-white/20 hover:bg-white/30 text-white border border-white/40 rounded-lg px-8 py-4 text-lg font-semibold transition-colors"
               >
                 Quick Start
+              </button>
+
+              <button
+                @click="router.push('/weekly-plan')"
+                class="bg-white text-[#2C5F2D] hover:bg-[#FAF9F6] rounded-lg px-8 py-4 text-lg font-semibold transition-colors shadow-md"
+              >
+                Weekly Plan
               </button>
             </div>
           </div>
@@ -211,18 +234,56 @@
             <div class="w-16 h-16 bg-[#F7B267] rounded-full flex items-center justify-center flex-shrink-0">
               <Zap class="w-8 h-8 text-white" />
             </div>
+
             <div class="flex-1">
               <h2 class="text-2xl mb-2">Start a Quick Meal Plan</h2>
               <p class="text-muted-foreground">
                 Get simple, balanced meal ideas instantly without creating a profile
               </p>
             </div>
+
             <button
               @click="router.push('/quick-start')"
               class="bg-[#F7B267] hover:bg-[#E5A156] text-white rounded-lg px-8 py-3 transition-colors"
             >
               Start Now
             </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3.5: Weekly Meal Planning -->
+    <div class="py-12 bg-white">
+      <div class="container mx-auto px-6 max-w-6xl">
+        <div class="p-8 rounded-2xl shadow-sm border-2 border-[#A8D5BA]/40 bg-gradient-to-r from-[#A8D5BA]/10 to-[#CDE7F0]/20">
+          <div class="flex flex-col md:flex-row md:items-center gap-8">
+            <div class="w-16 h-16 bg-[#A8D5BA] rounded-full flex items-center justify-center flex-shrink-0">
+              <CalendarDays class="w-8 h-8 text-[#2C5F2D]" />
+            </div>
+
+            <div class="flex-1">
+              <h2 class="text-2xl mb-2">Build a Weekly Lunchbox Plan</h2>
+              <p class="text-muted-foreground leading-relaxed">
+                Plan several cooking days at once, reuse meals across the week, and save plans for busy school mornings.
+              </p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3">
+              <button
+                @click="router.push('/weekly-plan')"
+                class="bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg px-8 py-3 font-semibold transition-colors"
+              >
+                Start Weekly Plan
+              </button>
+
+              <button
+                @click="router.push('/my-plans')"
+                class="bg-white hover:bg-[#FAF9F6] text-[#2C5F2D] border border-[#A8D5BA] rounded-lg px-8 py-3 font-semibold transition-colors"
+              >
+                My Saved Plans
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -258,11 +319,13 @@
                   class="mt-1"
                   @click.stop
                 />
+
                 <div class="flex-1">
                   <h4 class="font-medium mb-1">{{ profile.name }}</h4>
                   <p class="text-sm text-muted-foreground mb-2">
                     {{ profile.ageGroup }}
                   </p>
+
                   <div v-if="profile.nutritionFocus.length > 0" class="flex flex-wrap gap-1">
                     <span
                       v-for="focus in profile.nutritionFocus.slice(0, 2)"
@@ -315,6 +378,7 @@
               <div class="w-14 h-14 bg-[#A8D5BA] rounded-full flex items-center justify-center flex-shrink-0">
                 <BookOpen class="w-7 h-7 text-[#2C5F2D]" />
               </div>
+
               <div>
                 <h3 class="text-xl mb-2">Nutrition Knowledge Hub</h3>
                 <p class="text-muted-foreground text-sm leading-relaxed">
@@ -328,10 +392,12 @@
                 <div class="w-1.5 h-1.5 bg-[#A8D5BA] rounded-full"></div>
                 <span>Understanding food additives and preservatives</span>
               </div>
+
               <div class="flex items-center gap-2">
                 <div class="w-1.5 h-1.5 bg-[#A8D5BA] rounded-full"></div>
                 <span>How sugar affects brain development and mood</span>
               </div>
+
               <div class="flex items-center gap-2">
                 <div class="w-1.5 h-1.5 bg-[#A8D5BA] rounded-full"></div>
                 <span>Making informed choices for your family</span>
@@ -349,6 +415,7 @@
               <div class="w-14 h-14 bg-[#F7B267] rounded-full flex items-center justify-center flex-shrink-0">
                 <ScanLine class="w-7 h-7 text-white" />
               </div>
+
               <div>
                 <h3 class="text-xl mb-2">Smart Label Reader</h3>
                 <p class="text-muted-foreground text-sm leading-relaxed">
@@ -362,10 +429,12 @@
                 <div class="w-1.5 h-1.5 bg-[#F7B267] rounded-full"></div>
                 <span>Scan product labels with your phone</span>
               </div>
+
               <div class="flex items-center gap-2">
                 <div class="w-1.5 h-1.5 bg-[#F7B267] rounded-full"></div>
                 <span>Instant breakdown of nutritional content</span>
               </div>
+
               <div class="flex items-center gap-2">
                 <div class="w-1.5 h-1.5 bg-[#F7B267] rounded-full"></div>
                 <span>Identify hidden sugars and additives</span>
@@ -435,6 +504,8 @@ import {
   BookOpen,
   ScanLine,
   Menu,
+  CalendarDays,
+  BookmarkCheck,
 } from 'lucide-vue-next';
 import { getChildren, deleteChild } from '../services/api';
 
@@ -560,7 +631,7 @@ const handleDeleteProfile = async (profileId, profileName) => {
 
   try {
     await deleteChild(profileId);
-    
+
     selectedForFamily.value = selectedForFamily.value.filter(
       (id) => String(id) !== String(profileId)
     );
