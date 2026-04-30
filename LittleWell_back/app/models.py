@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, Date, func
+from sqlalchemy import Column, Integer, String, Text, DateTime, Date, func, ForeignKey
+from sqlalchemy.orm import relationship
 from .db import Base
 
 
@@ -96,3 +97,73 @@ class Season(Base):
     season = Column(String(50), nullable=False)
     start_date = Column(Date, nullable=True)
     end_date = Column(Date, nullable=True)
+
+
+class WeeklyPlan(Base):
+    __tablename__ = "weekly_plan"
+
+    plan_id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, nullable=False)
+
+    plan_name = Column(String(150), nullable=False)
+    plan_type = Column(String(50), default="weekly")
+
+    cook_frequency = Column(Integer, nullable=False)
+    variety_preference = Column(String(50), nullable=True)
+    meal_style = Column(String(50), nullable=True)
+
+    season_id = Column(Integer, nullable=True)
+    status = Column(String(30), default="active")
+
+    created_at = Column(DateTime, server_default=func.now())
+    updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
+
+    children = relationship(
+        "WeeklyPlanChild",
+        cascade="all, delete-orphan",
+        back_populates="plan",
+    )
+
+    meals = relationship(
+        "WeeklyPlanMeal",
+        cascade="all, delete-orphan",
+        back_populates="plan",
+    )
+
+
+class WeeklyPlanChild(Base):
+    __tablename__ = "weekly_plan_child"
+
+    plan_child_id = Column(Integer, primary_key=True, index=True)
+    plan_id = Column(Integer, ForeignKey("weekly_plan.plan_id"), nullable=False)
+    child_id = Column(Integer, ForeignKey("user_child.child_id"), nullable=False)
+
+    plan = relationship("WeeklyPlan", back_populates="children")
+
+
+class WeeklyPlanMeal(Base):
+    __tablename__ = "weekly_plan_meal"
+
+    meal_id = Column(Integer, primary_key=True, index=True)
+    plan_id = Column(Integer, ForeignKey("weekly_plan.plan_id"), nullable=False)
+
+    reference_food_id = Column(Integer, nullable=True)
+
+    cook_day = Column(String(50), nullable=False)
+    cover_days = Column(String(100), nullable=True)
+
+    meal_title = Column(String(150), nullable=False)
+
+    servings = Column(Integer, nullable=True)
+    prep_time_minutes = Column(Integer, nullable=True)
+
+    nutrition_tags = Column(String(255), nullable=True)
+    seasonal_note = Column(Text, nullable=True)
+    storage_tip = Column(Text, nullable=True)
+
+    recipe_id = Column(Integer, nullable=True)
+    image_url = Column(Text, nullable=True)
+
+    created_at = Column(DateTime, server_default=func.now())
+
+    plan = relationship("WeeklyPlan", back_populates="meals")
