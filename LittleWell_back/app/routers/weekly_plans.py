@@ -31,7 +31,6 @@ def get_or_create_demo_user(db: Session) -> int:
 
 
 def normalize_cook_frequency(value) -> int:
-
     if value is None:
         return 2
 
@@ -41,46 +40,106 @@ def normalize_cook_frequency(value) -> int:
     text = str(value).strip().lower()
 
     mapping = {
-        "2": 2,
+        "once": 1,
+        "1": 1,
+
         "twice": 2,
         "two": 2,
-        "2_times": 2,
+        "2": 2,
         "2 times": 2,
         "2 times per week": 2,
 
-        "3": 3,
-        "three": 3,
         "three_times": 3,
-        "3_times": 3,
+        "three": 3,
+        "3": 3,
         "3 times": 3,
         "3 times per week": 3,
 
-        "5": 5,
+        "daily": 5,
         "five": 5,
-        "five_times": 5,
-        "5_times": 5,
+        "5": 5,
         "5 times": 5,
         "5 times per week": 5,
     }
 
-    if text in mapping:
-        return mapping[text]
-
-    try:
-        return int(text)
-    except ValueError:
-        return 2
+    return mapping.get(text, 2)
 
 
 def cook_frequency_to_db_value(value: int) -> str:
-
     mapping = {
+        1: "once",
         2: "twice",
         3: "three_times",
-        5: "five_times",
+        5: "daily",
     }
 
     return mapping.get(value, "twice")
+
+
+def variety_to_db_value(value) -> str:
+    if not value:
+        return "medium"
+
+    text = str(value).strip().lower()
+
+    mapping = {
+        "keep it simple": "low",
+        "simple": "low",
+        "low": "low",
+
+        "balanced": "medium",
+        "medium": "medium",
+
+        "more variety": "high",
+        "high": "high",
+    }
+
+    return mapping.get(text, "medium")
+
+
+def meal_style_to_db_value(value) -> str:
+    if not value:
+        return "mixed"
+
+    text = str(value).strip().lower()
+
+    mapping = {
+        "quick & simple": "traditional",
+        "quick and simple": "traditional",
+        "simple": "traditional",
+        "traditional": "traditional",
+
+        "mix of simple and varied": "mixed",
+        "mixed": "mixed",
+
+        "asian": "asian",
+        "mediterranean": "mediterranean",
+        "vegetarian": "vegetarian",
+    }
+
+    return mapping.get(text, "mixed")
+
+
+def cook_day_to_db_value(value) -> str:
+    if not value:
+        return "Monday"
+
+    text = str(value).strip()
+
+    # Frontend may send "Cook on Sunday"
+    text = text.replace("Cook on ", "").strip()
+
+    valid_days = {
+        "monday": "Monday",
+        "tuesday": "Tuesday",
+        "wednesday": "Wednesday",
+        "thursday": "Thursday",
+        "friday": "Friday",
+        "saturday": "Saturday",
+        "sunday": "Sunday",
+    }
+
+    return valid_days.get(text.lower(), "Monday")
 
 
 def build_plan_response(db: Session, plan: WeeklyPlan) -> dict:
@@ -125,9 +184,7 @@ def build_plan_response(db: Session, plan: WeeklyPlan) -> dict:
         "plan_id": plan.plan_id,
         "user_id": plan.user_id,
         "plan_name": plan.plan_name,
-
         "cook_frequency": normalize_cook_frequency(plan.cook_frequency),
-
         "variety_preference": plan.variety_preference,
         "meal_style": plan.meal_style,
         "season_id": plan.season_id,
@@ -172,12 +229,9 @@ def create_weekly_plan(payload: WeeklyPlanCreate, db: Session = Depends(get_db))
     plan = WeeklyPlan(
         user_id=user_id,
         plan_name=payload.plan_name,
-
-        # Store in the same format as your database currently uses.
         cook_frequency=cook_frequency_to_db_value(payload.cook_frequency),
-
-        variety_preference=payload.variety_preference,
-        meal_style=payload.meal_style,
+        variety_preference=variety_to_db_value(payload.variety_preference),
+        meal_style=meal_style_to_db_value(payload.meal_style),
         season_id=payload.season_id,
         status=payload.status or "active",
     )
@@ -198,7 +252,7 @@ def create_weekly_plan(payload: WeeklyPlanCreate, db: Session = Depends(get_db))
             WeeklyPlanMeal(
                 plan_id=plan.plan_id,
                 reference_food_id=meal.reference_food_id,
-                cook_day=meal.cook_day,
+                cook_day=cook_day_to_db_value(meal.cook_day),
                 cover_days=meal.cover_days,
                 meal_title=meal.meal_title,
                 servings=meal.servings,
@@ -285,10 +339,7 @@ def duplicate_weekly_plan(plan_id: int, db: Session = Depends(get_db)):
     new_plan = WeeklyPlan(
         user_id=old_plan.user_id,
         plan_name=f"{old_plan.plan_name} Copy",
-
-        # Keep the existing DB format.
         cook_frequency=old_plan.cook_frequency,
-
         variety_preference=old_plan.variety_preference,
         meal_style=old_plan.meal_style,
         season_id=old_plan.season_id,

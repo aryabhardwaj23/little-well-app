@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, Date, func, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, DateTime, Date, func, ForeignKey, Numeric
 from sqlalchemy.orm import relationship
 
 from .db import Base
@@ -109,12 +109,19 @@ class WeeklyPlan(Base):
 
     plan_name = Column(String(150), nullable=False)
 
-    cook_frequency = Column(Integer, nullable=False)
-    variety_preference = Column(String(50), nullable=True)
-    meal_style = Column(String(50), nullable=True)
+    # DB enum: 'once', 'twice', 'three_times', 'daily'
+    cook_frequency = Column(String(50), nullable=False)
+
+    # DB enum: 'low', 'medium', 'high'
+    variety_preference = Column(String(50), nullable=False)
+
+    # DB enum: 'traditional', 'asian', 'mediterranean', 'vegetarian', 'mixed'
+    meal_style = Column(String(50), nullable=False)
 
     season_id = Column(Integer, nullable=True)
-    status = Column(String(30), default="active")
+
+    # DB enum: 'draft', 'active', 'completed', 'archived'
+    status = Column(String(30), default="active", nullable=False)
 
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
@@ -150,20 +157,28 @@ class WeeklyPlanMeal(Base):
 
     reference_food_id = Column(Integer, nullable=True)
 
-    cook_day = Column(String(50), nullable=False)
+    # DB enum: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
+    cook_day = Column(String(20), nullable=False)
+
     cover_days = Column(String(100), nullable=True)
 
-    meal_title = Column(String(150), nullable=False)
+    # DB varchar(200)
+    meal_title = Column(String(200), nullable=False)
 
-    servings = Column(Integer, nullable=True)
+    # DB decimal(4,1)
+    servings = Column(Numeric(4, 1), nullable=False, default=1.0)
+
     prep_time_minutes = Column(Integer, nullable=True)
 
+    # DB varchar(255)
     nutrition_tags = Column(String(255), nullable=True)
-    seasonal_note = Column(Text, nullable=True)
-    storage_tip = Column(Text, nullable=True)
+    seasonal_note = Column(String(255), nullable=True)
+    storage_tip = Column(String(255), nullable=True)
 
     recipe_id = Column(Integer, nullable=True)
-    image_url = Column(Text, nullable=True)
+
+    # DB varchar(500)
+    image_url = Column(String(500), nullable=True)
 
     created_at = Column(DateTime, server_default=func.now())
 
