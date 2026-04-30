@@ -108,7 +108,6 @@ class WeeklyPlan(Base):
     user_id = Column(Integer, nullable=False)
 
     plan_name = Column(String(150), nullable=False)
-    plan_type = Column(String(50), default="weekly")
 
     cook_frequency = Column(Integer, nullable=False)
     variety_preference = Column(String(50), nullable=True)

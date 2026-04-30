@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field
 from typing import List, Optional
 from datetime import datetime
 
+
 class ChildBase(BaseModel):
     child_name: str
     age_band: str
@@ -57,6 +58,7 @@ class LunchboxCard(BaseModel):
 class RecommendationResponse(BaseModel):
     needsSupport: List[str]
     lunchboxes: List[LunchboxCard]
+
 
 class WeeklyPlanMealCreate(BaseModel):
     reference_food_id: Optional[int] = None
@@ -129,7 +131,6 @@ class WeeklyPlanResponse(BaseModel):
     user_id: int
 
     plan_name: str
-    plan_type: Optional[str] = "weekly"
 
     cook_frequency: int
     variety_preference: Optional[str] = None

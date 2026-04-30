@@ -72,7 +72,6 @@ def build_plan_response(db: Session, plan: WeeklyPlan) -> dict:
         "plan_id": plan.plan_id,
         "user_id": plan.user_id,
         "plan_name": plan.plan_name,
-        "plan_type": plan.plan_type,
         "cook_frequency": plan.cook_frequency,
         "variety_preference": plan.variety_preference,
         "meal_style": plan.meal_style,
@@ -118,7 +117,6 @@ def create_weekly_plan(payload: WeeklyPlanCreate, db: Session = Depends(get_db))
     plan = WeeklyPlan(
         user_id=user_id,
         plan_name=payload.plan_name,
-        plan_type="weekly",
         cook_frequency=payload.cook_frequency,
         variety_preference=payload.variety_preference,
         meal_style=payload.meal_style,
@@ -229,7 +227,6 @@ def duplicate_weekly_plan(plan_id: int, db: Session = Depends(get_db)):
     new_plan = WeeklyPlan(
         user_id=old_plan.user_id,
         plan_name=f"{old_plan.plan_name} Copy",
-        plan_type=old_plan.plan_type,
         cook_frequency=old_plan.cook_frequency,
         variety_preference=old_plan.variety_preference,
         meal_style=old_plan.meal_style,
