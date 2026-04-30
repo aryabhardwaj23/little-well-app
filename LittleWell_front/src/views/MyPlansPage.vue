@@ -335,3 +335,277 @@
     </div>
   </div>
 </template>
+
+<script setup>
+import { ref, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import {
+  ArrowLeft,
+  BookmarkCheck,
+  CalendarDays,
+  UtensilsCrossed,
+  Plus,
+  Clock,
+  ChefHat,
+  Leaf,
+  Eye,
+  Edit,
+  Copy,
+  Trash2,
+  Sparkles,
+  Settings,
+} from 'lucide-vue-next';
+import {
+  getWeeklyPlans,
+  deleteWeeklyPlan,
+  duplicateWeeklyPlan,
+} from '../services/api';
+
+const router = useRouter();
+
+const activeTab = ref('weekly');
+const savedPlans = ref([]);
+const savedLunchboxes = ref([]);
+const showReusePrompt = ref(true);
+
+const isLoading = ref(false);
+const errorMessage = ref('');
+
+const parseTags = (tags) => {
+  if (Array.isArray(tags)) return tags;
+  if (!tags) return [];
+
+  return String(tags)
+    .split(',')
+    .map((tag) => tag.trim())
+    .filter(Boolean);
+};
+
+const normalizeChildren = (children) => {
+  if (!Array.isArray(children)) return [];
+
+  return children
+    .map((child) => {
+      if (typeof child === 'string') return child;
+      return child.child_name || child.name || child.childName || '';
+    })
+    .filter(Boolean);
+};
+
+const normalizeLunchbox = (meal, index = 0) => {
+  const lunchbox = meal.lunchbox || {};
+  const items = lunchbox.items || meal.items || meal.lunchbox_items || [];
+
+  return {
+    id:
+      lunchbox.id ||
+      meal.reference_food_id ||
+      meal.lunchbox_id ||
+      meal.source_id ||
+      `db-${index}`,
+
+    reference_food_id:
+      lunchbox.reference_food_id ||
+      meal.reference_food_id ||
+      null,
+
+    title:
+      lunchbox.title ||
+      meal.meal_title ||
+      meal.mealName ||
+      meal.lunchbox_title ||
+      'Database Lunchbox',
+
+    nutritionFocus: parseTags(lunchbox.nutritionFocus || meal.nutrition_tags || meal.tags),
+    whyThisMeal: lunchbox.whyThisMeal || meal.whyThisMeal || '',
+    items: Array.isArray(items) ? items : [],
+  };
+};
+
+const normalizeRecipe = (meal, index = 0) => {
+  const recipe = meal.recipe || {};
+
+  return {
+    id: recipe.id || meal.recipe_id || meal.recipeId || null,
+
+    title:
+      recipe.title ||
+      meal.recipe_title ||
+      meal.recipeName ||
+      (meal.recipe_id ? `Recipe #${meal.recipe_id}` : 'Recipe Inspiration'),
+
+    image:
+      recipe.image ||
+      recipe.heroImage ||
+      recipe.mealImage ||
+      meal.image_url ||
+      meal.heroImage ||
+      meal.mealImage ||
+      '',
+
+    category: recipe.category || meal.category || '',
+    area: recipe.area || meal.area || '',
+    nutritionFocus: parseTags(recipe.nutritionFocus || meal.recipe_tags),
+    whyThisMeal: recipe.whyThisMeal || meal.recipe_note || '',
+  };
+};
+
+const normalizeMeal = (meal, index = 0) => {
+  return {
+    id: meal.meal_id || meal.id || `meal-${index}`,
+    cookDay: meal.cook_day || meal.cookDay || meal.title || `Cook Session ${index + 1}`,
+    coverDays: meal.cover_days || meal.coverDays || meal.covers || 'Selected days',
+    prepTime: meal.prep_time_minutes ? `${meal.prep_time_minutes} mins` : meal.prepTime || '30 mins',
+    lunchbox: normalizeLunchbox(meal, index),
+    recipe: normalizeRecipe(meal, index),
+  };
+};
+
+const normalizePlan = (plan) => {
+  const meals = plan.meals || plan.batches || [];
+
+  return {
+    id: plan.plan_id || plan.id,
+    type: 'weekly',
+    name: plan.plan_name || plan.name || 'Untitled Weekly Plan',
+    cookingFrequency: plan.cook_frequency || plan.cookingFrequency || meals.length || 0,
+    season: plan.season || plan.season_name || getSeasonNameFromId(plan.season_id) || 'Seasonal',
+    children: normalizeChildren(plan.children),
+    batches: Array.isArray(meals) ? meals.map(normalizeMeal) : [],
+    varietyPreference: plan.variety_preference || plan.varietyPreference,
+    mealStyle: plan.meal_style || plan.mealStyle,
+    createdAt: plan.created_at || plan.createdAt || new Date().toISOString(),
+  };
+};
+
+const getSeasonNameFromId = (seasonId) => {
+  const seasonMap = {
+    1: 'Spring',
+    2: 'Summer',
+    3: 'Autumn',
+    4: 'Winter',
+  };
+
+  return seasonMap[Number(seasonId)] || '';
+};
+
+const loadSavedPlans = async () => {
+  try {
+    isLoading.value = true;
+    errorMessage.value = '';
+
+    const plans = await getWeeklyPlans();
+    savedPlans.value = Array.isArray(plans) ? plans.map(normalizePlan) : [];
+
+    const localPlans = localStorage.getItem('nutriguide_saved_plans');
+    const parsedLocalPlans = localPlans ? JSON.parse(localPlans) : [];
+    savedLunchboxes.value = parsedLocalPlans.filter((plan) => plan.type === 'lunchbox');
+  } catch (error) {
+    console.error('Failed to load saved plans:', error);
+    errorMessage.value = error.message || 'Failed to load saved plans.';
+    savedPlans.value = [];
+
+    const localPlans = localStorage.getItem('nutriguide_saved_plans');
+    const parsedLocalPlans = localPlans ? JSON.parse(localPlans) : [];
+    savedLunchboxes.value = parsedLocalPlans.filter((plan) => plan.type === 'lunchbox');
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+onMounted(() => {
+  loadSavedPlans();
+});
+
+const weeklyPlans = computed(() => {
+  return savedPlans.value.filter((plan) => plan.type === 'weekly');
+});
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  if (Number.isNaN(date.getTime())) return 'Recently';
+
+  const now = new Date();
+  const diffTime = Math.abs(now - date);
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 0) return 'Today';
+  if (diffDays === 1) return 'Yesterday';
+  if (diffDays < 7) return `${diffDays} days ago`;
+  if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+};
+
+const handleViewPlan = (plan) => {
+  router.push(`/weekly-plan?mode=view&planId=${plan.id}`);
+};
+
+const handleEditPlan = (plan) => {
+  router.push(`/weekly-plan?mode=edit&planId=${plan.id}`);
+};
+
+const handleReusePlan = (plan) => {
+  router.push(`/weekly-plan?mode=reuse&planId=${plan.id}`);
+};
+
+const handleAdjustPlan = (plan) => {
+  router.push(`/weekly-plan?mode=adjust&planId=${plan.id}`);
+};
+
+const handleDuplicatePlan = async (plan) => {
+  try {
+    errorMessage.value = '';
+    await duplicateWeeklyPlan(plan.id);
+    await loadSavedPlans();
+  } catch (error) {
+    console.error('Failed to duplicate plan:', error);
+    errorMessage.value =
+      error.message ||
+      'Duplicate failed. Check that POST /weekly-plans/{plan_id}/duplicate exists in the backend.';
+  }
+};
+
+const handleDeletePlan = async (planId) => {
+  if (!confirm('Are you sure you want to delete this plan?')) return;
+
+  try {
+    errorMessage.value = '';
+    await deleteWeeklyPlan(planId);
+    savedPlans.value = savedPlans.value.filter((plan) => String(plan.id) !== String(planId));
+  } catch (error) {
+    console.error('Failed to delete plan:', error);
+    errorMessage.value = error.message || 'Failed to delete plan. Please try again.';
+  }
+};
+
+const handleDeleteLunchbox = (lunchboxId) => {
+  if (!confirm('Are you sure you want to delete this lunchbox?')) return;
+
+  savedLunchboxes.value = savedLunchboxes.value.filter(
+    (lunchbox) => String(lunchbox.id) !== String(lunchboxId)
+  );
+
+  const localPlans = localStorage.getItem('nutriguide_saved_plans');
+  const parsedLocalPlans = localPlans ? JSON.parse(localPlans) : [];
+  const updatedLocalPlans = parsedLocalPlans.filter(
+    (plan) => String(plan.id) !== String(lunchboxId)
+  );
+
+  localStorage.setItem('nutriguide_saved_plans', JSON.stringify(updatedLocalPlans));
+};
+
+const handleImageError = (event) => {
+  event.target.style.display = 'none';
+};
+</script>
+
+<style scoped>
+.text-muted-foreground {
+  color: #6b7280;
+}
+</style>
