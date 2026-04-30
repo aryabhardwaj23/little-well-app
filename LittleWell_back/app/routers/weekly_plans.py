@@ -30,6 +30,59 @@ def get_or_create_demo_user(db: Session) -> int:
     return user.user_id
 
 
+def normalize_cook_frequency(value) -> int:
+
+    if value is None:
+        return 2
+
+    if isinstance(value, int):
+        return value
+
+    text = str(value).strip().lower()
+
+    mapping = {
+        "2": 2,
+        "twice": 2,
+        "two": 2,
+        "2_times": 2,
+        "2 times": 2,
+        "2 times per week": 2,
+
+        "3": 3,
+        "three": 3,
+        "three_times": 3,
+        "3_times": 3,
+        "3 times": 3,
+        "3 times per week": 3,
+
+        "5": 5,
+        "five": 5,
+        "five_times": 5,
+        "5_times": 5,
+        "5 times": 5,
+        "5 times per week": 5,
+    }
+
+    if text in mapping:
+        return mapping[text]
+
+    try:
+        return int(text)
+    except ValueError:
+        return 2
+
+
+def cook_frequency_to_db_value(value: int) -> str:
+
+    mapping = {
+        2: "twice",
+        3: "three_times",
+        5: "five_times",
+    }
+
+    return mapping.get(value, "twice")
+
+
 def build_plan_response(db: Session, plan: WeeklyPlan) -> dict:
     child_links = (
         db.query(WeeklyPlanChild)
@@ -72,7 +125,9 @@ def build_plan_response(db: Session, plan: WeeklyPlan) -> dict:
         "plan_id": plan.plan_id,
         "user_id": plan.user_id,
         "plan_name": plan.plan_name,
-        "cook_frequency": plan.cook_frequency,
+
+        "cook_frequency": normalize_cook_frequency(plan.cook_frequency),
+
         "variety_preference": plan.variety_preference,
         "meal_style": plan.meal_style,
         "season_id": plan.season_id,
@@ -117,7 +172,10 @@ def create_weekly_plan(payload: WeeklyPlanCreate, db: Session = Depends(get_db))
     plan = WeeklyPlan(
         user_id=user_id,
         plan_name=payload.plan_name,
-        cook_frequency=payload.cook_frequency,
+
+        # Store in the same format as your database currently uses.
+        cook_frequency=cook_frequency_to_db_value(payload.cook_frequency),
+
         variety_preference=payload.variety_preference,
         meal_style=payload.meal_style,
         season_id=payload.season_id,
@@ -227,7 +285,10 @@ def duplicate_weekly_plan(plan_id: int, db: Session = Depends(get_db)):
     new_plan = WeeklyPlan(
         user_id=old_plan.user_id,
         plan_name=f"{old_plan.plan_name} Copy",
+
+        # Keep the existing DB format.
         cook_frequency=old_plan.cook_frequency,
+
         variety_preference=old_plan.variety_preference,
         meal_style=old_plan.meal_style,
         season_id=old_plan.season_id,
