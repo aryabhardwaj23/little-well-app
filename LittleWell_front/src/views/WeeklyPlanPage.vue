@@ -595,6 +595,16 @@ const isActiveStatus = (value) => {
   return value === 1 || value === '1' || value === true;
 };
 
+const toNullableInteger = (value) => {
+  if (value === null || value === undefined || value === '') {
+    return null;
+  }
+
+  const number = Number(value);
+
+  return Number.isInteger(number) ? number : null;
+};
+
 const parseTags = (tags) => {
   if (Array.isArray(tags)) return tags;
   if (!tags) return [];
@@ -688,12 +698,15 @@ const getSectionColor = (section) => {
 const normalizeDatabaseLunchbox = (lunchbox, index = 0) => {
   const items = Array.isArray(lunchbox.items) ? lunchbox.items : [];
 
-  const referenceFoodId =
+  const rawReferenceFoodId =
     lunchbox.reference_food_id ||
     lunchbox.referenceFoodId ||
-    lunchbox.id ||
     lunchbox.product_id ||
+    lunchbox.food_id ||
+    lunchbox.reference_id ||
     null;
+
+  const referenceFoodId = toNullableInteger(rawReferenceFoodId);
 
   return {
     id: referenceFoodId || lunchbox.lunchbox_id || `db-${index}`,
@@ -708,11 +721,14 @@ const normalizeDatabaseLunchbox = (lunchbox, index = 0) => {
     items:
       items.length > 0
         ? items.map((item) => ({
-            reference_food_id:
+            reference_food_id: toNullableInteger(
               item.reference_food_id ||
-              item.referenceFoodId ||
-              item.id ||
-              null,
+                item.referenceFoodId ||
+                item.product_id ||
+                item.food_id ||
+                item.reference_id ||
+                null
+            ),
             name: item.name || item.product_name || item.title || 'Food item',
             amount: item.amount || item.serving || item.quantity || 'Recommended item',
             section: item.section || item.type || 'ingredient',
@@ -848,14 +864,20 @@ const buildWeeklyBatches = (lunchboxes, recipes) => {
 };
 
 const getReferenceFoodId = (batch) => {
-  return (
+  const possibleId =
     batch.lunchbox.reference_food_id ||
     batch.lunchbox.referenceFoodId ||
-    batch.lunchbox.id ||
     batch.lunchbox.items?.[0]?.reference_food_id ||
     batch.lunchbox.items?.[0]?.referenceFoodId ||
-    null
-  );
+    batch.lunchbox.items?.[0]?.product_id ||
+    batch.lunchbox.items?.[0]?.food_id ||
+    batch.lunchbox.items?.[0]?.id ||
+    batch.lunchbox.product_id ||
+    batch.lunchbox.food_id ||
+    batch.lunchbox.id ||
+    null;
+
+  return toNullableInteger(possibleId);
 };
 
 const loadChildren = async () => {
@@ -1028,7 +1050,7 @@ const savePlan = async () => {
     season_id: getSeasonId(),
     status: 'active',
 
-    meals: weeklyBatches.value.map((batch, index) => ({
+    meals: weeklyBatches.value.map((batch) => ({
       reference_food_id: getReferenceFoodId(batch),
       cook_day: batch.cookDay,
       cover_days: batch.coverDays,
@@ -1040,9 +1062,8 @@ const savePlan = async () => {
         : '',
       seasonal_note: batch.seasonalNote,
       storage_tip: batch.storageTip,
-      recipe_id: batch.recipe.id ? Number(batch.recipe.id) || null : null,
+      recipe_id: toNullableInteger(batch.recipe.id),
       image_url: batch.recipe.image || null,
-      display_order: index,
     })),
   };
 
