@@ -996,10 +996,15 @@ const openRecipe = (recipe) => {
 
   const recipeBaseChildId = selectedChildren.value[0] || '';
 
+  const selectedProfile = profiles.value.find(
+    (profile) => String(profile.id) === String(recipeBaseChildId)
+  );
+
   router.push({
     path: `/recipe/${encodeURIComponent(recipe.id)}`,
     query: {
       childId: recipeBaseChildId,
+      childName: selectedProfile?.name || recipe.childName || '',
       source: 'mealdb',
       from: 'weekly-plan',
     },
