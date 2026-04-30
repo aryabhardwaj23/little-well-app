@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Text, DateTime, Date, func, ForeignKey
 from sqlalchemy.orm import relationship
+
 from .db import Base
 
 
@@ -81,11 +82,12 @@ class ProductAllergen(Base):
     allergen_name = Column(String(100), nullable=True)
     canonical_allergen = Column(String(100), nullable=True)
 
+
 class SeasonalProduce(Base):
     __tablename__ = "seasonal_produce"
 
     produce_name = Column(String(255), primary_key=True)
-    produce_type = Column(String(100), nullable=True)   # fruit / vegetable / veggie ...
+    produce_type = Column(String(100), nullable=True)
     season_id = Column(Integer, nullable=False)
     season_status = Column(String(100), nullable=True)
 
