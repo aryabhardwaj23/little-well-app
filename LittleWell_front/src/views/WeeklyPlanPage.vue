@@ -497,3 +497,570 @@
     </div>
   </div>
 </template>
+
+<script setup>
+import { ref, onMounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import {
+  ArrowLeft,
+  ChefHat,
+  CalendarDays,
+  Leaf,
+  BookmarkPlus,
+  RefreshCw,
+  CalendarCheck,
+  Clock,
+  AlertCircle,
+  BookOpen,
+  Sparkles,
+  Info,
+} from 'lucide-vue-next';
+import {
+  getChildren,
+  getRecommendedProducts,
+  getFamilyRecommendedProducts,
+  getChildMealRecommendations,
+  createWeeklyPlan,
+  getWeeklyPlanById,
+} from '../services/api';
+
+const router = useRouter();
+const route = useRoute();
+
+const profiles = ref([]);
+const selectedChildren = ref([]);
+const cookingFrequency = ref(null);
+const varietyPreference = ref('Balanced');
+const mealStyle = ref('Mix of simple and varied');
+
+const planGenerated = ref(false);
+const showSaveDialog = ref(false);
+const planName = ref('');
+const weeklyBatches = ref([]);
+
+const databaseLunchboxes = ref([]);
+const apiRecipes = ref([]);
+
+const isLoading = ref(false);
+const isGenerating = ref(false);
+const isSaving = ref(false);
+const errorMessage = ref('');
+
+const frequencyOptions = [
+  {
+    value: 2,
+    label: '2 times per week',
+    description: 'Cook less, reuse more',
+    activeClass: 'border-[#A8D5BA] bg-[#A8D5BA]/10',
+    iconClass: 'bg-[#A8D5BA]',
+    iconTextClass: 'text-white',
+  },
+  {
+    value: 3,
+    label: '3 times per week',
+    description: 'Balanced between variety and effort',
+    activeClass: 'border-[#F7B267] bg-[#F7B267]/10',
+    iconClass: 'bg-[#F7B267]',
+    iconTextClass: 'text-white',
+  },
+  {
+    value: 5,
+    label: '5 times per week',
+    description: 'More variety, more fresh meals',
+    activeClass: 'border-[#CDE7F0] bg-[#CDE7F0]/20',
+    iconClass: 'bg-[#CDE7F0]',
+    iconTextClass: 'text-[#1B4965]',
+  },
+];
+
+const allergenIdToName = {
+  47: 'Peanuts',
+  40: 'Tree nuts',
+  16: 'Milk',
+  18: 'Eggs',
+  24: 'Wheat',
+  50: 'Soy',
+  22: 'Fish',
+  15: 'Shellfish',
+};
+
+const nutritionFocusLabels = {
+  iron: 'Iron Support',
+  calcium: 'Calcium Support',
+  vitamin_d: 'Vitamin D Support',
+  variety: 'Diet Variety',
+};
+
+const isActiveStatus = (value) => {
+  return value === 1 || value === '1' || value === true;
+};
+
+const parseTags = (tags) => {
+  if (Array.isArray(tags)) return tags;
+  if (!tags) return [];
+
+  return String(tags)
+    .split(',')
+    .map((tag) => tag.trim())
+    .filter(Boolean);
+};
+
+const mapAllergiesToNames = (allergies) => {
+  if (!Array.isArray(allergies)) return [];
+
+  return allergies.map((allergy) => {
+    if (typeof allergy === 'string' && Number.isNaN(Number(allergy))) return allergy;
+    const id = Number(allergy);
+    return allergenIdToName[id] || String(allergy);
+  });
+};
+
+const mapStatusToNutritionFocus = (child) => {
+  return [
+    isActiveStatus(child.iron_status) ? 'iron' : null,
+    isActiveStatus(child.calcium_status) ? 'calcium' : null,
+    isActiveStatus(child.vitamin_d_status) ? 'vitamin_d' : null,
+    isActiveStatus(child.variety_status) ? 'variety' : null,
+  ].filter(Boolean);
+};
+
+const mapChildToProfileCard = (child) => {
+  const focusIds = mapStatusToNutritionFocus(child);
+
+  return {
+    id: child.child_id,
+    name: child.child_name,
+    ageGroup: child.age_band,
+    allergies: mapAllergiesToNames(child.allergies),
+    dietaryRestriction: child.religious_needs || '',
+    nutritionFocus: focusIds.map((id) => nutritionFocusLabels[id]).filter(Boolean),
+  };
+};
+
+const getCurrentSeason = () => {
+  const month = new Date().getMonth();
+
+  if (month >= 8 && month <= 10) return 'spring';
+  if (month === 11 || month === 0 || month === 1) return 'summer';
+  if (month >= 2 && month <= 4) return 'autumn';
+
+  return 'winter';
+};
+
+const getSeasonIcon = () => {
+  return getCurrentSeason() === 'spring' ? Leaf : Sparkles;
+};
+
+const getSeasonName = () => {
+  const names = {
+    spring: 'Spring',
+    summer: 'Summer',
+    autumn: 'Autumn',
+    winter: 'Winter',
+  };
+
+  return names[getCurrentSeason()];
+};
+
+const getSeasonId = () => {
+  const seasonMap = {
+    spring: 1,
+    summer: 2,
+    autumn: 3,
+    winter: 4,
+  };
+
+  return seasonMap[getCurrentSeason()] || null;
+};
+
+const getSectionColor = (section) => {
+  const colors = {
+    carbs: 'bg-[#F7B267]',
+    protein: 'bg-[#A8D5BA]',
+    veggies: 'bg-[#8BC34A]',
+    fruit: 'bg-[#FF6B9D]',
+    ingredient: 'bg-[#CDE7F0]',
+  };
+
+  return colors[section] || 'bg-gray-300';
+};
+
+const normalizeDatabaseLunchbox = (lunchbox, index = 0) => {
+  const items = Array.isArray(lunchbox.items) ? lunchbox.items : [];
+
+  const referenceFoodId =
+    lunchbox.reference_food_id ||
+    lunchbox.referenceFoodId ||
+    lunchbox.id ||
+    lunchbox.product_id ||
+    null;
+
+  return {
+    id: referenceFoodId || lunchbox.lunchbox_id || `db-${index}`,
+    reference_food_id: referenceFoodId,
+    title: lunchbox.title || lunchbox.mealName || lunchbox.name || 'Database Lunchbox',
+    source: lunchbox.source || 'database',
+    category: lunchbox.category || '',
+    childName: lunchbox.childName || '',
+    supportType: lunchbox.supportType || 'general',
+    nutritionFocus: parseTags(lunchbox.nutritionFocus),
+    whyThisMeal: lunchbox.whyThisMeal || '',
+    items:
+      items.length > 0
+        ? items.map((item) => ({
+            reference_food_id:
+              item.reference_food_id ||
+              item.referenceFoodId ||
+              item.id ||
+              null,
+            name: item.name || item.product_name || item.title || 'Food item',
+            amount: item.amount || item.serving || item.quantity || 'Recommended item',
+            section: item.section || item.type || 'ingredient',
+          }))
+        : [
+            {
+              reference_food_id: referenceFoodId,
+              name: lunchbox.title || lunchbox.mealName || lunchbox.name || 'Recommended item',
+              amount: 'Recommended item',
+              section: 'ingredient',
+            },
+          ],
+  };
+};
+
+const normalizeApiRecipe = (meal, index = 0) => {
+  const id = meal.id || meal.idMeal || meal.recipe_id || meal.recipeId || `recipe-${index}`;
+
+  return {
+    id,
+    source: 'mealdb',
+    title: meal.title || meal.mealName || meal.strMeal || 'Recipe Inspiration',
+    image: meal.heroImage || meal.mealImage || meal.strMealThumb || meal.image_url || '',
+    category: meal.category || meal.strCategory || '',
+    area: meal.area || meal.strArea || '',
+    childName: meal.childName || '',
+    nutritionFocus: parseTags(meal.nutritionFocus),
+    whyThisMeal: meal.whyThisMeal || '',
+  };
+};
+
+const normalizeSavedMeal = (meal, index = 0) => {
+  const lunchbox = normalizeDatabaseLunchbox(
+    meal.lunchbox || {
+      reference_food_id: meal.reference_food_id,
+      id: meal.reference_food_id,
+      title: meal.meal_title || meal.mealName,
+      items: meal.items || meal.lunchbox_items || [],
+      nutritionFocus: meal.nutrition_tags || meal.tags,
+      whyThisMeal: meal.why_this_meal || meal.whyThisMeal,
+    },
+    index
+  );
+
+  const recipe = normalizeApiRecipe(
+    meal.recipe || {
+      id: meal.recipe_id,
+      title: meal.recipe_title || meal.recipeName || (meal.recipe_id ? `Recipe #${meal.recipe_id}` : ''),
+      image_url: meal.image_url,
+      category: meal.category,
+      area: meal.area,
+      nutritionFocus: meal.recipe_tags || meal.nutrition_tags,
+      whyThisMeal: meal.recipe_note || meal.whyThisMeal,
+    },
+    index
+  );
+
+  return {
+    id: meal.meal_id || meal.id || `saved-${index}`,
+    cookDay: meal.cook_day || meal.cookDay || meal.title || `Cook Session ${index + 1}`,
+    coverDays: meal.cover_days || meal.coverDays || meal.covers || 'Selected days',
+    prepTime: meal.prep_time_minutes ? `${meal.prep_time_minutes} mins` : meal.prepTime || '30 mins',
+    seasonalNote: meal.seasonal_note || meal.seasonalNote || 'Selected with seasonal ingredients.',
+    storageTip: meal.storage_tip || meal.storageTip || 'Store safely in the fridge and keep chilled.',
+    lunchbox,
+    recipe,
+  };
+};
+
+const dedupeByKey = (items) => {
+  const map = new Map();
+
+  for (const item of items) {
+    const key = item?.id || item?.idMeal || item?.title || item?.mealName || item?.name;
+    if (!key) continue;
+    if (!map.has(String(key))) map.set(String(key), item);
+  }
+
+  return Array.from(map.values());
+};
+
+const getCoverText = (frequency, index) => {
+  const covers = {
+    2: ['Monday to Wednesday', 'Thursday to Friday'],
+    3: ['Monday to Tuesday', 'Wednesday to Thursday', 'Friday'],
+    5: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+  };
+
+  return covers[frequency]?.[index] || 'Selected days';
+};
+
+const getCookTitle = (frequency, index) => {
+  const titles = {
+    2: ['Cook on Sunday', 'Cook on Wednesday'],
+    3: ['Cook on Sunday', 'Cook on Tuesday', 'Cook on Thursday'],
+    5: ['Cook on Monday', 'Cook on Tuesday', 'Cook on Wednesday', 'Cook on Thursday', 'Cook on Friday'],
+  };
+
+  return titles[frequency]?.[index] || `Cook Session ${index + 1}`;
+};
+
+const buildWeeklyBatches = (lunchboxes, recipes) => {
+  const count = cookingFrequency.value || 2;
+
+  const safeLunchboxes =
+    lunchboxes.length > 0
+      ? lunchboxes
+      : [normalizeDatabaseLunchbox({ title: 'Balanced Lunchbox', items: [] })];
+
+  const safeRecipes =
+    recipes.length > 0
+      ? recipes
+      : [normalizeApiRecipe({ title: 'Recipe Inspiration' })];
+
+  return Array.from({ length: count }, (_, index) => {
+    const lunchbox = safeLunchboxes[index % safeLunchboxes.length];
+    const recipe = safeRecipes[index % safeRecipes.length];
+
+    return {
+      id: `batch-${Date.now()}-${index}`,
+      cookDay: getCookTitle(count, index),
+      coverDays: getCoverText(count, index),
+      prepTime: count === 5 ? '20 mins' : count === 3 ? '30 mins' : '40 mins',
+      seasonalNote: `${getSeasonName()} ingredients are prioritised where available.`,
+      storageTip:
+        count === 5
+          ? 'Prepare fresh and keep chilled until lunch.'
+          : 'Cook in batch, portion safely, and store in the fridge.',
+      lunchbox,
+      recipe,
+    };
+  });
+};
+
+const getReferenceFoodId = (batch) => {
+  return (
+    batch.lunchbox.reference_food_id ||
+    batch.lunchbox.referenceFoodId ||
+    batch.lunchbox.id ||
+    batch.lunchbox.items?.[0]?.reference_food_id ||
+    batch.lunchbox.items?.[0]?.referenceFoodId ||
+    null
+  );
+};
+
+const loadChildren = async () => {
+  const children = await getChildren();
+  profiles.value = Array.isArray(children) ? children.map(mapChildToProfileCard) : [];
+};
+
+const loadExistingPlan = async (planId) => {
+  const plan = await getWeeklyPlanById(planId);
+
+  planName.value = plan.plan_name || plan.name || '';
+  cookingFrequency.value = plan.cook_frequency || plan.cookingFrequency || 2;
+  varietyPreference.value = plan.variety_preference || plan.varietyPreference || 'Balanced';
+  mealStyle.value = plan.meal_style || plan.mealStyle || 'Mix of simple and varied';
+
+  if (Array.isArray(plan.children)) {
+    selectedChildren.value = plan.children
+      .map((child) => Number(child.child_id || child.id || child))
+      .filter(Boolean);
+  } else if (Array.isArray(plan.child_ids)) {
+    selectedChildren.value = plan.child_ids.map(Number).filter(Boolean);
+  }
+
+  const meals = plan.meals || plan.batches || [];
+  weeklyBatches.value = Array.isArray(meals) ? meals.map(normalizeSavedMeal) : [];
+  planGenerated.value = weeklyBatches.value.length > 0;
+};
+
+onMounted(async () => {
+  try {
+    isLoading.value = true;
+    errorMessage.value = '';
+
+    await loadChildren();
+
+    const childIds = route.query.childIds;
+    if (childIds) {
+      selectedChildren.value = String(childIds)
+        .split(',')
+        .map((id) => Number(id))
+        .filter(Boolean);
+    }
+
+    const planId = route.query.planId;
+    if (planId) {
+      await loadExistingPlan(planId);
+    }
+  } catch (error) {
+    console.error('Failed to initialise weekly plan page:', error);
+    errorMessage.value = error.message || 'Failed to load weekly plan data.';
+  } finally {
+    isLoading.value = false;
+  }
+});
+
+const toggleChildSelection = (id) => {
+  if (selectedChildren.value.includes(id)) {
+    selectedChildren.value = selectedChildren.value.filter((childId) => childId !== id);
+  } else {
+    selectedChildren.value = [...selectedChildren.value, id];
+  }
+};
+
+const fetchLunchboxesFromDatabase = async () => {
+  if (selectedChildren.value.length === 1) {
+    const data = await getRecommendedProducts(selectedChildren.value[0], true);
+    return Array.isArray(data) ? data : data.lunchboxes || [];
+  }
+
+  const data = await getFamilyRecommendedProducts(selectedChildren.value, true);
+  return Array.isArray(data) ? data : data.lunchboxes || [];
+};
+
+const fetchRecipesFromApi = async () => {
+  const results = await Promise.all(
+    selectedChildren.value.map((childId) => getChildMealRecommendations(childId))
+  );
+
+  const merged = results.flatMap((res) =>
+    Array.isArray(res?.lunchboxes) ? res.lunchboxes : []
+  );
+
+  return dedupeByKey(merged);
+};
+
+const generateWeeklyPlan = async () => {
+  try {
+    isGenerating.value = true;
+    errorMessage.value = '';
+
+    const [databaseData, apiData] = await Promise.all([
+      fetchLunchboxesFromDatabase(),
+      fetchRecipesFromApi(),
+    ]);
+
+    databaseLunchboxes.value = databaseData.map(normalizeDatabaseLunchbox);
+    apiRecipes.value = apiData.map(normalizeApiRecipe);
+
+    weeklyBatches.value = buildWeeklyBatches(databaseLunchboxes.value, apiRecipes.value);
+    planGenerated.value = true;
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch (error) {
+    console.error('Failed to generate weekly plan:', error);
+    errorMessage.value = error.message || 'Failed to generate weekly plan.';
+  } finally {
+    isGenerating.value = false;
+  }
+};
+
+const regeneratePlan = () => {
+  planGenerated.value = false;
+  weeklyBatches.value = [];
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+const swapApiRecipe = (index) => {
+  if (apiRecipes.value.length <= 1) return;
+
+  const currentId = weeklyBatches.value[index]?.recipe?.id;
+
+  const replacement =
+    apiRecipes.value.find((recipe) => String(recipe.id) !== String(currentId)) ||
+    apiRecipes.value[0];
+
+  weeklyBatches.value[index] = {
+    ...weeklyBatches.value[index],
+    recipe: replacement,
+  };
+};
+
+const handleImageError = (event) => {
+  event.target.style.display = 'none';
+};
+
+const openRecipe = (recipe) => {
+  if (!recipe?.id) return;
+
+  const recipeBaseChildId = selectedChildren.value[0] || '';
+
+  router.push({
+    path: `/recipe/${encodeURIComponent(recipe.id)}`,
+    query: {
+      childId: recipeBaseChildId,
+      source: 'mealdb',
+      from: 'weekly-plan',
+    },
+  });
+};
+
+const toMinutes = (prepTime) => {
+  const number = parseInt(String(prepTime || '').replace(/\D/g, ''), 10);
+  return Number.isFinite(number) ? number : null;
+};
+
+const savePlan = async () => {
+  if (!planName.value.trim()) return;
+
+  const payload = {
+    plan_name: planName.value.trim(),
+    child_ids: selectedChildren.value,
+    cook_frequency: cookingFrequency.value,
+    variety_preference: varietyPreference.value,
+    meal_style: mealStyle.value,
+    season_id: getSeasonId(),
+    status: 'active',
+
+    meals: weeklyBatches.value.map((batch, index) => ({
+      reference_food_id: getReferenceFoodId(batch),
+      cook_day: batch.cookDay,
+      cover_days: batch.coverDays,
+      meal_title: batch.lunchbox.title,
+      servings: selectedChildren.value.length || 1,
+      prep_time_minutes: toMinutes(batch.prepTime),
+      nutrition_tags: Array.isArray(batch.lunchbox.nutritionFocus)
+        ? batch.lunchbox.nutritionFocus.join(',')
+        : '',
+      seasonal_note: batch.seasonalNote,
+      storage_tip: batch.storageTip,
+      recipe_id: batch.recipe.id ? Number(batch.recipe.id) || null : null,
+      image_url: batch.recipe.image || null,
+      display_order: index,
+    })),
+  };
+
+  try {
+    isSaving.value = true;
+    errorMessage.value = '';
+
+    await createWeeklyPlan(payload);
+
+    showSaveDialog.value = false;
+    planName.value = '';
+    router.push('/my-plans');
+  } catch (error) {
+    console.error('Failed to save weekly plan:', error);
+    errorMessage.value = error.message || 'Failed to save weekly plan. Please try again.';
+  } finally {
+    isSaving.value = false;
+  }
+};
+</script>
+
+<style scoped>
+.text-muted-foreground {
+  color: #6b7280;
+}
+</style>
