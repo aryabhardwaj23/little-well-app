@@ -255,8 +255,17 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import {
-  ArrowLeft, Heart, Clock, Users, Sparkles, ShoppingCart,
-  Check, Lightbulb, UtensilsCrossed, ChefHat, Gauge
+  ArrowLeft,
+  Heart,
+  Clock,
+  Users,
+  Sparkles,
+  ShoppingCart,
+  Check,
+  Lightbulb,
+  UtensilsCrossed,
+  ChefHat,
+  Gauge,
 } from 'lucide-vue-next';
 
 const router = useRouter();
@@ -289,8 +298,13 @@ const normalizeIngredients = (raw) => {
       section: section.section,
       items: section.items.map((item) => {
         if (typeof item === 'string') {
-          return { name: item, amount: '', image: null };
+          return {
+            name: item,
+            amount: '',
+            image: null,
+          };
         }
+
         return {
           name: item.name || '',
           amount: item.amount || '',
@@ -304,7 +318,10 @@ const normalizeIngredients = (raw) => {
 
   raw.forEach((item) => {
     const section = item.section || 'other';
-    if (!grouped[section]) grouped[section] = [];
+
+    if (!grouped[section]) {
+      grouped[section] = [];
+    }
 
     grouped[section].push({
       name: item.name || '',
@@ -330,34 +347,76 @@ const mapRouteStateToRecipe = (raw) => {
     raw.title ||
     raw.mealName ||
     raw.name ||
+    raw.strMeal ||
     'Lunchbox Recommendation';
 
-  const heroImage = raw.heroImage || raw.mealImage || raw.image || null;
+  const heroImage =
+    raw.heroImage ||
+    raw.mealImage ||
+    raw.image ||
+    raw.strMealThumb ||
+    null;
 
   return {
     name: title,
+
     description:
       raw.description ||
       (raw.source === 'mealdb'
         ? 'A recipe-inspired lunchbox idea with practical ingredients.'
         : 'A practical lunchbox recommendation based on your child’s needs.'),
-    prepTime: raw.prepTime || (raw.source === 'mealdb' ? '25 mins' : '15 mins'),
-    servings: raw.servings || '1 child',
-    difficulty: raw.source === 'mealdb' ? 'Recipe' : 'Easy',
-    difficultyLabel: raw.source === 'mealdb' ? 'Type' : 'Difficulty',
+
+    prepTime:
+      raw.prepTime ||
+      raw.prep_time ||
+      (raw.source === 'mealdb' ? '25 mins' : '15 mins'),
+
+    servings:
+      raw.servings ||
+      raw.serving ||
+      '1 child',
+
+    difficulty:
+      raw.difficulty ||
+      (raw.source === 'mealdb' ? 'Recipe' : 'Easy'),
+
+    difficultyLabel:
+      raw.difficultyLabel ||
+      (raw.source === 'mealdb' ? 'Type' : 'Difficulty'),
+
     heroImage,
-    childName: raw.childName || null,
+
+    childName:
+      raw.childName ||
+      route.query.childName ||
+      null,
+
     tags: Array.isArray(raw.tags)
       ? raw.tags
       : raw.category
         ? [raw.category]
-        : [],
+        : raw.strCategory
+          ? [raw.strCategory]
+          : [],
+
     whyThisMeal:
       raw.whyThisMeal ||
+      raw.why_this_meal ||
       'This option was selected to provide a balanced and practical lunchbox suggestion.',
-    colorInsight: raw.colorInsight || '',
-    ingredients: raw.ingredients || raw.items || [],
-    instructions: normalizeInstructions(raw.instructions),
+
+    colorInsight:
+      raw.colorInsight ||
+      raw.color_insight ||
+      '',
+
+    ingredients:
+      raw.ingredients ||
+      raw.items ||
+      [],
+
+    instructions:
+      normalizeInstructions(raw.instructions || raw.strInstructions),
+
     tips:
       Array.isArray(raw.tips) && raw.tips.length > 0
         ? raw.tips
@@ -366,7 +425,13 @@ const mapRouteStateToRecipe = (raw) => {
             'Combine familiar foods with one new item for better acceptance.',
             'Use colorful fruit and vegetables to make lunchboxes more appealing.',
           ],
-    nutritionFocus: Array.isArray(raw.nutritionFocus) ? raw.nutritionFocus : [],
+
+    nutritionFocus:
+      Array.isArray(raw.nutritionFocus)
+        ? raw.nutritionFocus
+        : Array.isArray(raw.nutrition_focus)
+          ? raw.nutrition_focus
+          : [],
   };
 };
 
@@ -379,6 +444,7 @@ const getSectionTitle = (section) => {
     ingredient: 'Ingredients',
     other: 'Other Items',
   };
+
   return titles[section] || section;
 };
 
@@ -391,6 +457,7 @@ const getSectionBorderColor = (section) => {
     ingredient: 'border-[#CDE7F0]',
     other: 'border-gray-300',
   };
+
   return colors[section] || 'border-gray-300';
 };
 
@@ -403,6 +470,7 @@ const getSectionDotColor = (section) => {
     ingredient: 'bg-[#CDE7F0]',
     other: 'bg-gray-300',
   };
+
   return colors[section] || 'bg-gray-300';
 };
 
@@ -415,6 +483,7 @@ const getSectionPlaceholderStyle = (section) => {
     ingredient: 'border-[#CDE7F0]/40 text-[#1B4965] bg-[#CDE7F0]/20',
     other: 'border-gray-200 text-gray-500 bg-gray-50',
   };
+
   return styles[section] || styles.other;
 };
 
@@ -427,6 +496,7 @@ const formatSectionLabel = (section) => {
     ingredient: 'Ingredient',
     other: 'Item',
   };
+
   return labels[section] || 'Item';
 };
 
@@ -452,12 +522,14 @@ const fetchRecipeFromApi = async () => {
 
   if (!response.ok) {
     let message = 'Failed to fetch recipe data';
+
     try {
       const errorData = await response.json();
       message = errorData.detail || JSON.stringify(errorData);
     } catch {
       message = await response.text();
     }
+
     throw new Error(message);
   }
 
@@ -465,10 +537,11 @@ const fetchRecipeFromApi = async () => {
   return mapRouteStateToRecipe(data);
 };
 
-onMounted(async () => {
+const loadRecipe = async () => {
   try {
     loading.value = true;
     error.value = '';
+
     recipe.value = await fetchRecipeFromApi();
   } catch (err) {
     console.error('Failed to load recipe:', err);
@@ -476,9 +549,27 @@ onMounted(async () => {
   } finally {
     loading.value = false;
   }
+};
+
+onMounted(() => {
+  loadRecipe();
 });
 
+const retryLoad = () => {
+  loadRecipe();
+};
+
 const goBack = () => {
+  if (route.query.from === 'weekly-plan') {
+    router.push('/weekly-plan');
+    return;
+  }
+
+  if (route.query.from === 'my-plans') {
+    router.push('/my-plans');
+    return;
+  }
+
   if (route.query.from === 'results') {
     router.push({
       path: '/results',
