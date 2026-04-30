@@ -13,8 +13,6 @@ app.add_middleware(
         "https://www.littlewell.app",
         "https://dev.littlewell.app"
     ],
-    CORSMiddleware,
-    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
