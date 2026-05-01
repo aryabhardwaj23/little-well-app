@@ -4,7 +4,6 @@ import { createRouter, createWebHistory } from 'vue-router';
 import HomePage from '../views/HomePage.vue';
 import AboutPage from '../views/AboutPage.vue';
 import QuickStartPage from '../views/QuickStartPage.vue';
-// import ChildProfilePage from '../views/ChildProfilePage.vue';
 import ChildInfoPage from '../views/ChildInfoPage.vue';
 import NutritionNeedsPage from '../views/NutritionNeedsPage.vue';
 import ProfileSummaryPage from '../views/ProfileSummaryPage.vue';
@@ -12,12 +11,29 @@ import NutritionCheckPage from '../views/NutritionCheckPage.vue';
 import NutritionInsightsPage from '../views/NutritionInsightsPage.vue';
 import ResultsPage from '../views/ResultsPage.vue';
 import RecipePage from '../views/RecipePage.vue';
-
-// New Weekly Plan pages
 import WeeklyPlanPage from '../views/WeeklyPlanPage.vue';
 import MyPlansPage from '../views/MyPlansPage.vue';
 
+// Auth views
+import LoginPage from '../views/LoginPage.vue';
+import RegisterPage from '../views/RegisterPage.vue';
+
 const routes = [
+  // ── Auth routes (no requiresAuth) ──────────────────────────
+  {
+    path: '/login',
+    name: 'Login',
+    component: LoginPage,
+    meta: { title: 'Sign In - LittleWell', guestOnly: true },
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: RegisterPage,
+    meta: { title: 'Create Account - LittleWell', guestOnly: true },
+  },
+
+  // ── App routes ─────────────────────────────────────────────
   {
     path: '/',
     name: 'Home',
@@ -42,12 +58,6 @@ const routes = [
     component: NutritionNeedsPage,
     meta: { title: 'Nutrition Needs - LittleWell' },
   },
-  // {
-  //   path: '/child-profile',
-  //   name: 'ChildProfile',
-  //   component: ChildProfilePage,
-  //   meta: { title: 'Child Profile - LittleWell' },
-  // },
   {
     path: '/child-info',
     name: 'ChildInfo',
@@ -84,8 +94,6 @@ const routes = [
     component: RecipePage,
     meta: { title: 'Recipe Details - LittleWell' },
   },
-
-  // New Weekly Plan routes
   {
     path: '/weekly-plan',
     name: 'WeeklyPlan',
@@ -109,17 +117,25 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
   scrollBehavior(to, from, savedPosition) {
-    if (savedPosition) {
-      return savedPosition;
-    } else {
-      return { top: 0, behavior: 'smooth' };
-    }
+    if (savedPosition) return savedPosition;
+    return { top: 0, behavior: 'smooth' };
   },
 });
 
 router.beforeEach((to, from, next) => {
   document.title = to.meta.title || 'LittleWell - Seasonal Lunchbox Planning';
-  next();
+
+  // Dynamically import to avoid circular deps
+  import('../stores/auth').then(({ useAuthStore }) => {
+    const authStore = useAuthStore();
+
+    // Redirect logged-in users away from login/register
+    if (to.meta.guestOnly && authStore.isAuthenticated) {
+      return next('/');
+    }
+
+    next();
+  });
 });
 
 export default router;
