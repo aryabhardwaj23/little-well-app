@@ -30,14 +30,12 @@
             </div>
             <p class="text-white/90 text-sm">Create your free account</p>
           </div>
-
           <div class="flex items-center gap-3">
             <div class="w-8 h-8 rounded-full bg-white/30 flex items-center justify-center flex-shrink-0">
               <span class="text-white text-sm font-semibold">2</span>
             </div>
             <p class="text-white/90 text-sm">Add your children's profiles</p>
           </div>
-
           <div class="flex items-center gap-3">
             <div class="w-8 h-8 rounded-full bg-white/30 flex items-center justify-center flex-shrink-0">
               <span class="text-white text-sm font-semibold">3</span>
@@ -47,9 +45,7 @@
         </div>
       </div>
 
-      <p class="relative z-10 text-white/60 text-sm">
-        Free forever • No credit card required
-      </p>
+      <p class="relative z-10 text-white/60 text-sm">Free forever • No credit card required</p>
     </div>
 
     <!-- Right Panel - Register Form -->
@@ -66,6 +62,24 @@
         <h1 class="text-3xl font-semibold text-gray-800 mb-2">Create your account</h1>
         <p class="text-gray-500 mb-8">Free forever. No credit card needed.</p>
 
+        <!-- Error message -->
+        <div
+          v-if="errorMessage"
+          class="mb-5 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-start gap-2"
+        >
+          <AlertCircle class="w-4 h-4 mt-0.5 flex-shrink-0" />
+          <span>{{ errorMessage }}</span>
+        </div>
+
+        <!-- Success message -->
+        <div
+          v-if="successMessage"
+          class="mb-5 p-4 bg-[#A8D5BA]/20 border border-[#A8D5BA] rounded-xl text-[#2C5F2D] text-sm flex items-start gap-2"
+        >
+          <CheckCircle class="w-4 h-4 mt-0.5 flex-shrink-0" />
+          <span>{{ successMessage }}</span>
+        </div>
+
         <!-- Form -->
         <form @submit.prevent="handleRegister" class="space-y-5">
           <!-- Name row -->
@@ -80,7 +94,6 @@
                 class="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 bg-white focus:outline-none focus:ring-2 focus:ring-[#A8D5BA] focus:border-transparent transition-all"
               />
             </div>
-
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1.5">Last name</label>
               <input
@@ -115,12 +128,33 @@
               <Lock class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
                 v-model="form.password"
-                type="password"
+                :type="showPassword ? 'text' : 'password'"
                 placeholder="At least 8 characters"
                 required
                 minlength="8"
-                class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 bg-white focus:outline-none focus:ring-2 focus:ring-[#A8D5BA] focus:border-transparent transition-all"
+                class="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 bg-white focus:outline-none focus:ring-2 focus:ring-[#A8D5BA] focus:border-transparent transition-all"
               />
+              <button
+                type="button"
+                @click="showPassword = !showPassword"
+                class="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                <Eye v-if="!showPassword" class="w-4 h-4" />
+                <EyeOff v-else class="w-4 h-4" />
+              </button>
+            </div>
+
+            <!-- Password strength -->
+            <div v-if="form.password" class="mt-2">
+              <div class="flex gap-1">
+                <div
+                  v-for="i in 4"
+                  :key="i"
+                  class="h-1 flex-1 rounded-full transition-all"
+                  :class="passwordStrength >= i ? strengthColor : 'bg-gray-200'"
+                />
+              </div>
+              <p class="text-xs mt-1" :class="strengthTextColor">{{ strengthLabel }}</p>
             </div>
           </div>
 
@@ -131,12 +165,24 @@
               <Lock class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
                 v-model="form.confirmPassword"
-                type="password"
+                :type="showConfirm ? 'text' : 'password'"
                 placeholder="Repeat your password"
                 required
-                class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 bg-white focus:outline-none focus:ring-2 focus:ring-[#A8D5BA] focus:border-transparent transition-all"
+                class="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 bg-white focus:outline-none focus:ring-2 focus:ring-[#A8D5BA] focus:border-transparent transition-all"
+                :class="{ 'border-red-300 focus:ring-red-300': form.confirmPassword && !passwordsMatch }"
               />
+              <button
+                type="button"
+                @click="showConfirm = !showConfirm"
+                class="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                <Eye v-if="!showConfirm" class="w-4 h-4" />
+                <EyeOff v-else class="w-4 h-4" />
+              </button>
             </div>
+            <p v-if="form.confirmPassword && !passwordsMatch" class="text-xs text-red-500 mt-1">
+              Passwords don't match
+            </p>
           </div>
 
           <!-- Terms -->
@@ -159,9 +205,11 @@
           <!-- Submit -->
           <button
             type="submit"
-            class="w-full bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] font-semibold py-3 rounded-xl transition-colors"
+            :disabled="isLoading || !passwordsMatch"
+            class="w-full bg-[#A8D5BA] hover:bg-[#8FC2A4] disabled:opacity-60 disabled:cursor-not-allowed text-[#2C5F2D] font-semibold py-3 rounded-xl transition-colors flex items-center justify-center gap-2"
           >
-            Create account
+            <Loader2 v-if="isLoading" class="w-4 h-4 animate-spin" />
+            <span>{{ isLoading ? 'Creating account...' : 'Create account' }}</span>
           </button>
         </form>
 
@@ -186,13 +234,23 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue';
+import { ref, reactive, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import {
   Heart,
   Mail,
   Lock,
+  Eye,
+  EyeOff,
+  AlertCircle,
+  CheckCircle,
+  Loader2,
   ArrowLeft,
 } from 'lucide-vue-next';
+import { useAuthStore } from '../stores/auth';
+
+const router = useRouter();
+const authStore = useAuthStore();
 
 const form = reactive({
   firstName: '',
@@ -203,7 +261,63 @@ const form = reactive({
   acceptTerms: false,
 });
 
-const handleRegister = () => {
-  alert('Register function will be added later.');
+const showPassword = ref(false);
+const showConfirm = ref(false);
+const isLoading = ref(false);
+const errorMessage = ref('');
+const successMessage = ref('');
+
+const passwordsMatch = computed(() =>
+  !form.confirmPassword || form.password === form.confirmPassword
+);
+
+// Password strength
+const passwordStrength = computed(() => {
+  const p = form.password;
+  if (!p) return 0;
+  let score = 0;
+  if (p.length >= 8) score++;
+  if (/[A-Z]/.test(p)) score++;
+  if (/[0-9]/.test(p)) score++;
+  if (/[^A-Za-z0-9]/.test(p)) score++;
+  return score;
+});
+
+const strengthColor = computed(() => {
+  const colors = ['bg-red-400', 'bg-orange-400', 'bg-yellow-400', 'bg-[#A8D5BA]'];
+  return colors[passwordStrength.value - 1] || 'bg-gray-200';
+});
+
+const strengthTextColor = computed(() => {
+  const colors = ['text-red-500', 'text-orange-500', 'text-yellow-600', 'text-[#2C5F2D]'];
+  return colors[passwordStrength.value - 1] || 'text-gray-400';
+});
+
+const strengthLabel = computed(() => {
+  const labels = ['Weak', 'Fair', 'Good', 'Strong'];
+  return labels[passwordStrength.value - 1] || '';
+});
+
+const handleRegister = async () => {
+  if (!passwordsMatch.value) return;
+
+  errorMessage.value = '';
+  successMessage.value = '';
+  isLoading.value = true;
+
+  try {
+    await authStore.register({
+      first_name: form.firstName,
+      last_name: form.lastName,
+      email: form.email,
+      password: form.password,
+    });
+    successMessage.value = 'Account created! Redirecting...';
+    setTimeout(() => router.push('/'), 1500);
+  } catch (err) {
+    errorMessage.value = err.message || 'Something went wrong. Please try again.';
+  } finally {
+    isLoading.value = false;
+  }
 };
 </script>
