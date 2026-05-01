@@ -257,20 +257,6 @@
           </button>
         </div>
 
-        <div class="mb-8 p-6 bg-white rounded-2xl border">
-          <div class="flex items-start gap-3">
-            <Info class="w-5 h-5 text-[#1B4965] mt-1" />
-
-            <div>
-              <h3 class="font-medium mb-2">Data sources used</h3>
-              <p class="text-sm text-muted-foreground leading-relaxed">
-                The left card uses your database recommendation endpoints. The right card uses
-                the recipe API, so it can show recipe title, image, category, area, and recipe details.
-              </p>
-            </div>
-          </div>
-        </div>
-
         <div class="space-y-8">
           <div
             v-for="(batch, index) in weeklyBatches"
