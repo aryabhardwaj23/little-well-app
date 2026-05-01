@@ -20,19 +20,23 @@
             <User class="w-6 h-6 text-[#A8D5BA]" />
             Basic Information
           </h2>
+
           <div class="grid md:grid-cols-2 gap-6">
             <div>
               <p class="text-sm text-muted-foreground mb-1">Name</p>
               <p class="text-lg font-medium">{{ profile.name }}</p>
             </div>
+
             <div>
               <p class="text-sm text-muted-foreground mb-1">Age Group</p>
               <p class="text-lg font-medium">{{ profile.ageGroup }}</p>
             </div>
+
             <div v-if="profile.gender">
               <p class="text-sm text-muted-foreground mb-1">Gender</p>
               <p class="text-lg font-medium">{{ profile.gender }}</p>
             </div>
+
             <div>
               <p class="text-sm text-muted-foreground mb-1">Activity Level</p>
               <p class="text-lg font-medium capitalize">
@@ -88,6 +92,7 @@
             <Sparkles class="w-6 h-6 text-[#A8D5BA]" />
             Nutrition Focus Areas
           </h2>
+
           <div class="flex flex-wrap gap-3">
             <span
               v-for="focus in nutritionFocus"
@@ -127,11 +132,13 @@
           <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center flex-shrink-0">
             <ClipboardCheck class="w-6 h-6 text-[#2C5F2D]" />
           </div>
+
           <div class="flex-1">
             <h3 class="text-lg font-medium mb-2">Want more personalized suggestions?</h3>
             <p class="text-sm text-muted-foreground mb-4">
               Take our quick nutrition check to get even more tailored meal recommendations based on your child's current diet.
             </p>
+
             <button
               @click="handleNutritionCheck"
               :disabled="saving"
@@ -150,7 +157,15 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { Check, User, Apple, Sparkles, Edit, ChevronRight, ClipboardCheck } from 'lucide-vue-next';
+import {
+  Check,
+  User,
+  Apple,
+  Sparkles,
+  Edit,
+  ChevronRight,
+  ClipboardCheck,
+} from 'lucide-vue-next';
 import { useChildProfileStore } from '../stores/childProfile';
 import { createChild, updateChild } from '../services/api';
 
@@ -184,6 +199,7 @@ const allergyMap = {
 
 onMounted(() => {
   const draft = childProfileStore.childProfileDraft;
+
   profile.value = draft;
   childName.value = draft.name || 'your child';
   nutritionFocus.value = draft.nutritionFocus || [];
@@ -208,7 +224,7 @@ const buildPayload = () => {
     vitamin_d_status: nutritionFocus.value.includes('immunity') ? 1 : 0,
     variety_status: nutritionFocus.value.includes('variety') ? 1 : 0,
 
-    religious_needs: profile.value.dietaryRestriction || '',
+    restriction_id: profile.value.restrictionId || null,
 
     allergies: (profile.value.allergies || [])
       .map((allergy) => allergyMap[allergy])
@@ -227,6 +243,7 @@ const saveProfile = async () => {
     savedChildId = editingChildId;
   } else {
     const savedChild = await createChild(payload);
+
     savedChildId =
       savedChild?.child_id ||
       savedChild?.id ||
@@ -250,6 +267,7 @@ const handleSave = async () => {
   try {
     saving.value = true;
     const childId = await saveProfile();
+
     router.push(`/results?childId=${childId}`);
   } catch (error) {
     console.error('Failed to save child profile:', error);
@@ -263,6 +281,7 @@ const handleNutritionCheck = async () => {
   try {
     saving.value = true;
     const childId = await saveProfile();
+
     router.push(`/nutrition-check?childId=${childId}`);
   } catch (error) {
     console.error('Failed to save before nutrition check:', error);

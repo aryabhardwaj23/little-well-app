@@ -582,7 +582,9 @@ const mapChildToProfileCard = (child) => {
     name: child.child_name,
     ageGroup: child.age_band,
     allergies: mapAllergiesToNames(child.allergies),
-    dietaryRestriction: child.religious_needs || '',
+    dietaryRestriction: child.restriction_name || '',
+    restrictionId: child.restriction_id || null,
+    restrictionCode: child.restriction_code || '',
     nutritionFocus: focusIds.map((id) => nutritionFocusLabels[id]).filter(Boolean),
   };
 };

@@ -46,6 +46,7 @@
                 <button
                   v-for="age in ageGroups"
                   :key="age"
+                  type="button"
                   @click="formData.ageGroup = age"
                   :class="[
                     'p-4 rounded-lg border-2 transition-all text-center',
@@ -65,6 +66,7 @@
                 <button
                   v-for="gender in genderOptions"
                   :key="gender"
+                  type="button"
                   @click="formData.gender = gender"
                   :class="[
                     'p-3 rounded-lg border-2 transition-all',
@@ -88,10 +90,12 @@
             <div>
               <label class="block text-sm font-medium mb-2">Any food allergies?</label>
               <p class="text-sm text-muted-foreground mb-3">Select all that apply</p>
+
               <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
                 <button
                   v-for="allergy in commonAllergies"
                   :key="allergy"
+                  type="button"
                   @click="toggleAllergy(allergy)"
                   :class="[
                     'p-3 rounded-lg border-2 transition-all text-sm',
@@ -106,19 +110,28 @@
             </div>
 
             <div>
-              <label class="block text-sm font-medium mb-2">Any dietary restrictions? (optional)</label>
+              <label class="block text-sm font-medium mb-2">
+                Any dietary restrictions? (optional)
+              </label>
+
               <select
-                v-model="formData.dietaryRestriction"
+                v-model="formData.restrictionId"
                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8D5BA] focus:border-transparent"
               >
-                <option value="">No restrictions</option>
-                <option value="Vegetarian">Vegetarian</option>
-                <option value="Vegan">Vegan</option>
-                <option value="Halal">Halal</option>
-                <option value="No pork">No pork</option>
-                <option value="No beef">No beef</option>
-                <option value="Pescatarian">Pescatarian</option>
+                <option :value="null">No restrictions</option>
+
+                <option
+                  v-for="option in dietaryRestrictionOptions"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </option>
               </select>
+
+              <p class="text-xs text-muted-foreground mt-1">
+                This is saved as restriction_id and matched with the dietary restriction database.
+              </p>
             </div>
 
             <div>
@@ -127,6 +140,7 @@
                 <button
                   v-for="level in activityLevels"
                   :key="level.value"
+                  type="button"
                   @click="formData.activityLevel = level.value"
                   :class="[
                     'p-4 rounded-lg border-2 transition-all',
@@ -213,6 +227,7 @@ const formData = ref({
   ageGroup: '',
   gender: '',
   allergies: [],
+  restrictionId: null,
   dietaryRestriction: '',
   activityLevel: 'moderate',
   eatingHabit: '',
@@ -232,6 +247,17 @@ const commonAllergies = [
   'Soy',
   'Fish',
   'Shellfish',
+];
+
+const dietaryRestrictionOptions = [
+  { label: 'Vegan', value: 1, code: 'VEGAN' },
+  { label: 'Vegetarian', value: 2, code: 'VEGETARIAN' },
+  { label: 'Pescatarian', value: 3, code: 'PESCATARIAN' },
+  { label: 'Halal', value: 4, code: 'HALAL' },
+  { label: 'Kosher', value: 5, code: 'KOSHER' },
+  { label: 'Coeliac Disease', value: 6, code: 'COELIAC' },
+  { label: 'Lactose Intolerance', value: 7, code: 'LACTOSE_INT' },
+  { label: 'Gluten Free', value: 8, code: 'GLUTEN_FREE' },
 ];
 
 const allergenIdToName = {
@@ -286,6 +312,14 @@ const mapAllergiesToNames = (allergies) => {
     .filter(Boolean);
 };
 
+const getRestrictionLabelById = (restrictionId, fallback = '') => {
+  const option = dietaryRestrictionOptions.find(
+    (item) => String(item.value) === String(restrictionId)
+  );
+
+  return option?.label || fallback || '';
+};
+
 const cleanNameInput = () => {
   formData.value.name = formData.value.name.replace(/[^A-Za-z\s]/g, '').slice(0, 20);
 };
@@ -302,7 +336,11 @@ onMounted(async () => {
         ageGroup: child.age_band || '',
         gender: child.gender || '',
         allergies: mapAllergiesToNames(child.allergies),
-        dietaryRestriction: child.religious_needs || '',
+        restrictionId: child.restriction_id || null,
+        dietaryRestriction: getRestrictionLabelById(
+          child.restriction_id,
+          child.restriction_name || ''
+        ),
         activityLevel: child.activity_level || 'moderate',
         eatingHabit: child.eating_habit || '',
         dislikes: child.dislikes || '',
@@ -318,6 +356,8 @@ onMounted(async () => {
     formData.value = {
       ...formData.value,
       ...childProfileStore.childProfileDraft,
+      restrictionId: childProfileStore.childProfileDraft?.restrictionId || null,
+      dietaryRestriction: childProfileStore.childProfileDraft?.dietaryRestriction || '',
     };
   }
 });
@@ -331,6 +371,8 @@ const toggleAllergy = (allergy) => {
 };
 
 const handleContinue = () => {
+  formData.value.dietaryRestriction = getRestrictionLabelById(formData.value.restrictionId);
+
   childProfileStore.updateDraft(formData.value);
   router.push('/nutrition-needs');
 };
