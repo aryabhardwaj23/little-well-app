@@ -17,8 +17,9 @@ class UserChild(Base):
 
     child_id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, nullable=False)
-    child_name = Column(String(100), nullable=False)
-    age_band = Column(String(50), nullable=False)
+
+    child_name = Column(Text, nullable=True)
+    age_band = Column(Text, nullable=True)
     band_id = Column(Integer, nullable=True)
 
     iron_status = Column(Integer, default=0)
@@ -26,8 +27,17 @@ class UserChild(Base):
     vitamin_d_status = Column(Integer, default=0)
     variety_status = Column(Integer, default=0)
 
-    religious_needs = Column(String(100), nullable=True)
+    # DB column: restriction_id int
+    # Links to dietary_restriction.restriction_id
+    restriction_id = Column(
+        Integer,
+        ForeignKey("dietary_restriction.restriction_id"),
+        nullable=True,
+    )
+
     created_at = Column(DateTime, server_default=func.now())
+
+    restriction = relationship("DietaryRestriction")
 
 
 class UserSearchAllergen(Base):
@@ -38,15 +48,56 @@ class UserSearchAllergen(Base):
     allergen_id = Column(Integer, primary_key=True)
 
 
+class AgeBand(Base):
+    __tablename__ = "age_band"
+
+    band_id = Column(Integer, primary_key=True, index=True)
+    label = Column(Text, nullable=True)
+    group_name = Column(Text, nullable=True)
+    upper_age_limit = Column(Integer, nullable=True)
+    lower_age_limit = Column(Integer, nullable=True)
+
+
+class Allergen(Base):
+    __tablename__ = "allergens"
+
+    allergen_id = Column(Integer, primary_key=True, index=True)
+    allergen_code = Column(Text, nullable=True)
+    allergen_name = Column(Text, nullable=True)
+    allergen_clean = Column(Text, nullable=True)
+    canonical_allergen = Column(Text, nullable=True)
+
+
+class DietaryRestriction(Base):
+    __tablename__ = "dietary_restriction"
+
+    restriction_id = Column(Integer, primary_key=True, index=True)
+    restriction_code = Column(String(50), nullable=False, unique=True)
+    restriction_name = Column(String(100), nullable=False)
+    restriction_type = Column(String(50), nullable=False)
+    description = Column(Text, nullable=True)
+
+    excludes_meat = Column(Integer, nullable=False, default=0)
+    excludes_fish = Column(Integer, nullable=False, default=0)
+    excludes_dairy = Column(Integer, nullable=False, default=0)
+    excludes_egg = Column(Integer, nullable=False, default=0)
+    excludes_pork = Column(Integer, nullable=False, default=0)
+    excludes_shellfish = Column(Integer, nullable=False, default=0)
+    excludes_gluten = Column(Integer, nullable=False, default=0)
+    excludes_nuts = Column(Integer, nullable=False, default=0)
+
+    is_active = Column(Integer, nullable=False, default=1)
+
+
 class PackagedProduct(Base):
     __tablename__ = "packaged_products"
 
     product_id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(255), nullable=False)
-    brand = Column(String(255), nullable=True)
-    category = Column(String(255), nullable=True)
+    name = Column(Text, nullable=True)
+    brand = Column(Text, nullable=True)
+    category = Column(Text, nullable=True)
     ingredients_list = Column(Text, nullable=True)
-    serving_size = Column(String(100), nullable=True)
+    serving_size = Column(Text, nullable=True)
 
     has_added_sugar = Column(Integer, default=0)
     has_added_preservatives = Column(Integer, default=0)
@@ -60,43 +111,108 @@ class PackagedProduct(Base):
     is_vegetarian = Column(Integer, default=0)
     is_non_vegan = Column(Integer, default=1)
 
-    palm_oil_status = Column(String(50), nullable=True)
+    palm_oil_status = Column(Text, nullable=True)
 
 
 class ProductFlag(Base):
     __tablename__ = "product_flag"
 
     flag_id = Column(Integer, primary_key=True, index=True)
-    product_id = Column(Integer, nullable=False)
-    flag_type = Column(String(100), nullable=True)
+    product_id = Column(Integer, nullable=False, index=True)
+    flag_type = Column(Text, nullable=True)
     detected_count = Column(Integer, default=0)
-    severity = Column(String(50), nullable=True)
+    severity = Column(Text, nullable=True)
     rationale = Column(Text, nullable=True)
 
 
 class ProductAllergen(Base):
     __tablename__ = "product_allergen"
 
-    allergen_id = Column(Integer, primary_key=True, index=True)
+    # DB changed: id is now the row-level primary key
+    id = Column(Integer, primary_key=True, index=True)
+
+    allergen_id = Column(Integer, nullable=False)
     product_id = Column(Integer, nullable=False)
-    allergen_name = Column(String(100), nullable=True)
-    canonical_allergen = Column(String(100), nullable=True)
+    allergen_name = Column(Text, nullable=True)
+    canonical_allergen = Column(Text, nullable=True)
+
+
+class ReferenceAllergen(Base):
+    __tablename__ = "reference_allergen"
+
+    product_allergen_id = Column(Integer, primary_key=True, index=True)
+    reference_food_id = Column(Integer, nullable=False)
+    allergen_id = Column(Integer, nullable=False)
+    occurrence_type = Column(Text, nullable=True)
+    matched_text = Column(Text, nullable=True)
+    source_text = Column(Text, nullable=True)
+
+
+class ReferenceFood(Base):
+    __tablename__ = "reference_food"
+
+    reference_food_id = Column(Integer, primary_key=True, index=True)
+    food_group_id = Column(Integer, nullable=True)
+    ausnut_food_id = Column(Text, nullable=True)
+    food_name = Column(Text, nullable=True)
+    is_raw = Column(Integer, nullable=True)
+    adg_group_code = Column(Text, nullable=True)
+    value = Column(Numeric(10, 2), nullable=True)
+
+    is_vegan = Column(Integer, nullable=False, default=0)
+    is_vegetarian = Column(Integer, nullable=False, default=0)
+    is_gluten_free = Column(Integer, nullable=False, default=0)
+    is_dairy_free = Column(Integer, nullable=False, default=0)
+    is_egg_free = Column(Integer, nullable=False, default=0)
+    is_nut_free = Column(Integer, nullable=False, default=0)
+    is_halal = Column(Integer, nullable=False, default=0)
+    is_kosher = Column(Integer, nullable=False, default=0)
+    is_pork_free = Column(Integer, nullable=False, default=0)
+
+
+class ReferenceFoodNutrient(Base):
+    __tablename__ = "reference_food_nutrient"
+
+    ref_food_nutrient_id = Column(Integer, primary_key=True, index=True)
+    reference_food_id = Column(Integer, nullable=False)
+    nutrient_code = Column(Text, nullable=True)
+    amount_per_100g = Column(Numeric(10, 2), nullable=True)
+    unit = Column(Text, nullable=True)
+
+
+class SavedLunchbox(Base):
+    __tablename__ = "saved_lunchbox"
+
+    saved_lunchbox_id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, nullable=False)
+    child_id = Column(Integer, nullable=False)
+
+    lunchbox_title = Column(String(150), nullable=False)
+
+    protein_food_id = Column(Integer, nullable=True)
+    vegetables_food_id = Column(Integer, nullable=True)
+    grains_food_id = Column(Integer, nullable=True)
+    fruit_food_id = Column(Integer, nullable=True)
+    snack_food_id = Column(Integer, nullable=True)
+
+    nutrition_tags = Column(String(255), nullable=True)
+    created_at = Column(DateTime, server_default=func.now())
 
 
 class SeasonalProduce(Base):
     __tablename__ = "seasonal_produce"
 
-    produce_name = Column(String(255), primary_key=True)
-    produce_type = Column(String(100), nullable=True)
-    season_id = Column(Integer, nullable=False)
-    season_status = Column(String(100), nullable=True)
+    season_id = Column(Integer, primary_key=True)
+    season_status = Column(Text, nullable=True)
+    produce_name = Column(Text, primary_key=True)
+    produce_type = Column(Text, nullable=True)
 
 
 class Season(Base):
     __tablename__ = "seasons"
 
     season_id = Column(Integer, primary_key=True, index=True)
-    season = Column(String(50), nullable=False)
+    season = Column(Text, nullable=True)
     start_date = Column(Date, nullable=True)
     end_date = Column(Date, nullable=True)
 

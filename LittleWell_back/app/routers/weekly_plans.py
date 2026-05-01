@@ -160,15 +160,24 @@ def build_plan_response(db: Session, plan: WeeklyPlan) -> dict:
             .all()
         )
 
-        child_name_map = {
-            child.child_id: child.child_name
+        child_info_map = {
+            child.child_id: child
             for child in child_rows
         }
 
         children = [
             {
                 "child_id": child_id,
-                "child_name": child_name_map.get(child_id, f"Child #{child_id}"),
+                "child_name": (
+                    child_info_map[child_id].child_name
+                    if child_id in child_info_map
+                    else f"Child #{child_id}"
+                ),
+                "restriction_id": (
+                    child_info_map[child_id].restriction_id
+                    if child_id in child_info_map
+                    else None
+                ),
             }
             for child_id in child_ids
         ]

@@ -7,11 +7,14 @@ class ChildBase(BaseModel):
     child_name: str
     age_band: str
     band_id: Optional[int] = None
+
     iron_status: int = 0
     calcium_status: int = 0
     vitamin_d_status: int = 0
     variety_status: int = 0
-    religious_needs: Optional[str] = ""
+
+    # user_child.restriction_id -> dietary_restriction.restriction_id
+    restriction_id: Optional[int] = None
 
 
 class ChildCreate(ChildBase):
@@ -25,14 +28,20 @@ class ChildUpdate(ChildBase):
 class ChildResponse(BaseModel):
     child_id: int
     user_id: int
+
     child_name: str
     age_band: str
     band_id: Optional[int] = None
+
     iron_status: int
     calcium_status: int
     vitamin_d_status: int
     variety_status: int
-    religious_needs: Optional[str] = ""
+
+    restriction_id: Optional[int] = None
+    restriction_code: Optional[str] = None
+    restriction_name: Optional[str] = None
+
     allergies: List[int] = Field(default_factory=list)
 
     class Config:
@@ -40,14 +49,19 @@ class ChildResponse(BaseModel):
 
 
 class RecommendationItem(BaseModel):
+    reference_food_id: Optional[int] = None
     name: str
     amount: str
-    image: str
+    image: Optional[str] = None
     section: str
 
 
 class LunchboxCard(BaseModel):
     id: str
+    reference_food_id: Optional[int] = None
+    source: Optional[str] = None
+    title: Optional[str] = None
+    heroImage: Optional[str] = None
     childName: Optional[str] = None
     items: List[RecommendationItem]
     nutritionFocus: List[str]
@@ -67,7 +81,7 @@ class WeeklyPlanMealCreate(BaseModel):
     cover_days: Optional[str] = None
     meal_title: str
 
-    servings: Optional[int] = None
+    servings: Optional[float] = None
     prep_time_minutes: Optional[int] = None
 
     nutrition_tags: Optional[str] = None
@@ -102,7 +116,7 @@ class WeeklyPlanMealResponse(BaseModel):
     cover_days: Optional[str] = None
     meal_title: str
 
-    servings: Optional[int] = None
+    servings: Optional[float] = None
     prep_time_minutes: Optional[int] = None
 
     nutrition_tags: Optional[str] = None
@@ -121,6 +135,7 @@ class WeeklyPlanMealResponse(BaseModel):
 class WeeklyPlanChildResponse(BaseModel):
     child_id: int
     child_name: Optional[str] = None
+    restriction_id: Optional[int] = None
 
     class Config:
         from_attributes = True

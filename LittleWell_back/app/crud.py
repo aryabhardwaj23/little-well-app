@@ -48,8 +48,9 @@ def create_child(db: Session, child: schemas.ChildCreate):
         calcium_status=child.calcium_status,
         vitamin_d_status=child.vitamin_d_status,
         variety_status=child.variety_status,
-        religious_needs=child.religious_needs,
+        restriction_id=child.restriction_id,
     )
+
     db.add(db_child)
     db.flush()
 
@@ -69,6 +70,7 @@ def create_child(db: Session, child: schemas.ChildCreate):
 
 def update_child(db: Session, child_id: int, child: schemas.ChildUpdate):
     db_child = get_child_by_id(db, child_id)
+
     if not db_child:
         return None
 
@@ -79,7 +81,7 @@ def update_child(db: Session, child_id: int, child: schemas.ChildUpdate):
     db_child.calcium_status = child.calcium_status
     db_child.vitamin_d_status = child.vitamin_d_status
     db_child.variety_status = child.variety_status
-    db_child.religious_needs = child.religious_needs
+    db_child.restriction_id = child.restriction_id
 
     replace_child_allergens(
         db=db,
@@ -92,8 +94,10 @@ def update_child(db: Session, child_id: int, child: schemas.ChildUpdate):
     db.refresh(db_child)
     return db_child
 
+
 def delete_child(db: Session, child_id: int):
     db_child = get_child_by_id(db, child_id)
+
     if not db_child:
         return None
 
