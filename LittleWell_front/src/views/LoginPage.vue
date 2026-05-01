@@ -53,6 +53,15 @@
         <h1 class="text-3xl font-semibold text-gray-800 mb-2">Welcome back</h1>
         <p class="text-gray-500 mb-8">Sign in to your account to continue</p>
 
+        <!-- Error message -->
+        <div
+          v-if="errorMessage"
+          class="mb-5 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-start gap-2"
+        >
+          <AlertCircle class="w-4 h-4 mt-0.5 flex-shrink-0" />
+          <span>{{ errorMessage }}</span>
+        </div>
+
         <!-- Form -->
         <form @submit.prevent="handleLogin" class="space-y-5">
           <!-- Email -->
@@ -82,16 +91,23 @@
                 Forgot password?
               </button>
             </div>
-
             <div class="relative">
               <Lock class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
                 v-model="form.password"
-                type="password"
+                :type="showPassword ? 'text' : 'password'"
                 placeholder="Enter your password"
                 required
-                class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 bg-white focus:outline-none focus:ring-2 focus:ring-[#A8D5BA] focus:border-transparent transition-all"
+                class="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-xl text-gray-800 placeholder-gray-400 bg-white focus:outline-none focus:ring-2 focus:ring-[#A8D5BA] focus:border-transparent transition-all"
               />
+              <button
+                type="button"
+                @click="showPassword = !showPassword"
+                class="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                <Eye v-if="!showPassword" class="w-4 h-4" />
+                <EyeOff v-else class="w-4 h-4" />
+              </button>
             </div>
           </div>
 
@@ -109,9 +125,11 @@
           <!-- Submit -->
           <button
             type="submit"
-            class="w-full bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] font-semibold py-3 rounded-xl transition-colors"
+            :disabled="isLoading"
+            class="w-full bg-[#A8D5BA] hover:bg-[#8FC2A4] disabled:opacity-60 disabled:cursor-not-allowed text-[#2C5F2D] font-semibold py-3 rounded-xl transition-colors flex items-center justify-center gap-2"
           >
-            Sign in
+            <Loader2 v-if="isLoading" class="w-4 h-4 animate-spin" />
+            <span>{{ isLoading ? 'Signing in...' : 'Sign in' }}</span>
           </button>
         </form>
 
@@ -143,13 +161,22 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue';
+import { ref, reactive } from 'vue';
+import { useRouter } from 'vue-router';
 import {
   Heart,
   Mail,
   Lock,
+  Eye,
+  EyeOff,
+  AlertCircle,
+  Loader2,
   ArrowLeft,
 } from 'lucide-vue-next';
+import { useAuthStore } from '../stores/auth';
+
+const router = useRouter();
+const authStore = useAuthStore();
 
 const form = reactive({
   email: '',
@@ -157,8 +184,25 @@ const form = reactive({
   rememberMe: false,
 });
 
-const handleLogin = () => {
-  alert('Login function will be added later.');
+const showPassword = ref(false);
+const isLoading = ref(false);
+const errorMessage = ref('');
+
+const handleLogin = async () => {
+  errorMessage.value = '';
+  isLoading.value = true;
+
+  try {
+    await authStore.login({
+      email: form.email,
+      password: form.password,
+    });
+    router.push('/');
+  } catch (err) {
+    errorMessage.value = err.message || 'Invalid email or password. Please try again.';
+  } finally {
+    isLoading.value = false;
+  }
 };
 
 const handleForgotPassword = () => {
