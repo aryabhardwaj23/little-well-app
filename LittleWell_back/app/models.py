@@ -1,9 +1,22 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, Date, func, ForeignKey, Numeric
+from sqlalchemy import Column, Integer, BigInteger, String, Text, DateTime, Date, func, ForeignKey, Numeric, Boolean
 from sqlalchemy.orm import relationship
 
 from .db import Base
 
 
+# ── NEW: User authentication table ────────────────────────────────────────────
+class User(Base):
+    __tablename__ = "users"
+
+    user_id = Column(BigInteger, primary_key=True, index=True)
+    username = Column(String(100), unique=True, nullable=False, index=True)
+    password_hash = Column(String(255), nullable=False)
+    is_active = Column(Boolean, default=True, nullable=False)
+    created_at = Column(DateTime, server_default=func.now())
+    updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
+
+
+# ── Existing tables (unchanged) ───────────────────────────────────────────────
 class UserSearch(Base):
     __tablename__ = "user_search"
 
@@ -27,8 +40,6 @@ class UserChild(Base):
     vitamin_d_status = Column(Integer, default=0)
     variety_status = Column(Integer, default=0)
 
-    # DB column: restriction_id int
-    # Links to dietary_restriction.restriction_id
     restriction_id = Column(
         Integer,
         ForeignKey("dietary_restriction.restriction_id"),
@@ -128,9 +139,7 @@ class ProductFlag(Base):
 class ProductAllergen(Base):
     __tablename__ = "product_allergen"
 
-    # DB changed: id is now the row-level primary key
     id = Column(Integer, primary_key=True, index=True)
-
     allergen_id = Column(Integer, nullable=False)
     product_id = Column(Integer, nullable=False)
     allergen_name = Column(Text, nullable=True)
@@ -224,19 +233,10 @@ class WeeklyPlan(Base):
     user_id = Column(Integer, nullable=False)
 
     plan_name = Column(String(150), nullable=False)
-
-    # DB enum: 'once', 'twice', 'three_times', 'daily'
     cook_frequency = Column(String(50), nullable=False)
-
-    # DB enum: 'low', 'medium', 'high'
     variety_preference = Column(String(50), nullable=False)
-
-    # DB enum: 'traditional', 'asian', 'mediterranean', 'vegetarian', 'mixed'
     meal_style = Column(String(50), nullable=False)
-
     season_id = Column(Integer, nullable=True)
-
-    # DB enum: 'draft', 'active', 'completed', 'archived'
     status = Column(String(30), default="active", nullable=False)
 
     created_at = Column(DateTime, server_default=func.now())
@@ -272,30 +272,16 @@ class WeeklyPlanMeal(Base):
     plan_id = Column(Integer, ForeignKey("weekly_plan.plan_id"), nullable=False)
 
     reference_food_id = Column(Integer, nullable=True)
-
-    # DB enum: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
     cook_day = Column(String(20), nullable=False)
-
     cover_days = Column(String(100), nullable=True)
-
-    # DB varchar(200)
     meal_title = Column(String(200), nullable=False)
-
-    # DB decimal(4,1)
     servings = Column(Numeric(4, 1), nullable=False, default=1.0)
-
     prep_time_minutes = Column(Integer, nullable=True)
-
-    # DB varchar(255)
     nutrition_tags = Column(String(255), nullable=True)
     seasonal_note = Column(String(255), nullable=True)
     storage_tip = Column(String(255), nullable=True)
-
     recipe_id = Column(Integer, nullable=True)
-
-    # DB varchar(500)
     image_url = Column(String(500), nullable=True)
-
     created_at = Column(DateTime, server_default=func.now())
 
     plan = relationship("WeeklyPlan", back_populates="meals")

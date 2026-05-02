@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .routers import children, recommendations, weekly_plans
+from .routers import children, recommendations, weekly_plans, auth  # ← added auth
 
 app = FastAPI(title="LittleWell API")
 
@@ -18,9 +18,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(auth.router)           # ← new
 app.include_router(children.router)
 app.include_router(recommendations.router)
 app.include_router(weekly_plans.router)
+
+
 @app.get("/")
 def root():
     return {"message": "LittleWell backend is running"}
