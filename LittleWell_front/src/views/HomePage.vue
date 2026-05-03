@@ -94,7 +94,7 @@
                   @click="handleAddChild"
                   class="w-full bg-[#E5F2E8] rounded-2xl border border-[#8FC2A4]/60 p-5 shadow-sm hover:shadow-md hover:border-[#7DB593]/70 hover:bg-[#D9ECDF] transition-all text-left flex flex-col gap-4"
                 >
-                  <p class="text-xl text-[#2C5F2D]">Get personalised lunchbox</p>
+                  <p class="text-xl text-[#2C5F2D]">Get Personalised Lunchbox</p>
                   <p class="text-sm text-[#2C5F2D] font-semibold">
                     Start by creating a child profile around your nutrition needs
                   </p>
