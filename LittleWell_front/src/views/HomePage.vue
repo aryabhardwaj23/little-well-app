@@ -25,7 +25,6 @@
               @click="router.push('/weekly-plan')"
               class="text-[#2C5F2D] hover:bg-[#A8D5BA]/10 rounded-lg px-4 py-2 transition-colors"
             >
-              <CalendarDays class="w-4 h-4 inline mr-2" />
               Weekly Plan
             </button>
 
@@ -33,21 +32,11 @@
               @click="router.push('/my-plans')"
               class="text-[#2C5F2D] hover:bg-[#A8D5BA]/10 rounded-lg px-4 py-2 transition-colors"
             >
-              <BookmarkCheck class="w-4 h-4 inline mr-2" />
               My Plans
             </button>
 
             <button disabled class="text-muted-foreground cursor-not-allowed relative px-4 py-2">
-              <BookOpen class="w-4 h-4 inline mr-2" />
               Knowledge Hub
-              <span class="absolute -top-1 -right-2 bg-[#CDE7F0] text-[#1B4965] text-xs rounded-full px-1.5 py-0.5">
-                Soon
-              </span>
-            </button>
-
-            <button disabled class="text-muted-foreground cursor-not-allowed relative px-4 py-2">
-              <ScanLine class="w-4 h-4 inline mr-2" />
-              Label Reader
               <span class="absolute -top-1 -right-2 bg-[#CDE7F0] text-[#1B4965] text-xs rounded-full px-1.5 py-0.5">
                 Soon
               </span>
@@ -70,75 +59,138 @@
     </nav>
 
     <!-- Hero Section -->
-    <div class="relative h-[500px] overflow-hidden mt-16">
-      <img
-        src="https://images.unsplash.com/photo-1758874961000-d8b11690ce22?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwYXJlbnQlMjBjb29raW5nJTIwd2l0aCUyMGNoaWxkJTIwa2l0Y2hlbnxlbnwxfHx8fDE3NzQzNDI2MjF8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-        alt="Parent cooking with child"
-        class="w-full h-full object-cover"
-      />
-      <div class="absolute inset-0 bg-gradient-to-r from-black/60 to-black/30" />
-
-      <div class="absolute inset-0 flex items-center">
-        <div class="container mx-auto px-6 max-w-6xl">
-          <div class="max-w-2xl text-white">
-            <h1 class="text-5xl md:text-6xl mb-6 leading-tight">
-              Seasonal, fresh lunchboxes made simple for children aged 5–12
+    <div class="pt-28 pb-14 bg-[#FAF9F6]">
+      <div class="container mx-auto px-6 max-w-6xl">
+        <div class="grid lg:grid-cols-2 gap-8 items-stretch">
+          <div class="flex flex-col justify-center">
+            <h1 class="text-4xl md:text-5xl leading-tight text-[#2C5F2D] mb-5">
+              Fresh lunchbox planning made simple
             </h1>
-            <p class="text-xl md:text-2xl text-white/90">
-              Science-backed nutrition with fresh, school-friendly lunchbox ideas.
+
+            <p class="text-lg text-muted-foreground leading-relaxed max-w-xl">
+              Create balanced lunchbox ideas for children aged 5–12 based on age, allergies and food preferences.
             </p>
 
-            <!-- CTA Buttons -->
-            <div class="mt-8 flex flex-col sm:flex-row gap-4">
-              <button
-                @click="handleAddChild"
-                class="bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg px-8 py-4 text-lg font-semibold transition-colors shadow-md"
-              >
-                Add a Child
-              </button>
+            <div class="mt-8 space-y-4">
+              <div class="relative group">
+                <button
+                  @click="router.push('/quick-start')"
+                  class="w-full bg-[#F8F5EC] rounded-2xl border border-[#E8DDC8] p-5 shadow-sm hover:shadow-md hover:border-[#DDCFB2] hover:bg-[#F5F0E4] transition-all text-left flex flex-col gap-4"
+                >
+                  <p class="text-xl text-[#315F3A]">Try Quick Start</p>
+                  <p class="text-sm text-[#315F3A] font-semibold">
+                    Try a lunchbox plan in 1 minute
+                  </p>
+                </button>
 
-              <button
-                @click="router.push('/quick-start')"
-                class="bg-white/20 hover:bg-white/30 text-white border border-white/40 rounded-lg px-8 py-4 text-lg font-semibold transition-colors"
-              >
-                Quick Start
-              </button>
+                <div
+                  class="hidden md:block absolute left-0 right-0 bottom-full mb-3 bg-white border border-[#A8D5BA]/40 rounded-xl shadow-lg p-4 text-sm text-muted-foreground leading-relaxed opacity-0 translate-y-1 pointer-events-none transition-all duration-200 group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0"
+                >
+                  Quick Start gently helps you begin with confidence — no profile setup needed. Choose age and optional allergies to generate a balanced lunchbox plan you can use right away.
+                </div>
 
-              <button
-                @click="router.push('/weekly-plan')"
-                class="bg-white text-[#2C5F2D] hover:bg-[#FAF9F6] rounded-lg px-8 py-4 text-lg font-semibold transition-colors shadow-md"
-              >
-                Weekly Plan
-              </button>
+                <p class="md:hidden mt-2 text-xs text-muted-foreground leading-relaxed">
+                  Quick Start lets you try a ready-to-use lunchbox recommendation without creating a profile first.
+                </p>
+              </div>
+
+              <div class="relative group">
+                <button
+                  @click="handleAddChild"
+                  class="w-full bg-[#E5F2E8] rounded-2xl border border-[#8FC2A4]/60 p-5 shadow-sm hover:shadow-md hover:border-[#7DB593]/70 hover:bg-[#D9ECDF] transition-all text-left flex flex-col gap-4"
+                >
+                  <p class="text-xl text-[#2C5F2D]">Get Personalised Lunchbox</p>
+                  <p class="text-sm text-[#2C5F2D] font-semibold">
+                    Start by creating a child profile around your nutrition needs
+                  </p>
+                </button>
+
+                <div
+                  class="hidden md:block absolute left-0 right-0 bottom-full mb-3 bg-white border border-[#A8D5BA]/40 rounded-xl shadow-lg p-4 text-sm text-muted-foreground leading-relaxed opacity-0 translate-y-1 pointer-events-none transition-all duration-200 group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0"
+                >
+                  Child Profile enables deeper personalisation. Save age, allergies, and food preferences to generate smarter lunchboxes and weekly plans.
+                </div>
+
+                <p class="md:hidden mt-2 text-xs text-muted-foreground leading-relaxed">
+                  Save profile details for a more personalised and long-term lunchbox planning experience.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="relative flex items-center">
+            <img
+              src="https://images.pexels.com/photos/4252139/pexels-photo-4252139.jpeg?auto=compress&cs=tinysrgb&w=1400"
+              alt="Healthy lunchbox ingredients and family-style meal prep"
+              class="w-full h-[620px] object-cover rounded-3xl shadow-md"
+            />
+
+            <div class="absolute bottom-5 left-5 right-5 bg-white/60 backdrop-blur-sm rounded-2xl shadow-md border p-4">
+              <div class="grid sm:grid-cols-3 gap-3">
+                <div class="rounded-xl bg-[#CDE7F0]/35 p-3 flex flex-col">
+                  <p class="text-sm font-semibold text-[#374151] leading-snug">
+                    Simplify nutrition choices
+                  </p>
+                  <div class="w-full h-12 rounded-full overflow-hidden mt-2">
+                    <img
+                      src="https://images.pexels.com/photos/1132047/pexels-photo-1132047.jpeg?auto=compress&cs=tinysrgb&w=800"
+                      alt="Fresh vegetables fruits and milk ingredients"
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+
+                <div class="rounded-xl bg-[#CDE7F0]/35 p-3 flex flex-col">
+                  <p class="text-sm font-semibold text-[#374151] leading-snug">
+                    Personalise for each child
+                  </p>
+                  <div class="w-full h-12 rounded-full overflow-hidden mt-2">
+                    <img
+                      src="https://images.pexels.com/photos/3872370/pexels-photo-3872370.jpeg?auto=compress&cs=tinysrgb&w=800"
+                      alt="Parent preparing vegetables"
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+
+                <div class="rounded-xl bg-[#CDE7F0]/35 p-3 flex flex-col">
+                  <p class="text-sm font-semibold text-[#374151] leading-snug">
+                    Plan healthier lunchboxes
+                  </p>
+                  <div class="w-full h-12 rounded-full overflow-hidden mt-2">
+                    <img
+                      src="https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800"
+                      alt="Weekly meal prep containers"
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Section 2: Your Family Profiles -->
-    <div class="py-16 bg-white">
+    <!-- Child Profile Section -->
+    <div class="pt-14 pb-8 bg-white">
       <div class="container mx-auto px-6 max-w-6xl">
-        <div class="flex items-center justify-between mb-8">
-          <div>
-            <h2 class="text-3xl mb-2">Your Family Profiles</h2>
-            <p class="text-muted-foreground">
-              Personalised nutrition support for children aged 5–12
-            </p>
-          </div>
+        <div class="mb-8">
+          <h2 class="text-3xl mb-2 text-[#2C5F2D]">Your child profiles</h2>
+          <p class="text-muted-foreground max-w-3xl">
+            Manage profiles for children aged 5–12 and generate personalised lunchbox ideas whenever you need.
+          </p>
         </div>
 
-        <!-- Horizontal Scroll Cards -->
         <div class="flex gap-6 overflow-x-auto pb-4 -mx-6 px-6">
-          <!-- Add Child moved to the front -->
           <div
             @click="handleAddChild"
-            class="flex-shrink-0 w-[340px] p-6 rounded-2xl border-2 border-dashed border-[#A8D5BA] bg-[#A8D5BA]/5 flex flex-col items-center justify-center hover:bg-[#A8D5BA]/10 transition-colors cursor-pointer"
+            class="flex-shrink-0 w-[340px] min-h-[260px] p-6 rounded-2xl border-2 border-dashed border-[#A8D5BA] bg-[#A8D5BA]/5 flex flex-col items-center justify-center hover:bg-[#A8D5BA]/10 transition-colors cursor-pointer"
           >
             <div class="w-16 h-16 bg-[#A8D5BA]/20 rounded-full flex items-center justify-center mb-3">
               <Plus class="w-8 h-8 text-[#2C5F2D]" />
             </div>
-            <p class="text-lg text-[#2C5F2D] font-semibold">Add a child</p>
+            <p class="text-lg text-[#2C5F2D] font-semibold">Add another child</p>
             <p class="text-sm text-muted-foreground text-center mt-2">
               Create a profile for a child aged 5–12 to get personalised meal suggestions
             </p>
@@ -218,7 +270,7 @@
               @click="handleViewMeals(profile.id)"
               class="w-full bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg py-3 flex items-center justify-center gap-2 transition-colors"
             >
-              View Lunchboxes
+              Get Personalised Lunchboxes
               <ChevronRight class="w-4 h-4" />
             </button>
           </div>
@@ -226,81 +278,22 @@
       </div>
     </div>
 
-    <!-- Section 3: Quick Meal Option -->
-    <div class="py-12 bg-[#FAF9F6]">
+    <!-- Family Meal Planning -->
+    <div class="pt-6 pb-12 bg-white">
       <div class="container mx-auto px-6 max-w-6xl">
-        <div class="p-8 rounded-2xl shadow-sm border-2 border-transparent hover:border-[#F7B267] transition-all bg-white">
-          <div class="flex items-center gap-8">
-            <div class="w-16 h-16 bg-[#F7B267] rounded-full flex items-center justify-center flex-shrink-0">
-              <Zap class="w-8 h-8 text-white" />
-            </div>
-
-            <div class="flex-1">
-              <h2 class="text-2xl mb-2">Start a Quick Meal Plan</h2>
-              <p class="text-muted-foreground">
-                Get simple, balanced meal ideas for children aged 5–12 without creating a profile
-              </p>
-            </div>
-
-            <button
-              @click="router.push('/quick-start')"
-              class="bg-[#F7B267] hover:bg-[#E5A156] text-white rounded-lg px-8 py-3 transition-colors"
-            >
-              Start Now
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Section 3.5: Weekly Meal Planning -->
-    <div class="py-12 bg-white">
-      <div class="container mx-auto px-6 max-w-6xl">
-        <div class="p-8 rounded-2xl shadow-sm border-2 border-[#A8D5BA]/40 bg-gradient-to-r from-[#A8D5BA]/10 to-[#CDE7F0]/20">
-          <div class="flex flex-col md:flex-row md:items-center gap-8">
-            <div class="w-16 h-16 bg-[#A8D5BA] rounded-full flex items-center justify-center flex-shrink-0">
-              <CalendarDays class="w-8 h-8 text-[#2C5F2D]" />
-            </div>
-
-            <div class="flex-1">
-              <h2 class="text-2xl mb-2">Build a Weekly Lunchbox Plan</h2>
-              <p class="text-muted-foreground leading-relaxed">
-                Plan several cooking days at once, reuse meals across the week, and save plans for busy school mornings.
-              </p>
-            </div>
-
-            <div class="flex flex-col sm:flex-row gap-3">
-              <button
-                @click="router.push('/weekly-plan')"
-                class="bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg px-8 py-3 font-semibold transition-colors"
-              >
-                Start Weekly Plan
-              </button>
-
-              <button
-                @click="router.push('/my-plans')"
-                class="bg-white hover:bg-[#FAF9F6] text-[#2C5F2D] border border-[#A8D5BA] rounded-lg px-8 py-3 font-semibold transition-colors"
-              >
-                My Saved Plans
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Section 4: Family Meal Planning -->
-    <div v-if="profiles.length >= 2" class="py-16 bg-white">
-      <div class="container mx-auto px-6 max-w-6xl">
-        <div class="text-center mb-8">
-          <h2 class="text-3xl mb-2">Plan for Your Family</h2>
-          <p class="text-muted-foreground">
-            Select multiple children aged 5–12 to generate family lunchboxes
+        <div class="mb-8">
+          <h2 class="text-3xl mb-2 text-[#2C5F2D]">Planning for more than one child?</h2>
+          <p class="text-muted-foreground max-w-4xl leading-relaxed">
+            We know every child has different needs. Select multiple profiles to generate family lunchbox ideas that consider each child's age, allergies and preferences, making busy mornings a little easier.
           </p>
         </div>
 
         <div class="p-8 rounded-2xl shadow-sm bg-white border">
-          <div class="grid md:grid-cols-3 gap-4 mb-8">
+          <p v-if="profiles.length < 2" class="text-sm text-muted-foreground mb-6">
+            Add at least two supported child profiles to generate a family lunchbox plan.
+          </p>
+
+          <div class="grid md:grid-cols-3 gap-4 mb-8" :class="{ 'opacity-60': profiles.length < 2 }">
             <div
               v-for="profile in profiles"
               :key="profile.id"
@@ -348,8 +341,8 @@
 
           <button
             @click="handleGenerateFamilyPlan"
-            :disabled="selectedForFamily.length === 0"
-            class="w-full bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg py-6 text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            :disabled="selectedForFamily.length === 0 || profiles.length < 2"
+            class="w-full bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg py-4 text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             Generate Family Lunchboxes
           </button>
@@ -357,133 +350,43 @@
       </div>
     </div>
 
-    <!-- Section 5: Learning Resources & Tools -->
-    <div class="py-16 bg-[#FAF9F6]">
+    <!-- Weekly Plan Section -->
+    <div class="py-12 bg-[#FAF9F6]">
       <div class="container mx-auto px-6 max-w-6xl">
-        <div class="text-center mb-12">
-          <h2 class="text-3xl mb-2">Learning Resources & Tools</h2>
-          <p class="text-muted-foreground">
-            Empower yourself with knowledge and practical tools for healthier choices
-          </p>
-        </div>
-
-        <div class="grid md:grid-cols-2 gap-6">
-          <!-- Nutrition Education Card -->
-          <div class="p-8 rounded-2xl shadow-sm relative overflow-hidden bg-white">
-            <span class="absolute top-4 right-4 bg-[#CDE7F0] text-[#1B4965] rounded-full px-3 py-1 text-sm">
-              Coming Soon
-            </span>
-
-            <div class="flex items-start gap-4 mb-4">
-              <div class="w-14 h-14 bg-[#A8D5BA] rounded-full flex items-center justify-center flex-shrink-0">
-                <BookOpen class="w-7 h-7 text-[#2C5F2D]" />
-              </div>
-
-              <div>
-                <h3 class="text-xl mb-2">Nutrition Knowledge Hub</h3>
-                <p class="text-muted-foreground text-sm leading-relaxed">
-                  Learn how additives, preservatives, and sugar impact children's cognitive development and behavior. Science-backed articles written for busy parents.
-                </p>
-              </div>
-            </div>
-
-            <div class="mt-6 space-y-2 text-sm text-muted-foreground">
-              <div class="flex items-center gap-2">
-                <div class="w-1.5 h-1.5 bg-[#A8D5BA] rounded-full"></div>
-                <span>Understanding food additives and preservatives</span>
-              </div>
-
-              <div class="flex items-center gap-2">
-                <div class="w-1.5 h-1.5 bg-[#A8D5BA] rounded-full"></div>
-                <span>How sugar affects brain development and mood</span>
-              </div>
-
-              <div class="flex items-center gap-2">
-                <div class="w-1.5 h-1.5 bg-[#A8D5BA] rounded-full"></div>
-                <span>Making informed choices for your family</span>
-              </div>
-            </div>
+        <div class="flex flex-col md:flex-row md:items-center gap-8">
+          <div class="w-16 h-16 bg-[#A8D5BA] rounded-full flex items-center justify-center flex-shrink-0">
+            <CalendarDays class="w-8 h-8 text-[#2C5F2D]" />
           </div>
 
-          <!-- Label Scanner Card -->
-          <div class="p-8 rounded-2xl shadow-sm relative overflow-hidden bg-white">
-            <span class="absolute top-4 right-4 bg-[#CDE7F0] text-[#1B4965] rounded-full px-3 py-1 text-sm">
-              Coming Soon
-            </span>
-
-            <div class="flex items-start gap-4 mb-4">
-              <div class="w-14 h-14 bg-[#F7B267] rounded-full flex items-center justify-center flex-shrink-0">
-                <ScanLine class="w-7 h-7 text-white" />
-              </div>
-
-              <div>
-                <h3 class="text-xl mb-2">Smart Label Reader</h3>
-                <p class="text-muted-foreground text-sm leading-relaxed">
-                  Decode nutrition labels and ingredient lists instantly. Get clear, actionable insights about what's really in children's snacks and meals.
-                </p>
-              </div>
-            </div>
-
-            <div class="mt-6 space-y-2 text-sm text-muted-foreground">
-              <div class="flex items-center gap-2">
-                <div class="w-1.5 h-1.5 bg-[#F7B267] rounded-full"></div>
-                <span>Scan product labels with your phone</span>
-              </div>
-
-              <div class="flex items-center gap-2">
-                <div class="w-1.5 h-1.5 bg-[#F7B267] rounded-full"></div>
-                <span>Instant breakdown of nutritional content</span>
-              </div>
-
-              <div class="flex items-center gap-2">
-                <div class="w-1.5 h-1.5 bg-[#F7B267] rounded-full"></div>
-                <span>Identify hidden sugars and additives</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Features Section -->
-    <div class="py-16 bg-white">
-      <div class="container mx-auto px-6 max-w-6xl">
-        <h2 class="text-3xl text-center mb-12">Why families love LittleWell</h2>
-
-        <div class="grid md:grid-cols-3 gap-8">
-          <!-- Feature 1 -->
-          <div class="text-center">
-            <div class="w-16 h-16 bg-[#A8D5BA] rounded-full flex items-center justify-center mx-auto mb-4">
-              <Heart class="w-8 h-8 text-white" />
-            </div>
-            <h3 class="text-xl mb-3">Personalised for your child</h3>
+          <div class="flex-1">
+            <h2 class="text-3xl mb-2 text-[#2C5F2D]">Plan the whole school week</h2>
             <p class="text-muted-foreground leading-relaxed">
-              Tailored lunchbox ideas based on age, allergies, and nutritional needs
+              Choose your children, set your cooking frequency, and generate a weekly lunchbox plan that is practical, reusable, and easier to follow on busy school days.
             </p>
           </div>
 
-          <!-- Feature 2 -->
-          <div class="text-center">
-            <div class="w-16 h-16 bg-[#F7B267] rounded-full flex items-center justify-center mx-auto mb-4">
-              <Leaf class="w-8 h-8 text-white" />
-            </div>
-            <h3 class="text-xl mb-3">Seasonal & Fresh</h3>
-            <p class="text-muted-foreground leading-relaxed">
-              Recommendations using ingredients at their peak freshness and nutrition
-            </p>
-          </div>
+          <div class="flex flex-col sm:flex-row gap-3">
+            <button
+              @click="router.push('/weekly-plan')"
+              class="bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg px-8 py-3 font-semibold transition-colors"
+            >
+              Build Weekly Plan
+            </button>
 
-          <!-- Feature 3 -->
-          <div class="text-center">
-            <div class="w-16 h-16 bg-[#CDE7F0] rounded-full flex items-center justify-center mx-auto mb-4">
-              <Clock class="w-8 h-8 text-[#1B4965]" />
-            </div>
-            <h3 class="text-xl mb-3">Save time every day</h3>
-            <p class="text-muted-foreground leading-relaxed">
-              Quick, practical meal ideas that fit into busy school morning routines
-            </p>
+            <button
+              @click="router.push('/my-plans')"
+              class="bg-white hover:bg-[#FAF9F6] text-[#2C5F2D] border border-[#A8D5BA] rounded-lg px-8 py-3 font-semibold transition-colors"
+            >
+              View My Plans
+            </button>
           </div>
         </div>
+
+        <img
+          src="https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=1200"
+          alt="Weekly meal prep containers on a table"
+          class="mt-7 w-full h-52 object-cover rounded-2xl"
+        />
       </div>
     </div>
   </div>
@@ -495,17 +398,11 @@ import { useRouter } from 'vue-router';
 import {
   Heart,
   Plus,
-  Zap,
   Edit,
   Trash2,
   ChevronRight,
-  Leaf,
-  Clock,
-  BookOpen,
-  ScanLine,
   Menu,
   CalendarDays,
-  BookmarkCheck,
 } from 'lucide-vue-next';
 import { getChildren, deleteChild } from '../services/api';
 
@@ -536,6 +433,8 @@ const nutritionFocusLabels = {
   variety: 'Diet Variety',
 };
 
+const allowedAgeGroups = ['5-6 years', '7-9 years', '10-12 years'];
+
 const normalizeAgeGroup = (ageGroup) => {
   const mapping = {
     '5-6 years': '5-6 years',
@@ -549,9 +448,14 @@ const normalizeAgeGroup = (ageGroup) => {
     '12+ years': '10-12 years',
     '4-8': '7-9 years',
     '9-13': '10-12 years',
+
+    // Outside supported range
+    '0-3 years': '',
+    '2-3': '',
+    '14-18': '',
   };
 
-  return mapping[ageGroup] || ageGroup || '';
+  return mapping[ageGroup] || '';
 };
 
 const mapAllergiesToNames = (allergies) => {
@@ -595,11 +499,14 @@ const mapStatusToNutritionFocus = (child) => {
 
 const mapChildToProfileCard = (child) => {
   const focusIds = mapStatusToNutritionFocus(child);
+  const normalizedAgeGroup = normalizeAgeGroup(child.age_band);
 
   return {
     id: child.child_id,
     name: child.child_name,
-    ageGroup: normalizeAgeGroup(child.age_band),
+    ageGroup: normalizedAgeGroup,
+    originalAgeGroup: child.age_band,
+    isSupportedAge: allowedAgeGroups.includes(normalizedAgeGroup),
     allergies: mapAllergiesToNames(child.allergies),
     dietaryRestriction: child.restriction_name || '',
     restrictionId: child.restriction_id || null,
@@ -612,7 +519,12 @@ const loadProfiles = async () => {
   try {
     isLoadingProfiles.value = true;
     const children = await getChildren();
-    profiles.value = children.map(mapChildToProfileCard);
+
+    const mappedProfiles = Array.isArray(children)
+      ? children.map(mapChildToProfileCard)
+      : [];
+
+    profiles.value = mappedProfiles.filter((profile) => profile.isSupportedAge);
   } catch (error) {
     console.error('Failed to load children:', error);
   } finally {
@@ -633,7 +545,7 @@ const toggleFamilySelection = (id) => {
 };
 
 const handleGenerateFamilyPlan = () => {
-  if (selectedForFamily.value.length > 0) {
+  if (selectedForFamily.value.length > 0 && profiles.value.length >= 2) {
     const childIds = selectedForFamily.value.join(',');
     router.push(`/results?family=1&childIds=${childIds}`);
   }
