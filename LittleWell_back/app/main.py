@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .routers import children, recommendations, weekly_plans, auth  # ← added auth
+from .routers import children, recommendations, weekly_plans, auth, ml_router   
 
 app = FastAPI(title="LittleWell API")
 
@@ -22,7 +22,7 @@ app.include_router(auth.router)           # ← new
 app.include_router(children.router)
 app.include_router(recommendations.router)
 app.include_router(weekly_plans.router)
-
+app.include_router(ml_router.router)
 
 @app.get("/")
 def root():
