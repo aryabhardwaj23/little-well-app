@@ -3,9 +3,9 @@
     <div class="container mx-auto px-6 max-w-6xl">
       <!-- Header -->
       <div class="text-center mb-8">
-        <h1 class="text-4xl mb-4">Nutritious Lunchboxes for Your Family</h1>
+        <h1 class="text-4xl mb-4">Nutritious Lunchboxes for Children Aged 5–12</h1>
         <p class="text-lg text-muted-foreground">
-          Colorful, balanced meals designed to delight and nourish your little ones
+          Colorful, balanced lunchbox ideas designed for school-aged children
         </p>
 
         <div v-if="isFamilyMode" class="mt-3">
@@ -21,32 +21,35 @@
         </div>
       </div>
 
-      <!-- Seasonal Toggle -->
+      <!-- Seasonal Recommendation Info -->
       <div class="p-6 rounded-2xl shadow-sm mb-8 bg-white border">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-4">
-            <div class="w-12 h-12 bg-[#A8D5BA] rounded-full flex items-center justify-center flex-shrink-0">
-              <Leaf class="w-6 h-6 text-[#2C5F2D]" />
-            </div>
-            <div>
-              <h3 class="text-lg font-medium">{{ seasonNames[season] }} Seasonal Mode</h3>
-              <p class="text-sm text-muted-foreground">
-                Prioritize fresh, in-season ingredients for maximum nutrition
-              </p>
-            </div>
+        <div class="flex items-start gap-4">
+          <div class="w-12 h-12 bg-[#A8D5BA] rounded-full flex items-center justify-center flex-shrink-0">
+            <Leaf class="w-6 h-6 text-[#2C5F2D]" />
           </div>
 
-          <label class="flex items-center gap-2 cursor-pointer">
-            <input
-              v-model="seasonalMode"
-              type="checkbox"
-              class="w-11 h-6 bg-gray-200 rounded-full appearance-none cursor-pointer relative
-                     checked:bg-[#A8D5BA] transition-colors
-                     after:content-[''] after:absolute after:top-0.5 after:left-0.5
-                     after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-transform
-                     checked:after:translate-x-5"
-            />
-          </label>
+          <div>
+            <h3 class="text-lg font-medium">
+              {{ seasonNames[season] }} seasonal ingredients included
+            </h3>
+
+            <p class="text-sm text-muted-foreground mt-1 leading-relaxed">
+              These lunchbox suggestions prioritise fresh, in-season vegetables where possible.
+              Seasonal vegetables are often fresher, more flavourful, and easier to include in everyday school meals.
+            </p>
+
+            <div class="mt-3 flex flex-wrap gap-2">
+              <span class="text-xs bg-[#A8D5BA]/20 text-[#2C5F2D] px-3 py-1 rounded-full">
+                Fresher choices
+              </span>
+              <span class="text-xs bg-[#CDE7F0]/30 text-[#1B4965] px-3 py-1 rounded-full">
+                Better flavour
+              </span>
+              <span class="text-xs bg-[#F7B267]/20 text-[#8B4513] px-3 py-1 rounded-full">
+                School-friendly nutrition
+              </span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -304,6 +307,9 @@ const route = useRoute();
 
 const isQuickMode = ref(false);
 const isFamilyMode = ref(false);
+
+// Seasonal recommendations are always enabled.
+// The UI no longer shows a toggle, but API requests still send seasonal: true.
 const seasonalMode = ref(true);
 
 const lunchboxes = ref([]);
@@ -315,6 +321,29 @@ const recipeLoading = ref(false);
 const selectedChildId = ref(null);
 const selectedChildIds = ref([]);
 const needsSupport = ref([]);
+
+const allowedAgeGroups = ['5-6 years', '7-9 years', '10-12 years'];
+
+const normalizeAgeGroup = (ageGroup) => {
+  const mapping = {
+    '5-6 years': '5-6 years',
+    '7-9 years': '7-9 years',
+    '10-12 years': '10-12 years',
+
+    // Old values compatibility
+    '0-3 years': '',
+    '3-6 years': '5-6 years',
+    '6-9 years': '7-9 years',
+    '9-12 years': '10-12 years',
+    '12+ years': '10-12 years',
+    '2-3': '',
+    '4-8': '7-9 years',
+    '9-13': '10-12 years',
+    '14-18': '',
+  };
+
+  return mapping[ageGroup] || '';
+};
 
 const showRecipeInspiration = computed(() => {
   return !isQuickMode.value && (
@@ -329,7 +358,7 @@ const loadRecommendations = async () => {
   const family = route.query.family;
 
   const quick = route.query.quick;
-  const quickAgeGroup = route.query.ageGroup;
+  const quickAgeGroup = normalizeAgeGroup(route.query.ageGroup);
   const allergiesParam = route.query.allergies;
 
   try {
@@ -345,6 +374,12 @@ const loadRecommendations = async () => {
     // Quick mode
     if (quick && quickAgeGroup) {
       isQuickMode.value = true;
+
+      if (!allowedAgeGroups.includes(quickAgeGroup)) {
+        lunchboxes.value = [];
+        needsSupport.value = [];
+        return;
+      }
 
       const allergies = allergiesParam
         ? String(allergiesParam)

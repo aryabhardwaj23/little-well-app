@@ -82,10 +82,10 @@
         <div class="container mx-auto px-6 max-w-6xl">
           <div class="max-w-2xl text-white">
             <h1 class="text-5xl md:text-6xl mb-6 leading-tight">
-              Seasonal, fresh lunchboxes made simple for your family
+              Seasonal, fresh lunchboxes made simple for children aged 5–12
             </h1>
             <p class="text-xl md:text-2xl text-white/90">
-              Science-backed nutrition with fresh, seasonal ingredients.
+              Science-backed nutrition with fresh, school-friendly lunchbox ideas.
             </p>
 
             <!-- CTA Buttons -->
@@ -123,7 +123,7 @@
           <div>
             <h2 class="text-3xl mb-2">Your Family Profiles</h2>
             <p class="text-muted-foreground">
-              Personalised nutrition support for each child
+              Personalised nutrition support for children aged 5–12
             </p>
           </div>
         </div>
@@ -140,7 +140,7 @@
             </div>
             <p class="text-lg text-[#2C5F2D] font-semibold">Add a child</p>
             <p class="text-sm text-muted-foreground text-center mt-2">
-              Create a profile to get personalised meal suggestions
+              Create a profile for a child aged 5–12 to get personalised meal suggestions
             </p>
           </div>
 
@@ -238,7 +238,7 @@
             <div class="flex-1">
               <h2 class="text-2xl mb-2">Start a Quick Meal Plan</h2>
               <p class="text-muted-foreground">
-                Get simple, balanced meal ideas instantly without creating a profile
+                Get simple, balanced meal ideas for children aged 5–12 without creating a profile
               </p>
             </div>
 
@@ -295,7 +295,7 @@
         <div class="text-center mb-8">
           <h2 class="text-3xl mb-2">Plan for Your Family</h2>
           <p class="text-muted-foreground">
-            Select multiple children to generate family lunchboxes
+            Select multiple children aged 5–12 to generate family lunchboxes
           </p>
         </div>
 
@@ -382,7 +382,7 @@
               <div>
                 <h3 class="text-xl mb-2">Nutrition Knowledge Hub</h3>
                 <p class="text-muted-foreground text-sm leading-relaxed">
-                  Learn how additives, preservatives, and sugar impact your child's cognitive development and behavior. Science-backed articles written for busy parents.
+                  Learn how additives, preservatives, and sugar impact children's cognitive development and behavior. Science-backed articles written for busy parents.
                 </p>
               </div>
             </div>
@@ -419,7 +419,7 @@
               <div>
                 <h3 class="text-xl mb-2">Smart Label Reader</h3>
                 <p class="text-muted-foreground text-sm leading-relaxed">
-                  Decode nutrition labels and ingredient lists instantly. Get clear, actionable insights about what's really in your children's snacks and meals.
+                  Decode nutrition labels and ingredient lists instantly. Get clear, actionable insights about what's really in children's snacks and meals.
                 </p>
               </div>
             </div>
@@ -458,7 +458,7 @@
             </div>
             <h3 class="text-xl mb-3">Personalised for your child</h3>
             <p class="text-muted-foreground leading-relaxed">
-              Tailored meal plans based on age, allergies, and nutritional needs
+              Tailored lunchbox ideas based on age, allergies, and nutritional needs
             </p>
           </div>
 
@@ -480,7 +480,7 @@
             </div>
             <h3 class="text-xl mb-3">Save time every day</h3>
             <p class="text-muted-foreground leading-relaxed">
-              Quick, practical meal ideas that fit into busy morning routines
+              Quick, practical meal ideas that fit into busy school morning routines
             </p>
           </div>
         </div>
@@ -526,6 +526,34 @@ const allergenIdToName = {
   15: 'Shellfish',
 };
 
+const nutritionFocusLabels = {
+  iron: 'Iron Support',
+  calcium: 'Calcium Support',
+  brain: 'Brain Development',
+  immunity: 'Immune Support',
+  vitamin_d: 'Vitamin D Support',
+  energy: 'Sustained Energy',
+  variety: 'Diet Variety',
+};
+
+const normalizeAgeGroup = (ageGroup) => {
+  const mapping = {
+    '5-6 years': '5-6 years',
+    '7-9 years': '7-9 years',
+    '10-12 years': '10-12 years',
+
+    // Old values compatibility
+    '3-6 years': '5-6 years',
+    '6-9 years': '7-9 years',
+    '9-12 years': '10-12 years',
+    '12+ years': '10-12 years',
+    '4-8': '7-9 years',
+    '9-13': '10-12 years',
+  };
+
+  return mapping[ageGroup] || ageGroup || '';
+};
+
 const mapAllergiesToNames = (allergies) => {
   if (!Array.isArray(allergies)) return [];
 
@@ -552,15 +580,6 @@ const handleLunchboxPlan = () => {
   }
 };
 
-const nutritionFocusLabels = {
-  iron: 'Iron Support',
-  calcium: 'Calcium Support',
-  brain: 'Brain Development',
-  immunity: 'Immune Support',
-  energy: 'Sustained Energy',
-  variety: 'Diet Variety',
-};
-
 const isActiveStatus = (value) => {
   return value === 1 || value === '1' || value === true;
 };
@@ -580,7 +599,7 @@ const mapChildToProfileCard = (child) => {
   return {
     id: child.child_id,
     name: child.child_name,
-    ageGroup: child.age_band,
+    ageGroup: normalizeAgeGroup(child.age_band),
     allergies: mapAllergiesToNames(child.allergies),
     dietaryRestriction: child.restriction_name || '',
     restrictionId: child.restriction_id || null,

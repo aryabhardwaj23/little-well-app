@@ -14,7 +14,7 @@
       <div class="text-center mb-12">
         <h1 class="text-4xl mb-4">Tell Us About Your Child</h1>
         <p class="text-lg text-muted-foreground">
-          We'll use this information to personalize meal suggestions
+          LittleWell supports school-aged children from 5 to 12 years old.
         </p>
       </div>
 
@@ -26,7 +26,9 @@
 
           <div class="space-y-6">
             <div>
-              <label class="block text-sm font-medium mb-2">Child's Name (or nickname)</label>
+              <label class="block text-sm font-medium mb-2">
+                Child's Name (or nickname)
+              </label>
               <input
                 v-model="formData.name"
                 type="text"
@@ -42,7 +44,7 @@
 
             <div>
               <label class="block text-sm font-medium mb-2">Age</label>
-              <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <button
                   v-for="age in ageGroups"
                   :key="age"
@@ -58,6 +60,9 @@
                   {{ age }}
                 </button>
               </div>
+              <p class="text-xs text-muted-foreground mt-2">
+                This system is designed for children aged 5–12.
+              </p>
             </div>
 
             <div>
@@ -136,21 +141,28 @@
 
             <div>
               <label class="block text-sm font-medium mb-2">Activity level</label>
-              <div class="grid grid-cols-3 gap-3">
+              <p class="text-sm text-muted-foreground mb-3">
+                Choose the option that best matches your child’s usual daily activity.
+              </p>
+
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <button
                   v-for="level in activityLevels"
                   :key="level.value"
                   type="button"
                   @click="formData.activityLevel = level.value"
                   :class="[
-                    'p-4 rounded-lg border-2 transition-all',
+                    'p-4 rounded-lg border-2 transition-all text-left',
                     formData.activityLevel === level.value
                       ? 'border-[#A8D5BA] bg-[#A8D5BA]/10 text-[#2C5F2D]'
                       : 'border-gray-200 hover:border-[#A8D5BA]/50'
                   ]"
                 >
-                  <div class="text-2xl mb-1">{{ level.icon }}</div>
-                  <div class="text-sm font-medium">{{ level.label }}</div>
+                  <div class="text-2xl mb-2">{{ level.icon }}</div>
+                  <div class="text-sm font-semibold mb-1">{{ level.label }}</div>
+                  <div class="text-xs leading-relaxed text-muted-foreground">
+                    {{ level.description }}
+                  </div>
                 </button>
               </div>
             </div>
@@ -161,40 +173,26 @@
         <div class="p-8 rounded-2xl shadow-sm bg-white">
           <h2 class="text-2xl mb-6">Eating Habits</h2>
 
-          <div class="space-y-4">
-            <div>
-              <label class="block text-sm font-medium mb-2">
-                How would you describe your child's eating habits?
-              </label>
+          <div>
+            <label class="block text-sm font-medium mb-2">
+              How would you describe your child's eating habits?
+            </label>
 
-              <div class="space-y-2">
-                <label
-                  v-for="habit in eatingHabits"
-                  :key="habit"
-                  class="flex items-center p-3 border-2 rounded-lg cursor-pointer hover:border-[#A8D5BA]/50 transition-colors"
-                  :class="formData.eatingHabit === habit ? 'border-[#A8D5BA] bg-[#A8D5BA]/5' : 'border-gray-200'"
-                >
-                  <input
-                    type="radio"
-                    :value="habit"
-                    v-model="formData.eatingHabit"
-                    class="mr-3"
-                  />
-                  <span>{{ habit }}</span>
-                </label>
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium mb-2">
-                Any foods your child particularly dislikes?
+            <div class="space-y-2">
+              <label
+                v-for="habit in eatingHabits"
+                :key="habit"
+                class="flex items-center p-3 border-2 rounded-lg cursor-pointer hover:border-[#A8D5BA]/50 transition-colors"
+                :class="formData.eatingHabit === habit ? 'border-[#A8D5BA] bg-[#A8D5BA]/5' : 'border-gray-200'"
+              >
+                <input
+                  type="radio"
+                  :value="habit"
+                  v-model="formData.eatingHabit"
+                  class="mr-3"
+                />
+                <span>{{ habit }}</span>
               </label>
-              <textarea
-                v-model="formData.dislikes"
-                rows="3"
-                placeholder="e.g. mushrooms, eggplant..."
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8D5BA] focus:border-transparent resize-none"
-              ></textarea>
             </div>
           </div>
         </div>
@@ -231,11 +229,11 @@ const formData = ref({
   dietaryRestriction: '',
   activityLevel: 'moderate',
   eatingHabit: '',
-  dislikes: '',
   nutritionFocus: [],
 });
 
-const ageGroups = ['3-6 years', '6-9 years', '9-12 years', '12+ years'];
+const ageGroups = ['5-6 years', '7-9 years', '10-12 years'];
+
 const genderOptions = ['Boy', 'Girl', 'Prefer not to say'];
 
 const commonAllergies = [
@@ -272,9 +270,24 @@ const allergenIdToName = {
 };
 
 const activityLevels = [
-  { value: 'low', label: 'Light', icon: '🚶' },
-  { value: 'moderate', label: 'Moderate', icon: '🏃' },
-  { value: 'high', label: 'Active', icon: '⚡' },
+  {
+    value: 'low',
+    label: 'Light',
+    icon: '🚶',
+    description: 'Mostly seated activities, light walking, or limited active play.',
+  },
+  {
+    value: 'moderate',
+    label: 'Moderate',
+    icon: '🏃',
+    description: 'Regular play, walking, school activities, or some sports during the week.',
+  },
+  {
+    value: 'high',
+    label: 'Active',
+    icon: '⚡',
+    description: 'Very active most days, with frequent sports, running, or high-energy play.',
+  },
 ];
 
 const eatingHabits = [
@@ -286,6 +299,24 @@ const eatingHabits = [
 
 const isActiveStatus = (value) => {
   return value === 1 || value === '1' || value === true;
+};
+
+const normalizeAgeGroup = (ageGroup) => {
+  const mapping = {
+    '5-6 years': '5-6 years',
+    '7-9 years': '7-9 years',
+    '10-12 years': '10-12 years',
+
+    // Old values compatibility
+    '3-6 years': '5-6 years',
+    '6-9 years': '7-9 years',
+    '9-12 years': '10-12 years',
+    '12+ years': '10-12 years',
+    '4-8': '7-9 years',
+    '9-13': '10-12 years',
+  };
+
+  return mapping[ageGroup] || '';
 };
 
 const mapStatusToNutritionFocus = (child) => {
@@ -321,7 +352,9 @@ const getRestrictionLabelById = (restrictionId, fallback = '') => {
 };
 
 const cleanNameInput = () => {
-  formData.value.name = formData.value.name.replace(/[^A-Za-z\s]/g, '').slice(0, 20);
+  formData.value.name = formData.value.name
+    .replace(/[^A-Za-z\s]/g, '')
+    .slice(0, 20);
 };
 
 onMounted(async () => {
@@ -333,7 +366,7 @@ onMounted(async () => {
 
       const draftData = {
         name: child.child_name || '',
-        ageGroup: child.age_band || '',
+        ageGroup: normalizeAgeGroup(child.age_band),
         gender: child.gender || '',
         allergies: mapAllergiesToNames(child.allergies),
         restrictionId: child.restriction_id || null,
@@ -343,7 +376,6 @@ onMounted(async () => {
         ),
         activityLevel: child.activity_level || 'moderate',
         eatingHabit: child.eating_habit || '',
-        dislikes: child.dislikes || '',
         nutritionFocus: mapStatusToNutritionFocus(child),
       };
 
@@ -353,11 +385,14 @@ onMounted(async () => {
       console.error('Failed to load child info for editing:', error);
     }
   } else {
+    const draft = childProfileStore.childProfileDraft || {};
+
     formData.value = {
       ...formData.value,
-      ...childProfileStore.childProfileDraft,
-      restrictionId: childProfileStore.childProfileDraft?.restrictionId || null,
-      dietaryRestriction: childProfileStore.childProfileDraft?.dietaryRestriction || '',
+      ...draft,
+      ageGroup: normalizeAgeGroup(draft.ageGroup) || '',
+      restrictionId: draft.restrictionId || null,
+      dietaryRestriction: draft.dietaryRestriction || '',
     };
   }
 });
@@ -371,7 +406,10 @@ const toggleAllergy = (allergy) => {
 };
 
 const handleContinue = () => {
-  formData.value.dietaryRestriction = getRestrictionLabelById(formData.value.restrictionId);
+  formData.value.ageGroup = normalizeAgeGroup(formData.value.ageGroup);
+  formData.value.dietaryRestriction = getRestrictionLabelById(
+    formData.value.restrictionId
+  );
 
   childProfileStore.updateDraft(formData.value);
   router.push('/nutrition-needs');

@@ -78,11 +78,6 @@
               <p class="text-sm text-muted-foreground mb-2">Eating Habits</p>
               <p class="text-base">{{ profile.eatingHabit }}</p>
             </div>
-
-            <div v-if="profile.dislikes">
-              <p class="text-sm text-muted-foreground mb-2">Foods to Avoid</p>
-              <p class="text-base">{{ profile.dislikes }}</p>
-            </div>
           </div>
         </div>
 
@@ -177,11 +172,14 @@ const profile = ref({});
 const nutritionFocus = ref([]);
 const saving = ref(false);
 
+const allowedAgeGroups = ['5-6 years', '7-9 years', '10-12 years'];
+
 const nutritionAreaNames = {
   iron: 'Iron Support',
   calcium: 'Calcium & Bone Health',
   brain: 'Brain Development',
   immunity: 'Immune Support',
+  vitamin_d: 'Vitamin D Support',
   energy: 'Sustained Energy',
   variety: 'Diet Variety',
 };
@@ -197,12 +195,40 @@ const allergyMap = {
   Shellfish: 15,
 };
 
-onMounted(() => {
-  const draft = childProfileStore.childProfileDraft;
+const normalizeAgeGroup = (ageGroup) => {
+  const mapping = {
+    '5-6 years': '5-6 years',
+    '7-9 years': '7-9 years',
+    '10-12 years': '10-12 years',
 
-  profile.value = draft;
+    // Old values compatibility
+    '3-6 years': '5-6 years',
+    '6-9 years': '7-9 years',
+    '9-12 years': '10-12 years',
+    '12+ years': '10-12 years',
+    '4-8': '7-9 years',
+    '9-13': '10-12 years',
+  };
+
+  return mapping[ageGroup] || '';
+};
+
+onMounted(() => {
+  const draft = childProfileStore.childProfileDraft || {};
+
+  const normalizedAgeGroup = normalizeAgeGroup(draft.ageGroup);
+
+  profile.value = {
+    ...draft,
+    ageGroup: normalizedAgeGroup,
+  };
+
   childName.value = draft.name || 'your child';
   nutritionFocus.value = draft.nutritionFocus || [];
+
+  childProfileStore.updateDraft({
+    ageGroup: normalizedAgeGroup,
+  });
 });
 
 const getNutritionAreaName = (id) => {
@@ -214,14 +240,23 @@ const handleEdit = () => {
 };
 
 const buildPayload = () => {
+  const normalizedAgeGroup = normalizeAgeGroup(profile.value.ageGroup);
+
+  if (!allowedAgeGroups.includes(normalizedAgeGroup)) {
+    throw new Error('Please select a valid age group between 5 and 12 years old.');
+  }
+
   return {
     child_name: profile.value.name || '',
-    age_band: profile.value.ageGroup || '',
+    age_band: normalizedAgeGroup,
     band_id: null,
 
     iron_status: nutritionFocus.value.includes('iron') ? 1 : 0,
     calcium_status: nutritionFocus.value.includes('calcium') ? 1 : 0,
-    vitamin_d_status: nutritionFocus.value.includes('immunity') ? 1 : 0,
+    vitamin_d_status:
+      nutritionFocus.value.includes('immunity') || nutritionFocus.value.includes('vitamin_d')
+        ? 1
+        : 0,
     variety_status: nutritionFocus.value.includes('variety') ? 1 : 0,
 
     restriction_id: profile.value.restrictionId || null,

@@ -30,8 +30,8 @@
       <div v-if="!planGenerated" class="text-center mb-12">
         <h1 class="text-4xl mb-4">Plan Your Week, Simply</h1>
         <p class="text-lg text-muted-foreground mb-6">
-          Build a weekly lunchbox plan using child profiles, database food recommendations,
-          and recipe inspiration.
+          Build a weekly lunchbox plan for children aged 5–12 using child profiles,
+          database food recommendations, and recipe inspiration.
         </p>
 
         <div class="inline-flex items-center gap-2 bg-white rounded-full px-6 py-3 shadow-sm border">
@@ -57,7 +57,7 @@
 
         <div v-if="profiles.length === 0" class="p-8 bg-white border rounded-2xl text-center">
           <p class="text-muted-foreground mb-4">
-            No child profiles found. Create a child profile first to generate a weekly plan.
+            No supported child profiles found. Create a child profile for a child aged 5–12 first.
           </p>
 
           <button
@@ -65,7 +65,7 @@
             class="bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] px-8 py-3 rounded-lg transition-colors"
             type="button"
           >
-            Create Child Profile
+            Create 5–12 Child Profile
           </button>
         </div>
 
@@ -573,7 +573,37 @@ const nutritionFocusLabels = {
   iron: 'Iron Support',
   calcium: 'Calcium Support',
   vitamin_d: 'Vitamin D Support',
+  immunity: 'Immune Support',
   variety: 'Diet Variety',
+};
+
+const allowedAgeGroups = ['5-6 years', '7-9 years', '10-12 years'];
+
+const normalizeAgeGroup = (ageGroup) => {
+  const mapping = {
+    '5-6 years': '5-6 years',
+    '7-9 years': '7-9 years',
+    '10-12 years': '10-12 years',
+
+    // Old values compatibility
+    '3-6 years': '5-6 years',
+    '6-9 years': '7-9 years',
+    '9-12 years': '10-12 years',
+    '12+ years': '10-12 years',
+    '4-8': '7-9 years',
+    '9-13': '10-12 years',
+
+    // Outside supported range
+    '0-3 years': '',
+    '2-3': '',
+    '14-18': '',
+  };
+
+  return mapping[ageGroup] || '';
+};
+
+const isSupportedAgeGroup = (ageGroup) => {
+  return allowedAgeGroups.includes(normalizeAgeGroup(ageGroup));
 };
 
 const isActiveStatus = (value) => {
@@ -621,11 +651,14 @@ const mapStatusToNutritionFocus = (child) => {
 
 const mapChildToProfileCard = (child) => {
   const focusIds = mapStatusToNutritionFocus(child);
+  const normalizedAgeGroup = normalizeAgeGroup(child.age_band);
 
   return {
     id: child.child_id,
     name: child.child_name,
-    ageGroup: child.age_band,
+    ageGroup: normalizedAgeGroup,
+    originalAgeGroup: child.age_band,
+    isSupportedAge: allowedAgeGroups.includes(normalizedAgeGroup),
     allergies: mapAllergiesToNames(child.allergies),
     dietaryRestriction: child.restriction_name || '',
     restrictionId: child.restriction_id || null,
@@ -904,7 +937,12 @@ const normalizeLunchboxItemsForSave = (items) => {
 
 const loadChildren = async () => {
   const children = await getChildren();
-  profiles.value = Array.isArray(children) ? children.map(mapChildToProfileCard) : [];
+
+  const mappedProfiles = Array.isArray(children)
+    ? children.map(mapChildToProfileCard)
+    : [];
+
+  profiles.value = mappedProfiles.filter((profile) => profile.isSupportedAge);
 };
 
 const loadExistingPlan = async (planId) => {
@@ -937,10 +975,16 @@ onMounted(async () => {
 
     const childIds = route.query.childIds;
     if (childIds) {
-      selectedChildren.value = String(childIds)
+      const queryChildIds = String(childIds)
         .split(',')
         .map((id) => Number(id))
         .filter(Boolean);
+
+      const supportedProfileIds = profiles.value.map((profile) => Number(profile.id));
+
+      selectedChildren.value = queryChildIds.filter((id) =>
+        supportedProfileIds.includes(Number(id))
+      );
     }
 
     const planId = route.query.planId;

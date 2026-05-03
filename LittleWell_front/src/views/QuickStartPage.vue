@@ -14,14 +14,21 @@
       <div class="text-center mb-12">
         <h1 class="text-4xl mb-4">Quick Meal Suggestions</h1>
         <p class="text-lg text-muted-foreground">
-          Just a couple of quick questions to get you started
+          Get simple lunchbox ideas for children aged 5–12
         </p>
       </div>
 
       <!-- Age Group Selection -->
       <div class="p-8 rounded-2xl shadow-sm mb-8 bg-white border">
-        <label class="text-lg mb-4 block font-medium">What's your child's age?</label>
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+        <label class="text-lg mb-4 block font-medium">
+          What's your child's age?
+        </label>
+
+        <p class="text-sm text-muted-foreground mb-4">
+          LittleWell currently supports school-aged children from 5 to 12 years old.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
           <button
             v-for="age in ageGroups"
             :key="age"
@@ -46,7 +53,7 @@
         <p class="text-sm text-muted-foreground mb-4">
           Select all that apply
         </p>
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
           <button
             v-for="allergy in commonAllergies"
             :key="allergy"
@@ -85,7 +92,7 @@ const router = useRouter();
 const ageGroup = ref('');
 const allergies = ref([]);
 
-const ageGroups = ['0-3 years', '3-6 years', '6-9 years', '9-12 years', '12+ years'];
+const ageGroups = ['5-6 years', '7-9 years', '10-12 years'];
 
 const commonAllergies = [
   'Peanuts',
@@ -100,7 +107,7 @@ const commonAllergies = [
 
 const toggleAllergy = (allergy) => {
   if (allergies.value.includes(allergy)) {
-    allergies.value = allergies.value.filter(a => a !== allergy);
+    allergies.value = allergies.value.filter((a) => a !== allergy);
   } else {
     allergies.value = [...allergies.value, allergy];
   }
