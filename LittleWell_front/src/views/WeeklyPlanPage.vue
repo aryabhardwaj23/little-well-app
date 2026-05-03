@@ -499,7 +499,6 @@ import {
   AlertCircle,
   BookOpen,
   Sparkles,
-  Info,
 } from 'lucide-vue-next';
 import {
   getChildren,
@@ -677,6 +676,7 @@ const getSectionColor = (section) => {
     protein: 'bg-[#A8D5BA]',
     veggies: 'bg-[#8BC34A]',
     fruit: 'bg-[#FF6B9D]',
+    snack: 'bg-[#CDE7F0]',
     ingredient: 'bg-[#CDE7F0]',
   };
 
@@ -715,18 +715,19 @@ const normalizeDatabaseLunchbox = (lunchbox, index = 0) => {
                 item.product_id ||
                 item.food_id ||
                 item.reference_id ||
+                item.id ||
                 null
             ),
-            name: item.name || item.product_name || item.title || 'Food item',
-            amount: item.amount || item.serving || item.quantity || 'Recommended item',
+            name: item.name || item.product_name || item.title || item.food_name || 'Food item',
+            amount: item.amount || item.serving || item.quantity || item.serving_size || 'Recommended item',
             section: item.section || item.type || 'ingredient',
           }))
         : [
             {
               reference_food_id: referenceFoodId,
               name: lunchbox.title || lunchbox.mealName || lunchbox.name || 'Recommended item',
-              amount: 'Recommended item',
-              section: 'ingredient',
+              amount: lunchbox.amount || lunchbox.serving || 'Recommended item',
+              section: lunchbox.section || lunchbox.type || 'ingredient',
             },
           ],
   };
@@ -818,6 +819,20 @@ const getCookTitle = (frequency, index) => {
   return titles[frequency]?.[index] || `Cook Session ${index + 1}`;
 };
 
+const getCookDayForDatabase = (cookDayText, index) => {
+  const text = String(cookDayText || '').toLowerCase();
+
+  const validDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+  const matchedDay = validDays.find((day) => text.includes(day.toLowerCase()));
+
+  if (matchedDay) return matchedDay;
+
+  const fallbackDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+
+  return fallbackDays[index % fallbackDays.length];
+};
+
 const buildWeeklyBatches = (lunchboxes, recipes) => {
   const count = cookingFrequency.value || 2;
 
@@ -866,6 +881,25 @@ const getReferenceFoodId = (batch) => {
     null;
 
   return toNullableInteger(possibleId);
+};
+
+const normalizeLunchboxItemsForSave = (items) => {
+  if (!Array.isArray(items)) return [];
+
+  return items.map((item) => ({
+    reference_food_id: toNullableInteger(
+      item.reference_food_id ||
+        item.referenceFoodId ||
+        item.product_id ||
+        item.food_id ||
+        item.reference_id ||
+        item.id ||
+        null
+    ),
+    name: item.name || item.product_name || item.title || item.food_name || 'Food item',
+    amount: item.amount || item.serving || item.quantity || item.serving_size || 'Recommended item',
+    section: item.section || item.type || 'ingredient',
+  }));
 };
 
 const loadChildren = async () => {
@@ -1038,11 +1072,14 @@ const savePlan = async () => {
     season_id: getSeasonId(),
     status: 'active',
 
-    meals: weeklyBatches.value.map((batch) => ({
+    meals: weeklyBatches.value.map((batch, index) => ({
       reference_food_id: getReferenceFoodId(batch),
-      cook_day: batch.cookDay,
+      cook_day: getCookDayForDatabase(batch.cookDay, index),
       cover_days: batch.coverDays,
       meal_title: batch.lunchbox.title,
+
+      lunchbox_items: normalizeLunchboxItemsForSave(batch.lunchbox.items),
+
       servings: selectedChildren.value.length || 1,
       prep_time_minutes: toMinutes(batch.prepTime),
       nutrition_tags: Array.isArray(batch.lunchbox.nutritionFocus)
