@@ -142,6 +142,17 @@ def cook_day_to_db_value(value) -> str:
     return valid_days.get(text.lower(), "Monday")
 
 
+def pydantic_to_dict(item):
+    """
+    Supports both Pydantic v1 and v2.
+    v2 uses model_dump(), v1 uses dict().
+    """
+    if hasattr(item, "model_dump"):
+        return item.model_dump()
+
+    return item.dict()
+
+
 def build_plan_response(db: Session, plan: WeeklyPlan) -> dict:
     child_links = (
         db.query(WeeklyPlanChild)
@@ -264,7 +275,14 @@ def create_weekly_plan(payload: WeeklyPlanCreate, db: Session = Depends(get_db))
                 cook_day=cook_day_to_db_value(meal.cook_day),
                 cover_days=meal.cover_days,
                 meal_title=meal.meal_title,
-                servings=meal.servings,
+
+                # Save complete lunchbox items into weekly_plan_meal.lunchbox_items JSON.
+                lunchbox_items=[
+                    pydantic_to_dict(item)
+                    for item in meal.lunchbox_items
+                ] if meal.lunchbox_items else [],
+
+                servings=meal.servings or 1,
                 prep_time_minutes=meal.prep_time_minutes,
                 nutrition_tags=meal.nutrition_tags,
                 seasonal_note=meal.seasonal_note,
@@ -387,6 +405,10 @@ def duplicate_weekly_plan(plan_id: int, db: Session = Depends(get_db)):
                 cook_day=meal.cook_day,
                 cover_days=meal.cover_days,
                 meal_title=meal.meal_title,
+
+                # Copy saved lunchbox items when duplicating a plan.
+                lunchbox_items=meal.lunchbox_items or [],
+
                 servings=meal.servings,
                 prep_time_minutes=meal.prep_time_minutes,
                 nutrition_tags=meal.nutrition_tags,

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, BigInteger, String, Text, DateTime, Date, func, ForeignKey, Numeric, Boolean
+from sqlalchemy import Column, Integer, BigInteger, String, Text, DateTime, Date, func, ForeignKey, Numeric, Boolean, JSON
 from sqlalchemy.orm import relationship
 
 from .db import Base
@@ -275,6 +275,8 @@ class WeeklyPlanMeal(Base):
     cook_day = Column(String(20), nullable=False)
     cover_days = Column(String(100), nullable=True)
     meal_title = Column(String(200), nullable=False)
+    lunchbox_items = Column(JSON, nullable=True)
+
     servings = Column(Numeric(4, 1), nullable=False, default=1.0)
     prep_time_minutes = Column(Integer, nullable=True)
     nutrition_tags = Column(String(255), nullable=True)

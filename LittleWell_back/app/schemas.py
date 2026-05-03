@@ -69,6 +69,11 @@ class LunchboxCard(BaseModel):
     whyThisMeal: str
     supportType: str
 
+class WeeklyPlanLunchboxItem(BaseModel):
+    reference_food_id: Optional[int] = None
+    name: str
+    amount: Optional[str] = None
+    section: Optional[str] = None
 
 class RecommendationResponse(BaseModel):
     needsSupport: List[str]
@@ -80,6 +85,8 @@ class WeeklyPlanMealCreate(BaseModel):
     cook_day: str
     cover_days: Optional[str] = None
     meal_title: str
+    lunchbox_items: List[WeeklyPlanLunchboxItem] = Field(default_factory=list)
+
     servings: Optional[float] = None
     prep_time_minutes: Optional[int] = None
     nutrition_tags: Optional[str] = None
@@ -87,7 +94,6 @@ class WeeklyPlanMealCreate(BaseModel):
     storage_tip: Optional[str] = None
     recipe_id: Optional[int] = None
     image_url: Optional[str] = None
-
 
 class WeeklyPlanCreate(BaseModel):
     plan_name: str
@@ -107,6 +113,8 @@ class WeeklyPlanMealResponse(BaseModel):
     cook_day: str
     cover_days: Optional[str] = None
     meal_title: str
+    lunchbox_items: List[WeeklyPlanLunchboxItem] = Field(default_factory=list)
+
     servings: Optional[float] = None
     prep_time_minutes: Optional[int] = None
     nutrition_tags: Optional[str] = None
