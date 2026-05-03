@@ -5,7 +5,6 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy.orm import Session
-from sqlalchemy import func
 
 from ..db import get_db
 from .. import models
@@ -18,12 +17,36 @@ from ..services.mealdb_service import (
     format_meal_card,
     search_meals_by_name,
 )
+
 from ..services.ausnut_service import (
     filter_by_nutrition,
     get_food_by_name_fuzzy,
 )
 
+
 router = APIRouter(prefix="/products/recommended", tags=["recommendations"])
+
+
+# ---------------------------------------------------------------------------
+# Age support: LittleWell only supports children aged 5-12.
+# ---------------------------------------------------------------------------
+
+ALLOWED_CHILD_AGE_BANDS = {
+    "5-6 years",
+    "7-9 years",
+    "10-12 years",
+}
+
+
+def validate_supported_age_band(age_band: Optional[str]):
+    if age_band not in ALLOWED_CHILD_AGE_BANDS:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "LittleWell currently supports children aged 5-12 only. "
+                "Allowed age bands: 5-6 years, 7-9 years, 10-12 years."
+            ),
+        )
 
 
 STATUS_TO_CATEGORY = {
@@ -33,18 +56,11 @@ STATUS_TO_CATEGORY = {
     "variety": ["Vegan", "Vegetarian", "Pasta", "Side"],
 }
 
-CHILD_AGE_BAND_TO_CATEGORY = {
-    "0-3 years": ["Breakfast", "Vegetarian", "Pasta"],
-    "3-6 years": ["Chicken", "Pasta", "Vegetarian", "Seafood"],
-    "6-9 years": ["Chicken", "Beef", "Seafood", "Pasta"],
-    "9-12 years": ["Beef", "Chicken", "Seafood", "Lamb"],
-    "12+ years": ["Beef", "Chicken", "Seafood", "Lamb"],
 
-    # Backward compatibility
-    "2-3": ["Breakfast", "Vegetarian", "Pasta"],
-    "4-8": ["Chicken", "Pasta", "Vegetarian", "Seafood"],
-    "9-13": ["Chicken", "Beef", "Seafood", "Pasta"],
-    "14-18": ["Beef", "Chicken", "Seafood", "Lamb"],
+CHILD_AGE_BAND_TO_CATEGORY = {
+    "5-6 years": ["Chicken", "Pasta", "Vegetarian", "Breakfast"],
+    "7-9 years": ["Chicken", "Pasta", "Vegetarian", "Seafood"],
+    "10-12 years": ["Chicken", "Beef", "Seafood", "Pasta"],
 }
 
 
@@ -84,6 +100,8 @@ def focus_labels(needs: list[str]) -> list[str]:
 
 
 def get_categories_for_child(child) -> list[str]:
+    validate_supported_age_band(child.age_band)
+
     needs_support = get_needs_support(child)
 
     if not needs_support:
@@ -150,8 +168,7 @@ def get_child_dietary_restriction(db: Session, child):
 
 def apply_dietary_filters_to_reference_food(query, restriction):
     """
-    Full方案B:
-    Apply dietary restriction filtering to reference_food using the new dietary flags.
+    Apply dietary restriction filtering to reference_food using dietary flags.
     """
     if not restriction:
         return query
@@ -188,7 +205,10 @@ def apply_dietary_filters_to_reference_food(query, restriction):
     return query
 
 
-def get_mealdb_categories_for_restriction(categories: list[str], restriction) -> list[str]:
+def get_mealdb_categories_for_restriction(
+    categories: list[str],
+    restriction,
+) -> list[str]:
     """
     MealDB does not have the same detailed dietary flags as reference_food.
     This is a practical category-level filter.
@@ -217,6 +237,7 @@ def get_mealdb_categories_for_restriction(categories: list[str], restriction) ->
 
 # ---------------------------------------------------------------------------
 # Reference food recommendation logic
+# This is the database recommendation flow.
 # ---------------------------------------------------------------------------
 
 def get_candidate_reference_foods(db: Session, restriction=None) -> list:
@@ -426,7 +447,10 @@ def get_blocked_reference_food_ids_by_allergens(
     return {int(row.reference_food_id) for row in rows}
 
 
-def remove_blocked_reference_foods(foods: list, blocked_reference_food_ids: set[int]) -> list:
+def remove_blocked_reference_foods(
+    foods: list,
+    blocked_reference_food_ids: set[int],
+) -> list:
     if not blocked_reference_food_ids:
         return foods
 
@@ -442,6 +466,8 @@ def generate_lunchboxes_for_child(
     seasonal: bool = True,
     max_boxes: int = 3,
 ):
+    validate_supported_age_band(child.age_band)
+
     needs = get_needs_support(child)
 
     restriction = get_child_dietary_restriction(db, child)
@@ -506,6 +532,7 @@ def generate_lunchboxes_for_child(
 
 # ---------------------------------------------------------------------------
 # MealDB + AUSNUT logic
+# This is the API recipe recommendation flow.
 # ---------------------------------------------------------------------------
 
 def get_nutrition_labels(nutrients: dict) -> list[str]:
@@ -672,6 +699,7 @@ def get_recommended_products(
     db: Session = Depends(get_db),
 ):
     child = get_child_or_404(db, child_id)
+    validate_supported_age_band(child.age_band)
 
     return generate_lunchboxes_for_child(
         db=db,
@@ -697,6 +725,9 @@ def get_family_recommended_products(
 
     if not children:
         raise HTTPException(status_code=404, detail="No children found")
+
+    for child in children:
+        validate_supported_age_band(child.age_band)
 
     class FamilyChild:
         pass
@@ -730,6 +761,8 @@ def get_quick_recommended_products(
     seasonal: bool = True,
     db: Session = Depends(get_db),
 ):
+    validate_supported_age_band(ageGroup)
+
     class QuickChild:
         pass
 
@@ -914,6 +947,8 @@ async def get_child_meal_recommendations(
 ):
     try:
         child = get_child_or_404(db, child_id)
+        validate_supported_age_band(child.age_band)
+
         needs_support = get_needs_support(child)
 
         restriction = get_child_dietary_restriction(db, child)
@@ -956,13 +991,17 @@ async def get_child_meal_recommendations(
                 "restriction_id": child.restriction_id,
             },
             "dataSource": "TheMealDB + AUSNUT 2011-13 FSANZ",
+            "targetAgeRange": "5-12 years",
         }
 
     except HTTPException:
         raise
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to generate child meal recommendations: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to generate child meal recommendations: {e}",
+        )
 
 
 @router.get("/health")
@@ -974,6 +1013,12 @@ async def api_health():
             "ausnut": "AUSNUT",
             "backend": "FastAPI + SQLAlchemy + MySQL",
         },
+        "targetAgeRange": "5-12 years",
+        "allowedAgeBands": [
+            "5-6 years",
+            "7-9 years",
+            "10-12 years",
+        ],
     }
 
 

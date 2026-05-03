@@ -1,9 +1,18 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from typing import List, Optional
 from datetime import datetime
 
 
-# ── Existing schemas (unchanged) ───────────────────────────────────────────────
+# ── Supported age bands ───────────────────────────────────────────────────────
+
+ALLOWED_CHILD_AGE_BANDS = {
+    "5-6 years",
+    "7-9 years",
+    "10-12 years",
+}
+
+
+# ── Child schemas ─────────────────────────────────────────────────────────────
 
 class ChildBase(BaseModel):
     child_name: str
@@ -16,6 +25,16 @@ class ChildBase(BaseModel):
     variety_status: int = 0
 
     restriction_id: Optional[int] = None
+
+    @field_validator("age_band")
+    @classmethod
+    def validate_age_band(cls, value: str):
+        if value not in ALLOWED_CHILD_AGE_BANDS:
+            raise ValueError(
+                "LittleWell currently supports children aged 5-12 only. "
+                "Allowed age bands: 5-6 years, 7-9 years, 10-12 years."
+            )
+        return value
 
 
 class ChildCreate(ChildBase):
@@ -49,6 +68,8 @@ class ChildResponse(BaseModel):
         from_attributes = True
 
 
+# ── Recommendation schemas ────────────────────────────────────────────────────
+
 class RecommendationItem(BaseModel):
     reference_food_id: Optional[int] = None
     name: str
@@ -69,15 +90,19 @@ class LunchboxCard(BaseModel):
     whyThisMeal: str
     supportType: str
 
+
+class RecommendationResponse(BaseModel):
+    needsSupport: List[str]
+    lunchboxes: List[LunchboxCard]
+
+
+# ── Weekly plan schemas ───────────────────────────────────────────────────────
+
 class WeeklyPlanLunchboxItem(BaseModel):
     reference_food_id: Optional[int] = None
     name: str
     amount: Optional[str] = None
     section: Optional[str] = None
-
-class RecommendationResponse(BaseModel):
-    needsSupport: List[str]
-    lunchboxes: List[LunchboxCard]
 
 
 class WeeklyPlanMealCreate(BaseModel):
@@ -94,6 +119,7 @@ class WeeklyPlanMealCreate(BaseModel):
     storage_tip: Optional[str] = None
     recipe_id: Optional[int] = None
     image_url: Optional[str] = None
+
 
 class WeeklyPlanCreate(BaseModel):
     plan_name: str
@@ -155,7 +181,7 @@ class WeeklyPlanResponse(BaseModel):
         from_attributes = True
 
 
-# ── NEW: Auth schemas ──────────────────────────────────────────────────────────
+# ── Auth schemas ──────────────────────────────────────────────────────────────
 
 class UserRegister(BaseModel):
     username: str = Field(min_length=3, max_length=100)

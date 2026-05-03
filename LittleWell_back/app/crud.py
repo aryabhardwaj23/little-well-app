@@ -2,12 +2,31 @@ from sqlalchemy.orm import Session
 from . import models, schemas
 
 
+ALLOWED_CHILD_AGE_BANDS = {
+    "5-6 years",
+    "7-9 years",
+    "10-12 years",
+}
+
+
+def validate_child_age_band(age_band: str):
+    if age_band not in ALLOWED_CHILD_AGE_BANDS:
+        raise ValueError(
+            "LittleWell currently supports children aged 5-12 only. "
+            "Allowed age bands: 5-6 years, 7-9 years, 10-12 years."
+        )
+
+
 def get_children(db: Session):
     return db.query(models.UserChild).all()
 
 
 def get_child_by_id(db: Session, child_id: int):
-    return db.query(models.UserChild).filter(models.UserChild.child_id == child_id).first()
+    return (
+        db.query(models.UserChild)
+        .filter(models.UserChild.child_id == child_id)
+        .first()
+    )
 
 
 def get_child_allergen_ids(db: Session, child_id: int):
@@ -19,7 +38,12 @@ def get_child_allergen_ids(db: Session, child_id: int):
     return [row.allergen_id for row in rows]
 
 
-def replace_child_allergens(db: Session, child_id: int, user_id: int, allergen_ids: list[int]):
+def replace_child_allergens(
+    db: Session,
+    child_id: int,
+    user_id: int,
+    allergen_ids: list[int],
+):
     db.query(models.UserSearchAllergen).filter(
         models.UserSearchAllergen.child_id == child_id
     ).delete()
@@ -35,6 +59,8 @@ def replace_child_allergens(db: Session, child_id: int, user_id: int, allergen_i
 
 
 def create_child(db: Session, child: schemas.ChildCreate):
+    validate_child_age_band(child.age_band)
+
     new_user = models.UserSearch()
     db.add(new_user)
     db.flush()
@@ -69,6 +95,8 @@ def create_child(db: Session, child: schemas.ChildCreate):
 
 
 def update_child(db: Session, child_id: int, child: schemas.ChildUpdate):
+    validate_child_age_band(child.age_band)
+
     db_child = get_child_by_id(db, child_id)
 
     if not db_child:
