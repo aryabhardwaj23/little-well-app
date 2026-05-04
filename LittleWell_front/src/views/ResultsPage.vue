@@ -142,7 +142,9 @@
                   ></div>
                   <div class="flex-1">
                     <p class="text-sm font-medium">{{ item.name }}</p>
-                    <p class="text-xs text-muted-foreground">{{ item.amount }}</p>
+                    <p class="text-xs text-muted-foreground">
+                      {{ formatItemAmount(item.amount) }}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -584,6 +586,20 @@ const formatNeedLabel = (area) => {
     variety: 'Variety Support',
   };
   return labels[area] || area;
+};
+
+const formatItemAmount = (amount) => {
+  if (!amount) return '';
+
+  if (isFamilyMode.value && selectedChildIds.value.length > 1) {
+    const childCount = selectedChildIds.value.length;
+
+    if (String(amount).toLowerCase().includes('child-friendly portion')) {
+      return `Portions for ${childCount} children`;
+    }
+  }
+
+  return amount;
 };
 
 const handleImageError = (event) => {
