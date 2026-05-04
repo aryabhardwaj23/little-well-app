@@ -68,24 +68,33 @@
     </nav>
 
     <!-- User Guide Overlay -->
-    <div
-      v-if="showGuide"
-      class="fixed inset-0 z-[100] bg-black/45 flex items-center justify-center px-6"
-    >
-      <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 border border-white/70">
-        <div class="mb-4">
-          <p class="text-sm text-[#2C5F2D] font-semibold mb-2">
-            Step {{ guideStep + 1 }} of {{ guideSteps.length }}
-          </p>
+    <div v-if="showGuide" class="fixed inset-0 z-[100] pointer-events-none">
+      <div class="absolute inset-0 bg-black/20"></div>
 
-          <h2 class="text-2xl text-[#2C5F2D] mb-3">
-            {{ guideSteps[guideStep].title }}
-          </h2>
+      <!-- Highlight Box -->
+      <div
+        v-if="highlightStyle"
+        class="guide-highlight"
+        :style="highlightStyle"
+      ></div>
 
-          <p class="text-muted-foreground leading-relaxed">
-            {{ guideSteps[guideStep].text }}
-          </p>
-        </div>
+      <!-- Tooltip Card -->
+      <div
+        v-if="tooltipStyle"
+        class="guide-tooltip pointer-events-auto"
+        :style="tooltipStyle"
+      >
+        <p class="text-sm text-[#2C5F2D] font-semibold mb-2">
+          Step {{ guideStep + 1 }} of {{ guideSteps.length }}
+        </p>
+
+        <h2 class="text-2xl text-[#2C5F2D] mb-3">
+          {{ guideSteps[guideStep].title }}
+        </h2>
+
+        <p class="text-muted-foreground leading-relaxed">
+          {{ guideSteps[guideStep].text }}
+        </p>
 
         <div class="flex items-center justify-between mt-8">
           <button
@@ -132,7 +141,7 @@
             </p>
 
             <div class="mt-8 space-y-4">
-              <div class="relative group">
+              <div ref="quickStartTarget" class="relative group">
                 <button
                   @click="router.push('/quick-start')"
                   class="w-full bg-[#F8F5EC] rounded-2xl border border-[#E8DDC8] p-5 shadow-sm hover:shadow-md hover:border-[#DDCFB2] hover:bg-[#F5F0E4] transition-all text-left flex flex-col gap-4"
@@ -155,7 +164,7 @@
                 </p>
               </div>
 
-              <div class="relative group">
+              <div ref="personalisedTarget" class="relative group">
                 <button
                   @click="handleAddChild"
                   class="w-full bg-[#E5F2E8] rounded-2xl border border-[#8FC2A4]/60 p-5 shadow-sm hover:shadow-md hover:border-[#7DB593]/70 hover:bg-[#D9ECDF] transition-all text-left flex flex-col gap-4"
@@ -509,7 +518,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue';
+import { ref, onMounted, onBeforeUnmount, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import {
   Plus,
@@ -530,43 +539,47 @@ const selectedForFamily = ref([]);
 const isLoadingProfiles = ref(false);
 
 const heroSection = ref(null);
+const quickStartTarget = ref(null);
+const personalisedTarget = ref(null);
 const childProfileSection = ref(null);
 const familySection = ref(null);
 const weeklySection = ref(null);
 
 const showGuide = ref(false);
 const guideStep = ref(0);
+const highlightBox = ref(null);
+const tooltipBox = ref(null);
 
 const guideSteps = [
   {
     title: 'Welcome to LittleHelp',
     text: 'LittleHelp helps families create balanced lunchbox ideas for children aged 5–12.',
-    section: 'hero',
+    target: 'hero',
   },
   {
     title: 'Try Quick Start',
     text: 'Use Quick Start to generate a lunchbox idea without creating a child profile first.',
-    section: 'hero',
+    target: 'quickStart',
   },
   {
     title: 'Create a Child Profile',
     text: 'Create a child profile to get personalised lunchbox recommendations based on age, allergies, and nutrition needs.',
-    section: 'hero',
+    target: 'personalised',
   },
   {
     title: 'Manage Child Profiles',
     text: 'Here you can add, edit, delete, and manage child profiles for personalised recommendations.',
-    section: 'child',
+    target: 'child',
   },
   {
     title: 'Plan for Multiple Children',
     text: 'Select more than one child to generate family lunchbox ideas that consider different needs.',
-    section: 'family',
+    target: 'family',
   },
   {
     title: 'Weekly Planning',
     text: 'Use Weekly Plan to build a practical lunchbox plan for the whole school week.',
-    section: 'weekly',
+    target: 'weekly',
   },
 ];
 
@@ -596,40 +609,116 @@ const nutritionFocusLabels = {
 
 const allowedAgeGroups = ['5-6 years', '7-9 years', '10-12 years'];
 
-const scrollToGuideSection = (section) => {
-  if (section === 'hero') {
-    heroSection.value?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
+const getGuideTargetElement = () => {
+  const target = guideSteps[guideStep.value]?.target;
+
+  const targetMap = {
+    hero: heroSection,
+    quickStart: quickStartTarget,
+    personalised: personalisedTarget,
+    child: childProfileSection,
+    family: familySection,
+    weekly: weeklySection,
+  };
+
+  return targetMap[target]?.value || null;
+};
+
+const updateGuidePosition = () => {
+  if (!showGuide.value) return;
+
+  const element = getGuideTargetElement();
+
+  if (!element) {
+    highlightBox.value = null;
+    tooltipBox.value = null;
+    return;
   }
 
-  if (section === 'child') {
-    childProfileSection.value?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
+  const rect = element.getBoundingClientRect();
+  const padding = 10;
+  const tooltipWidth = Math.min(360, window.innerWidth - 32);
+  const gap = 18;
+
+  const highlightTop = Math.max(rect.top - padding, 88);
+  const highlightLeft = Math.max(rect.left - padding, 16);
+  const highlightWidth = Math.min(rect.width + padding * 2, window.innerWidth - highlightLeft - 16);
+  const highlightHeight = Math.min(rect.height + padding * 2, window.innerHeight - highlightTop - 16);
+
+  highlightBox.value = {
+    top: highlightTop,
+    left: highlightLeft,
+    width: highlightWidth,
+    height: highlightHeight,
+  };
+
+  let tooltipLeft = highlightLeft + highlightWidth + gap;
+  let tooltipTop = highlightTop;
+
+  if (tooltipLeft + tooltipWidth > window.innerWidth - 24) {
+    tooltipLeft = highlightLeft;
+    tooltipTop = highlightTop + highlightHeight + gap;
   }
 
-  if (section === 'family') {
-    familySection.value?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
+  if (tooltipTop + 280 > window.innerHeight - 24) {
+    tooltipTop = Math.max(96, highlightTop - 280 - gap);
   }
 
-  if (section === 'weekly') {
-    weeklySection.value?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
+  if (tooltipLeft < 16) {
+    tooltipLeft = 16;
   }
+
+  if (tooltipTop < 96) {
+    tooltipTop = 96;
+  }
+
+  tooltipBox.value = {
+    top: tooltipTop,
+    left: tooltipLeft,
+    width: tooltipWidth,
+  };
+};
+
+const highlightStyle = computed(() => {
+  if (!highlightBox.value) return null;
+
+  return {
+    top: `${highlightBox.value.top}px`,
+    left: `${highlightBox.value.left}px`,
+    width: `${highlightBox.value.width}px`,
+    height: `${highlightBox.value.height}px`,
+  };
+});
+
+const tooltipStyle = computed(() => {
+  if (!tooltipBox.value) return null;
+
+  return {
+    top: `${tooltipBox.value.top}px`,
+    left: `${tooltipBox.value.left}px`,
+    width: `${tooltipBox.value.width}px`,
+  };
+});
+
+const scrollToGuideTarget = () => {
+  const element = getGuideTargetElement();
+
+  if (!element) return;
+
+  element.scrollIntoView({
+    behavior: 'smooth',
+    block: 'center',
+  });
+
+  setTimeout(() => {
+    updateGuidePosition();
+  }, 450);
 };
 
 const nextGuideStep = () => {
   if (guideStep.value < guideSteps.length - 1) {
     guideStep.value += 1;
-    scrollToGuideSection(guideSteps[guideStep.value].section);
+    scrollToGuideTarget();
     return;
   }
 
@@ -639,6 +728,8 @@ const nextGuideStep = () => {
 const finishGuide = () => {
   showGuide.value = false;
   guideStep.value = 0;
+  highlightBox.value = null;
+  tooltipBox.value = null;
   localStorage.setItem('littlehelp_user_guide_seen', 'true');
 };
 
@@ -649,7 +740,10 @@ const skipGuide = () => {
 const restartGuide = () => {
   guideStep.value = 0;
   showGuide.value = true;
-  scrollToGuideSection('hero');
+
+  setTimeout(() => {
+    scrollToGuideTarget();
+  }, 50);
 };
 
 const goProtected = (path) => {
@@ -778,7 +872,19 @@ onMounted(() => {
 
   if (!hasSeenGuide) {
     showGuide.value = true;
+
+    setTimeout(() => {
+      scrollToGuideTarget();
+    }, 300);
   }
+
+  window.addEventListener('resize', updateGuidePosition);
+  window.addEventListener('scroll', updateGuidePosition, true);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', updateGuidePosition);
+  window.removeEventListener('scroll', updateGuidePosition, true);
 });
 
 watch(
@@ -864,6 +970,31 @@ const handleEditProfile = (profileId) => {
 .family-section,
 .weekly-section {
   scroll-margin-top: 96px;
+}
+
+.guide-highlight {
+  position: fixed;
+  border: 3px solid #A8D5BA;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 0 0 9999px rgba(0, 0, 0, 0.45),
+    0 0 0 8px rgba(168, 213, 186, 0.18),
+    0 20px 60px rgba(0, 0, 0, 0.25);
+  z-index: 101;
+  pointer-events: none;
+  transition: all 0.25s ease;
+}
+
+.guide-tooltip {
+  position: fixed;
+  z-index: 102;
+  background: white;
+  border: 1px solid rgba(168, 213, 186, 0.45);
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+  transition: all 0.25s ease;
 }
 
 .nav-link {
