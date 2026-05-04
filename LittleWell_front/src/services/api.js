@@ -154,3 +154,9 @@ export function swapWeeklyPlanMeal(planId, mealId, payload) {
     body: JSON.stringify(payload),
   });
 }
+
+export const getMealRecipeDetail = async (mealId, childName = '') => {
+  const query = childName ? `?child_name=${encodeURIComponent(childName)}` : '';
+
+  return request(`/products/recommended/mealdb/recipe/${mealId}${query}`);
+};

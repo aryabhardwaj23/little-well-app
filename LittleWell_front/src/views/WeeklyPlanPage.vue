@@ -504,6 +504,7 @@ import {
   getRecommendedProducts,
   getFamilyRecommendedProducts,
   getChildMealRecommendations,
+  getMealRecipeDetail,
   createWeeklyPlan,
   getWeeklyPlanById,
 } from '../services/api';
@@ -790,7 +791,11 @@ const normalizeSavedMeal = (meal, index = 0) => {
   const recipe = normalizeApiRecipe(
     meal.recipe || {
       id: meal.recipe_id,
-      title: meal.recipe_title || meal.recipeName || (meal.recipe_id ? `Recipe #${meal.recipe_id}` : ''),
+      title:
+        meal.recipe_title ||
+        meal.recipeName ||
+        meal.recipe?.title ||
+        (meal.recipe_id ? `Recipe #${meal.recipe_id}` : ''),
       image_url: meal.image_url,
       category: meal.category,
       area: meal.area,
@@ -810,6 +815,47 @@ const normalizeSavedMeal = (meal, index = 0) => {
     lunchbox,
     recipe,
   };
+};
+
+const hydrateSavedRecipes = async () => {
+  const updatedBatches = await Promise.all(
+    weeklyBatches.value.map(async (batch) => {
+      const recipeId = batch.recipe?.id;
+
+      const titleLooksLikeCode =
+        !batch.recipe?.title ||
+        String(batch.recipe.title).startsWith('Recipe #') ||
+        String(batch.recipe.title) === 'Recipe Inspiration';
+
+      if (!recipeId || !titleLooksLikeCode) {
+        return batch;
+      }
+
+      try {
+        const detail = await getMealRecipeDetail(recipeId, batch.recipe?.childName || '');
+        const normalizedRecipe = normalizeApiRecipe(detail);
+
+        return {
+          ...batch,
+          recipe: {
+            ...batch.recipe,
+            ...normalizedRecipe,
+          },
+        };
+      } catch (error) {
+        console.error('Failed to hydrate saved recipe:', error);
+        return batch;
+      }
+    })
+  );
+
+  weeklyBatches.value = updatedBatches;
+
+  apiRecipes.value = dedupeByKey(
+    weeklyBatches.value
+      .map((batch) => batch.recipe)
+      .filter((recipe) => recipe?.id)
+  ).map(normalizeApiRecipe);
 };
 
 const dedupeByKey = (items) => {
@@ -995,6 +1041,10 @@ const loadExistingPlan = async (planId) => {
   ).map(normalizeApiRecipe);
 
   planGenerated.value = weeklyBatches.value.length > 0;
+
+  if (planGenerated.value) {
+    await hydrateSavedRecipes();
+  }
 };
 
 onMounted(async () => {
