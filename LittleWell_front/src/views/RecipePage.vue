@@ -11,14 +11,6 @@
             <ArrowLeft class="w-4 h-4" />
             Back to Lunchboxes
           </button>
-
-          <button
-            class="px-4 py-2 bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg transition-colors inline-flex items-center gap-2"
-            type="button"
-          >
-            <Heart class="w-4 h-4" />
-            Save Recipe
-          </button>
         </div>
       </div>
     </nav>
@@ -256,7 +248,6 @@ import { ref, onMounted, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import {
   ArrowLeft,
-  Heart,
   Clock,
   Users,
   Sparkles,
