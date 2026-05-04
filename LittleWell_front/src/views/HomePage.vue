@@ -5,11 +5,12 @@
       <div class="container mx-auto px-6 max-w-6xl">
         <div class="flex items-center justify-between h-16">
           <!-- Logo -->
-          <div class="flex items-center gap-2 cursor-pointer" @click="router.push('/')">
-            <div class="w-10 h-10 bg-gradient-to-br from-[#A8D5BA] to-[#8FC2A4] rounded-full flex items-center justify-center">
-              <Heart class="w-5 h-5 text-white" />
-            </div>
-            <span class="text-xl font-semibold text-[#2C5F2D]">LittleWell</span>
+          <div class="flex items-center gap-3 cursor-pointer" @click="router.push('/')">
+            <img
+              :src="littleHelpLogo"
+              alt="LittleHelp logo"
+              class="h-11 w-auto object-contain"
+            />
           </div>
 
           <!-- Navigation Links -->
@@ -283,7 +284,6 @@
               :key="profile.id"
               class="flex-shrink-0 w-[340px] p-6 rounded-2xl shadow-md hover:shadow-lg transition-shadow bg-white border"
             >
-              <!-- Profile Header -->
               <div class="flex items-start justify-between mb-4">
                 <div>
                   <h3 class="text-xl mb-1">
@@ -313,7 +313,6 @@
                 </div>
               </div>
 
-              <!-- Profile Info -->
               <div class="space-y-3 mb-4">
                 <div v-if="profile.allergies.length > 0">
                   <p class="text-xs text-muted-foreground mb-1">Allergies</p>
@@ -349,7 +348,6 @@
                 </div>
               </div>
 
-              <!-- Action Button -->
               <button
                 @click="handleViewMeals(profile.id)"
                 class="w-full bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg py-3 flex items-center justify-center gap-2 transition-colors"
@@ -492,7 +490,6 @@
 import { ref, onMounted, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import {
-  Heart,
   Plus,
   Edit,
   Trash2,
@@ -502,6 +499,7 @@ import {
 } from 'lucide-vue-next';
 import { getChildren, deleteChild } from '../services/api';
 import { useAuthStore } from '../stores/auth';
+import littleHelpLogo from '../assets/littlehelp-logo.jpg';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -561,7 +559,6 @@ const normalizeAgeGroup = (ageGroup) => {
     '7-9 years': '7-9 years',
     '10-12 years': '10-12 years',
 
-    // Old values compatibility
     '3-6 years': '5-6 years',
     '6-9 years': '7-9 years',
     '9-12 years': '10-12 years',
@@ -569,7 +566,6 @@ const normalizeAgeGroup = (ageGroup) => {
     '4-8': '7-9 years',
     '9-13': '10-12 years',
 
-    // Outside supported range
     '0-3 years': '',
     '2-3': '',
     '14-18': '',

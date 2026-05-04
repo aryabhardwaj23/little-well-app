@@ -18,7 +18,21 @@ import MyPlansPage from '../views/MyPlansPage.vue';
 import LoginPage from '../views/LoginPage.vue';
 import RegisterPage from '../views/RegisterPage.vue';
 
+// Project access view
+import ProjectAccessPage from '../views/ProjectAccessPage.vue';
+
 const routes = [
+  // ── Project access route ────────────────────────────────────
+  {
+    path: '/project-access',
+    name: 'ProjectAccess',
+    component: ProjectAccessPage,
+    meta: {
+      title: 'Project Access - LittleWell',
+      skipProjectAccess: true,
+    },
+  },
+
   // ── Auth routes ─────────────────────────────────────────────
   {
     path: '/login',
@@ -127,6 +141,19 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   document.title = to.meta.title || 'LittleWell - Seasonal Lunchbox Planning';
 
+  // 1. Project-wide access gate
+  const projectAccess = localStorage.getItem('littlewell_project_access');
+
+  if (!to.meta.skipProjectAccess && projectAccess !== 'granted') {
+    return next({
+      path: '/project-access',
+      query: {
+        redirect: to.fullPath,
+      },
+    });
+  }
+
+  // 2. User login gate for personal features
   const { useAuthStore } = await import('../stores/auth');
   const authStore = useAuthStore();
 
