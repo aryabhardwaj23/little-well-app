@@ -22,105 +22,101 @@ import RegisterPage from '../views/RegisterPage.vue';
 import ProjectAccessPage from '../views/ProjectAccessPage.vue';
 
 const routes = [
-  // ── Project access route ────────────────────────────────────
   {
     path: '/project-access',
     name: 'ProjectAccess',
     component: ProjectAccessPage,
     meta: {
-      title: 'Project Access - LittleWell',
+      title: 'Project Access - LittleHelp',
       skipProjectAccess: true,
     },
   },
 
-  // ── Auth routes ─────────────────────────────────────────────
   {
     path: '/login',
     name: 'Login',
     component: LoginPage,
-    meta: { title: 'Sign In - LittleWell', guestOnly: true },
+    meta: { title: 'Sign In - LittleHelp', guestOnly: true },
   },
   {
     path: '/register',
     name: 'Register',
     component: RegisterPage,
-    meta: { title: 'Create Account - LittleWell', guestOnly: true },
+    meta: { title: 'Create Account - LittleHelp', guestOnly: true },
   },
 
-  // ── Public routes ───────────────────────────────────────────
   {
     path: '/',
     name: 'Home',
     component: HomePage,
-    meta: { title: 'Home - LittleWell' },
+    meta: { title: 'Home - LittleHelp' },
   },
   {
     path: '/about',
     name: 'About',
     component: AboutPage,
-    meta: { title: 'About Us - LittleWell' },
+    meta: { title: 'About Us - LittleHelp' },
   },
   {
     path: '/quick-start',
     name: 'QuickStart',
     component: QuickStartPage,
-    meta: { title: 'Quick Start - LittleWell' },
+    meta: { title: 'Quick Start - LittleHelp' },
   },
   {
     path: '/results',
     name: 'Results',
     component: ResultsPage,
-    meta: { title: 'Lunchbox Results - LittleWell' },
+    meta: { title: 'Lunchbox Results - LittleHelp' },
   },
   {
     path: '/recipe/:id',
     name: 'Recipe',
     component: RecipePage,
-    meta: { title: 'Recipe Details - LittleWell' },
+    meta: { title: 'Recipe Details - LittleHelp' },
   },
 
-  // ── Protected app routes ────────────────────────────────────
   {
     path: '/nutrition-needs',
     name: 'NutritionNeeds',
     component: NutritionNeedsPage,
-    meta: { title: 'Nutrition Needs - LittleWell', requiresAuth: true },
+    meta: { title: 'Nutrition Needs - LittleHelp', requiresAuth: true },
   },
   {
     path: '/child-info',
     name: 'ChildInfo',
     component: ChildInfoPage,
-    meta: { title: 'Child Information - LittleWell', requiresAuth: true },
+    meta: { title: 'Child Information - LittleHelp', requiresAuth: true },
   },
   {
     path: '/profile-summary',
     name: 'ProfileSummary',
     component: ProfileSummaryPage,
-    meta: { title: 'Profile Summary - LittleWell', requiresAuth: true },
+    meta: { title: 'Profile Summary - LittleHelp', requiresAuth: true },
   },
   {
     path: '/nutrition-check',
     name: 'NutritionCheck',
     component: NutritionCheckPage,
-    meta: { title: 'Nutrition Check - LittleWell', requiresAuth: true },
+    meta: { title: 'Nutrition Check - LittleHelp', requiresAuth: true },
   },
   {
     path: '/nutrition-insights',
     name: 'NutritionInsights',
     component: NutritionInsightsPage,
-    meta: { title: 'Nutrition Insights - LittleWell', requiresAuth: true },
+    meta: { title: 'Nutrition Insights - LittleHelp', requiresAuth: true },
   },
   {
     path: '/weekly-plan',
     name: 'WeeklyPlan',
     component: WeeklyPlanPage,
-    meta: { title: 'Weekly Plan - LittleWell', requiresAuth: true },
+    meta: { title: 'Weekly Plan - LittleHelp', requiresAuth: true },
   },
   {
     path: '/my-plans',
     name: 'MyPlans',
     component: MyPlansPage,
-    meta: { title: 'My Plans - LittleWell', requiresAuth: true },
+    meta: { title: 'My Plans - LittleHelp', requiresAuth: true },
   },
 
   {
@@ -139,7 +135,7 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  document.title = to.meta.title || 'LittleWell - Seasonal Lunchbox Planning';
+  document.title = to.meta.title || 'LittleHelp - Seasonal Lunchbox Planning';
 
   // 1. Project-wide access gate
   const projectAccess = localStorage.getItem('littlewell_project_access');

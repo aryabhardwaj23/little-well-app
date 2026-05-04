@@ -3,12 +3,16 @@
     <div class="w-full max-w-md">
       <!-- Logo -->
       <div class="text-center mb-8">
-        <div class="w-16 h-16 bg-gradient-to-br from-[#A8D5BA] to-[#8FC2A4] rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
-          <Heart class="w-8 h-8 text-white" />
+        <div class="w-16 h-16 bg-gradient-to-br from-[#A8D5BA] to-[#8FC2A4] rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm overflow-hidden">
+          <img
+            :src="logoUrl"
+            alt="LittleHelp logo"
+            class="w-12 h-12 object-contain rounded-full"
+          />
         </div>
 
         <h1 class="text-3xl font-semibold text-[#2C5F2D] mb-2">
-          LittleWell
+          LittleHelp
         </h1>
 
         <p class="text-gray-500">
@@ -90,7 +94,7 @@
             type="submit"
             class="w-full bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] font-semibold py-3 rounded-xl transition-colors"
           >
-            Continue to LittleWell
+            Continue to LittleHelp
           </button>
         </form>
 
@@ -106,13 +110,13 @@
 import { reactive, ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import {
-  Heart,
   User,
   Lock,
   Eye,
   EyeOff,
   AlertCircle,
 } from 'lucide-vue-next';
+import logoUrl from '../assets/littlehelp-logo.jpg';
 
 const router = useRouter();
 const route = useRoute();

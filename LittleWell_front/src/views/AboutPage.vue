@@ -9,10 +9,14 @@
             class="flex items-center gap-2 cursor-pointer"
             @click="goToHome"
           >
-            <div class="w-10 h-10 bg-gradient-to-br from-[#A8D5BA] to-[#8FC2A4] rounded-full flex items-center justify-center">
-              <HeartIcon class="w-5 h-5 text-white" />
+            <div class="w-10 h-10 bg-gradient-to-br from-[#A8D5BA] to-[#8FC2A4] rounded-full flex items-center justify-center overflow-hidden">
+              <img
+                :src="logoUrl"
+                alt="LittleHelp logo"
+                class="w-8 h-8 object-contain rounded-full"
+              />
             </div>
-            <span class="text-xl font-semibold text-[#2C5F2D]">LittleWell</span>
+            <span class="text-xl font-semibold text-[#2C5F2D]">LittleHelp</span>
           </div>
 
           <!-- Back Button -->
@@ -47,7 +51,7 @@
 
               <div class="space-y-4 text-lg text-muted-foreground leading-relaxed">
                 <p>
-                  LittleWell is a family-focused nutrition planning platform designed to help parents and caregivers make easier, more confident food choices for children.
+                  LittleHelp is a family-focused nutrition planning platform designed to help parents and caregivers make easier, more confident food choices for children.
                 </p>
                 <p>
                   We turn nutrition considerations such as age, allergies, dietary needs, and seasonal ingredients into practical lunchbox ideas that fit everyday routines.
@@ -128,9 +132,9 @@
       <section class="py-20 bg-white">
         <div class="container mx-auto px-6 max-w-6xl">
           <div class="max-w-3xl mb-12">
-            <h2 class="text-3xl md:text-4xl mb-4 text-[#2C5F2D]">What LittleWell offers</h2>
+            <h2 class="text-3xl md:text-4xl mb-4 text-[#2C5F2D]">What LittleHelp offers</h2>
             <p class="text-lg text-muted-foreground leading-relaxed">
-              LittleWell brings together nutrition guidance, child preferences, allergy awareness, and meal planning tools in one simple experience.
+              LittleHelp brings together nutrition guidance, child preferences, allergy awareness, and meal planning tools in one simple experience.
             </p>
           </div>
 
@@ -197,7 +201,7 @@
               </div>
               <h3 class="text-xl mb-3 text-[#1B4965] font-semibold">Privacy-conscious design</h3>
               <p class="text-muted-foreground leading-relaxed">
-                LittleWell is designed to work with minimal personal details. Families can use nicknames and manage profiles with privacy in mind.
+                LittleHelp is designed to work with minimal personal details. Families can use nicknames and manage profiles with privacy in mind.
               </p>
             </div>
           </div>
@@ -211,7 +215,7 @@
             <div>
               <h2 class="text-3xl md:text-4xl mb-5 text-[#2C5F2D]">Built for real family routines</h2>
               <p class="text-lg text-muted-foreground leading-relaxed mb-8">
-                Healthy eating advice can be hard to apply when mornings are busy. LittleWell focuses on practical, realistic lunchbox support that parents can use quickly.
+                Healthy eating advice can be hard to apply when mornings are busy. LittleHelp focuses on practical, realistic lunchbox support that parents can use quickly.
               </p>
 
               <div class="bg-white rounded-2xl shadow-sm border p-6">
@@ -281,7 +285,7 @@
           <div class="max-w-3xl mb-12">
             <h2 class="text-3xl md:text-4xl mb-4 text-[#2C5F2D]">Our principles</h2>
             <p class="text-lg text-muted-foreground leading-relaxed">
-              LittleWell is designed around clarity, practicality, and trust.
+              LittleHelp is designed around clarity, practicality, and trust.
             </p>
           </div>
 
@@ -322,7 +326,7 @@
               <div>
                 <h2 class="text-3xl mb-4 text-[#2C5F2D]">Privacy and trust</h2>
                 <p class="text-muted-foreground text-lg leading-relaxed mb-5">
-                  LittleWell is built to minimise unnecessary personal information. Families can use nicknames for child profiles, and the platform focuses only on the details needed to provide better lunchbox guidance.
+                  LittleHelp is built to minimise unnecessary personal information. Families can use nicknames for child profiles, and the platform focuses only on the details needed to provide better lunchbox guidance.
                 </p>
 
                 <div class="grid sm:grid-cols-3 gap-4">
@@ -350,8 +354,12 @@
       <!-- Mission / CTA -->
       <section class="py-20 bg-gradient-to-br from-[#A8D5BA]/15 to-white">
         <div class="container mx-auto px-6 max-w-4xl text-center">
-          <div class="w-20 h-20 bg-gradient-to-br from-[#A8D5BA] to-[#8FC2A4] rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
-            <HeartIcon class="w-10 h-10 text-white" />
+          <div class="w-20 h-20 bg-gradient-to-br from-[#A8D5BA] to-[#8FC2A4] rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm overflow-hidden">
+            <img
+              :src="logoUrl"
+              alt="LittleHelp logo"
+              class="w-16 h-16 object-contain rounded-full"
+            />
           </div>
 
           <h2 class="text-3xl md:text-4xl mb-6 text-[#2C5F2D]">Our mission</h2>
@@ -375,6 +383,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
+import logoUrl from '../assets/littlehelp-logo.jpg';
 import {
   Heart as HeartIcon,
   Users as UsersIcon,

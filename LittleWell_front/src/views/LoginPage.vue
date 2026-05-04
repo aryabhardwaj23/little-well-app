@@ -6,10 +6,14 @@
       <div class="absolute bottom-[-60px] left-[-60px] w-64 h-64 bg-white/10 rounded-full" />
 
       <div class="flex items-center gap-3 relative z-10">
-        <div class="w-10 h-10 bg-white/30 rounded-full flex items-center justify-center">
-          <Heart class="w-5 h-5 text-white" />
+        <div class="w-12 h-12 bg-white/30 rounded-full flex items-center justify-center overflow-hidden">
+          <img
+            :src="logoUrl"
+            alt="LittleHelp logo"
+            class="w-10 h-10 object-contain rounded-full"
+          />
         </div>
-        <span class="text-2xl font-semibold text-white">LittleWell</span>
+        <span class="text-2xl font-semibold text-white">LittleHelp</span>
       </div>
 
       <div class="relative z-10">
@@ -34,10 +38,14 @@
     <div class="w-full lg:w-1/2 flex items-center justify-center px-6 py-12">
       <div class="w-full max-w-md">
         <div class="flex items-center gap-2 mb-8 lg:hidden">
-          <div class="w-9 h-9 bg-gradient-to-br from-[#A8D5BA] to-[#8FC2A4] rounded-full flex items-center justify-center">
-            <Heart class="w-4 h-4 text-white" />
+          <div class="w-10 h-10 bg-gradient-to-br from-[#A8D5BA] to-[#8FC2A4] rounded-full flex items-center justify-center overflow-hidden">
+            <img
+              :src="logoUrl"
+              alt="LittleHelp logo"
+              class="w-8 h-8 object-contain rounded-full"
+            />
           </div>
-          <span class="text-xl font-semibold text-[#2C5F2D]">LittleWell</span>
+          <span class="text-xl font-semibold text-[#2C5F2D]">LittleHelp</span>
         </div>
 
         <h1 class="text-3xl font-semibold text-gray-800 mb-2">Welcome back</h1>
@@ -127,13 +135,26 @@
 <script setup>
 import { ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
-import { Heart, User, Lock, Eye, EyeOff, AlertCircle, Loader2, ArrowLeft } from 'lucide-vue-next';
+import {
+  User,
+  Lock,
+  Eye,
+  EyeOff,
+  AlertCircle,
+  Loader2,
+  ArrowLeft,
+} from 'lucide-vue-next';
 import { useAuthStore } from '../stores/auth';
+import logoUrl from '../assets/littlehelp-logo.jpg';
 
 const router = useRouter();
 const authStore = useAuthStore();
 
-const form = reactive({ username: '', password: '' });
+const form = reactive({
+  username: '',
+  password: '',
+});
+
 const showPassword = ref(false);
 const isLoading = ref(false);
 const errorMessage = ref('');
@@ -141,8 +162,13 @@ const errorMessage = ref('');
 const handleLogin = async () => {
   errorMessage.value = '';
   isLoading.value = true;
+
   try {
-    await authStore.login({ username: form.username, password: form.password });
+    await authStore.login({
+      username: form.username,
+      password: form.password,
+    });
+
     router.push('/');
   } catch (err) {
     errorMessage.value = err.message || 'Incorrect username or password.';
