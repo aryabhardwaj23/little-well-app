@@ -2,102 +2,69 @@
   <div class="min-h-screen">
     <!-- Navigation Bar -->
     <nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm">
-      <div class="container mx-auto px-6 max-w-6xl">
-        <div class="flex items-center justify-between h-16">
+      <div class="mx-auto px-8 max-w-[1440px]">
+        <div class="flex items-center justify-between h-20 gap-8">
           <!-- Logo -->
-          <div class="flex items-center gap-3 cursor-pointer" @click="router.push('/')">
+          <div class="flex items-center cursor-pointer shrink-0" @click="router.push('/')">
             <img
               :src="littleHelpLogo"
               alt="LittleHelp logo"
-              class="h-11 w-auto object-contain"
+              class="h-12 w-auto object-contain"
             />
           </div>
 
-          <!-- Navigation Links -->
-          <div class="hidden md:flex items-center gap-6">
-            <button
-              @click="handleLunchboxPlan"
-              class="text-[#2C5F2D] hover:bg-[#A8D5BA]/10 rounded-lg px-4 py-2 transition-colors"
-              type="button"
-            >
+          <!-- Desktop Navigation Links -->
+          <div class="flex items-center justify-end gap-2 flex-1">
+            <button @click="handleLunchboxPlan" class="nav-link" type="button">
               Lunchbox Plan
             </button>
 
-            <button
-              @click="goProtected('/weekly-plan')"
-              class="text-[#2C5F2D] hover:bg-[#A8D5BA]/10 rounded-lg px-4 py-2 transition-colors"
-              type="button"
-            >
+            <button @click="goProtected('/weekly-plan')" class="nav-link" type="button">
               Weekly Plan
             </button>
 
-            <button
-              @click="goProtected('/my-plans')"
-              class="text-[#2C5F2D] hover:bg-[#A8D5BA]/10 rounded-lg px-4 py-2 transition-colors"
-              type="button"
-            >
+            <button @click="goProtected('/my-plans')" class="nav-link" type="button">
               My Plans
             </button>
 
-            <button disabled class="text-muted-foreground cursor-not-allowed relative px-4 py-2" type="button">
+            <button disabled class="nav-link-disabled relative" type="button">
               Knowledge Hub
-              <span class="absolute -top-1 -right-2 bg-[#CDE7F0] text-[#1B4965] text-xs rounded-full px-1.5 py-0.5">
+              <span class="absolute -top-2 -right-1 bg-[#CDE7F0] text-[#1B4965] text-[10px] rounded-full px-1.5 py-0.5">
                 Soon
               </span>
             </button>
 
-            <button
-              @click="router.push('/about')"
-              class="text-[#2C5F2D] hover:bg-[#A8D5BA]/10 rounded-lg px-4 py-2 transition-colors"
-              type="button"
-            >
+            <button @click="router.push('/about')" class="nav-link" type="button">
               About Us
             </button>
 
             <!-- Auth Buttons -->
             <template v-if="isLoggedIn">
-              <span class="text-sm text-muted-foreground">
+              <span class="text-sm text-muted-foreground px-2 whitespace-nowrap">
                 Hi, {{ username }}
               </span>
 
-              <button
-                @click="handleLogout"
-                class="bg-white border border-[#A8D5BA] text-[#2C5F2D] rounded-lg px-4 py-2 hover:bg-[#A8D5BA]/10 transition-colors"
-                type="button"
-              >
+              <button @click="handleLogout" class="nav-outline-button" type="button">
                 Logout
               </button>
             </template>
 
             <template v-else>
-              <button
-                @click="router.push('/login')"
-                class="text-[#2C5F2D] hover:bg-[#A8D5BA]/10 rounded-lg px-4 py-2 transition-colors"
-                type="button"
-              >
+              <button @click="router.push('/login')" class="nav-link" type="button">
                 Sign in
               </button>
 
-              <button
-                @click="router.push('/register')"
-                class="bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg px-4 py-2 transition-colors"
-                type="button"
-              >
+              <button @click="router.push('/register')" class="nav-primary-button" type="button">
                 Create account
               </button>
             </template>
           </div>
-
-          <!-- Mobile Menu Button -->
-          <button class="md:hidden p-2" type="button">
-            <Menu class="w-5 h-5" />
-          </button>
         </div>
       </div>
     </nav>
 
     <!-- Hero Section -->
-    <div class="pt-28 pb-14 bg-[#FAF9F6]">
+    <div class="pt-32 pb-14 bg-[#FAF9F6]">
       <div class="container mx-auto px-6 max-w-6xl">
         <div class="grid lg:grid-cols-2 gap-8 items-stretch">
           <div class="flex flex-col justify-center">
@@ -494,7 +461,6 @@ import {
   Edit,
   Trash2,
   ChevronRight,
-  Menu,
   CalendarDays,
 } from 'lucide-vue-next';
 import { getChildren, deleteChild } from '../services/api';
@@ -742,5 +708,60 @@ const handleEditProfile = (profileId) => {
 <style scoped>
 .text-muted-foreground {
   color: #6b7280;
+}
+
+.nav-link {
+  color: #2C5F2D;
+  padding: 0.55rem 0.85rem;
+  border-radius: 0.65rem;
+  font-size: 0.92rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+}
+
+.nav-link:hover {
+  background-color: rgba(168, 213, 186, 0.12);
+}
+
+.nav-link-disabled {
+  color: #6b7280;
+  padding: 0.55rem 0.85rem;
+  border-radius: 0.65rem;
+  font-size: 0.92rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: not-allowed;
+}
+
+.nav-primary-button {
+  background-color: #A8D5BA;
+  color: #2C5F2D;
+  padding: 0.65rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+}
+
+.nav-primary-button:hover {
+  background-color: #8FC2A4;
+}
+
+.nav-outline-button {
+  background-color: white;
+  border: 1px solid #A8D5BA;
+  color: #2C5F2D;
+  padding: 0.6rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+}
+
+.nav-outline-button:hover {
+  background-color: rgba(168, 213, 186, 0.12);
 }
 </style>
