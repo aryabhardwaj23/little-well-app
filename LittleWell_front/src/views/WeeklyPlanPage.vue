@@ -168,45 +168,6 @@
         </div>
       </div>
 
-      <!-- Preferences -->
-      <div v-if="!planGenerated" class="mb-12">
-        <h2 class="text-2xl mb-6">Weekly Preferences</h2>
-
-        <div class="grid md:grid-cols-2 gap-6">
-          <div class="p-6 rounded-2xl bg-white border">
-            <h3 class="font-medium mb-4">Variety Preference</h3>
-
-            <div class="space-y-2">
-              <label
-                v-for="option in ['Keep it simple', 'Balanced', 'More variety']"
-                :key="option"
-                class="flex items-center p-3 border-2 rounded-lg cursor-pointer hover:border-[#A8D5BA]/50 transition-colors"
-                :class="varietyPreference === option ? 'border-[#A8D5BA] bg-[#A8D5BA]/5' : 'border-gray-200'"
-              >
-                <input type="radio" :value="option" v-model="varietyPreference" class="mr-3" />
-                <span>{{ option }}</span>
-              </label>
-            </div>
-          </div>
-
-          <div class="p-6 rounded-2xl bg-white border">
-            <h3 class="font-medium mb-4">Meal Style</h3>
-
-            <div class="space-y-2">
-              <label
-                v-for="option in ['Quick & simple', 'Mix of simple and varied']"
-                :key="option"
-                class="flex items-center p-3 border-2 rounded-lg cursor-pointer hover:border-[#A8D5BA]/50 transition-colors"
-                :class="mealStyle === option ? 'border-[#A8D5BA] bg-[#A8D5BA]/5' : 'border-gray-200'"
-              >
-                <input type="radio" :value="option" v-model="mealStyle" class="mr-3" />
-                <span>{{ option }}</span>
-              </label>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <!-- Generate Button -->
       <div v-if="!planGenerated" class="flex justify-center mb-12">
         <button
