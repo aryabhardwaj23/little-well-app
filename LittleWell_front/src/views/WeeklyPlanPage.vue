@@ -303,7 +303,7 @@
                     <div>
                       <p class="text-sm font-medium">{{ item.name }}</p>
                       <p class="text-xs text-muted-foreground">
-                        {{ item.amount || 'Recommended item' }}
+                        {{ formatWeeklyItemAmount(item.amount, batch.coverDays) }}
                       </p>
                     </div>
                   </div>
@@ -399,8 +399,7 @@
 
                     <button
                       @click="swapApiRecipe(index)"
-                      :disabled="apiRecipes.length <= 1"
-                      class="flex-1 bg-white border-2 border-[#A8D5BA] text-[#2C5F2D] rounded-lg py-3 hover:bg-[#A8D5BA]/10 transition-colors inline-flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      class="flex-1 bg-white border-2 border-[#A8D5BA] text-[#2C5F2D] rounded-lg py-3 hover:bg-[#A8D5BA]/10 transition-colors inline-flex items-center justify-center gap-2"
                       type="button"
                     >
                       <RefreshCw class="w-4 h-4" />
@@ -585,7 +584,6 @@ const normalizeAgeGroup = (ageGroup) => {
     '7-9 years': '7-9 years',
     '10-12 years': '10-12 years',
 
-    // Old values compatibility
     '3-6 years': '5-6 years',
     '6-9 years': '7-9 years',
     '9-12 years': '10-12 years',
@@ -593,17 +591,12 @@ const normalizeAgeGroup = (ageGroup) => {
     '4-8': '7-9 years',
     '9-13': '10-12 years',
 
-    // Outside supported range
     '0-3 years': '',
     '2-3': '',
     '14-18': '',
   };
 
   return mapping[ageGroup] || '';
-};
-
-const isSupportedAgeGroup = (ageGroup) => {
-  return allowedAgeGroups.includes(normalizeAgeGroup(ageGroup));
 };
 
 const isActiveStatus = (value) => {
@@ -616,7 +609,6 @@ const toNullableInteger = (value) => {
   }
 
   const number = Number(value);
-
   return Number.isInteger(number) ? number : null;
 };
 
@@ -856,14 +848,40 @@ const getCookDayForDatabase = (cookDayText, index) => {
   const text = String(cookDayText || '').toLowerCase();
 
   const validDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-
   const matchedDay = validDays.find((day) => text.includes(day.toLowerCase()));
 
   if (matchedDay) return matchedDay;
 
   const fallbackDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-
   return fallbackDays[index % fallbackDays.length];
+};
+
+const getCoveredDayCount = (coverDays) => {
+  const text = String(coverDays || '').toLowerCase().trim();
+
+  if (text.includes('monday to wednesday')) return 3;
+  if (text.includes('thursday to friday')) return 2;
+  if (text.includes('monday to tuesday')) return 2;
+  if (text.includes('wednesday to thursday')) return 2;
+
+  const singleDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
+  if (singleDays.includes(text)) return 1;
+
+  return 1;
+};
+
+const formatWeeklyItemAmount = (amount, coverDays) => {
+  if (!amount) return 'Recommended item';
+
+  const childCount = selectedChildren.value.length || 1;
+  const coveredDayCount = getCoveredDayCount(coverDays);
+  const totalPortions = childCount * coveredDayCount;
+
+  if (String(amount).toLowerCase().includes('child-friendly portion')) {
+    return `${totalPortions} child-friendly ${totalPortions === 1 ? 'portion' : 'portions'}`;
+  }
+
+  return amount;
 };
 
 const buildWeeklyBatches = (lunchboxes, recipes) => {
@@ -959,10 +977,23 @@ const loadExistingPlan = async (planId) => {
       .filter(Boolean);
   } else if (Array.isArray(plan.child_ids)) {
     selectedChildren.value = plan.child_ids.map(Number).filter(Boolean);
+  } else if (plan.child_id) {
+    selectedChildren.value = [Number(plan.child_id)].filter(Boolean);
   }
 
   const meals = plan.meals || plan.batches || [];
   weeklyBatches.value = Array.isArray(meals) ? meals.map(normalizeSavedMeal) : [];
+
+  databaseLunchboxes.value = weeklyBatches.value
+    .map((batch) => batch.lunchbox)
+    .filter(Boolean);
+
+  apiRecipes.value = dedupeByKey(
+    weeklyBatches.value
+      .map((batch) => batch.recipe)
+      .filter((recipe) => recipe?.id)
+  ).map(normalizeApiRecipe);
+
   planGenerated.value = weeklyBatches.value.length > 0;
 };
 
@@ -1060,19 +1091,50 @@ const regeneratePlan = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
-const swapApiRecipe = (index) => {
-  if (apiRecipes.value.length <= 1) return;
+const swapApiRecipe = async (index) => {
+  try {
+    errorMessage.value = '';
 
-  const currentId = weeklyBatches.value[index]?.recipe?.id;
+    if (selectedChildren.value.length === 0) {
+      errorMessage.value = 'Cannot swap recipe because no child profile is linked to this plan.';
+      return;
+    }
 
-  const replacement =
-    apiRecipes.value.find((recipe) => String(recipe.id) !== String(currentId)) ||
-    apiRecipes.value[0];
+    const currentId = weeklyBatches.value[index]?.recipe?.id;
 
-  weeklyBatches.value[index] = {
-    ...weeklyBatches.value[index],
-    recipe: replacement,
-  };
+    const currentWeekRecipeIds = weeklyBatches.value
+      .map((batch) => batch.recipe?.id)
+      .filter(Boolean)
+      .map((id) => String(id));
+
+    const freshApiData = await fetchRecipesFromApi();
+    const freshRecipes = freshApiData.map(normalizeApiRecipe);
+
+    const replacement =
+      freshRecipes.find((recipe) => {
+        const recipeId = String(recipe.id);
+        return recipeId !== String(currentId) && !currentWeekRecipeIds.includes(recipeId);
+      }) ||
+      freshRecipes.find((recipe) => String(recipe.id) !== String(currentId));
+
+    if (!replacement) {
+      errorMessage.value = 'No new recipe available right now. Please try again.';
+      return;
+    }
+
+    apiRecipes.value = dedupeByKey([
+      ...apiRecipes.value,
+      ...freshRecipes,
+    ]).map(normalizeApiRecipe);
+
+    weeklyBatches.value[index] = {
+      ...weeklyBatches.value[index],
+      recipe: replacement,
+    };
+  } catch (error) {
+    console.error('Failed to swap recipe:', error);
+    errorMessage.value = error.message || 'Failed to swap recipe. Please try again.';
+  }
 };
 
 const handleImageError = (event) => {
