@@ -52,6 +52,18 @@ const routes = [
     component: QuickStartPage,
     meta: { title: 'Quick Start - LittleWell' },
   },
+  {
+    path: '/results',
+    name: 'Results',
+    component: ResultsPage,
+    meta: { title: 'Lunchbox Results - LittleWell' },
+  },
+  {
+    path: '/recipe/:id',
+    name: 'Recipe',
+    component: RecipePage,
+    meta: { title: 'Recipe Details - LittleWell' },
+  },
 
   // ── Protected app routes ────────────────────────────────────
   {
@@ -83,18 +95,6 @@ const routes = [
     name: 'NutritionInsights',
     component: NutritionInsightsPage,
     meta: { title: 'Nutrition Insights - LittleWell', requiresAuth: true },
-  },
-  {
-    path: '/results',
-    name: 'Results',
-    component: ResultsPage,
-    meta: { title: 'Lunchbox Results - LittleWell', requiresAuth: true },
-  },
-  {
-    path: '/recipe/:id',
-    name: 'Recipe',
-    component: RecipePage,
-    meta: { title: 'Recipe Details - LittleWell', requiresAuth: true },
   },
   {
     path: '/weekly-plan',
@@ -130,7 +130,6 @@ router.beforeEach(async (to, from, next) => {
   const { useAuthStore } = await import('../stores/auth');
   const authStore = useAuthStore();
 
-  // 未登录访问受保护页面 → 去 login
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     return next({
       path: '/login',
@@ -140,7 +139,6 @@ router.beforeEach(async (to, from, next) => {
     });
   }
 
-  // 已登录用户访问 login/register → 回首页
   if (to.meta.guestOnly && authStore.isAuthenticated) {
     return next('/');
   }
