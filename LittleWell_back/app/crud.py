@@ -17,24 +17,35 @@ def validate_child_age_band(age_band: str):
         )
 
 
-def get_children(db: Session):
-    return db.query(models.UserChild).all()
-
-
-def get_child_by_id(db: Session, child_id: int):
+def get_children(db: Session, user_id: int):
     return (
         db.query(models.UserChild)
-        .filter(models.UserChild.child_id == child_id)
+        .filter(models.UserChild.user_id == user_id)
+        .all()
+    )
+
+
+def get_child_by_id(db: Session, child_id: int, user_id: int):
+    return (
+        db.query(models.UserChild)
+        .filter(
+            models.UserChild.child_id == child_id,
+            models.UserChild.user_id == user_id,
+        )
         .first()
     )
 
 
-def get_child_allergen_ids(db: Session, child_id: int):
+def get_child_allergen_ids(db: Session, child_id: int, user_id: int):
     rows = (
         db.query(models.UserSearchAllergen)
-        .filter(models.UserSearchAllergen.child_id == child_id)
+        .filter(
+            models.UserSearchAllergen.child_id == child_id,
+            models.UserSearchAllergen.user_id == user_id,
+        )
         .all()
     )
+
     return [row.allergen_id for row in rows]
 
 
@@ -45,7 +56,8 @@ def replace_child_allergens(
     allergen_ids: list[int],
 ):
     db.query(models.UserSearchAllergen).filter(
-        models.UserSearchAllergen.child_id == child_id
+        models.UserSearchAllergen.child_id == child_id,
+        models.UserSearchAllergen.user_id == user_id,
     ).delete()
 
     for allergen_id in allergen_ids:
@@ -58,15 +70,11 @@ def replace_child_allergens(
         )
 
 
-def create_child(db: Session, child: schemas.ChildCreate):
+def create_child(db: Session, child: schemas.ChildCreate, user_id: int):
     validate_child_age_band(child.age_band)
 
-    new_user = models.UserSearch()
-    db.add(new_user)
-    db.flush()
-
     db_child = models.UserChild(
-        user_id=new_user.user_id,
+        user_id=user_id,
         child_name=child.child_name,
         age_band=child.age_band,
         band_id=child.band_id,
@@ -83,7 +91,7 @@ def create_child(db: Session, child: schemas.ChildCreate):
     for allergen_id in child.allergies:
         db.add(
             models.UserSearchAllergen(
-                user_id=new_user.user_id,
+                user_id=user_id,
                 child_id=db_child.child_id,
                 allergen_id=allergen_id,
             )
@@ -94,10 +102,15 @@ def create_child(db: Session, child: schemas.ChildCreate):
     return db_child
 
 
-def update_child(db: Session, child_id: int, child: schemas.ChildUpdate):
+def update_child(
+    db: Session,
+    child_id: int,
+    child: schemas.ChildUpdate,
+    user_id: int,
+):
     validate_child_age_band(child.age_band)
 
-    db_child = get_child_by_id(db, child_id)
+    db_child = get_child_by_id(db, child_id, user_id)
 
     if not db_child:
         return None
@@ -114,7 +127,7 @@ def update_child(db: Session, child_id: int, child: schemas.ChildUpdate):
     replace_child_allergens(
         db=db,
         child_id=db_child.child_id,
-        user_id=db_child.user_id,
+        user_id=user_id,
         allergen_ids=child.allergies,
     )
 
@@ -123,14 +136,15 @@ def update_child(db: Session, child_id: int, child: schemas.ChildUpdate):
     return db_child
 
 
-def delete_child(db: Session, child_id: int):
-    db_child = get_child_by_id(db, child_id)
+def delete_child(db: Session, child_id: int, user_id: int):
+    db_child = get_child_by_id(db, child_id, user_id)
 
     if not db_child:
         return None
 
     db.query(models.UserSearchAllergen).filter(
-        models.UserSearchAllergen.child_id == child_id
+        models.UserSearchAllergen.child_id == child_id,
+        models.UserSearchAllergen.user_id == user_id,
     ).delete()
 
     db.delete(db_child)

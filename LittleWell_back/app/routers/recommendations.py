@@ -7,6 +7,7 @@ from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy.orm import Session
 
 from ..db import get_db
+from ..auth_utils import get_current_user
 from .. import models
 
 from ..services.mealdb_service import (
@@ -120,10 +121,13 @@ def get_categories_for_child(child) -> list[str]:
     return deduped or ["Chicken", "Vegetarian"]
 
 
-def get_child_or_404(db: Session, child_id: int):
+def get_child_or_404(db: Session, child_id: int, user_id: int):
     child = (
         db.query(models.UserChild)
-        .filter(models.UserChild.child_id == child_id)
+        .filter(
+            models.UserChild.child_id == child_id,
+            models.UserChild.user_id == user_id,
+        )
         .first()
     )
 
@@ -167,9 +171,6 @@ def get_child_dietary_restriction(db: Session, child):
 
 
 def apply_dietary_filters_to_reference_food(query, restriction):
-    """
-    Apply dietary restriction filtering to reference_food using dietary flags.
-    """
     if not restriction:
         return query
 
@@ -205,14 +206,7 @@ def apply_dietary_filters_to_reference_food(query, restriction):
     return query
 
 
-def get_mealdb_categories_for_restriction(
-    categories: list[str],
-    restriction,
-) -> list[str]:
-    """
-    MealDB does not have the same detailed dietary flags as reference_food.
-    This is a practical category-level filter.
-    """
+def get_mealdb_categories_for_restriction(categories: list[str], restriction) -> list[str]:
     if not restriction:
         return categories
 
@@ -237,14 +231,11 @@ def get_mealdb_categories_for_restriction(
 
 # ---------------------------------------------------------------------------
 # Reference food recommendation logic
-# This is the database recommendation flow.
 # ---------------------------------------------------------------------------
 
 def get_candidate_reference_foods(db: Session, restriction=None) -> list:
     query = db.query(models.ReferenceFood)
-
     query = query.filter(models.ReferenceFood.food_name.isnot(None))
-
     query = apply_dietary_filters_to_reference_food(query, restriction)
 
     foods = query.limit(800).all()
@@ -421,12 +412,16 @@ def build_reference_lunchbox(
     }
 
 
-def get_child_allergen_ids(db: Session, child_id: int) -> list[int]:
-    rows = (
+def get_child_allergen_ids(db: Session, child_id: int, user_id: Optional[int] = None) -> list[int]:
+    query = (
         db.query(models.UserSearchAllergen)
         .filter(models.UserSearchAllergen.child_id == child_id)
-        .all()
     )
+
+    if user_id is not None:
+        query = query.filter(models.UserSearchAllergen.user_id == user_id)
+
+    rows = query.all()
 
     return [int(row.allergen_id) for row in rows]
 
@@ -465,14 +460,19 @@ def generate_lunchboxes_for_child(
     child,
     seasonal: bool = True,
     max_boxes: int = 3,
+    user_id: Optional[int] = None,
 ):
     validate_supported_age_band(child.age_band)
 
     needs = get_needs_support(child)
-
     restriction = get_child_dietary_restriction(db, child)
 
-    allergen_ids = get_child_allergen_ids(db, child.child_id)
+    allergen_ids = get_child_allergen_ids(
+        db=db,
+        child_id=child.child_id,
+        user_id=user_id,
+    )
+
     blocked_reference_food_ids = get_blocked_reference_food_ids_by_allergens(
         db=db,
         allergen_ids=allergen_ids,
@@ -532,7 +532,6 @@ def generate_lunchboxes_for_child(
 
 # ---------------------------------------------------------------------------
 # MealDB + AUSNUT logic
-# This is the API recipe recommendation flow.
 # ---------------------------------------------------------------------------
 
 def get_nutrition_labels(nutrients: dict) -> list[str]:
@@ -697,8 +696,14 @@ def get_recommended_products(
     child_id: int,
     seasonal: bool = True,
     db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
 ):
-    child = get_child_or_404(db, child_id)
+    child = get_child_or_404(
+        db=db,
+        child_id=child_id,
+        user_id=current_user.user_id,
+    )
+
     validate_supported_age_band(child.age_band)
 
     return generate_lunchboxes_for_child(
@@ -706,6 +711,7 @@ def get_recommended_products(
         child=child,
         seasonal=seasonal,
         max_boxes=3,
+        user_id=current_user.user_id,
     )
 
 
@@ -714,14 +720,27 @@ def get_family_recommended_products(
     child_ids: str = Query(...),
     seasonal: bool = True,
     db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
 ):
     ids = [int(x) for x in child_ids.split(",") if x.strip()]
 
     children = (
         db.query(models.UserChild)
-        .filter(models.UserChild.child_id.in_(ids))
+        .filter(
+            models.UserChild.child_id.in_(ids),
+            models.UserChild.user_id == current_user.user_id,
+        )
         .all()
     )
+
+    found_ids = {child.child_id for child in children}
+    missing_ids = [child_id for child_id in ids if child_id not in found_ids]
+
+    if missing_ids:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Child profile(s) not found or not owned by this user: {missing_ids}",
+        )
 
     if not children:
         raise HTTPException(status_code=404, detail="No children found")
@@ -733,7 +752,7 @@ def get_family_recommended_products(
         pass
 
     family = FamilyChild()
-    family.child_id = ids[0]
+    family.child_id = children[0].child_id
     family.child_name = " + ".join([c.child_name for c in children])
     family.age_band = children[0].age_band if children else None
 
@@ -742,8 +761,6 @@ def get_family_recommended_products(
     family.vitamin_d_status = 1 if any(int(c.vitamin_d_status or 0) == 1 for c in children) else 0
     family.variety_status = 1 if any(int(c.variety_status or 0) == 1 for c in children) else 0
 
-    # For family mode, use the first child's restriction as a safe baseline.
-    # You can later make this stricter by merging restrictions across all children.
     family.restriction_id = children[0].restriction_id if children else None
 
     return generate_lunchboxes_for_child(
@@ -751,6 +768,7 @@ def get_family_recommended_products(
         child=family,
         seasonal=seasonal,
         max_boxes=3,
+        user_id=current_user.user_id,
     )
 
 
@@ -781,6 +799,7 @@ def get_quick_recommended_products(
         child=quick,
         seasonal=seasonal,
         max_boxes=3,
+        user_id=None,
     )
 
     result["quickInput"] = {
@@ -944,13 +963,18 @@ async def get_child_meal_recommendations(
     child_id: int,
     limit: int = Query(6, ge=1, le=12),
     db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
 ):
     try:
-        child = get_child_or_404(db, child_id)
+        child = get_child_or_404(
+            db=db,
+            child_id=child_id,
+            user_id=current_user.user_id,
+        )
+
         validate_supported_age_band(child.age_band)
 
         needs_support = get_needs_support(child)
-
         restriction = get_child_dietary_restriction(db, child)
 
         categories = get_categories_for_child(child)

@@ -3,8 +3,9 @@ from sqlalchemy.orm import Session
 from sqlalchemy import desc
 
 from ..db import get_db
+from ..auth_utils import get_current_user
 from ..models import (
-    UserSearch,
+    User,
     UserChild,
     WeeklyPlan,
     WeeklyPlanChild,
@@ -14,20 +15,6 @@ from ..schemas import WeeklyPlanCreate, WeeklyPlanResponse
 
 
 router = APIRouter(prefix="/weekly-plans", tags=["weekly-plans"])
-
-
-def get_or_create_demo_user(db: Session) -> int:
-    user = db.query(UserSearch).order_by(UserSearch.user_id.asc()).first()
-
-    if user:
-        return user.user_id
-
-    user = UserSearch()
-    db.add(user)
-    db.commit()
-    db.refresh(user)
-
-    return user.user_id
 
 
 def normalize_cook_frequency(value) -> int:
@@ -125,8 +112,6 @@ def cook_day_to_db_value(value) -> str:
         return "Monday"
 
     text = str(value).strip()
-
-    # Frontend may send "Cook on Sunday"
     text = text.replace("Cook on ", "").strip()
 
     valid_days = {
@@ -153,7 +138,7 @@ def pydantic_to_dict(item):
     return item.dict()
 
 
-def build_plan_response(db: Session, plan: WeeklyPlan) -> dict:
+def build_plan_response(db: Session, plan: WeeklyPlan, user_id: int) -> dict:
     child_links = (
         db.query(WeeklyPlanChild)
         .filter(WeeklyPlanChild.plan_id == plan.plan_id)
@@ -167,7 +152,10 @@ def build_plan_response(db: Session, plan: WeeklyPlan) -> dict:
     if child_ids:
         child_rows = (
             db.query(UserChild)
-            .filter(UserChild.child_id.in_(child_ids))
+            .filter(
+                UserChild.child_id.in_(child_ids),
+                UserChild.user_id == user_id,
+            )
             .all()
         )
 
@@ -217,8 +205,12 @@ def build_plan_response(db: Session, plan: WeeklyPlan) -> dict:
 
 
 @router.post("", response_model=WeeklyPlanResponse)
-def create_weekly_plan(payload: WeeklyPlanCreate, db: Session = Depends(get_db)):
-    user_id = get_or_create_demo_user(db)
+def create_weekly_plan(
+    payload: WeeklyPlanCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    user_id = current_user.user_id
 
     if not payload.child_ids:
         raise HTTPException(
@@ -228,7 +220,10 @@ def create_weekly_plan(payload: WeeklyPlanCreate, db: Session = Depends(get_db))
 
     valid_children = (
         db.query(UserChild)
-        .filter(UserChild.child_id.in_(payload.child_ids))
+        .filter(
+            UserChild.child_id.in_(payload.child_ids),
+            UserChild.user_id == user_id,
+        )
         .all()
     )
 
@@ -243,7 +238,7 @@ def create_weekly_plan(payload: WeeklyPlanCreate, db: Session = Depends(get_db))
     if missing_child_ids:
         raise HTTPException(
             status_code=404,
-            detail=f"Child profile(s) not found: {missing_child_ids}",
+            detail=f"Child profile(s) not found or not owned by this user: {missing_child_ids}",
         )
 
     plan = WeeklyPlan(
@@ -295,12 +290,15 @@ def create_weekly_plan(payload: WeeklyPlanCreate, db: Session = Depends(get_db))
     db.commit()
     db.refresh(plan)
 
-    return build_plan_response(db, plan)
+    return build_plan_response(db, plan, user_id)
 
 
 @router.get("", response_model=list[WeeklyPlanResponse])
-def get_weekly_plans(db: Session = Depends(get_db)):
-    user_id = get_or_create_demo_user(db)
+def get_weekly_plans(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    user_id = current_user.user_id
 
     plans = (
         db.query(WeeklyPlan)
@@ -309,14 +307,23 @@ def get_weekly_plans(db: Session = Depends(get_db)):
         .all()
     )
 
-    return [build_plan_response(db, plan) for plan in plans]
+    return [build_plan_response(db, plan, user_id) for plan in plans]
 
 
 @router.get("/{plan_id}", response_model=WeeklyPlanResponse)
-def get_weekly_plan(plan_id: int, db: Session = Depends(get_db)):
+def get_weekly_plan(
+    plan_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    user_id = current_user.user_id
+
     plan = (
         db.query(WeeklyPlan)
-        .filter(WeeklyPlan.plan_id == plan_id)
+        .filter(
+            WeeklyPlan.plan_id == plan_id,
+            WeeklyPlan.user_id == user_id,
+        )
         .first()
     )
 
@@ -326,14 +333,23 @@ def get_weekly_plan(plan_id: int, db: Session = Depends(get_db)):
             detail="Weekly plan not found.",
         )
 
-    return build_plan_response(db, plan)
+    return build_plan_response(db, plan, user_id)
 
 
 @router.delete("/{plan_id}", status_code=204)
-def delete_weekly_plan(plan_id: int, db: Session = Depends(get_db)):
+def delete_weekly_plan(
+    plan_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    user_id = current_user.user_id
+
     plan = (
         db.query(WeeklyPlan)
-        .filter(WeeklyPlan.plan_id == plan_id)
+        .filter(
+            WeeklyPlan.plan_id == plan_id,
+            WeeklyPlan.user_id == user_id,
+        )
         .first()
     )
 
@@ -350,10 +366,19 @@ def delete_weekly_plan(plan_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/{plan_id}/duplicate", response_model=WeeklyPlanResponse)
-def duplicate_weekly_plan(plan_id: int, db: Session = Depends(get_db)):
+def duplicate_weekly_plan(
+    plan_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    user_id = current_user.user_id
+
     old_plan = (
         db.query(WeeklyPlan)
-        .filter(WeeklyPlan.plan_id == plan_id)
+        .filter(
+            WeeklyPlan.plan_id == plan_id,
+            WeeklyPlan.user_id == user_id,
+        )
         .first()
     )
 
@@ -364,7 +389,7 @@ def duplicate_weekly_plan(plan_id: int, db: Session = Depends(get_db)):
         )
 
     new_plan = WeeklyPlan(
-        user_id=old_plan.user_id,
+        user_id=user_id,
         plan_name=f"{old_plan.plan_name} Copy",
         cook_frequency=old_plan.cook_frequency,
         variety_preference=old_plan.variety_preference,
@@ -383,12 +408,22 @@ def duplicate_weekly_plan(plan_id: int, db: Session = Depends(get_db)):
     )
 
     for child in old_children:
-        db.add(
-            WeeklyPlanChild(
-                plan_id=new_plan.plan_id,
-                child_id=child.child_id,
+        child_belongs_to_user = (
+            db.query(UserChild)
+            .filter(
+                UserChild.child_id == child.child_id,
+                UserChild.user_id == user_id,
             )
+            .first()
         )
+
+        if child_belongs_to_user:
+            db.add(
+                WeeklyPlanChild(
+                    plan_id=new_plan.plan_id,
+                    child_id=child.child_id,
+                )
+            )
 
     old_meals = (
         db.query(WeeklyPlanMeal)
@@ -422,4 +457,4 @@ def duplicate_weekly_plan(plan_id: int, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_plan)
 
-    return build_plan_response(db, new_plan)
+    return build_plan_response(db, new_plan, user_id)

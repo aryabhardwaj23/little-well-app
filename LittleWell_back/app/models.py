@@ -1,30 +1,36 @@
-from sqlalchemy import Column, Integer, BigInteger, String, Text, DateTime, Date, func, ForeignKey, Numeric, Boolean, JSON
+from sqlalchemy import (
+    Column,
+    Integer,
+    BigInteger,
+    String,
+    Text,
+    DateTime,
+    Date,
+    func,
+    ForeignKey,
+    Numeric,
+    Boolean,
+    JSON,
+)
 from sqlalchemy.orm import relationship
 
 from .db import Base
 
 
-# ── NEW: User authentication table ────────────────────────────────────────────
+# ── User authentication table ─────────────────────────────────────────────────
+# Use existing database table: user_search
 class User(Base):
-    __tablename__ = "users"
+    __tablename__ = "user_search"
 
     user_id = Column(BigInteger, primary_key=True, index=True)
-    username = Column(String(100), unique=True, nullable=False, index=True)
+    username = Column(String(50), unique=True, nullable=False, index=True)
     password_hash = Column(String(255), nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
 
 
-# ── Existing tables (unchanged) ───────────────────────────────────────────────
-class UserSearch(Base):
-    __tablename__ = "user_search"
-
-    user_id = Column(Integer, primary_key=True, index=True)
-    created_at = Column(DateTime, server_default=func.now())
-    updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
-
-
+# ── Existing tables ───────────────────────────────────────────────────────────
 class UserChild(Base):
     __tablename__ = "user_child"
 
@@ -275,6 +281,8 @@ class WeeklyPlanMeal(Base):
     cook_day = Column(String(20), nullable=False)
     cover_days = Column(String(100), nullable=True)
     meal_title = Column(String(200), nullable=False)
+
+    # Store full lunchbox item list for saved weekly plans.
     lunchbox_items = Column(JSON, nullable=True)
 
     servings = Column(Numeric(4, 1), nullable=False, default=1.0)
