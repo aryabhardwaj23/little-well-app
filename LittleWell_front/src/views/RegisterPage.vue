@@ -5,15 +5,12 @@
       <div class="absolute top-[-80px] right-[-80px] w-80 h-80 bg-white/10 rounded-full" />
       <div class="absolute bottom-[-60px] left-[-60px] w-64 h-64 bg-white/10 rounded-full" />
 
-      <div class="flex items-center gap-3 relative z-10">
-        <div class="w-12 h-12 bg-white/30 rounded-full flex items-center justify-center overflow-hidden">
-          <img
-            :src="logoUrl"
-            alt="LittleHelp logo"
-            class="w-10 h-10 object-contain rounded-full"
-          />
-        </div>
-        <span class="text-2xl font-semibold text-white">LittleHelp</span>
+      <div class="flex items-center relative z-10">
+        <img
+          :src="logoUrl"
+          alt="LittleHelp logo"
+          class="h-12 w-auto object-contain"
+        />
       </div>
 
       <div class="relative z-10">
@@ -39,15 +36,12 @@
     <!-- Right Panel -->
     <div class="w-full lg:w-1/2 flex items-center justify-center px-6 py-12 overflow-y-auto">
       <div class="w-full max-w-md">
-        <div class="flex items-center gap-2 mb-8 lg:hidden">
-          <div class="w-10 h-10 bg-gradient-to-br from-[#A8D5BA] to-[#8FC2A4] rounded-full flex items-center justify-center overflow-hidden">
-            <img
-              :src="logoUrl"
-              alt="LittleHelp logo"
-              class="w-8 h-8 object-contain rounded-full"
-            />
-          </div>
-          <span class="text-xl font-semibold text-[#2C5F2D]">LittleHelp</span>
+        <div class="flex items-center mb-8 lg:hidden">
+          <img
+            :src="logoUrl"
+            alt="LittleHelp logo"
+            class="h-12 w-auto object-contain"
+          />
         </div>
 
         <h1 class="text-3xl font-semibold text-gray-800 mb-2">Create your account</h1>

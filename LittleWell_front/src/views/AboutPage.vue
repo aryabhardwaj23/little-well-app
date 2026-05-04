@@ -6,17 +6,14 @@
         <div class="flex items-center justify-between h-16">
           <!-- Logo -->
           <div
-            class="flex items-center gap-2 cursor-pointer"
+            class="flex items-center cursor-pointer"
             @click="goToHome"
           >
-            <div class="w-10 h-10 bg-gradient-to-br from-[#A8D5BA] to-[#8FC2A4] rounded-full flex items-center justify-center overflow-hidden">
-              <img
-                :src="logoUrl"
-                alt="LittleHelp logo"
-                class="w-8 h-8 object-contain rounded-full"
-              />
-            </div>
-            <span class="text-xl font-semibold text-[#2C5F2D]">LittleHelp</span>
+            <img
+              :src="logoUrl"
+              alt="LittleHelp logo"
+              class="h-10 w-auto object-contain"
+            />
           </div>
 
           <!-- Back Button -->
@@ -139,7 +136,6 @@
           </div>
 
           <div class="grid md:grid-cols-3 gap-6">
-            <!-- Card 1 -->
             <div class="p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow bg-[#FAF9F6] border border-gray-100">
               <div class="w-12 h-12 bg-[#A8D5BA] rounded-full flex items-center justify-center mb-5">
                 <UsersIcon class="w-6 h-6 text-[#2C5F2D]" />
@@ -150,7 +146,6 @@
               </p>
             </div>
 
-            <!-- Card 2 -->
             <div class="p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow bg-[#FAF9F6] border border-gray-100">
               <div class="w-12 h-12 bg-[#F7B267] rounded-full flex items-center justify-center mb-5">
                 <HeartIcon class="w-6 h-6 text-white" />
@@ -161,7 +156,6 @@
               </p>
             </div>
 
-            <!-- Card 3 -->
             <div class="p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow bg-[#FAF9F6] border border-gray-100">
               <div class="w-12 h-12 bg-[#CDE7F0] rounded-full flex items-center justify-center mb-5">
                 <CalendarDaysIcon class="w-6 h-6 text-[#1B4965]" />
@@ -172,7 +166,6 @@
               </p>
             </div>
 
-            <!-- Card 4 -->
             <div class="p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow bg-[#FAF9F6] border border-gray-100">
               <div class="w-12 h-12 bg-[#A8D5BA] rounded-full flex items-center justify-center mb-5">
                 <SparklesIcon class="w-6 h-6 text-[#2C5F2D]" />
@@ -183,7 +176,6 @@
               </p>
             </div>
 
-            <!-- Card 5 -->
             <div class="p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow bg-[#FAF9F6] border border-gray-100">
               <div class="w-12 h-12 bg-[#F7B267] rounded-full flex items-center justify-center mb-5">
                 <LeafIcon class="w-6 h-6 text-white" />
@@ -194,7 +186,6 @@
               </p>
             </div>
 
-            <!-- Card 6 -->
             <div class="p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow bg-[#FAF9F6] border border-gray-100">
               <div class="w-12 h-12 bg-[#CDE7F0] rounded-full flex items-center justify-center mb-5">
                 <ShieldIcon class="w-6 h-6 text-[#1B4965]" />
@@ -354,13 +345,11 @@
       <!-- Mission / CTA -->
       <section class="py-20 bg-gradient-to-br from-[#A8D5BA]/15 to-white">
         <div class="container mx-auto px-6 max-w-4xl text-center">
-          <div class="w-20 h-20 bg-gradient-to-br from-[#A8D5BA] to-[#8FC2A4] rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm overflow-hidden">
-            <img
-              :src="logoUrl"
-              alt="LittleHelp logo"
-              class="w-16 h-16 object-contain rounded-full"
-            />
-          </div>
+          <img
+            :src="logoUrl"
+            alt="LittleHelp logo"
+            class="h-20 w-auto object-contain mx-auto mb-6"
+          />
 
           <h2 class="text-3xl md:text-4xl mb-6 text-[#2C5F2D]">Our mission</h2>
 

@@ -3,17 +3,11 @@
     <div class="w-full max-w-md">
       <!-- Logo -->
       <div class="text-center mb-8">
-        <div class="w-16 h-16 bg-gradient-to-br from-[#A8D5BA] to-[#8FC2A4] rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm overflow-hidden">
-          <img
-            :src="logoUrl"
-            alt="LittleHelp logo"
-            class="w-12 h-12 object-contain rounded-full"
-          />
-        </div>
-
-        <h1 class="text-3xl font-semibold text-[#2C5F2D] mb-2">
-          LittleHelp
-        </h1>
+        <img
+          :src="logoUrl"
+          alt="LittleHelp logo"
+          class="h-20 w-auto object-contain mx-auto mb-4"
+        />
 
         <p class="text-gray-500">
           Private project access
