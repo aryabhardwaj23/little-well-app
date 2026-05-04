@@ -27,6 +27,10 @@
               My Plans
             </button>
 
+            <button @click="restartGuide" class="nav-link" type="button">
+              Guide
+            </button>
+
             <button disabled class="nav-link-disabled relative" type="button">
               Knowledge Hub
               <span class="absolute -top-2 -right-1 bg-[#CDE7F0] text-[#1B4965] text-[10px] rounded-full px-1.5 py-0.5">
@@ -63,8 +67,59 @@
       </div>
     </nav>
 
+    <!-- User Guide Overlay -->
+    <div
+      v-if="showGuide"
+      class="fixed inset-0 z-[100] bg-black/45 flex items-center justify-center px-6"
+    >
+      <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 border border-white/70">
+        <div class="mb-4">
+          <p class="text-sm text-[#2C5F2D] font-semibold mb-2">
+            Step {{ guideStep + 1 }} of {{ guideSteps.length }}
+          </p>
+
+          <h2 class="text-2xl text-[#2C5F2D] mb-3">
+            {{ guideSteps[guideStep].title }}
+          </h2>
+
+          <p class="text-muted-foreground leading-relaxed">
+            {{ guideSteps[guideStep].text }}
+          </p>
+        </div>
+
+        <div class="flex items-center justify-between mt-8">
+          <button
+            @click="skipGuide"
+            class="px-4 py-2 text-gray-500 hover:text-gray-700 transition-colors"
+            type="button"
+          >
+            Skip
+          </button>
+
+          <div class="flex items-center gap-2">
+            <span
+              v-for="(_, index) in guideSteps"
+              :key="index"
+              :class="[
+                'w-2 h-2 rounded-full transition-colors',
+                index === guideStep ? 'bg-[#2C5F2D]' : 'bg-gray-300'
+              ]"
+            ></span>
+          </div>
+
+          <button
+            @click="nextGuideStep"
+            class="px-5 py-2 bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg font-semibold transition-colors"
+            type="button"
+          >
+            {{ guideStep === guideSteps.length - 1 ? 'Finish' : 'Next' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Hero Section -->
-    <div class="pt-32 pb-14 bg-[#FAF9F6]">
+    <div ref="heroSection" class="hero-section pt-32 pb-14 bg-[#FAF9F6]">
       <div class="container mx-auto px-6 max-w-6xl">
         <div class="grid lg:grid-cols-2 gap-8 items-stretch">
           <div class="flex flex-col justify-center">
@@ -330,7 +385,7 @@
     </div>
 
     <!-- Family Meal Planning -->
-    <div class="pt-6 pb-12 bg-white">
+    <div ref="familySection" class="family-section pt-6 pb-12 bg-white">
       <div class="container mx-auto px-6 max-w-6xl">
         <div class="mb-8">
           <h2 class="text-3xl mb-2 text-[#2C5F2D]">Planning for more than one child?</h2>
@@ -410,7 +465,7 @@
     </div>
 
     <!-- Weekly Plan Section -->
-    <div class="py-12 bg-[#FAF9F6]">
+    <div ref="weeklySection" class="weekly-section py-12 bg-[#FAF9F6]">
       <div class="container mx-auto px-6 max-w-6xl">
         <div class="flex flex-col md:flex-row md:items-center gap-8">
           <div class="w-16 h-16 bg-[#A8D5BA] rounded-full flex items-center justify-center flex-shrink-0">
@@ -473,7 +528,47 @@ const authStore = useAuthStore();
 const profiles = ref([]);
 const selectedForFamily = ref([]);
 const isLoadingProfiles = ref(false);
+
+const heroSection = ref(null);
 const childProfileSection = ref(null);
+const familySection = ref(null);
+const weeklySection = ref(null);
+
+const showGuide = ref(false);
+const guideStep = ref(0);
+
+const guideSteps = [
+  {
+    title: 'Welcome to LittleHelp',
+    text: 'LittleHelp helps families create balanced lunchbox ideas for children aged 5–12.',
+    section: 'hero',
+  },
+  {
+    title: 'Try Quick Start',
+    text: 'Use Quick Start to generate a lunchbox idea without creating a child profile first.',
+    section: 'hero',
+  },
+  {
+    title: 'Create a Child Profile',
+    text: 'Create a child profile to get personalised lunchbox recommendations based on age, allergies, and nutrition needs.',
+    section: 'hero',
+  },
+  {
+    title: 'Manage Child Profiles',
+    text: 'Here you can add, edit, delete, and manage child profiles for personalised recommendations.',
+    section: 'child',
+  },
+  {
+    title: 'Plan for Multiple Children',
+    text: 'Select more than one child to generate family lunchbox ideas that consider different needs.',
+    section: 'family',
+  },
+  {
+    title: 'Weekly Planning',
+    text: 'Use Weekly Plan to build a practical lunchbox plan for the whole school week.',
+    section: 'weekly',
+  },
+];
 
 const isLoggedIn = computed(() => authStore.isAuthenticated);
 const username = computed(() => authStore.user?.username || 'User');
@@ -500,6 +595,62 @@ const nutritionFocusLabels = {
 };
 
 const allowedAgeGroups = ['5-6 years', '7-9 years', '10-12 years'];
+
+const scrollToGuideSection = (section) => {
+  if (section === 'hero') {
+    heroSection.value?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  }
+
+  if (section === 'child') {
+    childProfileSection.value?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  }
+
+  if (section === 'family') {
+    familySection.value?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  }
+
+  if (section === 'weekly') {
+    weeklySection.value?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  }
+};
+
+const nextGuideStep = () => {
+  if (guideStep.value < guideSteps.length - 1) {
+    guideStep.value += 1;
+    scrollToGuideSection(guideSteps[guideStep.value].section);
+    return;
+  }
+
+  finishGuide();
+};
+
+const finishGuide = () => {
+  showGuide.value = false;
+  guideStep.value = 0;
+  localStorage.setItem('littlehelp_user_guide_seen', 'true');
+};
+
+const skipGuide = () => {
+  finishGuide();
+};
+
+const restartGuide = () => {
+  guideStep.value = 0;
+  showGuide.value = true;
+  scrollToGuideSection('hero');
+};
 
 const goProtected = (path) => {
   if (!isLoggedIn.value) {
@@ -622,6 +773,12 @@ const loadProfiles = async () => {
 
 onMounted(() => {
   loadProfiles();
+
+  const hasSeenGuide = localStorage.getItem('littlehelp_user_guide_seen');
+
+  if (!hasSeenGuide) {
+    showGuide.value = true;
+  }
 });
 
 watch(
@@ -702,7 +859,10 @@ const handleEditProfile = (profileId) => {
   color: #6b7280;
 }
 
-.child-profile-section {
+.hero-section,
+.child-profile-section,
+.family-section,
+.weekly-section {
   scroll-margin-top: 96px;
 }
 
