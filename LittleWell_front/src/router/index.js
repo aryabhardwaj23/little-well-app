@@ -19,7 +19,7 @@ import LoginPage from '../views/LoginPage.vue';
 import RegisterPage from '../views/RegisterPage.vue';
 
 const routes = [
-  // ── Auth routes (no requiresAuth) ──────────────────────────
+  // ── Auth routes ─────────────────────────────────────────────
   {
     path: '/login',
     name: 'Login',
@@ -33,7 +33,7 @@ const routes = [
     meta: { title: 'Create Account - LittleWell', guestOnly: true },
   },
 
-  // ── App routes ─────────────────────────────────────────────
+  // ── Public routes ───────────────────────────────────────────
   {
     path: '/',
     name: 'Home',
@@ -52,59 +52,61 @@ const routes = [
     component: QuickStartPage,
     meta: { title: 'Quick Start - LittleWell' },
   },
+
+  // ── Protected app routes ────────────────────────────────────
   {
     path: '/nutrition-needs',
     name: 'NutritionNeeds',
     component: NutritionNeedsPage,
-    meta: { title: 'Nutrition Needs - LittleWell' },
+    meta: { title: 'Nutrition Needs - LittleWell', requiresAuth: true },
   },
   {
     path: '/child-info',
     name: 'ChildInfo',
     component: ChildInfoPage,
-    meta: { title: 'Child Information - LittleWell' },
+    meta: { title: 'Child Information - LittleWell', requiresAuth: true },
   },
   {
     path: '/profile-summary',
     name: 'ProfileSummary',
     component: ProfileSummaryPage,
-    meta: { title: 'Profile Summary - LittleWell' },
+    meta: { title: 'Profile Summary - LittleWell', requiresAuth: true },
   },
   {
     path: '/nutrition-check',
     name: 'NutritionCheck',
     component: NutritionCheckPage,
-    meta: { title: 'Nutrition Check - LittleWell' },
+    meta: { title: 'Nutrition Check - LittleWell', requiresAuth: true },
   },
   {
     path: '/nutrition-insights',
     name: 'NutritionInsights',
     component: NutritionInsightsPage,
-    meta: { title: 'Nutrition Insights - LittleWell' },
+    meta: { title: 'Nutrition Insights - LittleWell', requiresAuth: true },
   },
   {
     path: '/results',
     name: 'Results',
     component: ResultsPage,
-    meta: { title: 'Lunchbox Results - LittleWell' },
+    meta: { title: 'Lunchbox Results - LittleWell', requiresAuth: true },
   },
   {
     path: '/recipe/:id',
     name: 'Recipe',
     component: RecipePage,
-    meta: { title: 'Recipe Details - LittleWell' },
+    meta: { title: 'Recipe Details - LittleWell', requiresAuth: true },
   },
   {
     path: '/weekly-plan',
     name: 'WeeklyPlan',
     component: WeeklyPlanPage,
-    meta: { title: 'Weekly Plan - LittleWell' },
+    meta: { title: 'Weekly Plan - LittleWell', requiresAuth: true },
   },
   {
     path: '/my-plans',
     name: 'MyPlans',
     component: MyPlansPage,
-    meta: { title: 'My Plans - LittleWell' },
+    meta: { title: 'My Plans - LittleWell', requiresAuth: true },
   },
 
   {
@@ -122,20 +124,28 @@ const router = createRouter({
   },
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   document.title = to.meta.title || 'LittleWell - Seasonal Lunchbox Planning';
 
-  // Dynamically import to avoid circular deps
-  import('../stores/auth').then(({ useAuthStore }) => {
-    const authStore = useAuthStore();
+  const { useAuthStore } = await import('../stores/auth');
+  const authStore = useAuthStore();
 
-    // Redirect logged-in users away from login/register
-    if (to.meta.guestOnly && authStore.isAuthenticated) {
-      return next('/');
-    }
+  // 未登录访问受保护页面 → 去 login
+  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+    return next({
+      path: '/login',
+      query: {
+        redirect: to.fullPath,
+      },
+    });
+  }
 
-    next();
-  });
+  // 已登录用户访问 login/register → 回首页
+  if (to.meta.guestOnly && authStore.isAuthenticated) {
+    return next('/');
+  }
+
+  next();
 });
 
 export default router;

@@ -5,7 +5,7 @@
       <div class="container mx-auto px-6 max-w-6xl">
         <div class="flex items-center justify-between h-16">
           <!-- Logo -->
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 cursor-pointer" @click="router.push('/')">
             <div class="w-10 h-10 bg-gradient-to-br from-[#A8D5BA] to-[#8FC2A4] rounded-full flex items-center justify-center">
               <Heart class="w-5 h-5 text-white" />
             </div>
@@ -17,25 +17,28 @@
             <button
               @click="handleLunchboxPlan"
               class="text-[#2C5F2D] hover:bg-[#A8D5BA]/10 rounded-lg px-4 py-2 transition-colors"
+              type="button"
             >
               Lunchbox Plan
             </button>
 
             <button
-              @click="router.push('/weekly-plan')"
+              @click="goProtected('/weekly-plan')"
               class="text-[#2C5F2D] hover:bg-[#A8D5BA]/10 rounded-lg px-4 py-2 transition-colors"
+              type="button"
             >
               Weekly Plan
             </button>
 
             <button
-              @click="router.push('/my-plans')"
+              @click="goProtected('/my-plans')"
               class="text-[#2C5F2D] hover:bg-[#A8D5BA]/10 rounded-lg px-4 py-2 transition-colors"
+              type="button"
             >
               My Plans
             </button>
 
-            <button disabled class="text-muted-foreground cursor-not-allowed relative px-4 py-2">
+            <button disabled class="text-muted-foreground cursor-not-allowed relative px-4 py-2" type="button">
               Knowledge Hub
               <span class="absolute -top-1 -right-2 bg-[#CDE7F0] text-[#1B4965] text-xs rounded-full px-1.5 py-0.5">
                 Soon
@@ -45,13 +48,47 @@
             <button
               @click="router.push('/about')"
               class="text-[#2C5F2D] hover:bg-[#A8D5BA]/10 rounded-lg px-4 py-2 transition-colors"
+              type="button"
             >
               About Us
             </button>
+
+            <!-- Auth Buttons -->
+            <template v-if="isLoggedIn">
+              <span class="text-sm text-muted-foreground">
+                Hi, {{ username }}
+              </span>
+
+              <button
+                @click="handleLogout"
+                class="bg-white border border-[#A8D5BA] text-[#2C5F2D] rounded-lg px-4 py-2 hover:bg-[#A8D5BA]/10 transition-colors"
+                type="button"
+              >
+                Logout
+              </button>
+            </template>
+
+            <template v-else>
+              <button
+                @click="router.push('/login')"
+                class="text-[#2C5F2D] hover:bg-[#A8D5BA]/10 rounded-lg px-4 py-2 transition-colors"
+                type="button"
+              >
+                Sign in
+              </button>
+
+              <button
+                @click="router.push('/register')"
+                class="bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg px-4 py-2 transition-colors"
+                type="button"
+              >
+                Create account
+              </button>
+            </template>
           </div>
 
           <!-- Mobile Menu Button -->
-          <button class="md:hidden p-2">
+          <button class="md:hidden p-2" type="button">
             <Menu class="w-5 h-5" />
           </button>
         </div>
@@ -76,6 +113,7 @@
                 <button
                   @click="router.push('/quick-start')"
                   class="w-full bg-[#F8F5EC] rounded-2xl border border-[#E8DDC8] p-5 shadow-sm hover:shadow-md hover:border-[#DDCFB2] hover:bg-[#F5F0E4] transition-all text-left flex flex-col gap-4"
+                  type="button"
                 >
                   <p class="text-xl text-[#315F3A]">Try Quick Start</p>
                   <p class="text-sm text-[#315F3A] font-semibold">
@@ -98,6 +136,7 @@
                 <button
                   @click="handleAddChild"
                   class="w-full bg-[#E5F2E8] rounded-2xl border border-[#8FC2A4]/60 p-5 shadow-sm hover:shadow-md hover:border-[#7DB593]/70 hover:bg-[#D9ECDF] transition-all text-left flex flex-col gap-4"
+                  type="button"
                 >
                   <p class="text-xl text-[#2C5F2D]">Get Personalised Lunchbox</p>
                   <p class="text-sm text-[#2C5F2D] font-semibold">
@@ -169,6 +208,28 @@
             </div>
           </div>
         </div>
+
+        <div v-if="!isLoggedIn" class="mt-8 bg-white border rounded-2xl p-5 text-center shadow-sm">
+          <p class="text-muted-foreground">
+            Sign in to save child profiles, weekly plans, and personalised recommendations.
+          </p>
+          <div class="flex justify-center gap-3 mt-4">
+            <button
+              @click="router.push('/login')"
+              class="bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg px-6 py-2 transition-colors"
+              type="button"
+            >
+              Sign in
+            </button>
+            <button
+              @click="router.push('/register')"
+              class="bg-white border border-[#A8D5BA] text-[#2C5F2D] rounded-lg px-6 py-2 hover:bg-[#A8D5BA]/10 transition-colors"
+              type="button"
+            >
+              Create account
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -182,97 +243,122 @@
           </p>
         </div>
 
-        <div class="flex gap-6 overflow-x-auto pb-4 -mx-6 px-6">
-          <div
-            @click="handleAddChild"
-            class="flex-shrink-0 w-[340px] min-h-[260px] p-6 rounded-2xl border-2 border-dashed border-[#A8D5BA] bg-[#A8D5BA]/5 flex flex-col items-center justify-center hover:bg-[#A8D5BA]/10 transition-colors cursor-pointer"
+        <div v-if="!isLoggedIn" class="p-8 rounded-2xl border bg-[#FAF9F6] text-center">
+          <p class="text-muted-foreground mb-5">
+            Please sign in to view and manage your child profiles.
+          </p>
+          <button
+            @click="router.push({ path: '/login', query: { redirect: '/child-info' } })"
+            class="bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg px-8 py-3 transition-colors"
+            type="button"
           >
-            <div class="w-16 h-16 bg-[#A8D5BA]/20 rounded-full flex items-center justify-center mb-3">
-              <Plus class="w-8 h-8 text-[#2C5F2D]" />
-            </div>
-            <p class="text-lg text-[#2C5F2D] font-semibold">Add another child</p>
-            <p class="text-sm text-muted-foreground text-center mt-2">
-              Create a profile for a child aged 5–12 to get personalised meal suggestions
-            </p>
+            Sign in to continue
+          </button>
+        </div>
+
+        <div v-else>
+          <div
+            v-if="isLoadingProfiles"
+            class="mb-6 p-4 bg-[#FAF9F6] border rounded-xl text-center text-muted-foreground"
+          >
+            Loading profiles...
           </div>
 
-          <div
-            v-for="profile in profiles"
-            :key="profile.id"
-            class="flex-shrink-0 w-[340px] p-6 rounded-2xl shadow-md hover:shadow-lg transition-shadow bg-white border"
-          >
-            <!-- Profile Header -->
-            <div class="flex items-start justify-between mb-4">
-              <div>
-                <h3 class="text-xl mb-1">
-                  {{ profile.name }}
-                  <span class="text-muted-foreground text-base">({{ profile.ageGroup }})</span>
-                </h3>
-              </div>
-
-              <div class="flex items-center gap-2">
-                <button
-                  @click.stop="handleEditProfile(profile.id)"
-                  class="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                  title="Edit profile"
-                >
-                  <Edit class="w-4 h-4" />
-                </button>
-
-                <button
-                  @click.stop="handleDeleteProfile(profile.id, profile.name)"
-                  class="p-2 hover:bg-red-50 rounded-lg transition-colors text-red-600"
-                  title="Delete profile"
-                >
-                  <Trash2 class="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-
-            <!-- Profile Info -->
-            <div class="space-y-3 mb-4">
-              <div v-if="profile.allergies.length > 0">
-                <p class="text-xs text-muted-foreground mb-1">Allergies</p>
-                <div class="flex flex-wrap gap-1">
-                  <span
-                    v-for="allergy in profile.allergies"
-                    :key="allergy"
-                    class="bg-[#F7B267]/20 text-[#8B4513] text-xs rounded-full px-2 py-1"
-                  >
-                    {{ allergy }}
-                  </span>
-                </div>
-              </div>
-
-              <div v-if="profile.dietaryRestriction">
-                <p class="text-xs text-muted-foreground mb-1">Dietary restriction</p>
-                <span class="bg-[#CDE7F0]/30 text-[#1B4965] text-xs rounded-full px-2 py-1 inline-block">
-                  {{ profile.dietaryRestriction }}
-                </span>
-              </div>
-
-              <div v-if="profile.nutritionFocus.length > 0">
-                <p class="text-xs text-muted-foreground mb-1">Nutrition focus</p>
-                <div class="flex flex-wrap gap-1">
-                  <span
-                    v-for="focus in profile.nutritionFocus"
-                    :key="focus"
-                    class="bg-[#A8D5BA]/20 text-[#2C5F2D] text-xs rounded-full px-2 py-1"
-                  >
-                    {{ focus }}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Action Button -->
-            <button
-              @click="handleViewMeals(profile.id)"
-              class="w-full bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg py-3 flex items-center justify-center gap-2 transition-colors"
+          <div class="flex gap-6 overflow-x-auto pb-4 -mx-6 px-6">
+            <div
+              @click="handleAddChild"
+              class="flex-shrink-0 w-[340px] min-h-[260px] p-6 rounded-2xl border-2 border-dashed border-[#A8D5BA] bg-[#A8D5BA]/5 flex flex-col items-center justify-center hover:bg-[#A8D5BA]/10 transition-colors cursor-pointer"
             >
-              Get Personalised Lunchboxes
-              <ChevronRight class="w-4 h-4" />
-            </button>
+              <div class="w-16 h-16 bg-[#A8D5BA]/20 rounded-full flex items-center justify-center mb-3">
+                <Plus class="w-8 h-8 text-[#2C5F2D]" />
+              </div>
+              <p class="text-lg text-[#2C5F2D] font-semibold">Add another child</p>
+              <p class="text-sm text-muted-foreground text-center mt-2">
+                Create a profile for a child aged 5–12 to get personalised meal suggestions
+              </p>
+            </div>
+
+            <div
+              v-for="profile in profiles"
+              :key="profile.id"
+              class="flex-shrink-0 w-[340px] p-6 rounded-2xl shadow-md hover:shadow-lg transition-shadow bg-white border"
+            >
+              <!-- Profile Header -->
+              <div class="flex items-start justify-between mb-4">
+                <div>
+                  <h3 class="text-xl mb-1">
+                    {{ profile.name }}
+                    <span class="text-muted-foreground text-base">({{ profile.ageGroup }})</span>
+                  </h3>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <button
+                    @click.stop="handleEditProfile(profile.id)"
+                    class="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                    title="Edit profile"
+                    type="button"
+                  >
+                    <Edit class="w-4 h-4" />
+                  </button>
+
+                  <button
+                    @click.stop="handleDeleteProfile(profile.id, profile.name)"
+                    class="p-2 hover:bg-red-50 rounded-lg transition-colors text-red-600"
+                    title="Delete profile"
+                    type="button"
+                  >
+                    <Trash2 class="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              <!-- Profile Info -->
+              <div class="space-y-3 mb-4">
+                <div v-if="profile.allergies.length > 0">
+                  <p class="text-xs text-muted-foreground mb-1">Allergies</p>
+                  <div class="flex flex-wrap gap-1">
+                    <span
+                      v-for="allergy in profile.allergies"
+                      :key="allergy"
+                      class="bg-[#F7B267]/20 text-[#8B4513] text-xs rounded-full px-2 py-1"
+                    >
+                      {{ allergy }}
+                    </span>
+                  </div>
+                </div>
+
+                <div v-if="profile.dietaryRestriction">
+                  <p class="text-xs text-muted-foreground mb-1">Dietary restriction</p>
+                  <span class="bg-[#CDE7F0]/30 text-[#1B4965] text-xs rounded-full px-2 py-1 inline-block">
+                    {{ profile.dietaryRestriction }}
+                  </span>
+                </div>
+
+                <div v-if="profile.nutritionFocus.length > 0">
+                  <p class="text-xs text-muted-foreground mb-1">Nutrition focus</p>
+                  <div class="flex flex-wrap gap-1">
+                    <span
+                      v-for="focus in profile.nutritionFocus"
+                      :key="focus"
+                      class="bg-[#A8D5BA]/20 text-[#2C5F2D] text-xs rounded-full px-2 py-1"
+                    >
+                      {{ focus }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Action Button -->
+              <button
+                @click="handleViewMeals(profile.id)"
+                class="w-full bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg py-3 flex items-center justify-center gap-2 transition-colors"
+                type="button"
+              >
+                Get Personalised Lunchboxes
+                <ChevronRight class="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -289,11 +375,18 @@
         </div>
 
         <div class="p-8 rounded-2xl shadow-sm bg-white border">
-          <p v-if="profiles.length < 2" class="text-sm text-muted-foreground mb-6">
+          <p v-if="!isLoggedIn" class="text-sm text-muted-foreground mb-6">
+            Sign in first to create child profiles and generate a family lunchbox plan.
+          </p>
+
+          <p v-else-if="profiles.length < 2" class="text-sm text-muted-foreground mb-6">
             Add at least two supported child profiles to generate a family lunchbox plan.
           </p>
 
-          <div class="grid md:grid-cols-3 gap-4 mb-8" :class="{ 'opacity-60': profiles.length < 2 }">
+          <div
+            class="grid md:grid-cols-3 gap-4 mb-8"
+            :class="{ 'opacity-60': !isLoggedIn || profiles.length < 2 }"
+          >
             <div
               v-for="profile in profiles"
               :key="profile.id"
@@ -341,8 +434,9 @@
 
           <button
             @click="handleGenerateFamilyPlan"
-            :disabled="selectedForFamily.length === 0 || profiles.length < 2"
+            :disabled="!isLoggedIn || selectedForFamily.length === 0 || profiles.length < 2"
             class="w-full bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg py-4 text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            type="button"
           >
             Generate Family Lunchboxes
           </button>
@@ -367,15 +461,17 @@
 
           <div class="flex flex-col sm:flex-row gap-3">
             <button
-              @click="router.push('/weekly-plan')"
+              @click="goProtected('/weekly-plan')"
               class="bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg px-8 py-3 font-semibold transition-colors"
+              type="button"
             >
               Build Weekly Plan
             </button>
 
             <button
-              @click="router.push('/my-plans')"
+              @click="goProtected('/my-plans')"
               class="bg-white hover:bg-[#FAF9F6] text-[#2C5F2D] border border-[#A8D5BA] rounded-lg px-8 py-3 font-semibold transition-colors"
+              type="button"
             >
               View My Plans
             </button>
@@ -393,7 +489,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import {
   Heart,
@@ -405,12 +501,17 @@ import {
   CalendarDays,
 } from 'lucide-vue-next';
 import { getChildren, deleteChild } from '../services/api';
+import { useAuthStore } from '../stores/auth';
 
 const router = useRouter();
+const authStore = useAuthStore();
 
 const profiles = ref([]);
 const selectedForFamily = ref([]);
 const isLoadingProfiles = ref(false);
+
+const isLoggedIn = computed(() => authStore.isAuthenticated);
+const username = computed(() => authStore.user?.username || 'User');
 
 const allergenIdToName = {
   47: 'Peanuts',
@@ -434,6 +535,25 @@ const nutritionFocusLabels = {
 };
 
 const allowedAgeGroups = ['5-6 years', '7-9 years', '10-12 years'];
+
+const goProtected = (path) => {
+  if (!isLoggedIn.value) {
+    router.push({
+      path: '/login',
+      query: { redirect: path },
+    });
+    return;
+  }
+
+  router.push(path);
+};
+
+const handleLogout = () => {
+  authStore.logout();
+  profiles.value = [];
+  selectedForFamily.value = [];
+  router.push('/');
+};
 
 const normalizeAgeGroup = (ageGroup) => {
   const mapping = {
@@ -473,14 +593,22 @@ const mapAllergiesToNames = (allergies) => {
 
 const handleAddChild = () => {
   localStorage.removeItem('littlewell_edit_child_id');
-  router.push('/child-info');
+  goProtected('/child-info');
 };
 
 const handleLunchboxPlan = () => {
+  if (!isLoggedIn.value) {
+    router.push({
+      path: '/login',
+      query: { redirect: '/child-info' },
+    });
+    return;
+  }
+
   if (profiles.value.length > 0) {
     router.push(`/results?childId=${profiles.value[0].id}`);
   } else {
-    router.push('/child-profile');
+    router.push('/child-info');
   }
 };
 
@@ -516,6 +644,12 @@ const mapChildToProfileCard = (child) => {
 };
 
 const loadProfiles = async () => {
+  if (!isLoggedIn.value) {
+    profiles.value = [];
+    selectedForFamily.value = [];
+    return;
+  }
+
   try {
     isLoadingProfiles.value = true;
     const children = await getChildren();
@@ -536,7 +670,16 @@ onMounted(() => {
   loadProfiles();
 });
 
+watch(
+  () => authStore.token,
+  () => {
+    loadProfiles();
+  }
+);
+
 const toggleFamilySelection = (id) => {
+  if (!isLoggedIn.value) return;
+
   if (selectedForFamily.value.includes(id)) {
     selectedForFamily.value = selectedForFamily.value.filter((p) => p !== id);
   } else {
@@ -545,6 +688,14 @@ const toggleFamilySelection = (id) => {
 };
 
 const handleGenerateFamilyPlan = () => {
+  if (!isLoggedIn.value) {
+    router.push({
+      path: '/login',
+      query: { redirect: '/' },
+    });
+    return;
+  }
+
   if (selectedForFamily.value.length > 0 && profiles.value.length >= 2) {
     const childIds = selectedForFamily.value.join(',');
     router.push(`/results?family=1&childIds=${childIds}`);
@@ -552,7 +703,7 @@ const handleGenerateFamilyPlan = () => {
 };
 
 const handleViewMeals = (profileId) => {
-  router.push(`/results?childId=${profileId}`);
+  goProtected(`/results?childId=${profileId}`);
 };
 
 const handleDeleteProfile = async (profileId, profileName) => {
@@ -588,7 +739,7 @@ const handleDeleteProfile = async (profileId, profileName) => {
 
 const handleEditProfile = (profileId) => {
   localStorage.setItem('littlewell_edit_child_id', String(profileId));
-  router.push('/child-info');
+  goProtected('/child-info');
 };
 </script>
 

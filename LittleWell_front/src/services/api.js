@@ -1,12 +1,23 @@
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
 
+function getAuthToken() {
+  return localStorage.getItem('littlewell_token');
+}
+
+function buildHeaders(customHeaders = {}) {
+  const token = getAuthToken();
+
+  return {
+    'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...customHeaders,
+  };
+}
+
 async function request(path, options = {}) {
   const response = await fetch(`${API_BASE}${path}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...(options.headers || {}),
-    },
     ...options,
+    headers: buildHeaders(options.headers || {}),
   });
 
   if (!response.ok) {
@@ -14,6 +25,11 @@ async function request(path, options = {}) {
 
     try {
       const errorData = await response.json();
+
+      if (response.status === 401) {
+        localStorage.removeItem('littlewell_token');
+        localStorage.removeItem('littlewell_user');
+      }
 
       if (typeof errorData.detail === 'string') {
         message = errorData.detail;
@@ -63,6 +79,12 @@ export function updateChild(childId, payload) {
   });
 }
 
+export function deleteChild(childId) {
+  return request(`/children/${childId}`, {
+    method: 'DELETE',
+  });
+}
+
 // recommendations / products
 export function getRecommendedProducts(childId, seasonal = true) {
   return request(`/products/recommended?child_id=${childId}&seasonal=${seasonal}`);
@@ -85,12 +107,6 @@ export function getQuickRecommendedProducts({ ageGroup, allergies = [], seasonal
   });
 
   return request(`/products/recommended/quick?${query.toString()}`);
-}
-
-export function deleteChild(childId) {
-  return request(`/children/${childId}`, {
-    method: 'DELETE',
-  });
 }
 
 export function getChildMealRecommendations(childId) {
