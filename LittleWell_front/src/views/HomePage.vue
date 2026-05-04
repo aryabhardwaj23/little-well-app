@@ -202,7 +202,7 @@
     </div>
 
     <!-- Child Profile Section -->
-    <div class="pt-14 pb-8 bg-white">
+    <div ref="childProfileSection" class="child-profile-section pt-14 pb-8 bg-white">
       <div class="container mx-auto px-6 max-w-6xl">
         <div class="mb-8">
           <h2 class="text-3xl mb-2 text-[#2C5F2D]">Your child profiles</h2>
@@ -473,6 +473,7 @@ const authStore = useAuthStore();
 const profiles = ref([]);
 const selectedForFamily = ref([]);
 const isLoadingProfiles = ref(false);
+const childProfileSection = ref(null);
 
 const isLoggedIn = computed(() => authStore.isAuthenticated);
 const username = computed(() => authStore.user?.username || 'User');
@@ -559,19 +560,10 @@ const handleAddChild = () => {
 };
 
 const handleLunchboxPlan = () => {
-  if (!isLoggedIn.value) {
-    router.push({
-      path: '/login',
-      query: { redirect: '/child-info' },
-    });
-    return;
-  }
-
-  if (profiles.value.length > 0) {
-    router.push(`/results?childId=${profiles.value[0].id}`);
-  } else {
-    router.push('/child-info');
-  }
+  childProfileSection.value?.scrollIntoView({
+    behavior: 'smooth',
+    block: 'start',
+  });
 };
 
 const isActiveStatus = (value) => {
@@ -708,6 +700,10 @@ const handleEditProfile = (profileId) => {
 <style scoped>
 .text-muted-foreground {
   color: #6b7280;
+}
+
+.child-profile-section {
+  scroll-margin-top: 96px;
 }
 
 .nav-link {
