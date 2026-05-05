@@ -169,7 +169,10 @@
           </div>
         </div>
 
-        <!-- Eating Habits -->
+        <!-- Eating Habits hidden from UI only.
+        Keep formData.eatingHabit, eatingHabits, and child.eating_habit logic in script
+        so existing draft/store/backend logic will not be affected.
+
         <div class="p-8 rounded-2xl shadow-sm bg-white">
           <h2 class="text-2xl mb-6">Eating Habits</h2>
 
@@ -196,6 +199,7 @@
             </div>
           </div>
         </div>
+        -->
 
         <!-- Continue Button -->
         <button
