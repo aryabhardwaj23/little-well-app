@@ -1,5 +1,10 @@
 <template>
-  <div class="min-h-screen">
+  <div
+    :class="[
+      'min-h-screen home-root',
+      { 'large-text-mode': largeTextMode, 'high-contrast-mode': highContrastMode }
+    ]"
+  >
     <!-- Navigation Bar -->
     <nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm">
       <div class="mx-auto px-8 max-w-[1440px]">
@@ -27,20 +32,76 @@
               My Plans
             </button>
 
-            <button @click="restartGuide" class="nav-link" type="button">
-              Guide
-            </button>
-
-            <button disabled class="nav-link-disabled relative" type="button">
+            <button @click="router.push('/knowledge-hub-prototype')" class="nav-link" type="button">
               Knowledge Hub
-              <span class="absolute -top-2 -right-1 bg-[#CDE7F0] text-[#1B4965] text-[10px] rounded-full px-1.5 py-0.5">
-                Soon
-              </span>
             </button>
 
             <button @click="router.push('/about')" class="nav-link" type="button">
               About Us
             </button>
+
+            <div ref="accessibilityMenuRef" class="relative">
+              <button
+                @click="toggleAccessibilityMenu"
+                class="nav-link inline-flex items-center gap-1"
+                type="button"
+              >
+                Accessibility
+                <ChevronDown
+                  :class="[
+                    'w-3.5 h-3.5 transition-transform duration-200 translate-y-[1px]',
+                    showAccessibilityMenu ? 'rotate-180' : 'rotate-0'
+                  ]"
+                />
+              </button>
+
+              <div
+                v-if="showAccessibilityMenu"
+                class="absolute right-0 mt-2 w-72 rounded-2xl border border-[#D6E7DC] bg-white shadow-xl p-4 z-50"
+              >
+                <p class="text-sm font-semibold text-[#2C5F2D]">Accessibility</p>
+                <div class="h-px bg-[#E5E7EB] my-3"></div>
+
+                <button
+                  type="button"
+                  @click="toggleInteractiveGuide"
+                  class="w-full text-left px-3 py-2 rounded-lg text-sm transition-colors text-[#2C5F2D] hover:bg-[#F8F5EC]"
+                >
+                  Interactive Guide
+                </button>
+
+                <button
+                  type="button"
+                  @click="toggleLargeTextMode"
+                  :class="[
+                    'w-full text-left px-3 py-2 rounded-lg text-sm transition-colors mt-2',
+                    largeTextMode
+                      ? 'bg-[#F8F5EC] text-[#2C5F2D]'
+                      : 'bg-transparent text-[#2C5F2D] hover:bg-[#F8F5EC]'
+                  ]"
+                >
+                  Large Text Mode
+                </button>
+
+                <button
+                  type="button"
+                  @click="toggleHighContrastMode"
+                  :class="[
+                    'w-full text-left px-3 py-2 rounded-lg text-sm transition-colors mt-2',
+                    highContrastMode
+                      ? 'bg-[#F8F5EC] text-[#2C5F2D]'
+                      : 'bg-transparent text-[#2C5F2D] hover:bg-[#F8F5EC]'
+                  ]"
+                >
+                  High Contrast Mode
+                </button>
+
+                <div class="h-px bg-[#E5E7EB] my-3"></div>
+                <p class="text-xs text-muted-foreground leading-relaxed">
+                  Need help understanding the system? Accessibility settings can be changed anytime.
+                </p>
+              </div>
+            </div>
 
             <!-- Auth Buttons -->
             <template v-if="isLoggedIn">
@@ -508,12 +569,37 @@
         </div>
 
         <img
-          src="https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=1200"
+          src="https://images.pexels.com/photos/1640772/pexels-photo-1640772.jpeg?auto=compress&cs=tinysrgb&w=1200"
           alt="Weekly meal prep containers on a table"
           class="mt-7 w-full h-52 object-cover rounded-2xl"
         />
       </div>
     </div>
+
+    <!-- Knowledge Hub Entry -->
+    <section class="relative overflow-hidden py-16">
+      <div class="absolute inset-0 bg-gradient-to-br from-[#F3E9D7]/80 to-[#FAF9F6]"></div>
+      <div
+        class="absolute inset-0 bg-center bg-cover opacity-55"
+        style="background-image: url('https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=1600');"
+      ></div>
+      <div class="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-[#FAF9F6] via-[#FAF9F6]/65 to-transparent"></div>
+
+      <div class="container mx-auto px-6 max-w-5xl relative z-10 mt-4">
+        <div class="bg-white/85 backdrop-blur-[1px] border border-[#E6E2D8] rounded-3xl p-8 md:p-12 text-center shadow-sm">
+          <h2 class="text-3xl text-[#2C5F2D]">Questions about your lunchbox plan?</h2>
+          <p class="mt-2 text-muted-foreground leading-relaxed">Why Choose LittleHelp</p>
+
+          <button
+            @click="router.push('/knowledge-hub-prototype')"
+            class="mt-7 bg-[#2C5F2D] hover:bg-[#254F25] text-white rounded-lg px-8 py-3 font-semibold transition-colors"
+            type="button"
+          >
+            Click to enter Knowledge Hub
+          </button>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 
@@ -525,6 +611,7 @@ import {
   Edit,
   Trash2,
   ChevronRight,
+  ChevronDown,
   CalendarDays,
 } from 'lucide-vue-next';
 import { getChildren, deleteChild } from '../services/api';
@@ -549,6 +636,10 @@ const showGuide = ref(false);
 const guideStep = ref(0);
 const highlightBox = ref(null);
 const tooltipBox = ref(null);
+const showAccessibilityMenu = ref(false);
+const accessibilityMenuRef = ref(null);
+const largeTextMode = ref(false);
+const highContrastMode = ref(false);
 
 const guideSteps = [
   {
@@ -746,6 +837,38 @@ const restartGuide = () => {
   }, 50);
 };
 
+const toggleAccessibilityMenu = () => {
+  showAccessibilityMenu.value = !showAccessibilityMenu.value;
+};
+
+const persistAccessibilitySettings = () => {
+  localStorage.setItem('littlehelp_accessibility_large_text', largeTextMode.value ? '1' : '0');
+  localStorage.setItem('littlehelp_accessibility_high_contrast', highContrastMode.value ? '1' : '0');
+};
+
+const toggleInteractiveGuide = () => {
+  restartGuide();
+  showAccessibilityMenu.value = false;
+};
+
+const toggleLargeTextMode = () => {
+  largeTextMode.value = !largeTextMode.value;
+  persistAccessibilitySettings();
+};
+
+const toggleHighContrastMode = () => {
+  highContrastMode.value = !highContrastMode.value;
+  persistAccessibilitySettings();
+};
+
+const handleDocumentClick = (event) => {
+  if (!showAccessibilityMenu.value) return;
+
+  if (!accessibilityMenuRef.value?.contains(event.target)) {
+    showAccessibilityMenu.value = false;
+  }
+};
+
 const goProtected = (path) => {
   if (!isLoggedIn.value) {
     router.push({
@@ -868,6 +991,9 @@ const loadProfiles = async () => {
 onMounted(() => {
   loadProfiles();
 
+  largeTextMode.value = localStorage.getItem('littlehelp_accessibility_large_text') === '1';
+  highContrastMode.value = localStorage.getItem('littlehelp_accessibility_high_contrast') === '1';
+
   const hasSeenGuide = localStorage.getItem('littlehelp_user_guide_seen');
 
   if (!hasSeenGuide) {
@@ -880,11 +1006,13 @@ onMounted(() => {
 
   window.addEventListener('resize', updateGuidePosition);
   window.addEventListener('scroll', updateGuidePosition, true);
+  document.addEventListener('click', handleDocumentClick);
 });
 
 onBeforeUnmount(() => {
   window.removeEventListener('resize', updateGuidePosition);
   window.removeEventListener('scroll', updateGuidePosition, true);
+  document.removeEventListener('click', handleDocumentClick);
 });
 
 watch(
@@ -1050,5 +1178,24 @@ const handleEditProfile = (profileId) => {
 
 .nav-outline-button:hover {
   background-color: rgba(168, 213, 186, 0.12);
+}
+
+.home-root.large-text-mode {
+  font-size: 1.06rem;
+}
+
+.home-root.large-text-mode .nav-link,
+.home-root.large-text-mode .nav-primary-button,
+.home-root.large-text-mode .nav-outline-button {
+  font-size: 1rem;
+}
+
+.home-root.high-contrast-mode {
+  color: #111827;
+  filter: contrast(1.08);
+}
+
+.home-root.high-contrast-mode .text-muted-foreground {
+  color: #374151;
 }
 </style>

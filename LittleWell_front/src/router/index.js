@@ -13,6 +13,7 @@ import ResultsPage from '../views/ResultsPage.vue';
 import RecipePage from '../views/RecipePage.vue';
 import WeeklyPlanPage from '../views/WeeklyPlanPage.vue';
 import MyPlansPage from '../views/MyPlansPage.vue';
+import KnowledgeHubPrototype from '../views/KnowledgeHubPrototype.vue';
 
 // Auth views
 import LoginPage from '../views/LoginPage.vue';
@@ -117,6 +118,12 @@ const routes = [
     name: 'MyPlans',
     component: MyPlansPage,
     meta: { title: 'My Plans - LittleHelp', requiresAuth: true },
+  },
+  {
+    path: '/knowledge-hub-prototype',
+    name: 'KnowledgeHubPrototype',
+    component: KnowledgeHubPrototype,
+    meta: { title: 'Knowledge Hub - LittleHelp' },
   },
 
   {
