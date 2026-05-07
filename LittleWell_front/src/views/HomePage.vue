@@ -257,9 +257,10 @@
               class="w-full h-[620px] object-cover rounded-3xl shadow-md"
             />
 
-            <div class="absolute bottom-5 left-5 right-5 bg-white/60 backdrop-blur-sm rounded-2xl shadow-md border p-4">
-              <div class="grid sm:grid-cols-3 gap-3">
-                <div class="rounded-xl bg-[#CDE7F0]/35 p-3 flex flex-col">
+            <div class="absolute bottom-5 left-5 right-5 rounded-2xl shadow-md p-4 overflow-hidden">
+              <div class="absolute inset-0 rounded-2xl bg-gradient-to-b from-transparent via-white/45 to-transparent backdrop-blur-sm"></div>
+              <div class="relative z-10 grid sm:grid-cols-3 gap-3">
+                <div class="rounded-xl bg-[#CDE7F0]/45 p-3 flex flex-col">
                   <p class="text-sm font-semibold text-[#374151] leading-snug">
                     Simplify nutrition choices
                   </p>
@@ -272,7 +273,7 @@
                   </div>
                 </div>
 
-                <div class="rounded-xl bg-[#CDE7F0]/35 p-3 flex flex-col">
+                <div class="rounded-xl bg-[#CDE7F0]/45 p-3 flex flex-col">
                   <p class="text-sm font-semibold text-[#374151] leading-snug">
                     Personalise for each child
                   </p>
@@ -285,7 +286,7 @@
                   </div>
                 </div>
 
-                <div class="rounded-xl bg-[#CDE7F0]/35 p-3 flex flex-col">
+                <div class="rounded-xl bg-[#CDE7F0]/45 p-3 flex flex-col">
                   <p class="text-sm font-semibold text-[#374151] leading-snug">
                     Plan healthier lunchboxes
                   </p>
