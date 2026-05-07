@@ -115,7 +115,7 @@
             </template>
 
             <template v-else>
-              <button @click="router.push('/login')" class="nav-link" type="button">
+              <button @click="router.push('/login')" class="nav-link nav-signin-link" type="button">
                 Sign in
               </button>
 
@@ -600,6 +600,32 @@
         </div>
       </div>
     </section>
+
+    <footer class="relative bg-[#FAF9F6] border-t border-gray-200 pt-16 pb-12 overflow-visible">
+      <div class="absolute -top-24 left-0 right-0 h-24 bg-gradient-to-t from-[#FAF9F6] via-[#FAF9F6]/75 to-transparent pointer-events-none z-30"></div>
+      <div class="absolute top-0 left-0 right-0 h-16 bg-gradient-to-t from-[#FAF9F6] via-[#FAF9F6]/70 to-transparent pointer-events-none"></div>
+
+      <div class="container mx-auto px-6 max-w-5xl text-center relative z-10">
+        <h2 class="text-2xl text-[#2C5F2D]">LittleHelp</h2>
+
+        <p class="mt-4 text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          Helping families create practical, balanced, and child-friendly lunchbox plans through science-backed nutrition guidance.
+        </p>
+
+        <div class="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-[#2C5F2D]">
+          <button @click="handleLunchboxPlan" type="button" class="hover:underline">Lunchbox Plan</button>
+          <button @click="goProtected('/weekly-plan')" type="button" class="hover:underline">Weekly Plan</button>
+          <button @click="goProtected('/my-plans')" type="button" class="hover:underline">My Plans</button>
+          <button @click="router.push('/knowledge-hub-prototype')" type="button" class="hover:underline">Knowledge Hub</button>
+          <button @click="router.push('/about')" type="button" class="hover:underline">About Us</button>
+          <button @click="openAccessibilityFromFooter" type="button" class="hover:underline">Accessibility</button>
+        </div>
+
+        <p class="mt-6 text-xs text-muted-foreground">
+          © 2026 LittleHelp. All rights reserved.
+        </p>
+      </div>
+    </footer>
   </div>
 </template>
 
@@ -839,6 +865,13 @@ const restartGuide = () => {
 
 const toggleAccessibilityMenu = () => {
   showAccessibilityMenu.value = !showAccessibilityMenu.value;
+};
+
+const openAccessibilityFromFooter = () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  setTimeout(() => {
+    showAccessibilityMenu.value = true;
+  }, 350);
 };
 
 const persistAccessibilitySettings = () => {
@@ -1137,6 +1170,12 @@ const handleEditProfile = (profileId) => {
 
 .nav-link:hover {
   background-color: rgba(168, 213, 186, 0.12);
+}
+
+.nav-signin-link {
+  text-decoration: underline;
+  text-decoration-color: #2C5F2D;
+  text-underline-offset: 3px;
 }
 
 .nav-link-disabled {
