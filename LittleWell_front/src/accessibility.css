@@ -1,0 +1,61 @@
+/* ============================================================
+   Global Accessibility Styles
+   Add these to your existing style.css (or import separately)
+   ============================================================ */
+
+/* Large Text Mode — applied to <html> element */
+html.a11y-large-text {
+  font-size: 112.5%; /* 18px base instead of 16px */
+}
+
+html.a11y-large-text button,
+html.a11y-large-text input,
+html.a11y-large-text select,
+html.a11y-large-text textarea,
+html.a11y-large-text label,
+html.a11y-large-text p,
+html.a11y-large-text span,
+html.a11y-large-text li,
+html.a11y-large-text a {
+  font-size: 1em; /* inherit the bumped base */
+}
+
+html.a11y-large-text h1 { font-size: 2.4rem; }
+html.a11y-large-text h2 { font-size: 1.9rem; }
+html.a11y-large-text h3 { font-size: 1.4rem; }
+
+/* High Contrast Mode — applied to <html> element */
+html.a11y-high-contrast {
+  filter: contrast(1.1);
+}
+
+html.a11y-high-contrast .text-muted-foreground,
+html.a11y-high-contrast [class*="text-gray-4"],
+html.a11y-high-contrast [class*="text-gray-5"] {
+  color: #374151 !important;
+}
+
+html.a11y-high-contrast .bg-white {
+  background-color: #ffffff !important;
+}
+
+html.a11y-high-contrast button:focus-visible,
+html.a11y-high-contrast a:focus-visible,
+html.a11y-high-contrast input:focus-visible,
+html.a11y-high-contrast select:focus-visible,
+html.a11y-high-contrast [tabindex]:focus-visible {
+  outline: 3px solid #2C5F2D !important;
+  outline-offset: 2px !important;
+}
+
+/* Focus styles for ALL interactive elements globally */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex="0"]:focus-visible {
+  outline: 2px solid #2C5F2D;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
