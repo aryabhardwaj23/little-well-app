@@ -98,6 +98,43 @@ class RecommendationResponse(BaseModel):
 
 # ── Weekly plan schemas ───────────────────────────────────────────────────────
 
+class WeeklyPlanGenerateRequest(BaseModel):
+    child_ids: List[int]
+    cook_frequency: int = 2
+    variety_preference: Optional[str] = "Balanced"
+    meal_style: Optional[str] = "Mix of simple and varied"
+    season_id: Optional[int] = None
+    seasonal: bool = True
+
+
+class WeeklyPlanGeneratedRecipe(BaseModel):
+    id: Optional[str] = None
+    source: str = "mealdb"
+    title: str
+    image: Optional[str] = None
+    category: Optional[str] = None
+    area: Optional[str] = None
+    nutritionFocus: List[str] = Field(default_factory=list)
+    whyThisMeal: Optional[str] = None
+
+
+class WeeklyPlanGeneratedBatch(BaseModel):
+    id: str
+    cookDay: str
+    coverDays: str
+    prepTime: str
+    seasonalNote: str
+    storageTip: str
+    lunchbox: dict
+    recipe: WeeklyPlanGeneratedRecipe
+
+
+class WeeklyPlanGenerateResponse(BaseModel):
+    child_ids: List[int]
+    cook_frequency: int
+    season_id: Optional[int] = None
+    batches: List[WeeklyPlanGeneratedBatch]
+
 class WeeklyPlanLunchboxItem(BaseModel):
     reference_food_id: Optional[int] = None
     name: str
