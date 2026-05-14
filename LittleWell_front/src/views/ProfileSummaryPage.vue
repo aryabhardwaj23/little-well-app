@@ -12,8 +12,16 @@
         </p>
       </div>
 
+      <!-- Loading -->
+      <div
+        v-if="loading"
+        class="bg-white rounded-2xl shadow-sm p-8 text-center text-muted-foreground mb-8"
+      >
+        Loading profile...
+      </div>
+
       <!-- Profile Summary Card -->
-      <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+      <div v-else class="bg-white rounded-2xl shadow-lg p-8 mb-8">
         <!-- Basic Info -->
         <div class="mb-8">
           <h2 class="text-2xl mb-6 flex items-center gap-2">
@@ -24,12 +32,12 @@
           <div class="grid md:grid-cols-2 gap-6">
             <div>
               <p class="text-sm text-muted-foreground mb-1">Name</p>
-              <p class="text-lg font-medium">{{ profile.name }}</p>
+              <p class="text-lg font-medium">{{ profile.name || '-' }}</p>
             </div>
 
             <div>
               <p class="text-sm text-muted-foreground mb-1">Age Group</p>
-              <p class="text-lg font-medium">{{ profile.ageGroup }}</p>
+              <p class="text-lg font-medium">{{ profile.ageGroup || '-' }}</p>
             </div>
 
             <div v-if="profile.gender">
@@ -67,11 +75,21 @@
               </div>
             </div>
 
+            <div v-else>
+              <p class="text-sm text-muted-foreground mb-2">Food Allergies</p>
+              <p class="text-base">No allergies selected</p>
+            </div>
+
             <div v-if="profile.dietaryRestriction">
               <p class="text-sm text-muted-foreground mb-2">Dietary Restriction</p>
               <span class="bg-[#CDE7F0]/30 text-[#1B4965] px-3 py-1 rounded-full text-sm">
                 {{ profile.dietaryRestriction }}
               </span>
+            </div>
+
+            <div v-else>
+              <p class="text-sm text-muted-foreground mb-2">Dietary Restriction</p>
+              <p class="text-base">No restrictions</p>
             </div>
 
             <div v-if="profile.eatingHabit">
@@ -98,13 +116,24 @@
             </span>
           </div>
         </div>
+
+        <div v-else class="pt-8 border-t">
+          <h2 class="text-2xl mb-4 flex items-center gap-2">
+            <Sparkles class="w-6 h-6 text-[#A8D5BA]" />
+            Nutrition Focus Areas
+          </h2>
+
+          <p class="text-muted-foreground">
+            No focus areas selected.
+          </p>
+        </div>
       </div>
 
       <!-- Action Buttons -->
       <div class="flex flex-col sm:flex-row gap-4">
         <button
           @click="handleEdit"
-          :disabled="saving"
+          :disabled="saving || loading"
           class="flex-1 px-8 py-4 bg-white border-2 border-[#A8D5BA] text-[#2C5F2D] rounded-lg hover:bg-[#A8D5BA]/10 transition-colors inline-flex items-center justify-center gap-2 disabled:opacity-50"
         >
           <Edit class="w-4 h-4" />
@@ -113,7 +142,7 @@
 
         <button
           @click="handleSave"
-          :disabled="saving"
+          :disabled="saving || loading"
           class="flex-1 px-8 py-4 bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg transition-colors inline-flex items-center justify-center gap-2 disabled:opacity-50"
         >
           <Check class="w-4 h-4" />
@@ -136,7 +165,7 @@
 
             <button
               @click="handleNutritionCheck"
-              :disabled="saving"
+              :disabled="saving || loading"
               class="text-sm text-[#2C5F2D] font-medium hover:underline inline-flex items-center gap-1 disabled:opacity-50"
             >
               Take Nutrition Check
@@ -151,7 +180,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import {
   Check,
   User,
@@ -162,15 +191,17 @@ import {
   ClipboardCheck,
 } from 'lucide-vue-next';
 import { useChildProfileStore } from '../stores/childProfile';
-import { createChild, updateChild } from '../services/api';
+import { createChild, updateChild, getChildById } from '../services/api';
 
 const router = useRouter();
+const route = useRoute();
 const childProfileStore = useChildProfileStore();
 
 const childName = ref('your child');
 const profile = ref({});
 const nutritionFocus = ref([]);
 const saving = ref(false);
+const loading = ref(false);
 
 const allowedAgeGroups = ['5-6 years', '7-9 years', '10-12 years'];
 
@@ -195,6 +226,28 @@ const allergyMap = {
   Shellfish: 15,
 };
 
+const allergenIdToName = {
+  47: 'Peanuts',
+  40: 'Tree nuts',
+  16: 'Milk',
+  18: 'Eggs',
+  24: 'Wheat',
+  50: 'Soy',
+  22: 'Fish',
+  15: 'Shellfish',
+};
+
+const dietaryRestrictionOptions = [
+  { label: 'Vegan', value: 1 },
+  { label: 'Vegetarian', value: 2 },
+  { label: 'Pescatarian', value: 3 },
+  { label: 'Halal', value: 4 },
+  { label: 'Kosher', value: 5 },
+  { label: 'Coeliac Disease', value: 6 },
+  { label: 'Lactose Intolerance', value: 7 },
+  { label: 'Gluten Free', value: 8 },
+];
+
 const normalizeAgeGroup = (ageGroup) => {
   const mapping = {
     '5-6 years': '5-6 years',
@@ -213,9 +266,89 @@ const normalizeAgeGroup = (ageGroup) => {
   return mapping[ageGroup] || '';
 };
 
-onMounted(() => {
-  const draft = childProfileStore.childProfileDraft || {};
+const isActiveStatus = (value) => {
+  return value === 1 || value === '1' || value === true;
+};
 
+const mapAllergiesToNames = (allergies) => {
+  if (!Array.isArray(allergies)) return [];
+
+  return allergies
+    .map((allergy) => {
+      if (typeof allergy === 'string' && Number.isNaN(Number(allergy))) {
+        return allergy;
+      }
+
+      return allergenIdToName[Number(allergy)] || null;
+    })
+    .filter(Boolean);
+};
+
+const getRestrictionLabelById = (restrictionId, fallback = '') => {
+  const option = dietaryRestrictionOptions.find(
+    (item) => String(item.value) === String(restrictionId),
+  );
+
+  return option?.label || fallback || '';
+};
+
+const mapStatusToNutritionFocus = (child) => {
+  return [
+    isActiveStatus(child.iron_status) ? 'iron' : null,
+    isActiveStatus(child.calcium_status) ? 'calcium' : null,
+    isActiveStatus(child.vitamin_d_status) ? 'immunity' : null,
+    isActiveStatus(child.variety_status) ? 'variety' : null,
+  ].filter(Boolean);
+};
+
+const getActiveChildId = () => {
+  return (
+    route.query.childId ||
+    localStorage.getItem('littlewell_active_child_id') ||
+    localStorage.getItem('littlewell_edit_child_id') ||
+    ''
+  );
+};
+
+const mapChildToProfile = (child) => {
+  return {
+    name: child.child_name || '',
+    ageGroup: normalizeAgeGroup(child.age_band),
+    gender: child.gender || '',
+    allergies: mapAllergiesToNames(child.allergies),
+    restrictionId: child.restriction_id || null,
+    dietaryRestriction: getRestrictionLabelById(
+      child.restriction_id,
+      child.restriction_name || '',
+    ),
+    activityLevel: child.activity_level || 'moderate',
+    eatingHabit: child.eating_habit || '',
+    nutritionFocus: mapStatusToNutritionFocus(child),
+  };
+};
+
+const loadProfileFromChildId = async (childId) => {
+  loading.value = true;
+
+  try {
+    const child = await getChildById(childId);
+    const loadedProfile = mapChildToProfile(child);
+
+    profile.value = loadedProfile;
+    childName.value = loadedProfile.name || 'your child';
+    nutritionFocus.value = loadedProfile.nutritionFocus || [];
+
+    childProfileStore.updateDraft(loadedProfile);
+    localStorage.setItem('littlewell_active_child_id', String(childId));
+  } catch (error) {
+    console.error('Failed to load child profile summary:', error);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const loadProfileFromDraft = () => {
+  const draft = childProfileStore.childProfileDraft || {};
   const normalizedAgeGroup = normalizeAgeGroup(draft.ageGroup);
 
   profile.value = {
@@ -229,6 +362,17 @@ onMounted(() => {
   childProfileStore.updateDraft({
     ageGroup: normalizedAgeGroup,
   });
+};
+
+onMounted(async () => {
+  const childId = getActiveChildId();
+
+  if (childId) {
+    await loadProfileFromChildId(childId);
+    return;
+  }
+
+  loadProfileFromDraft();
 });
 
 const getNutritionAreaName = (id) => {
@@ -236,6 +380,12 @@ const getNutritionAreaName = (id) => {
 };
 
 const handleEdit = () => {
+  const childId = getActiveChildId();
+
+  if (childId) {
+    localStorage.setItem('littlewell_edit_child_id', String(childId));
+  }
+
   router.push('/child-info');
 };
 
@@ -269,13 +419,17 @@ const buildPayload = () => {
 
 const saveProfile = async () => {
   const editingChildId = localStorage.getItem('littlewell_edit_child_id');
+  const activeChildId = localStorage.getItem('littlewell_active_child_id');
+  const routeChildId = route.query.childId || '';
+  const existingChildId = routeChildId || editingChildId || activeChildId || '';
+
   const payload = buildPayload();
 
   let savedChildId = null;
 
-  if (editingChildId) {
-    await updateChild(editingChildId, payload);
-    savedChildId = editingChildId;
+  if (existingChildId) {
+    await updateChild(existingChildId, payload);
+    savedChildId = existingChildId;
   } else {
     const savedChild = await createChild(payload);
 
@@ -293,7 +447,6 @@ const saveProfile = async () => {
 
   localStorage.setItem('littlewell_active_child_id', String(savedChildId));
   localStorage.removeItem('littlewell_edit_child_id');
-  childProfileStore.resetDraft();
 
   return String(savedChildId);
 };
@@ -303,6 +456,7 @@ const handleSave = async () => {
     saving.value = true;
     const childId = await saveProfile();
 
+    childProfileStore.resetDraft();
     router.push(`/results?childId=${childId}`);
   } catch (error) {
     console.error('Failed to save child profile:', error);
@@ -317,6 +471,7 @@ const handleNutritionCheck = async () => {
     saving.value = true;
     const childId = await saveProfile();
 
+    childProfileStore.resetDraft();
     router.push(`/nutrition-check?childId=${childId}`);
   } catch (error) {
     console.error('Failed to save before nutrition check:', error);
