@@ -54,7 +54,7 @@
               :aria-label="`Step ${index + 1}`"
               :class="[
                 'w-2 h-2 rounded-full transition-colors',
-                index === guideStep ? 'bg-[#2C5F2D]' : 'bg-gray-300'
+                index === guideStep ? 'bg-[#2C5F2D]' : 'bg-gray-300',
               ]"
             ></span>
           </div>
@@ -254,7 +254,6 @@
             </div>
 
             <ul class="flex gap-6 overflow-x-auto pb-4 -mx-6 px-6 list-none" aria-label="Child profile cards">
-              <!-- Add child card -->
               <li class="flex-shrink-0 w-[340px]">
                 <button
                   @click="handleAddChild"
@@ -274,7 +273,6 @@
                 </button>
               </li>
 
-              <!-- Profile cards -->
               <li
                 v-for="profile in profiles"
                 :key="profile.id"
@@ -396,7 +394,7 @@
                   'p-4 rounded-xl border-2 cursor-pointer transition-all',
                   selectedForFamily.includes(profile.id)
                     ? 'border-[#A8D5BA] bg-[#A8D5BA]/10'
-                    : 'border-gray-200 hover:border-[#A8D5BA]/50'
+                    : 'border-gray-200 hover:border-[#A8D5BA]/50',
                 ]"
                 tabindex="0"
                 role="checkbox"
@@ -437,7 +435,8 @@
               aria-live="polite"
             >
               <p class="text-sm text-center">
-                <strong>{{ selectedForFamily.length }} children selected</strong> – Meals will be tailored to combine their nutrition needs
+                <strong>{{ selectedForFamily.length }} children selected</strong>
+                – Meals will be tailored to combine their nutrition needs
               </p>
             </div>
 
@@ -545,7 +544,6 @@
           <button @click="goProtected('/my-plans')" type="button" class="hover:underline">My Plans</button>
           <button @click="router.push('/knowledge-hub-prototype')" type="button" class="hover:underline">Knowledge Hub</button>
           <button @click="router.push('/about')" type="button" class="hover:underline">About Us</button>
-          <button @click="openAccessibilityFromFooter" type="button" class="hover:underline">Accessibility</button>
         </nav>
 
         <p class="mt-6 text-xs text-muted-foreground">
@@ -568,15 +566,9 @@ import {
 } from 'lucide-vue-next';
 import { getChildren, deleteChild } from '../services/api';
 import { useAuthStore } from '../stores/auth';
-import { useAccessibility } from '../composables/useAccessibility';
 
 const router = useRouter();
 const authStore = useAuthStore();
-
-// ── Accessibility ───────────────────────────────────────────────────────────
-const {
-  showAccessibilityMenu,
-} = useAccessibility();
 
 // ── Profiles ────────────────────────────────────────────────────────────────
 const profiles = ref([]);
@@ -748,6 +740,16 @@ const scrollToGuideTarget = () => {
   setTimeout(() => updateGuidePosition(), 450);
 };
 
+const restartGuide = () => {
+  guideStep.value = 0;
+  showGuide.value = true;
+  setTimeout(() => scrollToGuideTarget(), 50);
+};
+
+const handleOpenHomeGuide = () => {
+  restartGuide();
+};
+
 const nextGuideStep = () => {
   if (guideStep.value < guideSteps.length - 1) {
     guideStep.value += 1;
@@ -767,14 +769,6 @@ const finishGuide = () => {
 };
 
 const skipGuide = () => finishGuide();
-
-const openAccessibilityFromFooter = () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-
-  setTimeout(() => {
-    showAccessibilityMenu.value = true;
-  }, 350);
-};
 
 const goProtected = (path) => {
   if (!isLoggedIn.value) {
@@ -870,11 +864,13 @@ onMounted(() => {
     setTimeout(() => scrollToGuideTarget(), 300);
   }
 
+  window.addEventListener('open-home-user-guide', handleOpenHomeGuide);
   window.addEventListener('resize', updateGuidePosition);
   window.addEventListener('scroll', updateGuidePosition, true);
 });
 
 onBeforeUnmount(() => {
+  window.removeEventListener('open-home-user-guide', handleOpenHomeGuide);
   window.removeEventListener('resize', updateGuidePosition);
   window.removeEventListener('scroll', updateGuidePosition, true);
 });
