@@ -33,7 +33,11 @@
             My Plans
           </button>
 
-          <button @click="router.push('/knowledge-hub-prototype')" class="nav-link" type="button">
+          <button
+            @click="router.push('/knowledge-hub-prototype')"
+            class="nav-link"
+            type="button"
+          >
             Knowledge Hub
           </button>
 
@@ -55,7 +59,7 @@
               <ChevronDown
                 :class="[
                   'w-3.5 h-3.5 transition-transform duration-200 translate-y-[1px]',
-                  showAccessibilityMenu ? 'rotate-180' : 'rotate-0'
+                  showAccessibilityMenu ? 'rotate-180' : 'rotate-0',
                 ]"
                 aria-hidden="true"
               />
@@ -73,6 +77,17 @@
 
               <div class="h-px bg-[#E5E7EB] my-3" aria-hidden="true"></div>
 
+              <!-- Only show this on HomePage -->
+              <button
+                v-if="isHomePage"
+                type="button"
+                role="menuitem"
+                @click="openHomeGuide"
+                class="w-full text-left px-3 py-2 rounded-lg text-sm transition-colors text-[#2C5F2D] hover:bg-[#F8F5EC]"
+              >
+                Interactive Guide
+              </button>
+
               <button
                 type="button"
                 role="menuitem"
@@ -80,9 +95,10 @@
                 :aria-pressed="largeTextMode"
                 :class="[
                   'w-full text-left px-3 py-2 rounded-lg text-sm transition-colors',
+                  isHomePage ? 'mt-2' : '',
                   largeTextMode
                     ? 'bg-[#F8F5EC] text-[#2C5F2D] font-semibold'
-                    : 'bg-transparent text-[#2C5F2D] hover:bg-[#F8F5EC]'
+                    : 'bg-transparent text-[#2C5F2D] hover:bg-[#F8F5EC]',
                 ]"
               >
                 Large Text Mode
@@ -98,7 +114,7 @@
                   'w-full text-left px-3 py-2 rounded-lg text-sm transition-colors mt-2',
                   highContrastMode
                     ? 'bg-[#F8F5EC] text-[#2C5F2D] font-semibold'
-                    : 'bg-transparent text-[#2C5F2D] hover:bg-[#F8F5EC]'
+                    : 'bg-transparent text-[#2C5F2D] hover:bg-[#F8F5EC]',
                 ]"
               >
                 High Contrast Mode
@@ -109,7 +125,10 @@
 
           <!-- Auth Buttons -->
           <template v-if="isLoggedIn">
-            <span class="text-sm text-muted-foreground px-2 whitespace-nowrap" aria-live="polite">
+            <span
+              class="text-sm text-muted-foreground px-2 whitespace-nowrap"
+              aria-live="polite"
+            >
               Hi, {{ username }}
             </span>
 
@@ -119,11 +138,19 @@
           </template>
 
           <template v-else>
-            <button @click="router.push('/login')" class="nav-link nav-signin-link" type="button">
+            <button
+              @click="router.push('/login')"
+              class="nav-link nav-signin-link"
+              type="button"
+            >
               Sign in
             </button>
 
-            <button @click="router.push('/register')" class="nav-primary-button" type="button">
+            <button
+              @click="router.push('/register')"
+              class="nav-primary-button"
+              type="button"
+            >
               Create account
             </button>
           </template>
@@ -156,6 +183,13 @@ const {
 
 const isLoggedIn = computed(() => authStore.isAuthenticated);
 const username = computed(() => authStore.user?.username || 'User');
+
+const isHomePage = computed(() => router.currentRoute.value.path === '/');
+
+const openHomeGuide = () => {
+  window.dispatchEvent(new CustomEvent('open-home-user-guide'));
+  showAccessibilityMenu.value = false;
+};
 
 const goProtected = (path) => {
   if (!isLoggedIn.value) {

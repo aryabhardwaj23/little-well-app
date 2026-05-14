@@ -72,7 +72,7 @@
 
     <!-- Hero Section -->
     <main>
-      <section ref="heroSection" class="hero-section pt-32 pb-14 bg-[#FAF9F6]" aria-label="Hero">
+      <section ref="heroSection" class="hero-section pt-12 pb-14 bg-[#FAF9F6]" aria-label="Hero">
         <div class="container mx-auto px-6 max-w-6xl">
           <div class="grid lg:grid-cols-2 gap-8 items-stretch">
             <div class="flex flex-col justify-center">
@@ -215,7 +215,12 @@
       </section>
 
       <!-- Child Profile Section -->
-      <section ref="childProfileSection" class="child-profile-section pt-14 pb-8 bg-white" aria-label="Child profiles">
+      <section
+        id="child-profiles"
+        ref="childProfileSection"
+        class="child-profile-section pt-14 pb-8 bg-white"
+        aria-label="Child profiles"
+      >
         <div class="container mx-auto px-6 max-w-6xl">
           <div class="mb-8">
             <h2 class="text-3xl mb-2 text-[#2C5F2D]">Your child profiles</h2>
