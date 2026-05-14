@@ -468,6 +468,7 @@ import {
   getMealRecipeDetail,
   createWeeklyPlan,
   getWeeklyPlanById,
+  generateWeeklyPlanFromBackend,
 } from '../services/api';
 
 const router = useRouter();
@@ -1076,16 +1077,37 @@ const generateWeeklyPlan = async () => {
     isGenerating.value = true;
     errorMessage.value = '';
 
-    const [databaseData, apiData] = await Promise.all([
-      fetchLunchboxesFromDatabase(),
-      fetchRecipesFromApi(),
-    ]);
+    const data = await generateWeeklyPlanFromBackend({
+      child_ids: selectedChildren.value,
+      cook_frequency: cookingFrequency.value,
+      variety_preference: varietyPreference.value,
+      meal_style: mealStyle.value,
+      season_id: getSeasonId(),
+      seasonal: true,
+    });
 
-    databaseLunchboxes.value = databaseData.map(normalizeDatabaseLunchbox);
-    apiRecipes.value = apiData.map(normalizeApiRecipe);
+    const batches = Array.isArray(data?.batches) ? data.batches : [];
 
-    weeklyBatches.value = buildWeeklyBatches(databaseLunchboxes.value, apiRecipes.value);
-    planGenerated.value = true;
+    weeklyBatches.value = batches.map((batch, index) => ({
+      id: batch.id || `batch-${Date.now()}-${index}`,
+      cookDay: batch.cookDay || `Cook Session ${index + 1}`,
+      coverDays: batch.coverDays || 'Selected days',
+      prepTime: batch.prepTime || '30 mins',
+      seasonalNote: batch.seasonalNote || `${getSeasonName()} ingredients are prioritised where available.`,
+      storageTip: batch.storageTip || 'Store safely in the fridge and keep chilled.',
+      lunchbox: normalizeDatabaseLunchbox(batch.lunchbox || {}, index),
+      recipe: normalizeApiRecipe(batch.recipe || {}, index),
+    }));
+
+    databaseLunchboxes.value = weeklyBatches.value
+      .map((batch) => batch.lunchbox)
+      .filter(Boolean);
+
+    apiRecipes.value = weeklyBatches.value
+      .map((batch) => batch.recipe)
+      .filter((recipe) => recipe?.id);
+
+    planGenerated.value = weeklyBatches.value.length > 0;
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
   } catch (error) {

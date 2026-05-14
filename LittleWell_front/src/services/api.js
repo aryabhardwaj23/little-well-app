@@ -160,3 +160,10 @@ export const getMealRecipeDetail = async (mealId, childName = '') => {
 
   return request(`/products/recommended/mealdb/recipe/${mealId}${query}`);
 };
+
+export function generateWeeklyPlanFromBackend(payload) {
+  return request('/weekly-plans/generate', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
