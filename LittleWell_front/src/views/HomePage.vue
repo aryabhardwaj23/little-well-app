@@ -1,150 +1,5 @@
 <template>
   <div class="min-h-screen home-root">
-    <!-- Navigation Bar -->
-    <nav
-      class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm"
-      aria-label="Main navigation"
-    >
-      <div class="mx-auto px-8 max-w-[1440px]">
-        <div class="flex items-center justify-between h-20 gap-8">
-          <!-- Logo -->
-          <a
-            href="/"
-            class="flex items-center shrink-0"
-            aria-label="LittleHelp home"
-            @click.prevent="router.push('/')"
-          >
-            <img
-              :src="littleHelpLogo"
-              alt="LittleHelp logo"
-              class="h-12 w-auto object-contain"
-            />
-          </a>
-
-          <!-- Desktop Navigation Links -->
-          <div class="flex items-center justify-end gap-2 flex-1" role="navigation">
-            <button @click="handleLunchboxPlan" class="nav-link" type="button">
-              Lunchbox Plan
-            </button>
-
-            <button @click="goProtected('/weekly-plan')" class="nav-link" type="button">
-              Weekly Plan
-            </button>
-
-            <button @click="goProtected('/my-plans')" class="nav-link" type="button">
-              My Plans
-            </button>
-
-            <button @click="router.push('/knowledge-hub-prototype')" class="nav-link" type="button">
-              Knowledge Hub
-            </button>
-
-            <button @click="router.push('/about')" class="nav-link" type="button">
-              About Us
-            </button>
-
-            <!-- Accessibility Dropdown -->
-            <div ref="accessibilityMenuRef" class="relative">
-              <button
-                @click="toggleAccessibilityMenu"
-                class="nav-link inline-flex items-center gap-1"
-                type="button"
-                :aria-expanded="showAccessibilityMenu"
-                aria-haspopup="true"
-                aria-controls="accessibility-menu"
-              >
-                Accessibility
-                <ChevronDown
-                  :class="[
-                    'w-3.5 h-3.5 transition-transform duration-200 translate-y-[1px]',
-                    showAccessibilityMenu ? 'rotate-180' : 'rotate-0'
-                  ]"
-                  aria-hidden="true"
-                />
-              </button>
-
-              <div
-                v-if="showAccessibilityMenu"
-                id="accessibility-menu"
-                role="menu"
-                class="absolute right-0 mt-2 w-72 rounded-2xl border border-[#D6E7DC] bg-white shadow-xl p-4 z-50"
-              >
-                <p class="text-sm font-semibold text-[#2C5F2D]" id="accessibility-menu-label">
-                  Accessibility
-                </p>
-                <div class="h-px bg-[#E5E7EB] my-3" aria-hidden="true"></div>
-
-                <button
-                  type="button"
-                  role="menuitem"
-                  @click="toggleInteractiveGuide"
-                  class="w-full text-left px-3 py-2 rounded-lg text-sm transition-colors text-[#2C5F2D] hover:bg-[#F8F5EC]"
-                >
-                  Interactive Guide
-                </button>
-
-                <button
-                  type="button"
-                  role="menuitem"
-                  @click="toggleLargeTextMode"
-                  :aria-pressed="largeTextMode"
-                  :class="[
-                    'w-full text-left px-3 py-2 rounded-lg text-sm transition-colors mt-2',
-                    largeTextMode
-                      ? 'bg-[#F8F5EC] text-[#2C5F2D] font-semibold'
-                      : 'bg-transparent text-[#2C5F2D] hover:bg-[#F8F5EC]'
-                  ]"
-                >
-                  Large Text Mode
-                  <span v-if="largeTextMode" class="ml-2 text-xs">(on)</span>
-                </button>
-
-                <button
-                  type="button"
-                  role="menuitem"
-                  @click="toggleHighContrastMode"
-                  :aria-pressed="highContrastMode"
-                  :class="[
-                    'w-full text-left px-3 py-2 rounded-lg text-sm transition-colors mt-2',
-                    highContrastMode
-                      ? 'bg-[#F8F5EC] text-[#2C5F2D] font-semibold'
-                      : 'bg-transparent text-[#2C5F2D] hover:bg-[#F8F5EC]'
-                  ]"
-                >
-                  High Contrast Mode
-                  <span v-if="highContrastMode" class="ml-2 text-xs">(on)</span>
-                </button>
-
-                <div class="h-px bg-[#E5E7EB] my-3" aria-hidden="true"></div>
-                <p class="text-xs text-muted-foreground leading-relaxed">
-                  Need help understanding the system? Accessibility settings can be changed anytime.
-                </p>
-              </div>
-            </div>
-
-            <!-- Auth Buttons -->
-            <template v-if="isLoggedIn">
-              <span class="text-sm text-muted-foreground px-2 whitespace-nowrap" aria-live="polite">
-                Hi, {{ username }}
-              </span>
-              <button @click="handleLogout" class="nav-outline-button" type="button">
-                Logout
-              </button>
-            </template>
-
-            <template v-else>
-              <button @click="router.push('/login')" class="nav-link nav-signin-link" type="button">
-                Sign in
-              </button>
-              <button @click="router.push('/register')" class="nav-primary-button" type="button">
-                Create account
-              </button>
-            </template>
-          </div>
-        </div>
-      </div>
-    </nav>
-
     <!-- User Guide Overlay -->
     <div
       v-if="showGuide"
@@ -242,9 +97,11 @@
                       Try a lunchbox plan in 1 minute
                     </p>
                   </button>
+
                   <p id="quick-start-desc" class="md:hidden mt-2 text-xs text-muted-foreground leading-relaxed">
                     Quick Start lets you try a ready-to-use lunchbox recommendation without creating a profile first.
                   </p>
+
                   <div
                     class="hidden md:block absolute left-0 right-0 bottom-full mb-3 bg-white border border-[#A8D5BA]/40 rounded-xl shadow-lg p-4 text-sm text-muted-foreground leading-relaxed opacity-0 translate-y-1 pointer-events-none transition-all duration-200 group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0"
                     aria-hidden="true"
@@ -265,9 +122,11 @@
                       Start by creating a child profile around your nutrition needs
                     </p>
                   </button>
+
                   <p id="personalised-desc" class="md:hidden mt-2 text-xs text-muted-foreground leading-relaxed">
                     Save profile details for a more personalised and long-term lunchbox planning experience.
                   </p>
+
                   <div
                     class="hidden md:block absolute left-0 right-0 bottom-full mb-3 bg-white border border-[#A8D5BA]/40 rounded-xl shadow-lg p-4 text-sm text-muted-foreground leading-relaxed opacity-0 translate-y-1 pointer-events-none transition-all duration-200 group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0"
                     aria-hidden="true"
@@ -287,23 +146,41 @@
 
               <div class="absolute bottom-5 left-5 right-5 rounded-2xl shadow-md p-4 overflow-hidden" aria-hidden="true">
                 <div class="absolute inset-0 rounded-2xl bg-gradient-to-b from-transparent via-white/45 to-transparent backdrop-blur-sm"></div>
+
                 <div class="relative z-10 grid sm:grid-cols-3 gap-3">
                   <div class="rounded-xl bg-[#CDE7F0]/45 p-3 flex flex-col">
                     <p class="text-sm font-semibold text-[#374151] leading-snug">Simplify nutrition choices</p>
                     <div class="w-full h-12 rounded-full overflow-hidden mt-2">
-                      <img src="https://images.pexels.com/photos/1132047/pexels-photo-1132047.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" class="w-full h-full object-cover" aria-hidden="true" />
+                      <img
+                        src="https://images.pexels.com/photos/1132047/pexels-photo-1132047.jpeg?auto=compress&cs=tinysrgb&w=800"
+                        alt=""
+                        class="w-full h-full object-cover"
+                        aria-hidden="true"
+                      />
                     </div>
                   </div>
+
                   <div class="rounded-xl bg-[#CDE7F0]/45 p-3 flex flex-col">
                     <p class="text-sm font-semibold text-[#374151] leading-snug">Personalise for each child</p>
                     <div class="w-full h-12 rounded-full overflow-hidden mt-2">
-                      <img src="https://images.pexels.com/photos/3872370/pexels-photo-3872370.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" class="w-full h-full object-cover" aria-hidden="true" />
+                      <img
+                        src="https://images.pexels.com/photos/3872370/pexels-photo-3872370.jpeg?auto=compress&cs=tinysrgb&w=800"
+                        alt=""
+                        class="w-full h-full object-cover"
+                        aria-hidden="true"
+                      />
                     </div>
                   </div>
+
                   <div class="rounded-xl bg-[#CDE7F0]/45 p-3 flex flex-col">
                     <p class="text-sm font-semibold text-[#374151] leading-snug">Plan healthier lunchboxes</p>
                     <div class="w-full h-12 rounded-full overflow-hidden mt-2">
-                      <img src="https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800" alt="" class="w-full h-full object-cover" aria-hidden="true" />
+                      <img
+                        src="https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800"
+                        alt=""
+                        class="w-full h-full object-cover"
+                        aria-hidden="true"
+                      />
                     </div>
                   </div>
                 </div>
@@ -315,6 +192,7 @@
             <p class="text-muted-foreground">
               Sign in to save child profiles, weekly plans, and personalised recommendations.
             </p>
+
             <div class="flex justify-center gap-3 mt-4">
               <button
                 @click="router.push('/login')"
@@ -323,6 +201,7 @@
               >
                 Sign in
               </button>
+
               <button
                 @click="router.push('/register')"
                 class="bg-white border border-[#A8D5BA] text-[#2C5F2D] rounded-lg px-6 py-2 hover:bg-[#A8D5BA]/10 transition-colors"
@@ -349,6 +228,7 @@
             <p class="text-muted-foreground mb-5">
               Please sign in to view and manage your child profiles.
             </p>
+
             <button
               @click="router.push({ path: '/login', query: { redirect: '/child-info' } })"
               class="bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg px-8 py-3 transition-colors"
@@ -380,7 +260,9 @@
                   <div class="w-16 h-16 bg-[#A8D5BA]/20 rounded-full flex items-center justify-center mb-3" aria-hidden="true">
                     <Plus class="w-8 h-8 text-[#2C5F2D]" />
                   </div>
+
                   <p class="text-lg text-[#2C5F2D] font-semibold">Add another child</p>
+
                   <p class="text-sm text-muted-foreground text-center mt-2">
                     Create a profile for a child aged 5–12 to get personalised meal suggestions
                   </p>
@@ -498,6 +380,7 @@
               :class="{ 'opacity-60': !isLoggedIn || profiles.length < 2 }"
             >
               <legend class="sr-only">Select children for family plan</legend>
+
               <div
                 v-for="profile in profiles"
                 :key="profile.id"
@@ -511,7 +394,7 @@
                     : 'border-gray-200 hover:border-[#A8D5BA]/50'
                 ]"
                 tabindex="0"
-                :role="'checkbox'"
+                role="checkbox"
                 :aria-checked="selectedForFamily.includes(profile.id)"
                 :aria-label="profile.name"
               >
@@ -524,9 +407,11 @@
                     aria-hidden="true"
                     @click.stop
                   />
+
                   <div class="flex-1">
                     <h4 class="font-medium mb-1">{{ profile.name }}</h4>
                     <p class="text-sm text-muted-foreground mb-2">{{ profile.ageGroup }}</p>
+
                     <div v-if="profile.nutritionFocus.length > 0" class="flex flex-wrap gap-1">
                       <span
                         v-for="focus in profile.nutritionFocus.slice(0, 2)"
@@ -571,12 +456,14 @@
             <div class="w-16 h-16 bg-[#A8D5BA] rounded-full flex items-center justify-center flex-shrink-0" aria-hidden="true">
               <CalendarDays class="w-8 h-8 text-[#2C5F2D]" />
             </div>
+
             <div class="flex-1">
               <h2 class="text-3xl mb-2 text-[#2C5F2D]">Plan the whole school week</h2>
               <p class="text-muted-foreground leading-relaxed">
                 Choose your children, set your cooking frequency, and generate a weekly lunchbox plan.
               </p>
             </div>
+
             <div class="flex flex-col sm:flex-row gap-3">
               <button
                 @click="goProtected('/weekly-plan')"
@@ -585,6 +472,7 @@
               >
                 Build Weekly Plan
               </button>
+
               <button
                 @click="goProtected('/my-plans')"
                 class="bg-white hover:bg-[#FAF9F6] text-[#2C5F2D] border border-[#A8D5BA] rounded-lg px-8 py-3 font-semibold transition-colors"
@@ -606,11 +494,13 @@
       <!-- Knowledge Hub Entry -->
       <section class="relative overflow-hidden py-16" aria-label="Knowledge Hub">
         <div class="absolute inset-0 bg-gradient-to-br from-[#F3E9D7]/80 to-[#FAF9F6]" aria-hidden="true"></div>
+
         <div
           class="absolute inset-0 bg-center bg-cover opacity-55"
           style="background-image: url('https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=1600');"
           aria-hidden="true"
         ></div>
+
         <div class="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-[#FAF9F6] via-[#FAF9F6]/65 to-transparent" aria-hidden="true"></div>
 
         <div class="container mx-auto px-6 max-w-5xl relative z-10 mt-4">
@@ -632,7 +522,10 @@
 
     <!-- Footer -->
     <footer class="relative bg-[#FAF9F6] border-t border-gray-200 pt-16 pb-12 overflow-visible">
-      <div class="absolute -top-24 left-0 right-0 h-24 bg-gradient-to-t from-[#FAF9F6] via-[#FAF9F6]/75 to-transparent pointer-events-none z-30" aria-hidden="true"></div>
+      <div
+        class="absolute -top-24 left-0 right-0 h-24 bg-gradient-to-t from-[#FAF9F6] via-[#FAF9F6]/75 to-transparent pointer-events-none z-30"
+        aria-hidden="true"
+      ></div>
 
       <div class="container mx-auto px-6 max-w-5xl text-center relative z-10">
         <p class="text-2xl text-[#2C5F2D]">LittleHelp</p>
@@ -666,26 +559,18 @@ import {
   Edit,
   Trash2,
   ChevronRight,
-  ChevronDown,
   CalendarDays,
 } from 'lucide-vue-next';
 import { getChildren, deleteChild } from '../services/api';
 import { useAuthStore } from '../stores/auth';
 import { useAccessibility } from '../composables/useAccessibility';
-import littleHelpLogo from '../assets/littlehelp-logo.jpg';
 
 const router = useRouter();
 const authStore = useAuthStore();
 
-// ── Accessibility (global) ──────────────────────────────────────────────────
+// ── Accessibility ───────────────────────────────────────────────────────────
 const {
-  largeTextMode,
-  highContrastMode,
   showAccessibilityMenu,
-  accessibilityMenuRef,
-  toggleLargeTextMode,
-  toggleHighContrastMode,
-  toggleAccessibilityMenu,
 } = useAccessibility();
 
 // ── Profiles ────────────────────────────────────────────────────────────────
@@ -707,61 +592,164 @@ const highlightBox = ref(null);
 const tooltipBox = ref(null);
 
 const guideSteps = [
-  { title: 'Welcome to LittleHelp', text: 'LittleHelp helps families create balanced lunchbox ideas for children aged 5–12.', target: 'hero' },
-  { title: 'Try Quick Start', text: 'Use Quick Start to generate a lunchbox idea without creating a child profile first.', target: 'quickStart' },
-  { title: 'Create a Child Profile', text: 'Create a child profile to get personalised lunchbox recommendations based on age, allergies, and nutrition needs.', target: 'personalised' },
-  { title: 'Manage Child Profiles', text: 'Here you can add, edit, delete, and manage child profiles for personalised recommendations.', target: 'child' },
-  { title: 'Plan for Multiple Children', text: 'Select more than one child to generate family lunchbox ideas that consider different needs.', target: 'family' },
-  { title: 'Weekly Planning', text: 'Use Weekly Plan to build a practical lunchbox plan for the whole school week.', target: 'weekly' },
+  {
+    title: 'Welcome to LittleHelp',
+    text: 'LittleHelp helps families create balanced lunchbox ideas for children aged 5–12.',
+    target: 'hero',
+  },
+  {
+    title: 'Try Quick Start',
+    text: 'Use Quick Start to generate a lunchbox idea without creating a child profile first.',
+    target: 'quickStart',
+  },
+  {
+    title: 'Create a Child Profile',
+    text: 'Create a child profile to get personalised lunchbox recommendations based on age, allergies, and nutrition needs.',
+    target: 'personalised',
+  },
+  {
+    title: 'Manage Child Profiles',
+    text: 'Here you can add, edit, delete, and manage child profiles for personalised recommendations.',
+    target: 'child',
+  },
+  {
+    title: 'Plan for Multiple Children',
+    text: 'Select more than one child to generate family lunchbox ideas that consider different needs.',
+    target: 'family',
+  },
+  {
+    title: 'Weekly Planning',
+    text: 'Use Weekly Plan to build a practical lunchbox plan for the whole school week.',
+    target: 'weekly',
+  },
 ];
 
 const isLoggedIn = computed(() => authStore.isAuthenticated);
-const username = computed(() => authStore.user?.username || 'User');
 
-const allergenIdToName = { 47: 'Peanuts', 40: 'Tree nuts', 16: 'Milk', 18: 'Eggs', 24: 'Wheat', 50: 'Soy', 22: 'Fish', 15: 'Shellfish' };
-const nutritionFocusLabels = { iron: 'Iron Support', calcium: 'Calcium Support', brain: 'Brain Development', immunity: 'Immune Support', vitamin_d: 'Vitamin D Support', energy: 'Sustained Energy', variety: 'Diet Variety' };
+const allergenIdToName = {
+  47: 'Peanuts',
+  40: 'Tree nuts',
+  16: 'Milk',
+  18: 'Eggs',
+  24: 'Wheat',
+  50: 'Soy',
+  22: 'Fish',
+  15: 'Shellfish',
+};
+
+const nutritionFocusLabels = {
+  iron: 'Iron Support',
+  calcium: 'Calcium Support',
+  brain: 'Brain Development',
+  immunity: 'Immune Support',
+  vitamin_d: 'Vitamin D Support',
+  energy: 'Sustained Energy',
+  variety: 'Diet Variety',
+};
+
 const allowedAgeGroups = ['5-6 years', '7-9 years', '10-12 years'];
 
 const getGuideTargetElement = () => {
   const target = guideSteps[guideStep.value]?.target;
-  const targetMap = { hero: heroSection, quickStart: quickStartTarget, personalised: personalisedTarget, child: childProfileSection, family: familySection, weekly: weeklySection };
+
+  const targetMap = {
+    hero: heroSection,
+    quickStart: quickStartTarget,
+    personalised: personalisedTarget,
+    child: childProfileSection,
+    family: familySection,
+    weekly: weeklySection,
+  };
+
   return targetMap[target]?.value || null;
 };
 
 const updateGuidePosition = () => {
   if (!showGuide.value) return;
+
   const element = getGuideTargetElement();
-  if (!element) { highlightBox.value = null; tooltipBox.value = null; return; }
+
+  if (!element) {
+    highlightBox.value = null;
+    tooltipBox.value = null;
+    return;
+  }
+
   const rect = element.getBoundingClientRect();
   const padding = 10;
   const tooltipWidth = Math.min(360, window.innerWidth - 32);
   const gap = 18;
+
   const highlightTop = Math.max(rect.top - padding, 88);
   const highlightLeft = Math.max(rect.left - padding, 16);
   const highlightWidth = Math.min(rect.width + padding * 2, window.innerWidth - highlightLeft - 16);
   const highlightHeight = Math.min(rect.height + padding * 2, window.innerHeight - highlightTop - 16);
-  highlightBox.value = { top: highlightTop, left: highlightLeft, width: highlightWidth, height: highlightHeight };
+
+  highlightBox.value = {
+    top: highlightTop,
+    left: highlightLeft,
+    width: highlightWidth,
+    height: highlightHeight,
+  };
+
   let tooltipLeft = highlightLeft + highlightWidth + gap;
   let tooltipTop = highlightTop;
-  if (tooltipLeft + tooltipWidth > window.innerWidth - 24) { tooltipLeft = highlightLeft; tooltipTop = highlightTop + highlightHeight + gap; }
-  if (tooltipTop + 280 > window.innerHeight - 24) { tooltipTop = Math.max(96, highlightTop - 280 - gap); }
+
+  if (tooltipLeft + tooltipWidth > window.innerWidth - 24) {
+    tooltipLeft = highlightLeft;
+    tooltipTop = highlightTop + highlightHeight + gap;
+  }
+
+  if (tooltipTop + 280 > window.innerHeight - 24) {
+    tooltipTop = Math.max(96, highlightTop - 280 - gap);
+  }
+
   if (tooltipLeft < 16) tooltipLeft = 16;
   if (tooltipTop < 96) tooltipTop = 96;
-  tooltipBox.value = { top: tooltipTop, left: tooltipLeft, width: tooltipWidth };
+
+  tooltipBox.value = {
+    top: tooltipTop,
+    left: tooltipLeft,
+    width: tooltipWidth,
+  };
 };
 
-const highlightStyle = computed(() => highlightBox.value ? { top: `${highlightBox.value.top}px`, left: `${highlightBox.value.left}px`, width: `${highlightBox.value.width}px`, height: `${highlightBox.value.height}px` } : null);
-const tooltipStyle = computed(() => tooltipBox.value ? { top: `${tooltipBox.value.top}px`, left: `${tooltipBox.value.left}px`, width: `${tooltipBox.value.width}px` } : null);
+const highlightStyle = computed(() =>
+  highlightBox.value
+    ? {
+        top: `${highlightBox.value.top}px`,
+        left: `${highlightBox.value.left}px`,
+        width: `${highlightBox.value.width}px`,
+        height: `${highlightBox.value.height}px`,
+      }
+    : null,
+);
+
+const tooltipStyle = computed(() =>
+  tooltipBox.value
+    ? {
+        top: `${tooltipBox.value.top}px`,
+        left: `${tooltipBox.value.left}px`,
+        width: `${tooltipBox.value.width}px`,
+      }
+    : null,
+);
 
 const scrollToGuideTarget = () => {
   const element = getGuideTargetElement();
   if (!element) return;
+
   element.scrollIntoView({ behavior: 'smooth', block: 'center' });
   setTimeout(() => updateGuidePosition(), 450);
 };
 
 const nextGuideStep = () => {
-  if (guideStep.value < guideSteps.length - 1) { guideStep.value += 1; scrollToGuideTarget(); return; }
+  if (guideStep.value < guideSteps.length - 1) {
+    guideStep.value += 1;
+    scrollToGuideTarget();
+    return;
+  }
+
   finishGuide();
 };
 
@@ -775,43 +763,50 @@ const finishGuide = () => {
 
 const skipGuide = () => finishGuide();
 
-const restartGuide = () => {
-  guideStep.value = 0;
-  showGuide.value = true;
-  setTimeout(() => scrollToGuideTarget(), 50);
-};
-
-const toggleInteractiveGuide = () => {
-  restartGuide();
-  showAccessibilityMenu.value = false;
-};
-
 const openAccessibilityFromFooter = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  setTimeout(() => { showAccessibilityMenu.value = true; }, 350);
+
+  setTimeout(() => {
+    showAccessibilityMenu.value = true;
+  }, 350);
 };
 
 const goProtected = (path) => {
-  if (!isLoggedIn.value) { router.push({ path: '/login', query: { redirect: path } }); return; }
+  if (!isLoggedIn.value) {
+    router.push({ path: '/login', query: { redirect: path } });
+    return;
+  }
+
   router.push(path);
 };
 
-const handleLogout = () => {
-  authStore.logout();
-  profiles.value = [];
-  selectedForFamily.value = [];
-  router.push('/');
-};
-
 const normalizeAgeGroup = (ageGroup) => {
-  const mapping = { '5-6 years': '5-6 years', '7-9 years': '7-9 years', '10-12 years': '10-12 years', '3-6 years': '5-6 years', '6-9 years': '7-9 years', '9-12 years': '10-12 years', '12+ years': '10-12 years', '4-8': '7-9 years', '9-13': '10-12 years', '0-3 years': '', '2-3': '', '14-18': '' };
+  const mapping = {
+    '5-6 years': '5-6 years',
+    '7-9 years': '7-9 years',
+    '10-12 years': '10-12 years',
+    '3-6 years': '5-6 years',
+    '6-9 years': '7-9 years',
+    '9-12 years': '10-12 years',
+    '12+ years': '10-12 years',
+    '4-8': '7-9 years',
+    '9-13': '10-12 years',
+    '0-3 years': '',
+    '2-3': '',
+    '14-18': '',
+  };
+
   return mapping[ageGroup] || '';
 };
 
 const mapAllergiesToNames = (allergies) => {
   if (!Array.isArray(allergies)) return [];
+
   return allergies.map((allergy) => {
-    if (typeof allergy === 'string' && isNaN(Number(allergy))) return allergy;
+    if (typeof allergy === 'string' && Number.isNaN(Number(allergy))) {
+      return allergy;
+    }
+
     return allergenIdToName[Number(allergy)] || String(allergy);
   });
 };
@@ -828,6 +823,7 @@ const mapStatusToNutritionFocus = (child) => [
 const mapChildToProfileCard = (child) => {
   const focusIds = mapStatusToNutritionFocus(child);
   const normalizedAgeGroup = normalizeAgeGroup(child.age_band);
+
   return {
     id: child.child_id,
     name: child.child_name,
@@ -841,12 +837,17 @@ const mapChildToProfileCard = (child) => {
 };
 
 const loadProfiles = async () => {
-  if (!isLoggedIn.value) { profiles.value = []; selectedForFamily.value = []; return; }
+  if (!isLoggedIn.value) {
+    profiles.value = [];
+    selectedForFamily.value = [];
+    return;
+  }
+
   try {
     isLoadingProfiles.value = true;
     const children = await getChildren();
     const mapped = Array.isArray(children) ? children.map(mapChildToProfileCard) : [];
-    profiles.value = mapped.filter((p) => p.isSupportedAge);
+    profiles.value = mapped.filter((profile) => profile.isSupportedAge);
   } catch (error) {
     console.error('Failed to load children:', error);
   } finally {
@@ -856,8 +857,14 @@ const loadProfiles = async () => {
 
 onMounted(() => {
   loadProfiles();
+
   const hasSeenGuide = localStorage.getItem('littlehelp_user_guide_seen');
-  if (!hasSeenGuide) { showGuide.value = true; setTimeout(() => scrollToGuideTarget(), 300); }
+
+  if (!hasSeenGuide) {
+    showGuide.value = true;
+    setTimeout(() => scrollToGuideTarget(), 300);
+  }
+
   window.addEventListener('resize', updateGuidePosition);
   window.addEventListener('scroll', updateGuidePosition, true);
 });
@@ -867,7 +874,10 @@ onBeforeUnmount(() => {
   window.removeEventListener('scroll', updateGuidePosition, true);
 });
 
-watch(() => authStore.token, () => loadProfiles());
+watch(
+  () => authStore.token,
+  () => loadProfiles(),
+);
 
 const handleAddChild = () => {
   localStorage.removeItem('littlewell_edit_child_id');
@@ -880,30 +890,49 @@ const handleLunchboxPlan = () => {
 
 const toggleFamilySelection = (id) => {
   if (!isLoggedIn.value) return;
+
   if (selectedForFamily.value.includes(id)) {
-    selectedForFamily.value = selectedForFamily.value.filter((p) => p !== id);
+    selectedForFamily.value = selectedForFamily.value.filter((profileId) => profileId !== id);
   } else {
     selectedForFamily.value = [...selectedForFamily.value, id];
   }
 };
 
 const handleGenerateFamilyPlan = () => {
-  if (!isLoggedIn.value) { router.push({ path: '/login', query: { redirect: '/' } }); return; }
+  if (!isLoggedIn.value) {
+    router.push({ path: '/login', query: { redirect: '/' } });
+    return;
+  }
+
   if (selectedForFamily.value.length > 0 && profiles.value.length >= 2) {
     router.push(`/results?family=1&childIds=${selectedForFamily.value.join(',')}`);
   }
 };
 
-const handleViewMeals = (profileId) => goProtected(`/results?childId=${profileId}`);
+const handleViewMeals = (profileId) => {
+  goProtected(`/results?childId=${profileId}`);
+};
 
 const handleDeleteProfile = async (profileId, profileName) => {
-  const confirmed = window.confirm(`Are you sure you want to delete ${profileName}'s profile? This action cannot be undone.`);
+  const confirmed = window.confirm(
+    `Are you sure you want to delete ${profileName}'s profile? This action cannot be undone.`,
+  );
+
   if (!confirmed) return;
+
   try {
     await deleteChild(profileId);
-    selectedForFamily.value = selectedForFamily.value.filter((id) => String(id) !== String(profileId));
+
+    selectedForFamily.value = selectedForFamily.value.filter(
+      (id) => String(id) !== String(profileId),
+    );
+
     const activeChildId = localStorage.getItem('littlewell_active_child_id');
-    if (activeChildId && String(activeChildId) === String(profileId)) localStorage.removeItem('littlewell_active_child_id');
+
+    if (activeChildId && String(activeChildId) === String(profileId)) {
+      localStorage.removeItem('littlewell_active_child_id');
+    }
+
     await loadProfiles();
   } catch (error) {
     console.error('Failed to delete child profile:', error);
@@ -918,7 +947,9 @@ const handleEditProfile = (profileId) => {
 </script>
 
 <style scoped>
-.text-muted-foreground { color: #6b7280; }
+.text-muted-foreground {
+  color: #6b7280;
+}
 
 .hero-section,
 .child-profile-section,
@@ -932,7 +963,10 @@ const handleEditProfile = (profileId) => {
   border: 3px solid #A8D5BA;
   border-radius: 24px;
   background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45), 0 0 0 8px rgba(168, 213, 186, 0.18), 0 20px 60px rgba(0, 0, 0, 0.25);
+  box-shadow:
+    0 0 0 9999px rgba(0, 0, 0, 0.45),
+    0 0 0 8px rgba(168, 213, 186, 0.18),
+    0 20px 60px rgba(0, 0, 0, 0.25);
   z-index: 101;
   pointer-events: none;
   transition: all 0.25s ease;
@@ -948,41 +982,4 @@ const handleEditProfile = (profileId) => {
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
   transition: all 0.25s ease;
 }
-
-.nav-link {
-  color: #2C5F2D;
-  padding: 0.55rem 0.85rem;
-  border-radius: 0.65rem;
-  font-size: 0.92rem;
-  line-height: 1.2;
-  white-space: nowrap;
-  transition: background-color 0.2s ease;
-}
-.nav-link:hover { background-color: rgba(168, 213, 186, 0.12); }
-.nav-signin-link { text-decoration: underline; text-decoration-color: #2C5F2D; text-underline-offset: 3px; }
-
-.nav-primary-button {
-  background-color: #A8D5BA;
-  color: #2C5F2D;
-  padding: 0.65rem 1rem;
-  border-radius: 0.75rem;
-  font-size: 0.92rem;
-  font-weight: 600;
-  white-space: nowrap;
-  transition: background-color 0.2s ease;
-}
-.nav-primary-button:hover { background-color: #8FC2A4; }
-
-.nav-outline-button {
-  background-color: white;
-  border: 1px solid #A8D5BA;
-  color: #2C5F2D;
-  padding: 0.6rem 1rem;
-  border-radius: 0.75rem;
-  font-size: 0.92rem;
-  font-weight: 600;
-  white-space: nowrap;
-  transition: background-color 0.2s ease;
-}
-.nav-outline-button:hover { background-color: rgba(168, 213, 186, 0.12); }
 </style>
