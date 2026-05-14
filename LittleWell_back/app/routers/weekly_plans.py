@@ -11,8 +11,14 @@ from ..models import (
     WeeklyPlanChild,
     WeeklyPlanMeal,
 )
-from ..schemas import WeeklyPlanCreate, WeeklyPlanResponse
-
+from ..schemas import (
+    WeeklyPlanCreate,
+    WeeklyPlanResponse,
+    WeeklyPlanGenerateRequest,
+    WeeklyPlanGenerateResponse,
+)
+from ..routers.recommendations import generate_lunchboxes_for_child
+from ..services.mealdb_service import find_best_recipe_for_lunchbox
 
 router = APIRouter(prefix="/weekly-plans", tags=["weekly-plans"])
 
@@ -138,6 +144,57 @@ def pydantic_to_dict(item):
     return item.dict()
 
 
+def get_cover_text(frequency: int, index: int) -> str:
+    covers = {
+        2: ["Monday to Wednesday", "Thursday to Friday"],
+        3: ["Monday to Tuesday", "Wednesday to Thursday", "Friday"],
+        5: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+    }
+
+    cover_list = covers.get(frequency, ["Selected days"])
+
+    if index < len(cover_list):
+        return cover_list[index]
+
+    return "Selected days"
+
+
+def get_cook_title(frequency: int, index: int) -> str:
+    titles = {
+        2: ["Cook on Sunday", "Cook on Wednesday"],
+        3: ["Cook on Sunday", "Cook on Tuesday", "Cook on Thursday"],
+        5: ["Cook on Monday", "Cook on Tuesday", "Cook on Wednesday", "Cook on Thursday", "Cook on Friday"],
+    }
+
+    title_list = titles.get(frequency, [f"Cook Session {index + 1}"])
+
+    if index < len(title_list):
+        return title_list[index]
+
+    return f"Cook Session {index + 1}"
+
+
+def get_prep_time(frequency: int) -> str:
+    if frequency == 5:
+        return "20 mins"
+
+    if frequency == 3:
+        return "30 mins"
+
+    return "40 mins"
+
+
+def get_season_name_from_id(season_id: int | None) -> str:
+    mapping = {
+        1: "Spring",
+        2: "Summer",
+        3: "Autumn",
+        4: "Winter",
+    }
+
+    return mapping.get(season_id, "Seasonal")
+
+
 def build_plan_response(db: Session, plan: WeeklyPlan, user_id: int) -> dict:
     child_links = (
         db.query(WeeklyPlanChild)
@@ -201,6 +258,162 @@ def build_plan_response(db: Session, plan: WeeklyPlan, user_id: int) -> dict:
         "updated_at": plan.updated_at,
         "children": children,
         "meals": meals,
+    }
+
+
+@router.post("/generate", response_model=WeeklyPlanGenerateResponse)
+async def generate_weekly_plan(
+    payload: WeeklyPlanGenerateRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    user_id = current_user.user_id
+
+    if not payload.child_ids:
+        raise HTTPException(
+            status_code=400,
+            detail="At least one child must be selected.",
+        )
+
+    frequency = normalize_cook_frequency(payload.cook_frequency)
+
+    if frequency not in {2, 3, 5}:
+        raise HTTPException(
+            status_code=400,
+            detail="cook_frequency must be 2, 3, or 5.",
+        )
+
+    children = (
+        db.query(UserChild)
+        .filter(
+            UserChild.child_id.in_(payload.child_ids),
+            UserChild.user_id == user_id,
+        )
+        .all()
+    )
+
+    found_child_ids = {child.child_id for child in children}
+
+    missing_child_ids = [
+        child_id
+        for child_id in payload.child_ids
+        if child_id not in found_child_ids
+    ]
+
+    if missing_child_ids:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Child profile(s) not found or not owned by this user: {missing_child_ids}",
+        )
+
+    if not children:
+        raise HTTPException(
+            status_code=404,
+            detail="No children found.",
+        )
+
+    all_lunchboxes = []
+
+    if len(children) == 1:
+        result = generate_lunchboxes_for_child(
+            db=db,
+            child=children[0],
+            seasonal=payload.seasonal,
+            max_boxes=frequency,
+            user_id=user_id,
+        )
+
+        all_lunchboxes = result.get("lunchboxes", [])
+
+    else:
+        class FamilyChild:
+            pass
+
+        family = FamilyChild()
+        family.child_id = children[0].child_id
+        family.child_name = " + ".join([child.child_name for child in children])
+        family.age_band = children[0].age_band
+
+        family.iron_status = (
+            1
+            if any(int(child.iron_status or 0) == 1 for child in children)
+            else 0
+        )
+
+        family.calcium_status = (
+            1
+            if any(int(child.calcium_status or 0) == 1 for child in children)
+            else 0
+        )
+
+        family.vitamin_d_status = (
+            1
+            if any(int(child.vitamin_d_status or 0) == 1 for child in children)
+            else 0
+        )
+
+        family.variety_status = (
+            1
+            if any(int(child.variety_status or 0) == 1 for child in children)
+            else 0
+        )
+
+        family.restriction_id = children[0].restriction_id
+
+        result = generate_lunchboxes_for_child(
+            db=db,
+            child=family,
+            seasonal=payload.seasonal,
+            max_boxes=frequency,
+            user_id=user_id,
+        )
+
+        all_lunchboxes = result.get("lunchboxes", [])
+
+    if not all_lunchboxes:
+        raise HTTPException(
+            status_code=500,
+            detail="Could not generate lunchbox recommendations.",
+        )
+
+    used_recipe_ids = set()
+    batches = []
+
+    for index in range(frequency):
+        lunchbox = all_lunchboxes[index % len(all_lunchboxes)]
+
+        recipe = await find_best_recipe_for_lunchbox(
+            lunchbox=lunchbox,
+            used_recipe_ids=used_recipe_ids,
+        )
+
+        if recipe.get("id"):
+            used_recipe_ids.add(str(recipe["id"]))
+
+        season_name = get_season_name_from_id(payload.season_id)
+
+        batches.append(
+            {
+                "id": f"batch-{index + 1}",
+                "cookDay": get_cook_title(frequency, index),
+                "coverDays": get_cover_text(frequency, index),
+                "prepTime": get_prep_time(frequency),
+                "seasonalNote": f"{season_name} ingredients are prioritised where available.",
+                "storageTip": (
+                    "Prepare fresh and keep chilled until lunch."
+                    if frequency == 5
+                    else "Cook in batch, portion safely, and store in the fridge."
+                ),
+                "lunchbox": lunchbox,
+                "recipe": recipe,
+            }
+        )
+
+    return {
+        "child_ids": payload.child_ids,
+        "cook_frequency": frequency,
+        "season_id": payload.season_id,
+        "batches": batches,
     }
 
 
