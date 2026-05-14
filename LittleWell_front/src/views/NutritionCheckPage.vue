@@ -45,9 +45,14 @@
             <div :class="['w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0', questions[currentQuestion].colorClass]">
               <component :is="questions[currentQuestion].icon" class="w-5 h-5 text-white" />
             </div>
+
             <div class="flex-1">
-              <p class="text-sm text-muted-foreground mb-2">{{ questions[currentQuestion].category }}</p>
-              <h2 class="text-xl font-medium">{{ questions[currentQuestion].question }}</h2>
+              <p class="text-sm text-muted-foreground mb-2">
+                {{ questions[currentQuestion].category }}
+              </p>
+              <h2 class="text-xl font-medium">
+                {{ questions[currentQuestion].question }}
+              </h2>
             </div>
           </div>
         </div>
@@ -62,11 +67,12 @@
               'w-full p-4 rounded-lg border-2 text-left transition-all',
               answers[questions[currentQuestion].id] === option.value
                 ? 'border-[#A8D5BA] bg-[#A8D5BA]/10'
-                : 'border-gray-200 hover:border-[#A8D5BA]/50'
+                : 'border-gray-200 hover:border-[#A8D5BA]/50',
             ]"
           >
             <div class="flex items-center justify-between">
               <span>{{ option.label }}</span>
+
               <div
                 v-if="answers[questions[currentQuestion].id] === option.value"
                 class="w-5 h-5 bg-[#A8D5BA] rounded-full flex items-center justify-center"
@@ -87,6 +93,7 @@
         >
           Previous
         </button>
+
         <button
           v-if="currentQuestion < questions.length - 1"
           @click="nextQuestion"
@@ -95,6 +102,7 @@
         >
           Next Question
         </button>
+
         <button
           v-else
           @click="handleComplete"
@@ -112,7 +120,15 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { ArrowLeft, Check, ClipboardCheck, Apple, Droplet, Cookie, Carrot } from 'lucide-vue-next';
+import {
+  ArrowLeft,
+  Check,
+  ClipboardCheck,
+  Apple,
+  Droplet,
+  Cookie,
+  Carrot,
+} from 'lucide-vue-next';
 import { useNutritionCheckStore } from '../stores/nutritionCheck';
 
 const router = useRouter();
@@ -177,6 +193,15 @@ const questions = [
   },
 ];
 
+const getActiveChildId = () => {
+  return (
+    route.query.childId ||
+    localStorage.getItem('littlewell_active_child_id') ||
+    localStorage.getItem('littlewell_edit_child_id') ||
+    ''
+  );
+};
+
 const selectAnswer = (value) => {
   answers.value[questions[currentQuestion.value].id] = value;
 };
@@ -194,12 +219,14 @@ const previousQuestion = () => {
 };
 
 const goBack = () => {
-  const childId = route.query.childId;
+  const childId = getActiveChildId();
+
   if (childId) {
     router.push(`/profile-summary?childId=${childId}`);
-  } else {
-    router.push('/profile-summary');
+    return;
   }
+
+  router.push('/child-info');
 };
 
 const handleComplete = () => {
@@ -210,7 +237,13 @@ const handleComplete = () => {
     protein: answers.value.protein || 'needs',
   };
 
-  const scoreMap = { excellent: 4, good: 3, needs: 2, poor: 1 };
+  const scoreMap = {
+    excellent: 4,
+    good: 3,
+    needs: 2,
+    poor: 1,
+  };
+
   const totalScore = Object.values(insights).reduce((sum, val) => sum + scoreMap[val], 0);
   const maxScore = Object.keys(insights).length * 4;
   const percentage = (totalScore / maxScore) * 100;
@@ -222,7 +255,8 @@ const handleComplete = () => {
     completedAt: new Date().toISOString(),
   });
 
-  const childId = route.query.childId || '';
+  const childId = getActiveChildId();
+
   if (childId) {
     router.push(`/nutrition-insights?childId=${childId}`);
   } else {
