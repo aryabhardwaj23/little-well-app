@@ -588,8 +588,10 @@
 
       <div class="container mx-auto px-6 max-w-5xl relative z-10 mt-4">
         <div class="bg-white/85 backdrop-blur-[1px] border border-[#E6E2D8] rounded-3xl p-8 md:p-12 text-center shadow-sm">
-          <h2 class="text-3xl text-[#2C5F2D]">Questions about your lunchbox plan?</h2>
-          <p class="mt-2 text-muted-foreground leading-relaxed">Why Choose LittleHelp</p>
+          <h2 class="text-3xl text-[#2C5F2D]">Knowledge Hub</h2>
+          <p class="mt-2 text-muted-foreground leading-relaxed max-w-2xl mx-auto">
+            Learn about serving sizes, food groups, and what to watch out for in everyday foods.
+          </p>
 
           <button
             @click="router.push('/knowledge-hub-prototype')"

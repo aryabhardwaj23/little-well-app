@@ -128,7 +128,7 @@
 
 <script setup>
 import { ref, reactive } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import {
   User,
   Lock,
@@ -142,6 +142,7 @@ import { useAuthStore } from '../stores/auth';
 import logoUrl from '../assets/littlehelp-logo.jpg';
 
 const router = useRouter();
+const route = useRoute();
 const authStore = useAuthStore();
 
 const form = reactive({
@@ -163,7 +164,21 @@ const handleLogin = async () => {
       password: form.password,
     });
 
-    router.push('/');
+    const rawRedirect = route.query.redirect;
+    let destination = '/';
+    if (typeof rawRedirect === 'string' && rawRedirect.startsWith('/') && !rawRedirect.startsWith('//')) {
+      destination = rawRedirect;
+    }
+
+    const hashIndex = destination.indexOf('#');
+    if (hashIndex !== -1) {
+      router.push({
+        path: destination.slice(0, hashIndex),
+        hash: destination.slice(hashIndex),
+      });
+    } else {
+      router.push(destination);
+    }
   } catch (err) {
     errorMessage.value = err.message || 'Incorrect username or password.';
   } finally {
