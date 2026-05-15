@@ -12,6 +12,10 @@ app.add_middleware(
         "https://littlewell.app",
         "https://www.littlewell.app",
         "https://dev.littlewell.app"
+        "https://iteration2.littlehelp.live",
+        "https://littlehelp.live",
+        "https://www.littlehelp.live",
+        "https://iteration1.littlehelp.live"
     ],
     allow_credentials=True,
     allow_methods=["*"],
