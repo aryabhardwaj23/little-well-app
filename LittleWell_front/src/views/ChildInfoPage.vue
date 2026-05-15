@@ -5,11 +5,13 @@
       <button
         @click="router.push('/child-profile')"
         class="mb-6 px-4 py-2 hover:bg-white rounded-lg transition-colors inline-flex items-center gap-2"
+        type="button"
+        aria-label="Go back to child profile"
       >
-        <ArrowLeft class="w-4 h-4" />
+        <ArrowLeft class="w-4 h-4" aria-hidden="true" />
         Back
       </button>
-
+ 
       <!-- Header -->
       <div class="text-center mb-12">
         <h1 class="text-4xl mb-4">Tell Us About Your Child</h1>
@@ -17,39 +19,45 @@
           LittleWell supports school-aged children from 5 to 12 years old.
         </p>
       </div>
-
+ 
       <!-- Form -->
       <div class="space-y-8">
         <!-- Basic Info -->
-        <div class="p-8 rounded-2xl shadow-sm bg-white">
+        <section class="p-8 rounded-2xl shadow-sm bg-white" aria-label="Basic information">
           <h2 class="text-2xl mb-6">Basic Information</h2>
-
+ 
           <div class="space-y-6">
+            <!-- Name -->
             <div>
-              <label class="block text-sm font-medium mb-2">
+              <label for="child-name" class="block text-sm font-medium mb-2">
                 Child's Name (or nickname)
               </label>
               <input
+                id="child-name"
                 v-model="formData.name"
                 type="text"
                 maxlength="20"
                 placeholder="e.g. Emma"
+                autocomplete="off"
                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8D5BA] focus:border-transparent"
                 @input="cleanNameInput"
+                aria-describedby="child-name-hint"
               />
-              <p class="text-xs text-muted-foreground mt-1">
+              <p id="child-name-hint" class="text-xs text-muted-foreground mt-1">
                 Letters only, maximum 20 characters. We use nicknames only—no last names needed.
               </p>
             </div>
-
-            <div>
-              <label class="block text-sm font-medium mb-2">Age</label>
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+ 
+            <!-- Age Group -->
+            <fieldset>
+              <legend class="block text-sm font-medium mb-2">Age</legend>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-3" role="group" aria-label="Select age group">
                 <button
                   v-for="age in ageGroups"
                   :key="age"
                   type="button"
                   @click="formData.ageGroup = age"
+                  :aria-pressed="formData.ageGroup === age"
                   :class="[
                     'p-4 rounded-lg border-2 transition-all text-center',
                     formData.ageGroup === age
@@ -63,16 +71,18 @@
               <p class="text-xs text-muted-foreground mt-2">
                 This system is designed for children aged 5–12.
               </p>
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium mb-2">Gender (optional)</label>
-              <div class="grid grid-cols-3 gap-3">
+            </fieldset>
+ 
+            <!-- Gender -->
+            <fieldset>
+              <legend class="block text-sm font-medium mb-2">Gender (optional)</legend>
+              <div class="grid grid-cols-3 gap-3" role="group" aria-label="Select gender">
                 <button
                   v-for="gender in genderOptions"
                   :key="gender"
                   type="button"
                   @click="formData.gender = gender"
+                  :aria-pressed="formData.gender === gender"
                   :class="[
                     'p-3 rounded-lg border-2 transition-all',
                     formData.gender === gender
@@ -83,25 +93,26 @@
                   {{ gender }}
                 </button>
               </div>
-            </div>
+            </fieldset>
           </div>
-        </div>
-
+        </section>
+ 
         <!-- Health Information -->
-        <div class="p-8 rounded-2xl shadow-sm bg-white">
+        <section class="p-8 rounded-2xl shadow-sm bg-white" aria-label="Health and dietary information">
           <h2 class="text-2xl mb-6">Health & Dietary Information</h2>
-
+ 
           <div class="space-y-6">
-            <div>
-              <label class="block text-sm font-medium mb-2">Any food allergies?</label>
-              <p class="text-sm text-muted-foreground mb-3">Select all that apply</p>
-
-              <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <!-- Allergies -->
+            <fieldset>
+              <legend class="block text-sm font-medium mb-1">Any food allergies?</legend>
+              <p id="allergies-hint" class="text-sm text-muted-foreground mb-3">Select all that apply</p>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-2" role="group" aria-describedby="allergies-hint">
                 <button
                   v-for="allergy in commonAllergies"
                   :key="allergy"
                   type="button"
                   @click="toggleAllergy(allergy)"
+                  :aria-pressed="formData.allergies.includes(allergy)"
                   :class="[
                     'p-3 rounded-lg border-2 transition-all text-sm',
                     formData.allergies.includes(allergy)
@@ -112,19 +123,20 @@
                   {{ allergy }}
                 </button>
               </div>
-            </div>
-
+            </fieldset>
+ 
+            <!-- Dietary Restrictions -->
             <div>
-              <label class="block text-sm font-medium mb-2">
+              <label for="dietary-restriction" class="block text-sm font-medium mb-2">
                 Any dietary restrictions? (optional)
               </label>
-
               <select
+                id="dietary-restriction"
                 v-model="formData.restrictionId"
                 class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8D5BA] focus:border-transparent"
+                aria-describedby="dietary-restriction-hint"
               >
                 <option :value="null">No restrictions</option>
-
                 <option
                   v-for="option in dietaryRestrictionOptions"
                   :key="option.value"
@@ -133,24 +145,24 @@
                   {{ option.label }}
                 </option>
               </select>
-
-              <p class="text-xs text-muted-foreground mt-1">
+              <p id="dietary-restriction-hint" class="text-xs text-muted-foreground mt-1">
                 This is saved as restriction_id and matched with the dietary restriction database.
               </p>
             </div>
-
-            <div>
-              <label class="block text-sm font-medium mb-2">Activity level</label>
-              <p class="text-sm text-muted-foreground mb-3">
-                Choose the option that best matches your child’s usual daily activity.
+ 
+            <!-- Activity Level -->
+            <fieldset>
+              <legend class="block text-sm font-medium mb-2">Activity level</legend>
+              <p id="activity-hint" class="text-sm text-muted-foreground mb-3">
+                Choose the option that best matches your child's usual daily activity.
               </p>
-
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-3" role="group" aria-describedby="activity-hint">
                 <button
                   v-for="level in activityLevels"
                   :key="level.value"
                   type="button"
                   @click="formData.activityLevel = level.value"
+                  :aria-pressed="formData.activityLevel === level.value"
                   :class="[
                     'p-4 rounded-lg border-2 transition-all text-left',
                     formData.activityLevel === level.value
@@ -158,54 +170,22 @@
                       : 'border-gray-200 hover:border-[#A8D5BA]/50'
                   ]"
                 >
-                  <div class="text-2xl mb-2">{{ level.icon }}</div>
+                  <div class="text-2xl mb-2" aria-hidden="true">{{ level.icon }}</div>
                   <div class="text-sm font-semibold mb-1">{{ level.label }}</div>
-                  <div class="text-xs leading-relaxed text-muted-foreground">
-                    {{ level.description }}
-                  </div>
+                  <div class="text-xs leading-relaxed text-muted-foreground">{{ level.description }}</div>
                 </button>
               </div>
-            </div>
+            </fieldset>
           </div>
-        </div>
-
-        <!-- Eating Habits hidden from UI only.
-        Keep formData.eatingHabit, eatingHabits, and child.eating_habit logic in script
-        so existing draft/store/backend logic will not be affected.
-
-        <div class="p-8 rounded-2xl shadow-sm bg-white">
-          <h2 class="text-2xl mb-6">Eating Habits</h2>
-
-          <div>
-            <label class="block text-sm font-medium mb-2">
-              How would you describe your child's eating habits?
-            </label>
-
-            <div class="space-y-2">
-              <label
-                v-for="habit in eatingHabits"
-                :key="habit"
-                class="flex items-center p-3 border-2 rounded-lg cursor-pointer hover:border-[#A8D5BA]/50 transition-colors"
-                :class="formData.eatingHabit === habit ? 'border-[#A8D5BA] bg-[#A8D5BA]/5' : 'border-gray-200'"
-              >
-                <input
-                  type="radio"
-                  :value="habit"
-                  v-model="formData.eatingHabit"
-                  class="mr-3"
-                />
-                <span>{{ habit }}</span>
-              </label>
-            </div>
-          </div>
-        </div>
-        -->
-
+        </section>
+ 
         <!-- Continue Button -->
         <button
           @click="handleContinue"
           :disabled="!formData.name || !formData.ageGroup"
           class="w-full bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg py-4 text-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          type="button"
+          :aria-disabled="!formData.name || !formData.ageGroup"
         >
           Continue to Nutrition Focus
         </button>
@@ -213,17 +193,17 @@
     </div>
   </div>
 </template>
-
+ 
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { ArrowLeft } from 'lucide-vue-next';
 import { useChildProfileStore } from '../stores/childProfile';
 import { getChildById } from '../services/api';
-
+ 
 const router = useRouter();
 const childProfileStore = useChildProfileStore();
-
+ 
 const formData = ref({
   name: '',
   ageGroup: '',
@@ -235,22 +215,11 @@ const formData = ref({
   eatingHabit: '',
   nutritionFocus: [],
 });
-
+ 
 const ageGroups = ['5-6 years', '7-9 years', '10-12 years'];
-
 const genderOptions = ['Boy', 'Girl', 'Prefer not to say'];
-
-const commonAllergies = [
-  'Peanuts',
-  'Tree nuts',
-  'Milk',
-  'Eggs',
-  'Wheat',
-  'Soy',
-  'Fish',
-  'Shellfish',
-];
-
+const commonAllergies = ['Peanuts', 'Tree nuts', 'Milk', 'Eggs', 'Wheat', 'Soy', 'Fish', 'Shellfish'];
+ 
 const dietaryRestrictionOptions = [
   { label: 'Vegan', value: 1, code: 'VEGAN' },
   { label: 'Vegetarian', value: 2, code: 'VEGETARIAN' },
@@ -261,128 +230,64 @@ const dietaryRestrictionOptions = [
   { label: 'Lactose Intolerance', value: 7, code: 'LACTOSE_INT' },
   { label: 'Gluten Free', value: 8, code: 'GLUTEN_FREE' },
 ];
-
-const allergenIdToName = {
-  47: 'Peanuts',
-  40: 'Tree nuts',
-  16: 'Milk',
-  18: 'Eggs',
-  24: 'Wheat',
-  50: 'Soy',
-  22: 'Fish',
-  15: 'Shellfish',
-};
-
+ 
+const allergenIdToName = { 47: 'Peanuts', 40: 'Tree nuts', 16: 'Milk', 18: 'Eggs', 24: 'Wheat', 50: 'Soy', 22: 'Fish', 15: 'Shellfish' };
+ 
 const activityLevels = [
-  {
-    value: 'low',
-    label: 'Light',
-    icon: '🚶',
-    description: 'Mostly seated activities, light walking, or limited active play.',
-  },
-  {
-    value: 'moderate',
-    label: 'Moderate',
-    icon: '🏃',
-    description: 'Regular play, walking, school activities, or some sports during the week.',
-  },
-  {
-    value: 'high',
-    label: 'Active',
-    icon: '⚡',
-    description: 'Very active most days, with frequent sports, running, or high-energy play.',
-  },
+  { value: 'low', label: 'Light', icon: '🚶', description: 'Mostly seated activities, light walking, or limited active play.' },
+  { value: 'moderate', label: 'Moderate', icon: '🏃', description: 'Regular play, walking, school activities, or some sports during the week.' },
+  { value: 'high', label: 'Active', icon: '⚡', description: 'Very active most days, with frequent sports, running, or high-energy play.' },
 ];
-
-const eatingHabits = [
-  'Eats almost everything',
-  'Usually willing to try new foods',
-  'Picky eater - prefers familiar foods',
-  'Very selective - limited food preferences',
-];
-
-const isActiveStatus = (value) => {
-  return value === 1 || value === '1' || value === true;
-};
-
+ 
+const eatingHabits = ['Eats almost everything', 'Usually willing to try new foods', 'Picky eater - prefers familiar foods', 'Very selective - limited food preferences'];
+ 
+const isActiveStatus = (value) => value === 1 || value === '1' || value === true;
+ 
 const normalizeAgeGroup = (ageGroup) => {
-  const mapping = {
-    '5-6 years': '5-6 years',
-    '7-9 years': '7-9 years',
-    '10-12 years': '10-12 years',
-
-    // Old values compatibility
-    '3-6 years': '5-6 years',
-    '6-9 years': '7-9 years',
-    '9-12 years': '10-12 years',
-    '12+ years': '10-12 years',
-    '4-8': '7-9 years',
-    '9-13': '10-12 years',
-  };
-
+  const mapping = { '5-6 years': '5-6 years', '7-9 years': '7-9 years', '10-12 years': '10-12 years', '3-6 years': '5-6 years', '6-9 years': '7-9 years', '9-12 years': '10-12 years', '12+ years': '10-12 years', '4-8': '7-9 years', '9-13': '10-12 years' };
   return mapping[ageGroup] || '';
 };
-
-const mapStatusToNutritionFocus = (child) => {
-  return [
-    isActiveStatus(child.iron_status) ? 'iron' : null,
-    isActiveStatus(child.calcium_status) ? 'calcium' : null,
-    isActiveStatus(child.vitamin_d_status) ? 'immunity' : null,
-    isActiveStatus(child.variety_status) ? 'variety' : null,
-  ].filter(Boolean);
-};
-
+ 
+const mapStatusToNutritionFocus = (child) => [
+  isActiveStatus(child.iron_status) ? 'iron' : null,
+  isActiveStatus(child.calcium_status) ? 'calcium' : null,
+  isActiveStatus(child.vitamin_d_status) ? 'immunity' : null,
+  isActiveStatus(child.variety_status) ? 'variety' : null,
+].filter(Boolean);
+ 
 const mapAllergiesToNames = (allergies) => {
   if (!Array.isArray(allergies)) return [];
-
-  return allergies
-    .map((allergy) => {
-      if (typeof allergy === 'string' && commonAllergies.includes(allergy)) {
-        return allergy;
-      }
-
-      const id = Number(allergy);
-      return allergenIdToName[id] || null;
-    })
-    .filter(Boolean);
+  return allergies.map((allergy) => {
+    if (typeof allergy === 'string' && commonAllergies.includes(allergy)) return allergy;
+    return allergenIdToName[Number(allergy)] || null;
+  }).filter(Boolean);
 };
-
+ 
 const getRestrictionLabelById = (restrictionId, fallback = '') => {
-  const option = dietaryRestrictionOptions.find(
-    (item) => String(item.value) === String(restrictionId)
-  );
-
+  const option = dietaryRestrictionOptions.find((item) => String(item.value) === String(restrictionId));
   return option?.label || fallback || '';
 };
-
+ 
 const cleanNameInput = () => {
-  formData.value.name = formData.value.name
-    .replace(/[^A-Za-z\s]/g, '')
-    .slice(0, 20);
+  formData.value.name = formData.value.name.replace(/[^A-Za-z\s]/g, '').slice(0, 20);
 };
-
+ 
 onMounted(async () => {
   const editingChildId = localStorage.getItem('littlewell_edit_child_id');
-
   if (editingChildId) {
     try {
       const child = await getChildById(editingChildId);
-
       const draftData = {
         name: child.child_name || '',
         ageGroup: normalizeAgeGroup(child.age_band),
         gender: child.gender || '',
         allergies: mapAllergiesToNames(child.allergies),
         restrictionId: child.restriction_id || null,
-        dietaryRestriction: getRestrictionLabelById(
-          child.restriction_id,
-          child.restriction_name || ''
-        ),
+        dietaryRestriction: getRestrictionLabelById(child.restriction_id, child.restriction_name || ''),
         activityLevel: child.activity_level || 'moderate',
         eatingHabit: child.eating_habit || '',
         nutritionFocus: mapStatusToNutritionFocus(child),
       };
-
       childProfileStore.updateDraft(draftData);
       formData.value = JSON.parse(JSON.stringify(draftData));
     } catch (error) {
@@ -390,7 +295,6 @@ onMounted(async () => {
     }
   } else {
     const draft = childProfileStore.childProfileDraft || {};
-
     formData.value = {
       ...formData.value,
       ...draft,
@@ -400,7 +304,7 @@ onMounted(async () => {
     };
   }
 });
-
+ 
 const toggleAllergy = (allergy) => {
   if (formData.value.allergies.includes(allergy)) {
     formData.value.allergies = formData.value.allergies.filter((a) => a !== allergy);
@@ -408,20 +312,15 @@ const toggleAllergy = (allergy) => {
     formData.value.allergies = [...formData.value.allergies, allergy];
   }
 };
-
+ 
 const handleContinue = () => {
   formData.value.ageGroup = normalizeAgeGroup(formData.value.ageGroup);
-  formData.value.dietaryRestriction = getRestrictionLabelById(
-    formData.value.restrictionId
-  );
-
+  formData.value.dietaryRestriction = getRestrictionLabelById(formData.value.restrictionId);
   childProfileStore.updateDraft(formData.value);
   router.push('/nutrition-needs');
 };
 </script>
-
+ 
 <style scoped>
-.text-muted-foreground {
-  color: #6b7280;
-}
+.text-muted-foreground { color: #6b7280; }
 </style>
