@@ -28,24 +28,28 @@
           Step {{ guideStep + 1 }} of {{ guideSteps.length }}
         </p>
 
-        <h2 id="guide-title" class="text-2xl text-[#2C5F2D] mb-3">
+        <h2 id="guide-title" class="text-xl sm:text-2xl text-[#2C5F2D] mb-3">
           {{ guideSteps[guideStep].title }}
         </h2>
 
-        <p class="text-muted-foreground leading-relaxed">
+        <p class="text-muted-foreground leading-relaxed text-sm sm:text-base">
           {{ guideSteps[guideStep].text }}
         </p>
 
-        <div class="flex items-center justify-between mt-8">
+        <div class="flex items-center justify-between gap-3 mt-6 sm:mt-8">
           <button
             @click="skipGuide"
-            class="px-4 py-2 text-gray-500 hover:text-gray-700 transition-colors"
+            class="px-3 sm:px-4 py-2 text-gray-500 hover:text-gray-700 transition-colors text-sm sm:text-base"
             type="button"
           >
             Skip
           </button>
 
-          <div class="flex items-center gap-2" role="tablist" aria-label="Guide progress">
+          <div
+            class="flex items-center gap-2"
+            role="tablist"
+            aria-label="Guide progress"
+          >
             <span
               v-for="(_, index) in guideSteps"
               :key="index"
@@ -61,7 +65,7 @@
 
           <button
             @click="nextGuideStep"
-            class="px-5 py-2 bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg font-semibold transition-colors"
+            class="px-4 sm:px-5 py-2 bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg font-semibold transition-colors text-sm sm:text-base"
             type="button"
           >
             {{ guideStep === guideSteps.length - 1 ? 'Finish' : 'Next' }}
@@ -72,59 +76,82 @@
 
     <!-- Hero Section -->
     <main>
-      <section ref="heroSection" class="hero-section pt-12 pb-14 bg-[#FAF9F6]" aria-label="Hero">
-        <div class="container mx-auto px-6 max-w-6xl">
+      <section
+        ref="heroSection"
+        class="hero-section pt-8 sm:pt-10 lg:pt-12 pb-10 sm:pb-12 lg:pb-14 bg-[#FAF9F6]"
+        aria-label="Hero"
+      >
+        <div class="container mx-auto px-4 sm:px-6 max-w-6xl">
           <div class="grid lg:grid-cols-2 gap-8 items-stretch">
             <div class="flex flex-col justify-center">
-              <h1 class="text-4xl md:text-5xl leading-tight text-[#2C5F2D] mb-5">
+              <h1
+                class="text-3xl sm:text-4xl md:text-5xl leading-tight text-[#2C5F2D] mb-5"
+              >
                 Fresh lunchbox planning made simple
               </h1>
 
-              <p class="text-lg text-muted-foreground leading-relaxed max-w-xl">
-                Create balanced lunchbox ideas for children aged 5–12 based on age, allergies and food preferences.
+              <p
+                class="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-xl"
+              >
+                Create balanced lunchbox ideas for children aged 5–12 based on
+                age, allergies and food preferences.
               </p>
 
-              <div class="mt-8 space-y-4">
+              <div class="mt-7 sm:mt-8 space-y-4">
                 <div ref="quickStartTarget" class="relative group">
                   <button
                     @click="router.push('/quick-start')"
-                    class="w-full bg-[#F8F5EC] rounded-2xl border border-[#E8DDC8] p-5 shadow-sm hover:shadow-md hover:border-[#DDCFB2] hover:bg-[#F5F0E4] transition-all text-left flex flex-col gap-4"
+                    class="w-full bg-[#F8F5EC] rounded-2xl border border-[#E8DDC8] p-4 sm:p-5 shadow-sm hover:shadow-md hover:border-[#DDCFB2] hover:bg-[#F5F0E4] transition-all text-left flex flex-col gap-3 sm:gap-4"
                     type="button"
                     aria-describedby="quick-start-desc"
                   >
-                    <p class="text-xl text-[#315F3A]">Try Quick Start</p>
+                    <p class="text-lg sm:text-xl text-[#315F3A]">
+                      Try Quick Start
+                    </p>
                     <p class="text-sm text-[#315F3A] font-semibold">
                       Try a lunchbox plan in 1 minute
                     </p>
                   </button>
 
-                  <p id="quick-start-desc" class="md:hidden mt-2 text-xs text-muted-foreground leading-relaxed">
-                    Quick Start lets you try a ready-to-use lunchbox recommendation without creating a profile first.
+                  <p
+                    id="quick-start-desc"
+                    class="md:hidden mt-2 text-xs text-muted-foreground leading-relaxed"
+                  >
+                    Quick Start lets you try a ready-to-use lunchbox
+                    recommendation without creating a profile first.
                   </p>
 
                   <div
                     class="hidden md:block absolute left-0 right-0 bottom-full mb-3 bg-white border border-[#A8D5BA]/40 rounded-xl shadow-lg p-4 text-sm text-muted-foreground leading-relaxed opacity-0 translate-y-1 pointer-events-none transition-all duration-200 group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0"
                     aria-hidden="true"
                   >
-                    Quick Start gently helps you begin with confidence — no profile setup needed.
+                    Quick Start gently helps you begin with confidence — no
+                    profile setup needed.
                   </div>
                 </div>
 
                 <div ref="personalisedTarget" class="relative group">
                   <button
                     @click="handleAddChild"
-                    class="w-full bg-[#E5F2E8] rounded-2xl border border-[#8FC2A4]/60 p-5 shadow-sm hover:shadow-md hover:border-[#7DB593]/70 hover:bg-[#D9ECDF] transition-all text-left flex flex-col gap-4"
+                    class="w-full bg-[#E5F2E8] rounded-2xl border border-[#8FC2A4]/60 p-4 sm:p-5 shadow-sm hover:shadow-md hover:border-[#7DB593]/70 hover:bg-[#D9ECDF] transition-all text-left flex flex-col gap-3 sm:gap-4"
                     type="button"
                     aria-describedby="personalised-desc"
                   >
-                    <p class="text-xl text-[#2C5F2D]">Get Personalised Lunchbox</p>
+                    <p class="text-lg sm:text-xl text-[#2C5F2D]">
+                      Get Personalised Lunchbox
+                    </p>
                     <p class="text-sm text-[#2C5F2D] font-semibold">
-                      Start by creating a child profile around your nutrition needs
+                      Start by creating a child profile around your nutrition
+                      needs
                     </p>
                   </button>
 
-                  <p id="personalised-desc" class="md:hidden mt-2 text-xs text-muted-foreground leading-relaxed">
-                    Save profile details for a more personalised and long-term lunchbox planning experience.
+                  <p
+                    id="personalised-desc"
+                    class="md:hidden mt-2 text-xs text-muted-foreground leading-relaxed"
+                  >
+                    Save profile details for a more personalised and long-term
+                    lunchbox planning experience.
                   </p>
 
                   <div
@@ -141,15 +168,24 @@
               <img
                 src="https://images.pexels.com/photos/4252139/pexels-photo-4252139.jpeg?auto=compress&cs=tinysrgb&w=1400"
                 alt="Healthy lunchbox ingredients and family-style meal prep"
-                class="w-full h-[620px] object-cover rounded-3xl shadow-md"
+                class="w-full h-[300px] sm:h-[420px] lg:h-[620px] object-cover rounded-2xl lg:rounded-3xl shadow-md"
               />
 
-              <div class="absolute bottom-5 left-5 right-5 rounded-2xl shadow-md p-4 overflow-hidden" aria-hidden="true">
-                <div class="absolute inset-0 rounded-2xl bg-gradient-to-b from-transparent via-white/45 to-transparent backdrop-blur-sm"></div>
+              <div
+                class="hidden sm:block absolute bottom-5 left-5 right-5 rounded-2xl shadow-md p-4 overflow-hidden"
+                aria-hidden="true"
+              >
+                <div
+                  class="absolute inset-0 rounded-2xl bg-gradient-to-b from-transparent via-white/45 to-transparent backdrop-blur-sm"
+                ></div>
 
                 <div class="relative z-10 grid sm:grid-cols-3 gap-3">
                   <div class="rounded-xl bg-[#CDE7F0]/45 p-3 flex flex-col">
-                    <p class="text-sm font-semibold text-[#374151] leading-snug">Simplify nutrition choices</p>
+                    <p
+                      class="text-sm font-semibold text-[#374151] leading-snug"
+                    >
+                      Simplify nutrition choices
+                    </p>
                     <div class="w-full h-12 rounded-full overflow-hidden mt-2">
                       <img
                         src="https://images.pexels.com/photos/1132047/pexels-photo-1132047.jpeg?auto=compress&cs=tinysrgb&w=800"
@@ -161,7 +197,11 @@
                   </div>
 
                   <div class="rounded-xl bg-[#CDE7F0]/45 p-3 flex flex-col">
-                    <p class="text-sm font-semibold text-[#374151] leading-snug">Personalise for each child</p>
+                    <p
+                      class="text-sm font-semibold text-[#374151] leading-snug"
+                    >
+                      Personalise for each child
+                    </p>
                     <div class="w-full h-12 rounded-full overflow-hidden mt-2">
                       <img
                         src="https://images.pexels.com/photos/3872370/pexels-photo-3872370.jpeg?auto=compress&cs=tinysrgb&w=800"
@@ -173,7 +213,11 @@
                   </div>
 
                   <div class="rounded-xl bg-[#CDE7F0]/45 p-3 flex flex-col">
-                    <p class="text-sm font-semibold text-[#374151] leading-snug">Plan healthier lunchboxes</p>
+                    <p
+                      class="text-sm font-semibold text-[#374151] leading-snug"
+                    >
+                      Plan healthier lunchboxes
+                    </p>
                     <div class="w-full h-12 rounded-full overflow-hidden mt-2">
                       <img
                         src="https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800"
@@ -188,15 +232,19 @@
             </div>
           </div>
 
-          <div v-if="!isLoggedIn" class="mt-8 bg-white border rounded-2xl p-5 text-center shadow-sm">
-            <p class="text-muted-foreground">
-              Sign in to save child profiles, weekly plans, and personalised recommendations.
+          <div
+            v-if="!isLoggedIn"
+            class="mt-8 bg-white border rounded-2xl p-5 text-center shadow-sm"
+          >
+            <p class="text-muted-foreground text-sm sm:text-base">
+              Sign in to save child profiles, weekly plans, and personalised
+              recommendations.
             </p>
 
-            <div class="flex justify-center gap-3 mt-4">
+            <div class="flex flex-col sm:flex-row justify-center gap-3 mt-4">
               <button
                 @click="router.push('/login')"
-                class="bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg px-6 py-2 transition-colors"
+                class="w-full sm:w-auto bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg px-6 py-2 transition-colors"
                 type="button"
               >
                 Sign in
@@ -204,7 +252,7 @@
 
               <button
                 @click="router.push('/register')"
-                class="bg-white border border-[#A8D5BA] text-[#2C5F2D] rounded-lg px-6 py-2 hover:bg-[#A8D5BA]/10 transition-colors"
+                class="w-full sm:w-auto bg-white border border-[#A8D5BA] text-[#2C5F2D] rounded-lg px-6 py-2 hover:bg-[#A8D5BA]/10 transition-colors"
                 type="button"
               >
                 Create account
@@ -218,25 +266,31 @@
       <section
         id="child-profiles"
         ref="childProfileSection"
-        class="child-profile-section pt-14 pb-8 bg-white"
+        class="child-profile-section pt-12 sm:pt-14 pb-8 bg-white"
         aria-label="Child profiles"
       >
-        <div class="container mx-auto px-6 max-w-6xl">
+        <div class="container mx-auto px-4 sm:px-6 max-w-6xl">
           <div class="mb-8">
-            <h2 class="text-3xl mb-2 text-[#2C5F2D]">Your child profiles</h2>
-            <p class="text-muted-foreground max-w-3xl">
-              Manage profiles for children aged 5–12 and generate personalised lunchbox ideas whenever you need.
+            <h2 class="text-2xl sm:text-3xl mb-2 text-[#2C5F2D]">
+              Your child profiles
+            </h2>
+            <p class="text-muted-foreground max-w-3xl text-sm sm:text-base">
+              Manage profiles for children aged 5–12 and generate personalised
+              lunchbox ideas whenever you need.
             </p>
           </div>
 
-          <div v-if="!isLoggedIn" class="p-8 rounded-2xl border bg-[#FAF9F6] text-center">
-            <p class="text-muted-foreground mb-5">
+          <div
+            v-if="!isLoggedIn"
+            class="p-6 sm:p-8 rounded-2xl border bg-[#FAF9F6] text-center"
+          >
+            <p class="text-muted-foreground mb-5 text-sm sm:text-base">
               Please sign in to view and manage your child profiles.
             </p>
 
             <button
               @click="router.push({ path: '/login', query: { redirect: '/child-info' } })"
-              class="bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg px-8 py-3 transition-colors"
+              class="w-full sm:w-auto bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg px-8 py-3 transition-colors"
               type="button"
             >
               Sign in to continue
@@ -253,22 +307,33 @@
               Loading profiles...
             </div>
 
-            <ul class="flex gap-6 overflow-x-auto pb-4 -mx-6 px-6 list-none" aria-label="Child profile cards">
-              <li class="flex-shrink-0 w-[340px]">
+            <ul
+              class="flex gap-4 sm:gap-6 overflow-x-auto pb-4 -mx-4 sm:-mx-6 px-4 sm:px-6 list-none"
+              aria-label="Child profile cards"
+            >
+              <li class="flex-shrink-0 w-[280px] sm:w-[340px]">
                 <button
                   @click="handleAddChild"
-                  class="w-full min-h-[260px] p-6 rounded-2xl border-2 border-dashed border-[#A8D5BA] bg-[#A8D5BA]/5 flex flex-col items-center justify-center hover:bg-[#A8D5BA]/10 transition-colors cursor-pointer"
+                  class="w-full min-h-[240px] sm:min-h-[260px] p-5 sm:p-6 rounded-2xl border-2 border-dashed border-[#A8D5BA] bg-[#A8D5BA]/5 flex flex-col items-center justify-center hover:bg-[#A8D5BA]/10 transition-colors cursor-pointer"
                   type="button"
                   aria-label="Add another child profile"
                 >
-                  <div class="w-16 h-16 bg-[#A8D5BA]/20 rounded-full flex items-center justify-center mb-3" aria-hidden="true">
-                    <Plus class="w-8 h-8 text-[#2C5F2D]" />
+                  <div
+                    class="w-14 h-14 sm:w-16 sm:h-16 bg-[#A8D5BA]/20 rounded-full flex items-center justify-center mb-3"
+                    aria-hidden="true"
+                  >
+                    <Plus class="w-7 h-7 sm:w-8 sm:h-8 text-[#2C5F2D]" />
                   </div>
 
-                  <p class="text-lg text-[#2C5F2D] font-semibold">Add another child</p>
+                  <p class="text-base sm:text-lg text-[#2C5F2D] font-semibold">
+                    Add another child
+                  </p>
 
-                  <p class="text-sm text-muted-foreground text-center mt-2">
-                    Create a profile for a child aged 5–12 to get personalised meal suggestions
+                  <p
+                    class="text-sm text-muted-foreground text-center mt-2 leading-relaxed"
+                  >
+                    Create a profile for a child aged 5–12 to get personalised
+                    meal suggestions
                   </p>
                 </button>
               </li>
@@ -276,18 +341,22 @@
               <li
                 v-for="profile in profiles"
                 :key="profile.id"
-                class="flex-shrink-0 w-[340px]"
+                class="flex-shrink-0 w-[280px] sm:w-[340px]"
               >
-                <article class="p-6 rounded-2xl shadow-md hover:shadow-lg transition-shadow bg-white border h-full flex flex-col">
-                  <div class="flex items-start justify-between mb-4">
+                <article
+                  class="p-5 sm:p-6 rounded-2xl shadow-md hover:shadow-lg transition-shadow bg-white border h-full flex flex-col"
+                >
+                  <div class="flex items-start justify-between mb-4 gap-3">
                     <div>
-                      <h3 class="text-xl mb-1">
+                      <h3 class="text-lg sm:text-xl mb-1">
                         {{ profile.name }}
-                        <span class="text-muted-foreground text-base">({{ profile.ageGroup }})</span>
+                        <span class="text-muted-foreground text-sm sm:text-base">
+                          ({{ profile.ageGroup }})
+                        </span>
                       </h3>
                     </div>
 
-                    <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-1 sm:gap-2">
                       <button
                         @click.stop="handleEditProfile(profile.id)"
                         class="p-2 hover:bg-gray-100 rounded-lg transition-colors"
@@ -310,7 +379,9 @@
 
                   <div class="space-y-3 mb-4 flex-1">
                     <div v-if="profile.allergies.length > 0">
-                      <p class="text-xs text-muted-foreground mb-1">Allergies</p>
+                      <p class="text-xs text-muted-foreground mb-1">
+                        Allergies
+                      </p>
                       <div class="flex flex-wrap gap-1">
                         <span
                           v-for="allergy in profile.allergies"
@@ -323,14 +394,20 @@
                     </div>
 
                     <div v-if="profile.dietaryRestriction">
-                      <p class="text-xs text-muted-foreground mb-1">Dietary restriction</p>
-                      <span class="bg-[#CDE7F0]/30 text-[#1B4965] text-xs rounded-full px-2 py-1 inline-block">
+                      <p class="text-xs text-muted-foreground mb-1">
+                        Dietary restriction
+                      </p>
+                      <span
+                        class="bg-[#CDE7F0]/30 text-[#1B4965] text-xs rounded-full px-2 py-1 inline-block"
+                      >
                         {{ profile.dietaryRestriction }}
                       </span>
                     </div>
 
                     <div v-if="profile.nutritionFocus.length > 0">
-                      <p class="text-xs text-muted-foreground mb-1">Nutrition focus</p>
+                      <p class="text-xs text-muted-foreground mb-1">
+                        Nutrition focus
+                      </p>
                       <div class="flex flex-wrap gap-1">
                         <span
                           v-for="focus in profile.nutritionFocus"
@@ -345,7 +422,7 @@
 
                   <button
                     @click="handleViewMeals(profile.id)"
-                    class="w-full bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg py-3 flex items-center justify-center gap-2 transition-colors"
+                    class="w-full bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg py-3 px-3 flex items-center justify-center gap-2 transition-colors text-sm sm:text-base"
                     type="button"
                     :aria-label="`Get personalised lunchboxes for ${profile.name}`"
                   >
@@ -360,22 +437,39 @@
       </section>
 
       <!-- Family Meal Planning -->
-      <section ref="familySection" class="family-section pt-6 pb-12 bg-white" aria-label="Family planning">
-        <div class="container mx-auto px-6 max-w-6xl">
+      <section
+        ref="familySection"
+        class="family-section pt-6 pb-10 sm:pb-12 bg-white"
+        aria-label="Family planning"
+      >
+        <div class="container mx-auto px-4 sm:px-6 max-w-6xl">
           <div class="mb-8">
-            <h2 class="text-3xl mb-2 text-[#2C5F2D]">Planning for more than one child?</h2>
-            <p class="text-muted-foreground max-w-4xl leading-relaxed">
-              We know every child has different needs. Select multiple profiles to generate family lunchbox ideas.
+            <h2 class="text-2xl sm:text-3xl mb-2 text-[#2C5F2D]">
+              Planning for more than one child?
+            </h2>
+            <p
+              class="text-muted-foreground max-w-4xl leading-relaxed text-sm sm:text-base"
+            >
+              We know every child has different needs. Select multiple profiles
+              to generate family lunchbox ideas.
             </p>
           </div>
 
-          <div class="p-8 rounded-2xl shadow-sm bg-white border">
-            <p v-if="!isLoggedIn" class="text-sm text-muted-foreground mb-6">
-              Sign in first to create child profiles and generate a family lunchbox plan.
+          <div class="p-5 sm:p-8 rounded-2xl shadow-sm bg-white border">
+            <p
+              v-if="!isLoggedIn"
+              class="text-sm text-muted-foreground mb-6"
+            >
+              Sign in first to create child profiles and generate a family
+              lunchbox plan.
             </p>
 
-            <p v-else-if="profiles.length < 2" class="text-sm text-muted-foreground mb-6">
-              Add at least two supported child profiles to generate a family lunchbox plan.
+            <p
+              v-else-if="profiles.length < 2"
+              class="text-sm text-muted-foreground mb-6"
+            >
+              Add at least two supported child profiles to generate a family
+              lunchbox plan.
             </p>
 
             <fieldset
@@ -391,7 +485,7 @@
                 @keydown.enter="toggleFamilySelection(profile.id)"
                 @keydown.space.prevent="toggleFamilySelection(profile.id)"
                 :class="[
-                  'p-4 rounded-xl border-2 cursor-pointer transition-all',
+                  'p-3 sm:p-4 rounded-xl border-2 cursor-pointer transition-all',
                   selectedForFamily.includes(profile.id)
                     ? 'border-[#A8D5BA] bg-[#A8D5BA]/10'
                     : 'border-gray-200 hover:border-[#A8D5BA]/50',
@@ -413,9 +507,14 @@
 
                   <div class="flex-1">
                     <h4 class="font-medium mb-1">{{ profile.name }}</h4>
-                    <p class="text-sm text-muted-foreground mb-2">{{ profile.ageGroup }}</p>
+                    <p class="text-sm text-muted-foreground mb-2">
+                      {{ profile.ageGroup }}
+                    </p>
 
-                    <div v-if="profile.nutritionFocus.length > 0" class="flex flex-wrap gap-1">
+                    <div
+                      v-if="profile.nutritionFocus.length > 0"
+                      class="flex flex-wrap gap-1"
+                    >
                       <span
                         v-for="focus in profile.nutritionFocus.slice(0, 2)"
                         :key="focus"
@@ -443,7 +542,7 @@
             <button
               @click="handleGenerateFamilyPlan"
               :disabled="!isLoggedIn || selectedForFamily.length === 0 || profiles.length < 2"
-              class="w-full bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg py-4 text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              class="w-full bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg py-4 px-4 text-base sm:text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               type="button"
               :aria-disabled="!isLoggedIn || selectedForFamily.length === 0 || profiles.length < 2"
             >
@@ -454,24 +553,36 @@
       </section>
 
       <!-- Weekly Plan Section -->
-      <section ref="weeklySection" class="weekly-section py-12 bg-[#FAF9F6]" aria-label="Weekly planning">
-        <div class="container mx-auto px-6 max-w-6xl">
-          <div class="flex flex-col md:flex-row md:items-center gap-8">
-            <div class="w-16 h-16 bg-[#A8D5BA] rounded-full flex items-center justify-center flex-shrink-0" aria-hidden="true">
-              <CalendarDays class="w-8 h-8 text-[#2C5F2D]" />
+      <section
+        ref="weeklySection"
+        class="weekly-section py-10 sm:py-12 bg-[#FAF9F6]"
+        aria-label="Weekly planning"
+      >
+        <div class="container mx-auto px-4 sm:px-6 max-w-6xl">
+          <div class="flex flex-col md:flex-row md:items-center gap-6 sm:gap-8">
+            <div
+              class="w-14 h-14 sm:w-16 sm:h-16 bg-[#A8D5BA] rounded-full flex items-center justify-center flex-shrink-0"
+              aria-hidden="true"
+            >
+              <CalendarDays class="w-7 h-7 sm:w-8 sm:h-8 text-[#2C5F2D]" />
             </div>
 
             <div class="flex-1">
-              <h2 class="text-3xl mb-2 text-[#2C5F2D]">Plan the whole school week</h2>
-              <p class="text-muted-foreground leading-relaxed">
-                Choose your children, set your cooking frequency, and generate a weekly lunchbox plan.
+              <h2 class="text-2xl sm:text-3xl mb-2 text-[#2C5F2D]">
+                Plan the whole school week
+              </h2>
+              <p
+                class="text-muted-foreground leading-relaxed text-sm sm:text-base"
+              >
+                Choose your children, set your cooking frequency, and generate a
+                weekly lunchbox plan.
               </p>
             </div>
 
-            <div class="flex flex-col sm:flex-row gap-3">
+            <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
               <button
                 @click="goProtected('/weekly-plan')"
-                class="bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg px-8 py-3 font-semibold transition-colors"
+                class="w-full sm:w-auto bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg px-8 py-3 font-semibold transition-colors"
                 type="button"
               >
                 Build Weekly Plan
@@ -479,7 +590,7 @@
 
               <button
                 @click="goProtected('/my-plans')"
-                class="bg-white hover:bg-[#FAF9F6] text-[#2C5F2D] border border-[#A8D5BA] rounded-lg px-8 py-3 font-semibold transition-colors"
+                class="w-full sm:w-auto bg-white hover:bg-[#FAF9F6] text-[#2C5F2D] border border-[#A8D5BA] rounded-lg px-8 py-3 font-semibold transition-colors"
                 type="button"
               >
                 View My Plans
@@ -490,14 +601,20 @@
           <img
             src="https://images.pexels.com/photos/1640772/pexels-photo-1640772.jpeg?auto=compress&cs=tinysrgb&w=1200"
             alt="Weekly meal prep containers on a table"
-            class="mt-7 w-full h-52 object-cover rounded-2xl"
+            class="mt-7 w-full h-40 sm:h-52 object-cover rounded-2xl"
           />
         </div>
       </section>
 
       <!-- Knowledge Hub Entry -->
-      <section class="relative overflow-hidden py-16" aria-label="Knowledge Hub">
-        <div class="absolute inset-0 bg-gradient-to-br from-[#F3E9D7]/80 to-[#FAF9F6]" aria-hidden="true"></div>
+      <section
+        class="relative overflow-hidden py-12 sm:py-16"
+        aria-label="Knowledge Hub"
+      >
+        <div
+          class="absolute inset-0 bg-gradient-to-br from-[#F3E9D7]/80 to-[#FAF9F6]"
+          aria-hidden="true"
+        ></div>
 
         <div
           class="absolute inset-0 bg-center bg-cover opacity-55"
@@ -505,16 +622,27 @@
           aria-hidden="true"
         ></div>
 
-        <div class="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-[#FAF9F6] via-[#FAF9F6]/65 to-transparent" aria-hidden="true"></div>
+        <div
+          class="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-[#FAF9F6] via-[#FAF9F6]/65 to-transparent"
+          aria-hidden="true"
+        ></div>
 
-        <div class="container mx-auto px-6 max-w-5xl relative z-10 mt-4">
-          <div class="bg-white/85 backdrop-blur-[1px] border border-[#E6E2D8] rounded-3xl p-8 md:p-12 text-center shadow-sm">
-            <h2 class="text-3xl text-[#2C5F2D]">Questions about your lunchbox plan?</h2>
-            <p class="mt-2 text-muted-foreground leading-relaxed">Why Choose LittleHelp</p>
+        <div
+          class="container mx-auto px-4 sm:px-6 max-w-5xl relative z-10 mt-4"
+        >
+          <div
+            class="bg-white/85 backdrop-blur-[1px] border border-[#E6E2D8] rounded-3xl p-6 sm:p-8 md:p-12 text-center shadow-sm"
+          >
+            <h2 class="text-2xl sm:text-3xl text-[#2C5F2D]">
+              Questions about your lunchbox plan?
+            </h2>
+            <p class="mt-2 text-muted-foreground leading-relaxed">
+              Why Choose LittleHelp
+            </p>
 
             <button
               @click="router.push('/knowledge-hub-prototype')"
-              class="mt-7 bg-[#2C5F2D] hover:bg-[#254F25] text-white rounded-lg px-8 py-3 font-semibold transition-colors"
+              class="mt-7 w-full sm:w-auto bg-[#2C5F2D] hover:bg-[#254F25] text-white rounded-lg px-8 py-3 font-semibold transition-colors"
               type="button"
             >
               Click to enter Knowledge Hub
@@ -525,25 +653,49 @@
     </main>
 
     <!-- Footer -->
-    <footer class="relative bg-[#FAF9F6] border-t border-gray-200 pt-16 pb-12 overflow-visible">
+    <footer
+      class="relative bg-[#FAF9F6] border-t border-gray-200 pt-12 sm:pt-16 pb-10 sm:pb-12 overflow-visible"
+    >
       <div
         class="absolute -top-24 left-0 right-0 h-24 bg-gradient-to-t from-[#FAF9F6] via-[#FAF9F6]/75 to-transparent pointer-events-none z-30"
         aria-hidden="true"
       ></div>
 
-      <div class="container mx-auto px-6 max-w-5xl text-center relative z-10">
+      <div
+        class="container mx-auto px-4 sm:px-6 max-w-5xl text-center relative z-10"
+      >
         <p class="text-2xl text-[#2C5F2D]">LittleHelp</p>
 
-        <p class="mt-4 text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-          Helping families create practical, balanced, and child-friendly lunchbox plans through science-backed nutrition guidance.
+        <p
+          class="mt-4 text-muted-foreground max-w-3xl mx-auto leading-relaxed text-sm sm:text-base"
+        >
+          Helping families create practical, balanced, and child-friendly
+          lunchbox plans through science-backed nutrition guidance.
         </p>
 
-        <nav class="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-[#2C5F2D]" aria-label="Footer navigation">
-          <button @click="handleLunchboxPlan" type="button" class="hover:underline">Lunchbox Plan</button>
-          <button @click="goProtected('/weekly-plan')" type="button" class="hover:underline">Weekly Plan</button>
-          <button @click="goProtected('/my-plans')" type="button" class="hover:underline">My Plans</button>
-          <button @click="router.push('/knowledge-hub-prototype')" type="button" class="hover:underline">Knowledge Hub</button>
-          <button @click="router.push('/about')" type="button" class="hover:underline">About Us</button>
+        <nav
+          class="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-[#2C5F2D]"
+          aria-label="Footer navigation"
+        >
+          <button @click="handleLunchboxPlan" type="button" class="hover:underline">
+            Lunchbox Plan
+          </button>
+          <button @click="goProtected('/weekly-plan')" type="button" class="hover:underline">
+            Weekly Plan
+          </button>
+          <button @click="goProtected('/my-plans')" type="button" class="hover:underline">
+            My Plans
+          </button>
+          <button
+            @click="router.push('/knowledge-hub-prototype')"
+            type="button"
+            class="hover:underline"
+          >
+            Knowledge Hub
+          </button>
+          <button @click="router.push('/about')" type="button" class="hover:underline">
+            About Us
+          </button>
         </nav>
 
         <p class="mt-6 text-xs text-muted-foreground">
@@ -679,8 +831,14 @@ const updateGuidePosition = () => {
 
   const highlightTop = Math.max(rect.top - padding, 88);
   const highlightLeft = Math.max(rect.left - padding, 16);
-  const highlightWidth = Math.min(rect.width + padding * 2, window.innerWidth - highlightLeft - 16);
-  const highlightHeight = Math.min(rect.height + padding * 2, window.innerHeight - highlightTop - 16);
+  const highlightWidth = Math.min(
+    rect.width + padding * 2,
+    window.innerWidth - highlightLeft - 16,
+  );
+  const highlightHeight = Math.min(
+    rect.height + padding * 2,
+    window.innerHeight - highlightTop - 16,
+  );
 
   highlightBox.value = {
     top: highlightTop,
@@ -893,7 +1051,9 @@ const toggleFamilySelection = (id) => {
   if (!isLoggedIn.value) return;
 
   if (selectedForFamily.value.includes(id)) {
-    selectedForFamily.value = selectedForFamily.value.filter((profileId) => profileId !== id);
+    selectedForFamily.value = selectedForFamily.value.filter(
+      (profileId) => profileId !== id,
+    );
   } else {
     selectedForFamily.value = [...selectedForFamily.value, id];
   }
@@ -982,5 +1142,36 @@ const handleEditProfile = (profileId) => {
   padding: 24px;
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
   transition: all 0.25s ease;
+}
+
+@media (max-width: 640px) {
+  .hero-section {
+    padding-top: 32px;
+    padding-bottom: 40px;
+  }
+
+  .child-profile-section,
+  .family-section,
+  .weekly-section {
+    scroll-margin-top: 80px;
+  }
+
+  .guide-tooltip {
+    left: 16px !important;
+    right: 16px !important;
+    width: auto !important;
+    max-height: 70vh;
+    overflow-y: auto;
+    padding: 18px;
+    border-radius: 18px;
+  }
+
+  .guide-tooltip h2 {
+    font-size: 1.25rem;
+  }
+
+  .guide-highlight {
+    border-radius: 18px;
+  }
 }
 </style>
