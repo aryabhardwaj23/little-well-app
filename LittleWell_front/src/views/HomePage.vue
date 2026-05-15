@@ -608,7 +608,8 @@
 
       <!-- Knowledge Hub Entry -->
       <section
-        class="relative overflow-hidden py-12 sm:py-16"
+        ref="knowledgeSection"
+        class="knowledge-section relative overflow-hidden py-12 sm:py-16"
         aria-label="Knowledge Hub"
       >
         <div
@@ -734,6 +735,7 @@ const personalisedTarget = ref(null);
 const childProfileSection = ref(null);
 const familySection = ref(null);
 const weeklySection = ref(null);
+const knowledgeSection = ref(null);
 
 const showGuide = ref(false);
 const guideStep = ref(0);
@@ -743,33 +745,38 @@ const tooltipBox = ref(null);
 const guideSteps = [
   {
     title: 'Welcome to LittleHelp',
-    text: 'LittleHelp helps families create balanced lunchbox ideas for children aged 5–12.',
+    text: 'LittleHelp helps parents create balanced and child-friendly lunchbox ideas for children aged 5–12.',
     target: 'hero',
   },
   {
     title: 'Try Quick Start',
-    text: 'Use Quick Start to generate a lunchbox idea without creating a child profile first.',
+    text: 'Use Quick Start if you want to try a lunchbox idea quickly without creating a child profile first.',
     target: 'quickStart',
   },
   {
     title: 'Create a Child Profile',
-    text: 'Create a child profile to get personalised lunchbox recommendations based on age, allergies, and nutrition needs.',
+    text: 'Create a child profile to get personalised lunchbox recommendations based on age, allergies, dietary restrictions, and nutrition needs.',
     target: 'personalised',
   },
   {
     title: 'Manage Child Profiles',
-    text: 'Here you can add, edit, delete, and manage child profiles for personalised recommendations.',
+    text: 'After signing in, you can add, edit, delete, and manage child profiles here.',
     target: 'child',
   },
   {
     title: 'Plan for Multiple Children',
-    text: 'Select more than one child to generate family lunchbox ideas that consider different needs.',
+    text: 'Select more than one child to generate family lunchbox ideas that consider different needs together.',
     target: 'family',
   },
   {
-    title: 'Weekly Planning',
-    text: 'Use Weekly Plan to build a practical lunchbox plan for the whole school week.',
+    title: 'Build and Save Weekly Plans',
+    text: 'Use Weekly Plan to create a school-week lunchbox plan, then view your saved plans in My Plans.',
     target: 'weekly',
+  },
+  {
+    title: 'Learn More in Knowledge Hub',
+    text: 'Visit Knowledge Hub to understand why LittleHelp recommends certain lunchbox ideas and nutrition choices.',
+    target: 'knowledge',
   },
 ];
 
@@ -808,6 +815,7 @@ const getGuideTargetElement = () => {
     child: childProfileSection,
     family: familySection,
     weekly: weeklySection,
+    knowledge: knowledgeSection,
   };
 
   return targetMap[target]?.value || null;
@@ -1115,7 +1123,8 @@ const handleEditProfile = (profileId) => {
 .hero-section,
 .child-profile-section,
 .family-section,
-.weekly-section {
+.weekly-section,
+.knowledge-section {
   scroll-margin-top: 96px;
 }
 
@@ -1152,7 +1161,8 @@ const handleEditProfile = (profileId) => {
 
   .child-profile-section,
   .family-section,
-  .weekly-section {
+  .weekly-section,
+  .knowledge-section {
     scroll-margin-top: 80px;
   }
 
