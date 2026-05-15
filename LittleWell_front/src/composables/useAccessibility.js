@@ -10,15 +10,21 @@ const STORAGE_KEY_CONTRAST = 'littlehelp_accessibility_high_contrast';
 
 function applyToDocument() {
   const root = document.documentElement;
+
+  // Large text
   if (largeTextMode.value) {
     root.classList.add('a11y-large-text');
   } else {
     root.classList.remove('a11y-large-text');
   }
+
+  // High contrast — grayscale + contrast filter on entire page
   if (highContrastMode.value) {
     root.classList.add('a11y-high-contrast');
+    root.style.filter = 'grayscale(1) contrast(1.2)';
   } else {
     root.classList.remove('a11y-high-contrast');
+    root.style.filter = '';
   }
 }
 
@@ -53,7 +59,6 @@ export function useAccessibility() {
     highContrastMode.value = !highContrastMode.value;
   }
 
-  // Dropdown open/close with keyboard (Escape) and outside-click support
   const showAccessibilityMenu = ref(false);
   const accessibilityMenuRef = ref(null);
 
@@ -74,18 +79,15 @@ export function useAccessibility() {
     }
   }
 
-  function mountListeners() {
+  onMounted(() => {
     document.addEventListener('click', handleDocumentClick);
     document.addEventListener('keydown', handleDocumentKeydown);
-  }
+  });
 
-  function unmountListeners() {
+  onBeforeUnmount(() => {
     document.removeEventListener('click', handleDocumentClick);
     document.removeEventListener('keydown', handleDocumentKeydown);
-  }
-
-  onMounted(mountListeners);
-  onBeforeUnmount(unmountListeners);
+  });
 
   return {
     largeTextMode,
