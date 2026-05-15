@@ -321,6 +321,122 @@
         </div>
       </div>
 
+      <!-- Lunchbox plan questions + Why This Plan -->
+      <section id="why-this-plan" class="py-12 scroll-mt-8">
+        <div class="text-center mb-10 px-2 max-w-3xl mx-auto">
+          <h2 class="text-3xl md:text-4xl lg:text-5xl mb-4 text-[#2C5F2D] tracking-tight">
+            Questions about your lunchbox plan?
+          </h2>
+          <p class="text-lg md:text-xl text-muted-foreground leading-relaxed">
+            We're here to help you understand the science and care behind every recommendation we make for your family.
+          </p>
+        </div>
+
+        <div class="bg-white rounded-3xl shadow-sm p-8 md:p-12 border border-[#E8E4DC]">
+          <div class="flex items-center gap-3 mb-6">
+            <h3 class="text-3xl text-[#2C5F2D]">Why This Plan?</h3>
+          </div>
+
+          <p class="text-muted-foreground mb-8">
+            Select a saved plan to understand the nutritional thinking behind our recommendations.
+          </p>
+
+          <div v-if="whyPlanDisplayList.length" class="space-y-4 mb-8">
+            <div
+              v-for="row in whyPlanDisplayList"
+              :key="row.id"
+              @click="selectedWhyPlanId = row.id"
+              :class="[
+                'p-6 rounded-2xl border-2 cursor-pointer transition-all',
+                selectedWhyPlanId === row.id
+                  ? 'border-[#A8D5BA] bg-[#A8D5BA]/5'
+                  : 'border-gray-200 hover:border-[#A8D5BA]/50'
+              ]"
+            >
+              <div class="flex items-start justify-between">
+                <div class="flex items-start gap-4 flex-1">
+                  <input
+                    type="radio"
+                    :checked="selectedWhyPlanId === row.id"
+                    class="mt-1"
+                    @click.stop
+                  />
+                  <div class="flex-1">
+                    <h3 class="text-lg font-medium mb-1">{{ row.name }}</h3>
+                    <p class="text-sm text-muted-foreground mb-3">{{ row.description }}</p>
+                    <div class="flex flex-wrap gap-2">
+                      <span
+                        v-for="tag in row.tags"
+                        :key="tag"
+                        class="bg-[#A8D5BA]/20 text-[#2C5F2D] text-xs rounded-full px-3 py-1"
+                      >
+                        {{ tag }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="hidden sm:block w-36 h-24 rounded-2xl overflow-hidden border border-[#E5E7EB] ml-4 flex-shrink-0">
+                  <img
+                    :src="row.image"
+                    :alt="`${row.name} meal preview`"
+                    class="w-full h-full object-cover"
+                    @error="handleImageError"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div v-else-if="!isLoading" class="mb-8 rounded-2xl border border-[#E5E7EB] bg-[#FAF9F6] p-6 text-center">
+            <p class="text-[#4B5563] mb-4">
+              You do not have any saved plans yet. Please save a plan first to view explanations here.
+            </p>
+            <button
+              type="button"
+              class="px-5 py-2.5 rounded-lg bg-[#2C5F2D] text-white hover:bg-[#244E24] transition-colors"
+              @click="goToWeeklyPlanFromWhy"
+            >
+              Create Personalised Lunchbox Plan
+            </button>
+          </div>
+
+          <div v-if="selectedWhyPlanId" class="bg-[#FAF9F6] rounded-2xl p-6">
+            <h3 class="text-lg font-medium mb-4 text-[#2C5F2D]">Why We Recommend This</h3>
+            <div class="space-y-4">
+              <div
+                v-for="reason in getSelectedPlanReasons()"
+                :key="reason.title"
+                class="flex gap-3"
+              >
+                <div>
+                  <h4 class="font-medium mb-1">{{ reason.title }}</h4>
+                  <p class="text-sm text-muted-foreground">{{ reason.description }}</p>
+                </div>
+              </div>
+            </div>
+            <div class="mt-6 flex flex-wrap gap-3">
+              <button
+                type="button"
+                class="px-4 py-2 rounded-lg bg-[#2C5F2D] text-white hover:bg-[#244E24] transition-colors"
+                @click="modifySelectedWhyPlan"
+              >
+                Modify plan
+              </button>
+              <button
+                type="button"
+                class="px-4 py-2 rounded-lg border border-[#D1D5DB] text-[#374151] hover:bg-white transition-colors"
+                @click="closeWhyPlanExplanation"
+              >
+                Close explanation
+              </button>
+            </div>
+          </div>
+
+          <div v-else-if="whyPlanDisplayList.length" class="text-center py-8 text-muted-foreground">
+            <p>Select a plan above to see detailed nutritional insights</p>
+          </div>
+        </div>
+      </section>
+
       <!-- Bottom CTA -->
       <div class="mt-12 flex justify-center">
         <button
@@ -337,8 +453,8 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, computed, onMounted, nextTick, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import {
   ArrowLeft,
   BookmarkCheck,
@@ -362,6 +478,12 @@ import {
 } from '../services/api';
 
 const router = useRouter();
+const route = useRoute();
+
+const PLAN_IMAGE_FALLBACK =
+  'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800';
+
+const selectedWhyPlanId = ref(null);
 
 const activeTab = ref('weekly');
 const savedPlans = ref([]);
@@ -370,6 +492,102 @@ const showReusePrompt = ref(true);
 
 const isLoading = ref(false);
 const errorMessage = ref('');
+
+const weeklyPlans = computed(() => {
+  return savedPlans.value.filter((plan) => plan.type === 'weekly');
+});
+
+const buildWhyTags = (plan) => {
+  const tags = [];
+  if (plan.children?.length > 1) tags.push('Multi-child');
+  if (plan.varietyPreference) tags.push(String(plan.varietyPreference));
+  if (plan.mealStyle) tags.push(String(plan.mealStyle));
+  if (plan.season) tags.push(`${plan.season}`);
+  tags.push(`${plan.cookingFrequency}x cook days/week`);
+  return tags.filter(Boolean).slice(0, 5);
+};
+
+const formatWhyPlanDescription = (plan) => {
+  const d = new Date(plan.createdAt);
+  const sessions = plan.batches?.length ?? 0;
+  if (Number.isNaN(d.getTime())) {
+    return `${sessions} cooking session${sessions === 1 ? '' : 's'}`;
+  }
+  const label = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  return `Saved ${label} • ${sessions} cooking session${sessions === 1 ? '' : 's'}`;
+};
+
+const whyPlanDisplayList = computed(() => {
+  return weeklyPlans.value.map((plan) => ({
+    id: String(plan.id),
+    name: plan.name,
+    description: formatWhyPlanDescription(plan),
+    tags: buildWhyTags(plan),
+    image: plan.batches?.[0]?.recipe?.image || PLAN_IMAGE_FALLBACK,
+  }));
+});
+
+const buildDynamicReasons = (plan) => {
+  const children =
+    plan.children?.length > 0 ? plan.children.join(', ') : 'your family';
+  const firstLunch = plan.batches?.[0]?.lunchbox?.title || 'each lunchbox idea';
+  const variety = plan.varietyPreference ? ` Variety preference: ${plan.varietyPreference}.` : '';
+  const style = plan.mealStyle ? ` Meal style: ${plan.mealStyle}.` : '';
+
+  return [
+    {
+      title: 'Personalised to your children',
+      description: `This plan centres on ${children}, with ideas such as ${firstLunch} aligned to what you saved.${variety}${style}`,
+    },
+    {
+      title: 'Seasonal focus',
+      description: `Ingredients lean toward ${plan.season || 'seasonal'} choices where possible, so meals stay fresh and varied through the week.`,
+    },
+    {
+      title: 'Batch-friendly structure',
+      description: `With about ${plan.cookingFrequency} cooking day(s) per week and ${plan.batches?.length || 0} prep block(s), the layout is meant to reduce weeknight scrambling.`,
+    },
+    {
+      title: 'Review and adjust anytime',
+      description:
+        'Use Edit or Adjust from the cards above if allergies, tastes, or schedules change. Updating the plan is usually easier than starting from zero.',
+    },
+  ];
+};
+
+const getSelectedPlanReasons = () => {
+  if (!selectedWhyPlanId.value) return [];
+  const plan = weeklyPlans.value.find((p) => String(p.id) === String(selectedWhyPlanId.value));
+  return plan ? buildDynamicReasons(plan) : [];
+};
+
+const modifySelectedWhyPlan = () => {
+  if (!selectedWhyPlanId.value) {
+    router.push('/weekly-plan');
+    return;
+  }
+  const plan = weeklyPlans.value.find((p) => String(p.id) === String(selectedWhyPlanId.value));
+  if (plan) {
+    router.push(`/weekly-plan?mode=edit&planId=${plan.id}`);
+  } else {
+    router.push('/weekly-plan');
+  }
+};
+
+const closeWhyPlanExplanation = () => {
+  selectedWhyPlanId.value = null;
+};
+
+const goToWeeklyPlanFromWhy = () => {
+  router.push('/weekly-plan');
+};
+
+const scrollToWhyThisPlanAnchor = () => {
+  if (route.hash !== '#why-this-plan') return;
+  nextTick(() => {
+    document.getElementById('why-this-plan')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+};
 
 const parseTags = (tags) => {
   if (Array.isArray(tags)) return tags;
@@ -517,9 +735,11 @@ onMounted(() => {
   loadSavedPlans();
 });
 
-const weeklyPlans = computed(() => {
-  return savedPlans.value.filter((plan) => plan.type === 'weekly');
-});
+watch([() => route.hash, isLoading, whyPlanDisplayList], () => {
+  if (route.hash !== '#why-this-plan') return;
+  if (isLoading.value) return;
+  scrollToWhyThisPlanAnchor();
+}, { flush: 'post' });
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
