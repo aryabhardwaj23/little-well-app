@@ -18,13 +18,11 @@ function applyToDocument() {
     root.classList.remove('a11y-large-text');
   }
 
-  // High contrast — grayscale + contrast filter on entire page
+  // High contrast — CSS class only, no filter so images stay coloured
   if (highContrastMode.value) {
     root.classList.add('a11y-high-contrast');
-    root.style.filter = 'grayscale(1) contrast(1.2)';
   } else {
     root.classList.remove('a11y-high-contrast');
-    root.style.filter = '';
   }
 }
 

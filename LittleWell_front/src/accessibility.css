@@ -1,9 +1,8 @@
 /* ============================================================
    Global Accessibility Styles
-   Add these to your existing style.css (or import separately)
    ============================================================ */
 
-/* Large Text Mode — applied to <html> element */
+/* ── Large Text Mode ─────────────────────────────────────── */
 html.a11y-large-text {
   font-size: 112.5%; /* 18px base instead of 16px */
 }
@@ -17,38 +16,89 @@ html.a11y-large-text p,
 html.a11y-large-text span,
 html.a11y-large-text li,
 html.a11y-large-text a {
-  font-size: 1em; /* inherit the bumped base */
+  font-size: 1em;
 }
 
 html.a11y-large-text h1 { font-size: 2.4rem; }
 html.a11y-large-text h2 { font-size: 1.9rem; }
 html.a11y-large-text h3 { font-size: 1.4rem; }
 
-/* High Contrast Mode — applied to <html> element */
-html.a11y-high-contrast {
-  filter: contrast(1.1);
+/* ── High Contrast Mode ──────────────────────────────────── */
+/*
+   Images are NOT affected — only text, backgrounds and borders.
+   We target element types rather than Tailwind classes where possible
+   to ensure reliable coverage.
+*/
+
+/* Force pure white backgrounds */
+html.a11y-high-contrast body {
+  background-color: #ffffff !important;
+  color: #000000 !important;
 }
 
-html.a11y-high-contrast .text-muted-foreground,
-html.a11y-high-contrast [class*="text-gray-4"],
-html.a11y-high-contrast [class*="text-gray-5"] {
-  color: #374151 !important;
+/* All headings — pure black */
+html.a11y-high-contrast h1,
+html.a11y-high-contrast h2,
+html.a11y-high-contrast h3,
+html.a11y-high-contrast h4,
+html.a11y-high-contrast h5,
+html.a11y-high-contrast h6 {
+  color: #000000 !important;
 }
 
+/* All body text — near black */
+html.a11y-high-contrast p,
+html.a11y-high-contrast li,
+html.a11y-high-contrast span,
+html.a11y-high-contrast label,
+html.a11y-high-contrast td,
+html.a11y-high-contrast th {
+  color: #000000 !important;
+}
+
+/* Muted / secondary text — dark gray instead of medium gray */
+html.a11y-high-contrast .text-muted-foreground {
+  color: #1f2937 !important;
+}
+
+/* Buttons — ensure readable text */
+html.a11y-high-contrast button {
+  color: #000000 !important;
+}
+
+/* Nav / green-coloured text */
+html.a11y-high-contrast [class*="text-\\[\\#2C5F2D\\]"],
+html.a11y-high-contrast [class*="text-\\[\\#1B4965\\]"],
+html.a11y-high-contrast [class*="text-\\[\\#8B4513\\]"] {
+  color: #000000 !important;
+}
+
+/* Light backgrounds — bump to off-white so contrast vs text is clear */
+html.a11y-high-contrast [class*="bg-\\[\\#FAF9F6\\]"],
+html.a11y-high-contrast [class*="bg-\\[\\#F8F5EC\\]"],
+html.a11y-high-contrast [class*="bg-\\[\\#CDE7F0\\]"],
+html.a11y-high-contrast [class*="bg-\\[\\#A8D5BA\\]"] {
+  background-color: #e8e8e8 !important;
+}
+
+/* Cards and panels — stay white */
 html.a11y-high-contrast .bg-white {
   background-color: #ffffff !important;
 }
 
-html.a11y-high-contrast button:focus-visible,
-html.a11y-high-contrast a:focus-visible,
-html.a11y-high-contrast input:focus-visible,
-html.a11y-high-contrast select:focus-visible,
-html.a11y-high-contrast [tabindex]:focus-visible {
-  outline: 3px solid #2C5F2D !important;
-  outline-offset: 2px !important;
+/* All borders — darker */
+html.a11y-high-contrast [class*="border"] {
+  border-color: #374151 !important;
 }
 
-/* Focus styles for ALL interactive elements globally */
+/* Primary action buttons — dark green with white text */
+html.a11y-high-contrast [class*="bg-\\[\\#A8D5BA\\]"],
+html.a11y-high-contrast [class*="bg-\\[\\#2C5F2D\\]"] {
+  background-color: #1a3d1b !important;
+  color: #ffffff !important;
+}
+
+/* ── Focus styles for all interactive elements ───────────── */
 button:focus-visible,
 a:focus-visible,
 input:focus-visible,
@@ -58,4 +108,13 @@ textarea:focus-visible,
   outline: 2px solid #2C5F2D;
   outline-offset: 2px;
   border-radius: 4px;
+}
+
+html.a11y-high-contrast button:focus-visible,
+html.a11y-high-contrast a:focus-visible,
+html.a11y-high-contrast input:focus-visible,
+html.a11y-high-contrast select:focus-visible,
+html.a11y-high-contrast [tabindex="0"]:focus-visible {
+  outline: 3px solid #000000 !important;
+  outline-offset: 2px !important;
 }
