@@ -9,28 +9,60 @@ AGE_BAND_TO_AGE = {
 }
 
 
-FOOD_GROUP_EXAMPLES = {
-    "Vegetables": {
-        "description": "Vegetables support fibre, vitamins, and everyday balanced eating.",
-        "parent_tip": "Try adding colourful vegetables in small portions to make lunchboxes easier to accept.",
-    },
-    "Fruit": {
-        "description": "Fruit provides vitamins, fibre, and natural sweetness.",
-        "parent_tip": "Whole fruit is usually a better everyday choice than fruit juice.",
-    },
-    "Grains": {
-        "description": "Grain foods provide energy for school and play.",
-        "parent_tip": "Choose wholegrain options when possible for extra fibre.",
-    },
-    "Protein": {
-        "description": "Protein foods support growth, repair, and fullness.",
-        "parent_tip": "Use simple lunchbox proteins such as egg, chicken, tuna, beans, tofu, or yoghurt.",
-    },
-    "Dairy": {
-        "description": "Dairy foods support calcium intake for bones and teeth.",
-        "parent_tip": "Milk, yoghurt, and cheese can help children meet calcium needs.",
-    },
-}
+def get_heat_level(percent: int) -> str:
+    if percent > 60:
+        return "warning"
+    if percent >= 41:
+        return "high"
+    if percent >= 21:
+        return "medium"
+    return "low"
+
+
+def get_label_priority(risk_score: float) -> str:
+    if risk_score >= 60:
+        return "High label-check priority"
+    if risk_score >= 35:
+        return "Moderate label-check priority"
+    if risk_score > 0:
+        return "Low label-check priority"
+    return "No major additive signal"
+
+
+def build_category_tip(
+    category: str,
+    added_sugar_percent: int,
+    preservatives_percent: int,
+    colours_percent: int,
+) -> str:
+    highest_value = max(
+        added_sugar_percent,
+        preservatives_percent,
+        colours_percent,
+    )
+
+    if highest_value == added_sugar_percent and added_sugar_percent >= 40:
+        return (
+            f"{category} may need closer sugar label checking. "
+            "Compare similar products and look for lower added sugar options."
+        )
+
+    if highest_value == preservatives_percent and preservatives_percent >= 40:
+        return (
+            f"{category} may need closer preservative checking. "
+            "Look at the ingredient list and compare simpler options when possible."
+        )
+
+    if highest_value == colours_percent and colours_percent >= 40:
+        return (
+            f"{category} may need closer artificial colour checking. "
+            "Check ingredient lists for colour additives or colour codes."
+        )
+
+    return (
+        f"{category} shows a lower additive signal in the available records, "
+        "but it is still useful to compare labels when buying packaged foods."
+    )
 
 
 def get_user_children_with_serves(db: Session, user_id: int):
@@ -59,6 +91,7 @@ def get_user_children_with_serves(db: Session, user_id: int):
                 "child_id": child["child_id"],
                 "child_name": child["child_name"],
                 "age_band": age_band,
+                "lookup_age": None,
                 "recommended_serves": [],
                 "total_daily_target": None,
             })
@@ -93,7 +126,9 @@ def get_user_children_with_serves(db: Session, user_id: int):
             for row in serves
         ]
 
-        total_daily_target = sum(item["recommended_serves"] for item in serve_items)
+        total_daily_target = sum(
+            item["recommended_serves"] for item in serve_items
+        )
 
         result.append({
             "child_id": child["child_id"],
@@ -134,8 +169,8 @@ def get_food_group_guide(db: Session):
         if code not in grouped:
             grouped[code] = {
                 "group_code": code,
-                "description": "",
-                "parent_tip": "",
+                "description": build_food_group_description(code),
+                "parent_tip": build_food_group_tip(code),
                 "examples": [],
             }
 
@@ -153,61 +188,212 @@ def get_food_group_guide(db: Session):
     return list(grouped.values())
 
 
-def get_additive_heatmap(db: Session):
+def build_food_group_description(group_code: str) -> str:
+    code = str(group_code).lower()
+
+    if "vegetable" in code or "veg" in code:
+        return "Vegetables support fibre, vitamins, and everyday balanced eating."
+
+    if "fruit" in code:
+        return "Fruit provides vitamins, fibre, and natural sweetness."
+
+    if "grain" in code or "cereal" in code:
+        return "Grain foods provide energy for school and play."
+
+    if "protein" in code or "meat" in code or "egg" in code or "legume" in code:
+        return "Protein foods support growth, repair, and fullness."
+
+    if "dairy" in code or "milk" in code or "cheese" in code:
+        return "Dairy foods support calcium intake for bones and teeth."
+
+    return "This food group can contribute to a balanced lunchbox when chosen carefully."
+
+
+def build_food_group_tip(group_code: str) -> str:
+    code = str(group_code).lower()
+
+    if "vegetable" in code or "veg" in code:
+        return "Try adding colourful vegetables in small portions to make lunchboxes easier to accept."
+
+    if "fruit" in code:
+        return "Whole fruit is usually a better everyday choice than fruit juice."
+
+    if "grain" in code or "cereal" in code:
+        return "Choose wholegrain options when possible for extra fibre."
+
+    if "protein" in code or "meat" in code or "egg" in code or "legume" in code:
+        return "Use simple lunchbox proteins such as egg, chicken, beans, tuna, tofu, or yoghurt."
+
+    if "dairy" in code or "milk" in code or "cheese" in code:
+        return "Milk, yoghurt, and cheese can help children meet calcium needs."
+
+    return "Compare options and choose foods that fit your child’s needs and preferences."
+
+
+def get_additive_awareness_guide(db: Session):
     sql = text("""
         SELECT
-            product_id,
-            name,
-            brand,
             category,
-            has_added_sugar,
-            has_added_preservatives,
-            has_food_color,
-            sugar_detected_count,
-            preservative_detected_count,
-            color_detected_count
+            COUNT(*) AS total_products,
+            SUM(CASE WHEN has_added_sugar = 1 THEN 1 ELSE 0 END) AS added_sugar_count,
+            SUM(CASE WHEN has_added_preservatives = 1 THEN 1 ELSE 0 END) AS preservatives_count,
+            SUM(CASE WHEN has_food_color = 1 THEN 1 ELSE 0 END) AS food_color_count
         FROM packaged_products
-        WHERE name IS NOT NULL
-        ORDER BY
-            COALESCE(sugar_detected_count, 0)
-            + COALESCE(preservative_detected_count, 0)
-            + COALESCE(color_detected_count, 0) DESC
-        LIMIT 100
+        WHERE category IS NOT NULL
+          AND category <> ''
+        GROUP BY category
+        HAVING COUNT(*) >= 3
+        ORDER BY total_products DESC
+        LIMIT 12
     """)
 
     rows = db.execute(sql).mappings().all()
 
-    products = []
+    heatmap = []
 
     for row in rows:
-        sugar_count = row["sugar_detected_count"] or 0
-        preservative_count = row["preservative_detected_count"] or 0
-        color_count = row["color_detected_count"] or 0
+        total = row["total_products"] or 1
 
-        total_flags = sugar_count + preservative_count + color_count
+        added_sugar_count = row["added_sugar_count"] or 0
+        preservatives_count = row["preservatives_count"] or 0
+        food_color_count = row["food_color_count"] or 0
 
-        if total_flags >= 4:
-            severity = "high"
-        elif total_flags >= 2:
-            severity = "medium"
-        elif total_flags >= 1:
-            severity = "low"
-        else:
-            severity = "none"
+        added_sugar_percent = round(added_sugar_count / total * 100)
+        preservatives_percent = round(preservatives_count / total * 100)
+        artificial_colours_percent = round(food_color_count / total * 100)
 
-        products.append({
-            "product_id": row["product_id"],
-            "name": row["name"],
-            "brand": row["brand"],
-            "category": row["category"],
-            "has_added_sugar": bool(row["has_added_sugar"]),
-            "has_added_preservatives": bool(row["has_added_preservatives"]),
-            "has_food_color": bool(row["has_food_color"]),
-            "sugar_detected_count": sugar_count,
-            "preservative_detected_count": preservative_count,
-            "color_detected_count": color_count,
-            "total_flags": total_flags,
-            "severity": severity,
+        risk_score = round(
+            added_sugar_percent * 0.4
+            + preservatives_percent * 0.3
+            + artificial_colours_percent * 0.3,
+            1,
+        )
+
+        category = row["category"]
+
+        heatmap.append({
+            "category": category,
+            "total_products": total,
+            "risk_score": risk_score,
+            "label_priority": get_label_priority(risk_score),
+            "parent_tip": build_category_tip(
+                category=category,
+                added_sugar_percent=added_sugar_percent,
+                preservatives_percent=preservatives_percent,
+                colours_percent=artificial_colours_percent,
+            ),
+            "added_sugar": {
+                "count": added_sugar_count,
+                "percent": added_sugar_percent,
+                "level": get_heat_level(added_sugar_percent),
+            },
+            "preservatives": {
+                "count": preservatives_count,
+                "percent": preservatives_percent,
+                "level": get_heat_level(preservatives_percent),
+            },
+            "artificial_colours": {
+                "count": food_color_count,
+                "percent": artificial_colours_percent,
+                "level": get_heat_level(artificial_colours_percent),
+            },
         })
 
-    return products
+    summary = build_additive_summary(heatmap)
+
+    return {
+        "title": "Additive Awareness Guide",
+        "description": (
+            "This guide helps parents identify packaged food categories that may need "
+            "closer label checking. It summarises how often added sugar, preservatives, "
+            "and artificial colours appear in available packaged product records."
+        ),
+        "disclaimer": (
+            "A higher percentage does not mean every product in the category is unhealthy. "
+            "It means this category may need closer label checking when choosing lunchbox items."
+        ),
+        "how_to_read": [
+            {
+                "level": "low",
+                "label": "0–20%",
+                "meaning": "Lower prevalence in the available product records.",
+            },
+            {
+                "level": "medium",
+                "label": "21–40%",
+                "meaning": "Worth checking labels, especially for regular purchases.",
+            },
+            {
+                "level": "high",
+                "label": "41–60%",
+                "meaning": "Compare products carefully before choosing.",
+            },
+            {
+                "level": "warning",
+                "label": "Above 60%",
+                "meaning": "This category often contains this additive type in the available records.",
+            },
+        ],
+        "parent_tips": [
+            "Compare similar products instead of relying only on front-of-pack claims.",
+            "Check the ingredient list for sugar, syrup, preservatives, colours, or additive codes.",
+            "Choose simpler ingredient lists where possible.",
+            "Use this as a label-checking guide, not as medical advice.",
+        ],
+        "summary": summary,
+        "heatmap": heatmap,
+    }
+
+
+def build_additive_summary(heatmap: list[dict]):
+    if not heatmap:
+        return {
+            "highest_added_sugar": None,
+            "highest_preservatives": None,
+            "highest_artificial_colours": None,
+            "highest_overall_priority": None,
+        }
+
+    highest_added_sugar = max(
+        heatmap,
+        key=lambda item: item["added_sugar"]["percent"],
+    )
+
+    highest_preservatives = max(
+        heatmap,
+        key=lambda item: item["preservatives"]["percent"],
+    )
+
+    highest_artificial_colours = max(
+        heatmap,
+        key=lambda item: item["artificial_colours"]["percent"],
+    )
+
+    highest_overall_priority = max(
+        heatmap,
+        key=lambda item: item["risk_score"],
+    )
+
+    return {
+        "highest_added_sugar": {
+            "category": highest_added_sugar["category"],
+            "percent": highest_added_sugar["added_sugar"]["percent"],
+            "total_products": highest_added_sugar["total_products"],
+        },
+        "highest_preservatives": {
+            "category": highest_preservatives["category"],
+            "percent": highest_preservatives["preservatives"]["percent"],
+            "total_products": highest_preservatives["total_products"],
+        },
+        "highest_artificial_colours": {
+            "category": highest_artificial_colours["category"],
+            "percent": highest_artificial_colours["artificial_colours"]["percent"],
+            "total_products": highest_artificial_colours["total_products"],
+        },
+        "highest_overall_priority": {
+            "category": highest_overall_priority["category"],
+            "risk_score": highest_overall_priority["risk_score"],
+            "label_priority": highest_overall_priority["label_priority"],
+            "total_products": highest_overall_priority["total_products"],
+        },
+    }
