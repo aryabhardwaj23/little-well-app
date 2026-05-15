@@ -3,24 +3,24 @@
     class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm"
     aria-label="Main navigation"
   >
-    <div class="mx-auto px-8 max-w-[1440px]">
-      <div class="flex items-center justify-between h-20 gap-8">
+    <div class="mx-auto px-4 sm:px-6 lg:px-8 max-w-[1440px]">
+      <div class="flex items-center justify-between h-16 lg:h-20 gap-4">
         <!-- Logo -->
         <button
           class="flex items-center shrink-0"
           aria-label="LittleHelp home"
           type="button"
-          @click="router.push('/')"
+          @click="goHome"
         >
           <img
             :src="littleHelpLogo"
             alt="LittleHelp logo"
-            class="h-12 w-auto object-contain"
+            class="h-10 lg:h-12 w-auto object-contain"
           />
         </button>
 
         <!-- Desktop Navigation Links -->
-        <div class="flex items-center justify-end gap-2 flex-1" role="navigation">
+        <div class="hidden lg:flex items-center justify-end gap-2 flex-1" role="navigation">
           <button @click="goHomeSection('child-profiles')" class="nav-link" type="button">
             Lunchbox Plan
           </button>
@@ -77,7 +77,6 @@
 
               <div class="h-px bg-[#E5E7EB] my-3" aria-hidden="true"></div>
 
-              <!-- Only show this on HomePage -->
               <button
                 v-if="isHomePage"
                 type="button"
@@ -155,15 +154,152 @@
             </button>
           </template>
         </div>
+
+        <!-- Mobile Menu Button -->
+        <button
+          class="lg:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg text-[#2C5F2D] hover:bg-[#A8D5BA]/10 transition-colors"
+          type="button"
+          aria-label="Open main menu"
+          :aria-expanded="showMobileMenu"
+          aria-controls="mobile-menu"
+          @click="toggleMobileMenu"
+        >
+          <Menu v-if="!showMobileMenu" class="w-6 h-6" aria-hidden="true" />
+          <X v-else class="w-6 h-6" aria-hidden="true" />
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div
+      v-if="showMobileMenu"
+      id="mobile-menu"
+      class="lg:hidden border-t border-gray-200 bg-white shadow-lg"
+    >
+      <div class="px-4 py-4 space-y-2">
+        <button
+          @click="handleMobileAction(() => goHomeSection('child-profiles'))"
+          class="mobile-nav-link"
+          type="button"
+        >
+          Lunchbox Plan
+        </button>
+
+        <button
+          @click="handleMobileAction(() => goProtected('/weekly-plan'))"
+          class="mobile-nav-link"
+          type="button"
+        >
+          Weekly Plan
+        </button>
+
+        <button
+          @click="handleMobileAction(() => goProtected('/my-plans'))"
+          class="mobile-nav-link"
+          type="button"
+        >
+          My Plans
+        </button>
+
+        <button
+          @click="handleMobileAction(() => router.push('/knowledge-hub-prototype'))"
+          class="mobile-nav-link"
+          type="button"
+        >
+          Knowledge Hub
+        </button>
+
+        <button
+          @click="handleMobileAction(() => router.push('/about'))"
+          class="mobile-nav-link"
+          type="button"
+        >
+          About Us
+        </button>
+
+        <div class="pt-3 mt-3 border-t border-gray-200">
+          <p class="px-3 pb-2 text-sm font-semibold text-[#2C5F2D]">
+            Accessibility
+          </p>
+
+          <button
+            v-if="isHomePage"
+            @click="handleMobileAction(openHomeGuide)"
+            class="mobile-nav-link"
+            type="button"
+          >
+            Interactive Guide
+          </button>
+
+          <button
+            @click="toggleLargeTextMode"
+            :aria-pressed="largeTextMode"
+            :class="[
+              'mobile-nav-link',
+              largeTextMode ? 'bg-[#F8F5EC] font-semibold' : '',
+            ]"
+            type="button"
+          >
+            Large Text Mode
+            <span v-if="largeTextMode" class="ml-2 text-xs">(on)</span>
+          </button>
+
+          <button
+            @click="toggleHighContrastMode"
+            :aria-pressed="highContrastMode"
+            :class="[
+              'mobile-nav-link',
+              highContrastMode ? 'bg-[#F8F5EC] font-semibold' : '',
+            ]"
+            type="button"
+          >
+            High Contrast Mode
+            <span v-if="highContrastMode" class="ml-2 text-xs">(on)</span>
+          </button>
+        </div>
+
+        <div class="pt-3 mt-3 border-t border-gray-200">
+          <template v-if="isLoggedIn">
+            <p class="px-3 py-2 text-sm text-muted-foreground">
+              Hi, {{ username }}
+            </p>
+
+            <button
+              @click="handleMobileAction(handleLogout)"
+              class="mobile-outline-button"
+              type="button"
+            >
+              Logout
+            </button>
+          </template>
+
+          <template v-else>
+            <button
+              @click="handleMobileAction(() => router.push('/login'))"
+              class="mobile-nav-link underline underline-offset-4"
+              type="button"
+            >
+              Sign in
+            </button>
+
+            <button
+              @click="handleMobileAction(() => router.push('/register'))"
+              class="mobile-primary-button"
+              type="button"
+            >
+              Create account
+            </button>
+          </template>
+        </div>
       </div>
     </div>
   </nav>
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { ChevronDown } from 'lucide-vue-next';
+import { ChevronDown, Menu, X } from 'lucide-vue-next';
 import { useAuthStore } from '../stores/auth';
 import { useAccessibility } from '../composables/useAccessibility';
 import littleHelpLogo from '../assets/littlehelp-logo.jpg';
@@ -181,14 +317,35 @@ const {
   toggleAccessibilityMenu,
 } = useAccessibility();
 
+const showMobileMenu = ref(false);
+
 const isLoggedIn = computed(() => authStore.isAuthenticated);
 const username = computed(() => authStore.user?.username || 'User');
 
 const isHomePage = computed(() => router.currentRoute.value.path === '/');
 
+const toggleMobileMenu = () => {
+  showMobileMenu.value = !showMobileMenu.value;
+};
+
+const closeMobileMenu = () => {
+  showMobileMenu.value = false;
+};
+
+const handleMobileAction = (action) => {
+  closeMobileMenu();
+  action();
+};
+
+const goHome = () => {
+  closeMobileMenu();
+  router.push('/');
+};
+
 const openHomeGuide = () => {
   window.dispatchEvent(new CustomEvent('open-home-user-guide'));
   showAccessibilityMenu.value = false;
+  closeMobileMenu();
 };
 
 const goProtected = (path) => {
@@ -275,6 +432,57 @@ const handleLogout = () => {
 }
 
 .nav-outline-button:hover {
+  background-color: rgba(168, 213, 186, 0.12);
+}
+
+.mobile-nav-link {
+  width: 100%;
+  display: block;
+  text-align: left;
+  color: #2C5F2D;
+  padding: 0.8rem 0.75rem;
+  border-radius: 0.75rem;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  transition: background-color 0.2s ease;
+}
+
+.mobile-nav-link:hover {
+  background-color: rgba(168, 213, 186, 0.12);
+}
+
+.mobile-primary-button {
+  width: 100%;
+  display: block;
+  text-align: center;
+  background-color: #A8D5BA;
+  color: #2C5F2D;
+  padding: 0.85rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.mobile-primary-button:hover {
+  background-color: #8FC2A4;
+}
+
+.mobile-outline-button {
+  width: 100%;
+  display: block;
+  text-align: center;
+  background-color: white;
+  border: 1px solid #A8D5BA;
+  color: #2C5F2D;
+  padding: 0.85rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.mobile-outline-button:hover {
   background-color: rgba(168, 213, 186, 0.12);
 }
 </style>
