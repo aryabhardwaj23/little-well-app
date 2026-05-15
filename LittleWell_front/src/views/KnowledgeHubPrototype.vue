@@ -2,7 +2,7 @@
   <div
     :class="[
       'min-h-screen bg-[#FAF9F6] knowledgehub-root',
-      { 'large-text-mode': largeTextMode, 'high-contrast-mode': highContrastMode }
+      { 'large-text-mode': largeTextMode, 'high-contrast-mode': highContrastMode },
     ]"
   >
     <nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm">
@@ -36,7 +36,7 @@
                 <ChevronDown
                   :class="[
                     'w-3.5 h-3.5 transition-transform duration-200 translate-y-[1px]',
-                    showAccessibilityMenu ? 'rotate-180' : 'rotate-0'
+                    showAccessibilityMenu ? 'rotate-180' : 'rotate-0',
                   ]"
                 />
               </button>
@@ -55,7 +55,7 @@
                     'w-full text-left px-3 py-2 rounded-lg text-sm transition-colors',
                     largeTextMode
                       ? 'bg-[#F8F5EC] text-[#2C5F2D]'
-                      : 'bg-transparent text-[#2C5F2D] hover:bg-[#F8F5EC]'
+                      : 'bg-transparent text-[#2C5F2D] hover:bg-[#F8F5EC]',
                   ]"
                 >
                   Large Text Mode
@@ -68,7 +68,7 @@
                     'w-full text-left px-3 py-2 rounded-lg text-sm transition-colors mt-2',
                     highContrastMode
                       ? 'bg-[#F8F5EC] text-[#2C5F2D]'
-                      : 'bg-transparent text-[#2C5F2D] hover:bg-[#F8F5EC]'
+                      : 'bg-transparent text-[#2C5F2D] hover:bg-[#F8F5EC]',
                   ]"
                 >
                   High Contrast Mode
@@ -95,7 +95,6 @@
     </div>
 
     <div class="relative py-10 pb-24">
-      <!-- overflow only on decorative stack so tab tooltips can extend above without clipping -->
       <div class="pointer-events-none absolute inset-0 z-0 overflow-hidden">
         <div class="absolute inset-0 bg-[#FAF9F6]"></div>
         <div
@@ -109,8 +108,9 @@
           class="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-[#FAF9F6] via-[#FAF9F6]/80 to-transparent z-[1]"
         ></div>
       </div>
+
       <div class="container relative z-10 mx-auto max-w-5xl px-6">
-      <div class="flex flex-wrap justify-center gap-2 mb-5">
+        <div class="flex flex-wrap justify-center gap-2 mb-5">
           <div
             v-for="tab in hubTabs"
             :key="tab.id"
@@ -123,11 +123,12 @@
                 'px-5 py-2.5 rounded-full text-sm font-medium transition-all border',
                 activeHubTab === tab.id
                   ? 'bg-[#2C5F2D] text-white border-[#2C5F2D] shadow-sm'
-                  : 'bg-white text-[#2C5F2D] border-[#D6E7DC] hover:border-[#A8D5BA] hover:bg-[#A8D5BA]/10'
+                  : 'bg-white text-[#2C5F2D] border-[#D6E7DC] hover:border-[#A8D5BA] hover:bg-[#A8D5BA]/10',
               ]"
             >
               {{ tab.label }}
             </button>
+
             <div
               role="tooltip"
               class="absolute bottom-full left-1/2 z-40 mb-3 hidden w-max max-w-[min(22rem,calc(100vw-2rem))] -translate-x-1/2 rounded-xl border border-[#A8D5BA]/40 bg-white p-4 text-left text-sm leading-relaxed text-muted-foreground shadow-lg opacity-0 pointer-events-none transition-all duration-200 translate-y-1 group-hover:translate-y-0 group-hover:opacity-100 md:block"
@@ -142,12 +143,16 @@
           v-show="activeHubTab === 'serving'"
           class="bg-white rounded-3xl border border-[#E8E4DC] shadow-sm p-6 md:p-10"
         >
-          <h2 class="text-2xl md:text-3xl text-[#2C5F2D] mb-1">Serving Size Calculator</h2>
+          <h2 class="text-2xl md:text-3xl text-[#2C5F2D] mb-1">
+            Serving Size Calculator
+          </h2>
           <p class="text-muted-foreground mb-8 max-w-2xl">
             Choose one of your child profiles, then review guideline daily serves matched to their age band.
           </p>
 
-          <p class="text-sm font-semibold text-[#2C5F2D] uppercase tracking-wide mb-3">Step 1 — Select your child</p>
+          <p class="text-sm font-semibold text-[#2C5F2D] uppercase tracking-wide mb-3">
+            Step 1 — Select your child
+          </p>
 
           <div
             v-if="USE_STEP1_LOGIN_GATE && !isLoggedIn"
@@ -191,7 +196,7 @@
                 'flex-shrink-0 w-[min(100%,280px)] snap-start text-left rounded-2xl border-2 p-5 transition-all',
                 selectedChildId === p.id
                   ? 'border-[#2C5F2D] bg-[#A8D5BA]/15 shadow-md'
-                  : 'border-gray-200 bg-[#FAF9F6] hover:border-[#A8D5BA]/60'
+                  : 'border-gray-200 bg-[#FAF9F6] hover:border-[#A8D5BA]/60',
               ]"
             >
               <div class="flex items-center gap-3 mb-2">
@@ -205,10 +210,20 @@
                   <p class="text-sm text-muted-foreground">{{ p.ageGroup || 'Age on file' }}</p>
                 </div>
               </div>
-              <p v-if="p.allergies?.length" class="text-xs text-amber-800 bg-amber-50 rounded-lg px-2 py-1 mt-2">
+
+              <p
+                v-if="p.allergies?.length"
+                class="text-xs text-amber-800 bg-amber-50 rounded-lg px-2 py-1 mt-2"
+              >
                 Allergies: {{ p.allergies.join(', ') }}
               </p>
-              <p v-if="p.isDemo" class="text-[10px] uppercase tracking-wide text-muted-foreground mt-2">Demo profile</p>
+
+              <p
+                v-if="p.isDemo"
+                class="text-[10px] uppercase tracking-wide text-muted-foreground mt-2"
+              >
+                Demo profile
+              </p>
             </button>
           </div>
 
@@ -220,6 +235,7 @@
             <p class="text-sm font-semibold text-[#2C5F2D] uppercase tracking-wide mt-10 mb-4">
               Step 2 — Recommended daily serves
             </p>
+
             <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
               <div
                 v-for="row in dailyServeRows"
@@ -230,10 +246,16 @@
                   <component :is="row.icon" class="w-5 h-5" />
                 </div>
                 <h3 class="font-semibold text-[#2C5F2D]">{{ row.group }}</h3>
-                <p class="text-2xl font-bold text-[#111827] mt-1">{{ row.serves }} <span class="text-sm font-normal text-muted-foreground">serves</span></p>
-                <p class="text-xs text-muted-foreground mt-2 leading-snug flex-1">{{ row.example }}</p>
+                <p class="text-2xl font-bold text-[#111827] mt-1">
+                  {{ row.serves }}
+                  <span class="text-sm font-normal text-muted-foreground">serves</span>
+                </p>
+                <p class="text-xs text-muted-foreground mt-2 leading-snug flex-1">
+                  {{ row.example }}
+                </p>
               </div>
             </div>
+
             <div
               class="mt-8 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-[#2C5F2D] text-white px-5 py-4"
             >
@@ -243,12 +265,16 @@
                   <Info class="w-4 h-4 opacity-80" />
                 </span>
               </span>
-              <span class="text-lg font-semibold tabular-nums">{{ totalDailyGrams }} g across all food groups</span>
+              <span class="text-lg font-semibold tabular-nums">
+                {{ totalDailyGrams }} g across all food groups
+              </span>
             </div>
+
             <p class="text-xs text-muted-foreground mt-3">
               Figures follow general Australian-style children’s guidelines for the selected age band. Adjust with your clinician for medical diets.
             </p>
           </template>
+
           <p v-else-if="step1Profiles.length && !selectedChild" class="mt-8 text-center text-muted-foreground text-sm">
             Tap a child card above to load serving targets.
           </p>
@@ -273,7 +299,7 @@
                   'w-full flex items-center justify-between px-4 py-3 text-left text-sm transition-colors border-l-4',
                   selectedFoodGroupId === g.id
                     ? 'bg-[#A8D5BA]/20 border-l-[#2C5F2D] text-[#2C5F2D] font-medium'
-                    : 'border-l-transparent hover:bg-[#FAF9F6] text-gray-700'
+                    : 'border-l-transparent hover:bg-[#FAF9F6] text-gray-700',
                 ]"
               >
                 {{ g.label }}
@@ -296,12 +322,17 @@
                 </h2>
               </div>
 
-              <h3 class="text-sm font-semibold text-[#2C5F2D] uppercase tracking-wide mb-2">Why it matters</h3>
+              <h3 class="text-sm font-semibold text-[#2C5F2D] uppercase tracking-wide mb-2">
+                Why it matters
+              </h3>
               <p class="text-muted-foreground leading-relaxed mb-8">
                 {{ activeFoodGroup.why }}
               </p>
 
-              <h3 class="text-sm font-semibold text-[#2C5F2D] uppercase tracking-wide mb-3">Serving guide (per day)</h3>
+              <h3 class="text-sm font-semibold text-[#2C5F2D] uppercase tracking-wide mb-3">
+                Serving guide (per day)
+              </h3>
+
               <div class="overflow-x-auto rounded-xl border border-[#E5E7EB]">
                 <table class="w-full text-sm">
                   <thead>
@@ -324,6 +355,7 @@
                   </tbody>
                 </table>
               </div>
+
               <p class="text-xs text-muted-foreground mt-3">
                 {{ activeFoodGroup.footnote }}
               </p>
@@ -331,66 +363,285 @@
           </div>
         </section>
 
-        <!-- Additive heatmap -->
+        <!-- Additive Awareness Guide -->
         <section
           v-show="activeHubTab === 'heatmap'"
           class="bg-white rounded-3xl border border-[#E8E4DC] shadow-sm p-6 md:p-10"
         >
-          <h2 class="text-2xl md:text-3xl text-[#2C5F2D] mb-1">Additive heatmap</h2>
-          <p class="text-muted-foreground mb-8 max-w-2xl">
-            Illustrative prevalence of added sugar, preservatives, and artificial colours across common supermarket categories (demo data).
-          </p>
+          <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 mb-8">
+            <div>
+              <h2 class="text-2xl md:text-3xl text-[#2C5F2D] mb-1">
+                {{ additiveGuide?.title || 'Additive Awareness Guide' }}
+              </h2>
 
-          <div class="overflow-x-auto rounded-xl border border-[#E5E7EB]">
-            <table class="w-full text-sm min-w-[720px] table-fixed">
-              <thead>
-                <tr class="bg-[#FAF9F6]">
-                  <th class="px-3 py-3 text-left font-semibold text-[#374151] w-[22%]">Category</th>
-                  <th
-                    v-for="col in additiveColumns"
-                    :key="col"
-                    class="px-3 py-3 text-center font-semibold text-[#374151] w-[26%]"
-                  >
-                    {{ col }}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="row in heatmapRows" :key="row.category" class="border-t border-[#E5E7EB]">
-                  <td class="px-3 py-3 font-medium text-gray-800 align-middle">{{ row.category }}</td>
-                  <td
-                    v-for="col in additiveColumns"
-                    :key="col"
-                    class="px-3 py-2 align-middle text-center"
-                  >
-                    <div
-                      :class="[
-                        'relative rounded-xl px-4 py-3 font-semibold tabular-nums border w-full min-h-[3.5rem] flex items-center justify-center',
-                        heatCellClass(row[col])
-                      ]"
-                    >
-                      <AlertTriangle
-                        v-if="row[col] > 60"
-                        class="pointer-events-none absolute top-1/2 left-[calc(50%-2.1rem)] z-0 w-4 h-4 -translate-y-1/2 text-amber-700"
-                        aria-label="High prevalence"
-                      />
-                      <span class="relative z-10 text-center">{{ row[col] }}%</span>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+              <p class="text-muted-foreground max-w-3xl leading-relaxed">
+                {{
+                  additiveGuide?.description ||
+                  'Explore how often added sugar, preservatives, and artificial colours appear across packaged food categories in our database.'
+                }}
+              </p>
+            </div>
 
-          <div class="mt-8 flex flex-wrap gap-4 items-center justify-between">
-            <p class="text-xs font-semibold text-[#2C5F2D] uppercase tracking-wide">Legend</p>
-            <div class="flex flex-wrap gap-3 text-xs text-muted-foreground">
-              <span class="inline-flex items-center gap-2"><span class="w-8 h-4 rounded border bg-white inline-block" /> 0–20%</span>
-              <span class="inline-flex items-center gap-2"><span class="w-8 h-4 rounded border bg-[#A8D5BA]/25 inline-block" /> 21–40%</span>
-              <span class="inline-flex items-center gap-2"><span class="w-8 h-4 rounded border bg-[#A8D5BA]/45 inline-block" /> 41–60%</span>
-              <span class="inline-flex items-center gap-2"><span class="w-8 h-4 rounded border bg-amber-100 inline-block" /> &gt;60% + warning</span>
+            <div
+              class="rounded-2xl bg-[#F8F5EC] border border-[#E8E4DC] px-4 py-3 text-sm text-[#2C5F2D] max-w-sm"
+            >
+              <p class="font-semibold mb-1">Why this matters</p>
+              <p class="text-muted-foreground leading-relaxed">
+                This guide helps parents decide which packaged food categories may need closer label checking.
+              </p>
             </div>
           </div>
+
+          <div
+            v-if="isLoadingAdditive"
+            class="p-5 rounded-2xl border bg-[#FAF9F6] text-center text-muted-foreground"
+          >
+            Loading additive insights...
+          </div>
+
+          <div
+            v-else-if="additiveError"
+            class="p-5 rounded-2xl border border-red-200 bg-red-50 text-red-700 text-sm"
+          >
+            {{ additiveError }}
+          </div>
+
+          <template v-else>
+            <div
+              v-if="additiveSummary"
+              class="grid md:grid-cols-2 xl:grid-cols-4 gap-4 mb-8"
+            >
+              <div class="rounded-2xl border border-[#E5E7EB] bg-[#FAF9F6] p-4">
+                <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                  Highest added sugar
+                </p>
+                <p class="text-lg font-semibold text-[#2C5F2D] mt-2">
+                  {{ additiveSummary.highest_added_sugar?.category || 'N/A' }}
+                </p>
+                <p class="text-2xl font-bold text-[#111827] mt-1">
+                  {{ additiveSummary.highest_added_sugar?.percent ?? 0 }}%
+                </p>
+              </div>
+
+              <div class="rounded-2xl border border-[#E5E7EB] bg-[#FAF9F6] p-4">
+                <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                  Highest preservatives
+                </p>
+                <p class="text-lg font-semibold text-[#2C5F2D] mt-2">
+                  {{ additiveSummary.highest_preservatives?.category || 'N/A' }}
+                </p>
+                <p class="text-2xl font-bold text-[#111827] mt-1">
+                  {{ additiveSummary.highest_preservatives?.percent ?? 0 }}%
+                </p>
+              </div>
+
+              <div class="rounded-2xl border border-[#E5E7EB] bg-[#FAF9F6] p-4">
+                <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                  Highest colours
+                </p>
+                <p class="text-lg font-semibold text-[#2C5F2D] mt-2">
+                  {{ additiveSummary.highest_artificial_colours?.category || 'N/A' }}
+                </p>
+                <p class="text-2xl font-bold text-[#111827] mt-1">
+                  {{ additiveSummary.highest_artificial_colours?.percent ?? 0 }}%
+                </p>
+              </div>
+
+              <div class="rounded-2xl border border-amber-200 bg-amber-50 p-4">
+                <p class="text-xs font-semibold text-amber-800 uppercase tracking-wide">
+                  Highest label-check priority
+                </p>
+                <p class="text-lg font-semibold text-amber-950 mt-2">
+                  {{ additiveSummary.highest_overall_priority?.category || 'N/A' }}
+                </p>
+                <p class="text-sm text-amber-900 mt-1">
+                  {{ additiveSummary.highest_overall_priority?.label_priority || 'No signal' }}
+                </p>
+              </div>
+            </div>
+
+            <div
+              v-if="additiveGuide?.disclaimer"
+              class="mb-8 rounded-2xl border border-[#D6E7DC] bg-[#F8F5EC]/70 p-4"
+            >
+              <p class="text-sm text-muted-foreground leading-relaxed">
+                {{ additiveGuide.disclaimer }}
+              </p>
+            </div>
+
+            <!-- Desktop Table -->
+            <div class="hidden md:block overflow-x-auto rounded-xl border border-[#E5E7EB]">
+              <table class="w-full text-sm min-w-[760px] table-fixed">
+                <thead>
+                  <tr class="bg-[#FAF9F6]">
+                    <th class="px-3 py-3 text-left font-semibold text-[#374151] w-[22%]">
+                      Category
+                    </th>
+                    <th class="px-3 py-3 text-left font-semibold text-[#374151] w-[22%]">
+                      Label priority
+                    </th>
+                    <th
+                      v-for="col in additiveColumns"
+                      :key="col.key"
+                      class="px-3 py-3 text-center font-semibold text-[#374151]"
+                    >
+                      {{ col.label }}
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr
+                    v-for="row in additiveRows"
+                    :key="row.category"
+                    class="border-t border-[#E5E7EB]"
+                  >
+                    <td class="px-3 py-3 font-medium text-gray-800 align-middle">
+                      {{ row.category }}
+                      <p class="text-xs text-muted-foreground mt-1">
+                        {{ row.total_products }} products
+                      </p>
+                    </td>
+
+                    <td class="px-3 py-3 align-middle">
+                      <div class="rounded-xl bg-[#FAF9F6] border border-[#E5E7EB] p-3">
+                        <p class="font-semibold text-[#2C5F2D]">
+                          {{ row.label_priority }}
+                        </p>
+                        <p class="text-xs text-muted-foreground mt-1">
+                          Score: {{ row.risk_score }}
+                        </p>
+                      </div>
+                    </td>
+
+                    <td
+                      v-for="col in additiveColumns"
+                      :key="col.key"
+                      class="px-3 py-2 align-middle text-center"
+                    >
+                      <div
+                        :class="[
+                          'relative rounded-xl px-4 py-3 font-semibold tabular-nums border w-full min-h-[3.5rem] flex items-center justify-center',
+                          heatCellClass(row[col.key]?.level),
+                        ]"
+                      >
+                        <AlertTriangle
+                          v-if="row[col.key]?.level === 'warning'"
+                          class="pointer-events-none absolute top-1/2 left-[calc(50%-2.1rem)] z-0 w-4 h-4 -translate-y-1/2 text-amber-700"
+                          aria-label="High prevalence"
+                        />
+                        <span class="relative z-10 text-center">
+                          {{ row[col.key]?.percent ?? 0 }}%
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Mobile Cards -->
+            <div class="md:hidden space-y-4">
+              <article
+                v-for="row in additiveRows"
+                :key="row.category"
+                class="rounded-2xl border border-[#E5E7EB] bg-[#FAF9F6] p-4"
+              >
+                <div class="flex items-start justify-between gap-3 mb-3">
+                  <div>
+                    <h3 class="font-semibold text-[#2C5F2D]">
+                      {{ row.category }}
+                    </h3>
+                    <p class="text-xs text-muted-foreground">
+                      {{ row.total_products }} products
+                    </p>
+                  </div>
+
+                  <span class="text-xs rounded-full bg-white border border-[#D6E7DC] px-3 py-1 text-[#2C5F2D]">
+                    {{ row.label_priority }}
+                  </span>
+                </div>
+
+                <div class="space-y-2">
+                  <div
+                    v-for="col in additiveColumns"
+                    :key="col.key"
+                    class="flex items-center justify-between rounded-xl bg-white border border-[#E5E7EB] px-3 py-2"
+                  >
+                    <span class="text-sm text-gray-700">{{ col.label }}</span>
+                    <span
+                      :class="[
+                        'text-sm font-semibold rounded-lg px-2 py-1 border',
+                        heatCellClass(row[col.key]?.level),
+                      ]"
+                    >
+                      {{ row[col.key]?.percent ?? 0 }}%
+                    </span>
+                  </div>
+                </div>
+
+                <p class="text-xs text-muted-foreground mt-3 leading-relaxed">
+                  {{ row.parent_tip }}
+                </p>
+              </article>
+            </div>
+
+            <div
+              v-if="!additiveRows.length"
+              class="mt-6 p-5 rounded-2xl border bg-[#FAF9F6] text-center text-muted-foreground"
+            >
+              No additive records are available yet.
+            </div>
+
+            <!-- How to read + tips -->
+            <div class="grid lg:grid-cols-2 gap-6 mt-8">
+              <div class="rounded-2xl border border-[#E5E7EB] bg-white p-5">
+                <p class="text-sm font-semibold text-[#2C5F2D] uppercase tracking-wide mb-3">
+                  How to read this
+                </p>
+
+                <div class="space-y-3">
+                  <div
+                    v-for="item in additiveHowToRead"
+                    :key="item.level"
+                    class="flex items-start gap-3"
+                  >
+                    <span
+                      :class="[
+                        'w-10 h-5 rounded border shrink-0 mt-0.5',
+                        heatCellClass(item.level),
+                      ]"
+                    ></span>
+                    <div>
+                      <p class="text-sm font-semibold text-gray-800">
+                        {{ item.label }}
+                      </p>
+                      <p class="text-xs text-muted-foreground leading-relaxed">
+                        {{ item.meaning }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="rounded-2xl border border-[#E5E7EB] bg-white p-5">
+                <p class="text-sm font-semibold text-[#2C5F2D] uppercase tracking-wide mb-3">
+                  Parent tips
+                </p>
+
+                <ul class="space-y-2 text-sm text-muted-foreground leading-relaxed">
+                  <li
+                    v-for="tip in additiveTips"
+                    :key="tip"
+                    class="flex gap-2"
+                  >
+                    <span class="text-[#2C5F2D] mt-0.5">•</span>
+                    <span>{{ tip }}</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </template>
         </section>
       </div>
     </div>
@@ -413,7 +664,10 @@ import {
   AlertTriangle,
 } from 'lucide-vue-next';
 import logoUrl from '../assets/littlehelp-logo.jpg';
-import { getChildren } from '../services/api';
+import {
+  getChildren,
+  getKnowledgeAdditiveAwareness,
+} from '../services/api';
 import { useAuthStore } from '../stores/auth';
 
 const router = useRouter();
@@ -427,6 +681,7 @@ const largeTextMode = ref(false);
 const highContrastMode = ref(false);
 
 const activeHubTab = ref('serving');
+
 const hubTabs = [
   {
     id: 'serving',
@@ -440,8 +695,8 @@ const hubTabs = [
   },
   {
     id: 'heatmap',
-    label: 'Additive Heatmap',
-    hint: 'Compare how often added sugar, preservatives and artificial colours appear across common supermarket categories (demo data).',
+    label: 'Additive Awareness Guide',
+    hint: 'Compare how often added sugar, preservatives and artificial colours appear across packaged food categories in our database.',
   },
 ];
 
@@ -456,7 +711,6 @@ const profiles = ref([]);
 const isLoadingProfiles = ref(false);
 const selectedChildId = ref(null);
 
-/** When true, Step 1 shows the login card instead of child cards until the user signs in. */
 const USE_STEP1_LOGIN_GATE = false;
 
 const MOCK_STEP1_CHILDREN = [
@@ -469,9 +723,11 @@ const step1Profiles = computed(() => {
   if (USE_STEP1_LOGIN_GATE && !isLoggedIn.value) {
     return [];
   }
+
   if (isLoggedIn.value && profiles.value.length > 0) {
     return profiles.value.map((p) => ({ ...p, isDemo: false }));
   }
+
   return MOCK_STEP1_CHILDREN;
 });
 
@@ -499,16 +755,21 @@ const normalizeAgeGroup = (ageGroup) => {
     '2-3': '',
     '14-18': '',
   };
+
   return mapping[ageGroup] || '';
 };
 
 const mapAllergiesToNames = (allergies) => {
   if (!Array.isArray(allergies)) return [];
-  return allergies.map((a) => (typeof a === 'string' && Number.isNaN(Number(a)) ? a : `Allergen #${a}`));
+
+  return allergies.map((a) =>
+    typeof a === 'string' && Number.isNaN(Number(a)) ? a : `Allergen #${a}`,
+  );
 };
 
 const mapChildToProfile = (child) => {
   const normalizedAgeGroup = normalizeAgeGroup(child.age_band);
+
   return {
     id: child.child_id,
     name: child.child_name,
@@ -523,12 +784,17 @@ const loadProfiles = async () => {
     profiles.value = [];
     return;
   }
+
   try {
     isLoadingProfiles.value = true;
     const children = await getChildren();
     const list = Array.isArray(children) ? children.map(mapChildToProfile) : [];
     profiles.value = list.filter((p) => p.isSupportedAge);
-    if (profiles.value.length && !profiles.value.some((p) => p.id === selectedChildId.value)) {
+
+    if (
+      profiles.value.length &&
+      !profiles.value.some((p) => p.id === selectedChildId.value)
+    ) {
       selectedChildId.value = profiles.value[0].id;
     }
   } catch (e) {
@@ -540,7 +806,7 @@ const loadProfiles = async () => {
 };
 
 const selectedChild = computed(
-  () => step1Profiles.value.find((p) => p.id === selectedChildId.value) || null
+  () => step1Profiles.value.find((p) => p.id === selectedChildId.value) || null,
 );
 
 const ageBandKey = computed(() => {
@@ -577,7 +843,7 @@ const servePresets = {
 const dailyServeRows = computed(() => servePresets[ageBandKey.value] || servePresets.mid);
 
 const totalDailyGrams = computed(() =>
-  dailyServeRows.value.reduce((sum, r) => sum + (r.grams || 0), 0)
+  dailyServeRows.value.reduce((sum, r) => sum + (r.grams || 0), 0),
 );
 
 const foodGroupCatalog = [
@@ -640,23 +906,62 @@ const foodGroupCatalog = [
 ];
 
 const activeFoodGroup = computed(
-  () => foodGroupCatalog.find((g) => g.id === selectedFoodGroupId.value) || foodGroupCatalog[0]
+  () => foodGroupCatalog.find((g) => g.id === selectedFoodGroupId.value) || foodGroupCatalog[0],
 );
 
-const additiveColumns = ['Added sugar', 'Preservatives', 'Artificial colours'];
-
-const heatmapRows = [
-  { category: 'Snacks', 'Added sugar': 72, Preservatives: 38, 'Artificial colours': 55 },
-  { category: 'Cereals', 'Added sugar': 45, Preservatives: 28, 'Artificial colours': 22 },
-  { category: 'Beverages', 'Added sugar': 68, Preservatives: 24, 'Artificial colours': 41 },
-  { category: 'Dairy', 'Added sugar': 18, Preservatives: 15, 'Artificial colours': 8 },
-  { category: 'Baked goods', 'Added sugar': 52, Preservatives: 44, 'Artificial colours': 31 },
+const additiveColumns = [
+  {
+    key: 'added_sugar',
+    label: 'Added sugar',
+  },
+  {
+    key: 'preservatives',
+    label: 'Preservatives',
+  },
+  {
+    key: 'artificial_colours',
+    label: 'Artificial colours',
+  },
 ];
 
-function heatCellClass(pct) {
-  if (pct <= 20) return 'bg-white border-[#E5E7EB] text-gray-800';
-  if (pct <= 40) return 'bg-[#A8D5BA]/25 border-[#A8D5BA]/40 text-[#1a3d1c]';
-  if (pct <= 60) return 'bg-[#A8D5BA]/45 border-[#8FC2A4] text-[#142f16]';
+const additiveGuide = ref(null);
+const isLoadingAdditive = ref(false);
+const additiveError = ref('');
+
+const additiveRows = computed(() => additiveGuide.value?.heatmap || []);
+const additiveSummary = computed(() => additiveGuide.value?.summary || null);
+const additiveTips = computed(() => additiveGuide.value?.parent_tips || []);
+const additiveHowToRead = computed(() => additiveGuide.value?.how_to_read || []);
+
+const loadAdditiveAwareness = async () => {
+  try {
+    isLoadingAdditive.value = true;
+    additiveError.value = '';
+
+    const data = await getKnowledgeAdditiveAwareness();
+    additiveGuide.value = data;
+  } catch (error) {
+    console.error('Failed to load additive awareness guide:', error);
+    additiveError.value =
+      error.message || 'Failed to load additive awareness guide.';
+  } finally {
+    isLoadingAdditive.value = false;
+  }
+};
+
+function heatCellClass(level) {
+  if (level === 'low') {
+    return 'bg-white border-[#E5E7EB] text-gray-800';
+  }
+
+  if (level === 'medium') {
+    return 'bg-[#A8D5BA]/25 border-[#A8D5BA]/40 text-[#1a3d1c]';
+  }
+
+  if (level === 'high') {
+    return 'bg-[#A8D5BA]/45 border-[#8FC2A4] text-[#142f16]';
+  }
+
   return 'bg-amber-100 border-amber-300 text-amber-950';
 }
 
@@ -698,6 +1003,7 @@ onMounted(() => {
   highContrastMode.value = localStorage.getItem('littlehelp_accessibility_high_contrast') === '1';
   document.addEventListener('click', handleDocumentClick);
   loadProfiles();
+  loadAdditiveAwareness();
 });
 
 onBeforeUnmount(() => {
@@ -711,23 +1017,25 @@ watch(
       selectedChildId.value = null;
       return;
     }
+
     if (!selectedChildId.value || !list.some((p) => p.id === selectedChildId.value)) {
       selectedChildId.value = list[0].id;
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 watch(
   () => authStore.token,
   () => {
     loadProfiles();
-  }
+  },
 );
 
 watch(isLoggedIn, (v) => {
-  if (v) loadProfiles();
-  else {
+  if (v) {
+    loadProfiles();
+  } else {
     profiles.value = [];
   }
 });
@@ -757,5 +1065,12 @@ watch(isLoggedIn, (v) => {
 
 .knowledgehub-root.high-contrast-mode .text-muted-foreground {
   color: #374151;
+}
+
+@media (max-width: 640px) {
+  .knowledgehub-root nav .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
 }
 </style>

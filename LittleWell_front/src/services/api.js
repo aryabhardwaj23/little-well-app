@@ -167,3 +167,20 @@ export function generateWeeklyPlanFromBackend(payload) {
     body: JSON.stringify(payload),
   });
 }
+
+// knowledge hub
+export function getKnowledgeChildrenServes() {
+  return request('/knowledge/serves/children');
+}
+
+export function getKnowledgeFoodGroups() {
+  return request('/knowledge/food-groups');
+}
+
+export function getKnowledgeAdditiveAwareness() {
+  return request('/knowledge/additive-awareness');
+}
+
+export function getKnowledgeAdditiveHeatmap() {
+  return request('/knowledge/additive-heatmap');
+}
