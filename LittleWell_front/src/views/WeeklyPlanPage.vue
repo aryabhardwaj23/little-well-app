@@ -326,12 +326,9 @@
 
               <!-- API Recipe -->
               <div class="overflow-hidden rounded-2xl border bg-white">
-                <div
-                  v-if="batch.recipe.image"
-                  class="aspect-[16/9] overflow-hidden bg-gray-100"
-                >
+                <div class="aspect-[16/9] overflow-hidden bg-gray-100">
                   <img
-                    :src="batch.recipe.image"
+                    :src="batch.recipe.image || FALLBACK_RECIPE_IMAGE"
                     :alt="batch.recipe.title"
                     class="h-full w-full object-cover"
                     @error="handleImageError"
@@ -581,6 +578,9 @@ const nutritionFocusLabels = {
 
 const allowedAgeGroups = ['5-6 years', '7-9 years', '10-12 years'];
 
+const FALLBACK_RECIPE_IMAGE =
+  'https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=1200&q=80';
+
 const normalizeAgeGroup = (ageGroup) => {
   const mapping = {
     '5-6 years': '5-6 years',
@@ -711,7 +711,7 @@ const getSectionColor = (section) => {
   return colors[section] || 'bg-gray-300';
 };
 
-const normalizeDatabaseLunchbox = (lunchbox, index = 0) => {
+const normalizeDatabaseLunchbox = (lunchbox = {}, index = 0) => {
   const items = Array.isArray(lunchbox.items) ? lunchbox.items : [];
 
   const rawReferenceFoodId =
@@ -732,8 +732,8 @@ const normalizeDatabaseLunchbox = (lunchbox, index = 0) => {
     category: lunchbox.category || '',
     childName: lunchbox.childName || '',
     supportType: lunchbox.supportType || 'general',
-    nutritionFocus: parseTags(lunchbox.nutritionFocus),
-    whyThisMeal: lunchbox.whyThisMeal || '',
+    nutritionFocus: parseTags(lunchbox.nutritionFocus || lunchbox.nutrition_tags || lunchbox.tags),
+    whyThisMeal: lunchbox.whyThisMeal || lunchbox.why_this_meal || '',
     items:
       items.length > 0
         ? items.map((item) => ({
@@ -761,19 +761,93 @@ const normalizeDatabaseLunchbox = (lunchbox, index = 0) => {
   };
 };
 
-const normalizeApiRecipe = (meal, index = 0) => {
-  const id = meal.id || meal.idMeal || meal.recipe_id || meal.recipeId || `recipe-${index}`;
+const normalizeApiRecipe = (meal = {}, index = 0) => {
+  const id =
+    meal.id ||
+    meal.idMeal ||
+    meal.recipe_id ||
+    meal.recipeId ||
+    meal.meal_id ||
+    `recipe-${index}`;
+
+  const image =
+    meal.image ||
+    meal.image_url ||
+    meal.imageUrl ||
+    meal.heroImage ||
+    meal.mealImage ||
+    meal.strMealThumb ||
+    meal.thumbnail ||
+    meal.recipe_image_url ||
+    meal.recipeImageUrl ||
+    '';
 
   return {
     id,
-    source: 'mealdb',
-    title: meal.title || meal.mealName || meal.strMeal || 'Recipe Inspiration',
-    image: meal.heroImage || meal.mealImage || meal.strMealThumb || meal.image_url || '',
-    category: meal.category || meal.strCategory || '',
-    area: meal.area || meal.strArea || '',
-    childName: meal.childName || '',
-    nutritionFocus: parseTags(meal.nutritionFocus),
-    whyThisMeal: meal.whyThisMeal || '',
+    source: meal.source || 'mealdb',
+    title:
+      meal.title ||
+      meal.mealName ||
+      meal.strMeal ||
+      meal.recipe_title ||
+      meal.recipeName ||
+      'Recipe Inspiration',
+    image: image || FALLBACK_RECIPE_IMAGE,
+    category: meal.category || meal.strCategory || meal.recipe_category || '',
+    area: meal.area || meal.strArea || meal.cuisine || '',
+    childName: meal.childName || meal.child_name || '',
+    nutritionFocus: parseTags(meal.nutritionFocus || meal.nutrition_tags || meal.tags),
+    whyThisMeal:
+      meal.whyThisMeal ||
+      meal.why_this_meal ||
+      meal.recipe_note ||
+      meal.note ||
+      '',
+  };
+};
+
+const normalizeBackendBatch = (batch = {}, index = 0) => {
+  const prepMinutes =
+    batch.prep_time_minutes ||
+    batch.prepMinutes ||
+    batch.prep_minutes ||
+    null;
+
+  return {
+    id: batch.id || batch.batch_id || `batch-${Date.now()}-${index}`,
+
+    cookDay:
+      batch.cookDay ||
+      batch.cook_day ||
+      batch.cook_title ||
+      getCookTitle(cookingFrequency.value || 2, index),
+
+    coverDays:
+      batch.coverDays ||
+      batch.cover_days ||
+      batch.covers ||
+      getCoverText(cookingFrequency.value || 2, index),
+
+    prepTime:
+      batch.prepTime ||
+      batch.prep_time ||
+      (prepMinutes ? `${prepMinutes} mins` : '30 mins'),
+
+    seasonalNote:
+      batch.seasonalNote ||
+      batch.seasonal_note ||
+      batch.season_note ||
+      `${getSeasonName()} ingredients are prioritised where available.`,
+
+    storageTip:
+      batch.storageTip ||
+      batch.storage_tip ||
+      batch.storage ||
+      'Store safely in the fridge and keep chilled.',
+
+    lunchbox: normalizeDatabaseLunchbox(batch.lunchbox || batch.database_lunchbox || {}, index),
+
+    recipe: normalizeApiRecipe(batch.recipe || batch.api_recipe || batch.meal || {}, index),
   };
 };
 
@@ -798,7 +872,9 @@ const normalizeSavedMeal = (meal, index = 0) => {
         meal.recipeName ||
         meal.recipe?.title ||
         (meal.recipe_id ? `Recipe #${meal.recipe_id}` : ''),
+      image: meal.image,
       image_url: meal.image_url,
+      imageUrl: meal.imageUrl,
       category: meal.category,
       area: meal.area,
       nutritionFocus: meal.recipe_tags || meal.nutrition_tags,
@@ -1126,28 +1202,30 @@ const generateWeeklyPlan = async () => {
       seasonal: true,
     });
 
-    const batches = Array.isArray(data?.batches) ? data.batches : [];
+    const batches = Array.isArray(data?.batches)
+      ? data.batches
+      : Array.isArray(data?.meals)
+        ? data.meals
+        : [];
 
-    weeklyBatches.value = batches.map((batch, index) => ({
-      id: batch.id || `batch-${Date.now()}-${index}`,
-      cookDay: batch.cookDay || `Cook Session ${index + 1}`,
-      coverDays: batch.coverDays || 'Selected days',
-      prepTime: batch.prepTime || '30 mins',
-      seasonalNote: batch.seasonalNote || `${getSeasonName()} ingredients are prioritised where available.`,
-      storageTip: batch.storageTip || 'Store safely in the fridge and keep chilled.',
-      lunchbox: normalizeDatabaseLunchbox(batch.lunchbox || {}, index),
-      recipe: normalizeApiRecipe(batch.recipe || {}, index),
-    }));
+    weeklyBatches.value = batches.map(normalizeBackendBatch);
 
     databaseLunchboxes.value = weeklyBatches.value
       .map((batch) => batch.lunchbox)
       .filter(Boolean);
 
-    apiRecipes.value = weeklyBatches.value
-      .map((batch) => batch.recipe)
-      .filter((recipe) => recipe?.id);
+    apiRecipes.value = dedupeByKey(
+      weeklyBatches.value
+        .map((batch) => batch.recipe)
+        .filter((recipe) => recipe?.id)
+    ).map(normalizeApiRecipe);
 
     planGenerated.value = weeklyBatches.value.length > 0;
+
+    if (!planGenerated.value) {
+      errorMessage.value = 'No weekly plan was generated. Please try again.';
+      return;
+    }
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
   } catch (error) {
@@ -1211,7 +1289,9 @@ const swapApiRecipe = async (index) => {
 };
 
 const handleImageError = (event) => {
-  event.target.style.display = 'none';
+  if (event.target.src !== FALLBACK_RECIPE_IMAGE) {
+    event.target.src = FALLBACK_RECIPE_IMAGE;
+  }
 };
 
 const openRecipe = (recipe) => {
