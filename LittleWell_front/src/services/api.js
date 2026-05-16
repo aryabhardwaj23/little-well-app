@@ -70,3 +70,9 @@ export function getQuickRecommendedProducts({ ageGroup, allergies = [], seasonal
 
   return request(`/products/recommended/quick?${query.toString()}`);
 }
+export async function getWhyThisMeal({ meal_name, child_age, allergens = [], dietary_restrictions = [], season = 'autumn', meal_type = 'lunchbox' }) {
+  return request('/ai-insights/why-this-meal', {
+    method: 'POST',
+    body: JSON.stringify({ meal_name, child_age, allergens, dietary_restrictions, season, meal_type }),
+  });
+}

@@ -148,10 +148,18 @@
               </span>
             </div>
 
-            <!-- Why This Meal -->
-            <p class="text-sm text-muted-foreground leading-relaxed">
-              {{ lunchbox.whyThisMeal }}
-            </p>
+            <!-- Why This Meal AI -->
+            <div class="mt-3 bg-gradient-to-r from-[#f0fdf4] to-[#ecfdf5] border border-[#6ee7b7] rounded-xl p-3">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="bg-[#10b981] text-white text-xs font-semibold px-2 py-0.5 rounded-full">✨ AI Fusion</span>
+                <span class="text-xs font-semibold text-[#065f46]">Why This Meal?</span>
+              </div>
+              <p v-if="lunchbox.whyThisMeal" class="text-xs text-gray-600 leading-relaxed">{{ lunchbox.whyThisMeal }}</p>
+              <div v-else class="flex items-center gap-2 text-xs text-gray-400">
+                <span class="w-3 h-3 border-2 border-[#10b981] border-t-transparent rounded-full animate-spin"></span>
+                Generating AI explanation...
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -181,6 +189,7 @@
 import { ref, watch, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { RefreshCw, Sparkles, Leaf } from 'lucide-vue-next';
+import { getWhyThisMeal } from '../services/api';
 import {
   getRecommendedProducts,
   getFamilyRecommendedProducts,
@@ -275,6 +284,21 @@ const loadRecommendations = async () => {
     needsSupport.value = [];
   } finally {
     isLoading.value = false;
+  }
+};
+
+
+const generateWhyThisMeal = async (boxes) => {
+  const month = new Date().getMonth() + 1;
+  const s = [12,1,2].includes(month)?'summer':[3,4,5].includes(month)?'autumn':[6,7,8].includes(month)?'winter':'spring';
+  for (const box of boxes) {
+    const mealName = box.items?.map(i => i.name).join(', ') || box.name || 'this meal';
+    try {
+      const res = await getWhyThisMeal({ meal_name: mealName, child_age: box.childAge || 7,
+        allergens: box.allergens || [], dietary_restrictions: box.dietaryRestrictions || [],
+        season: s, meal_type: 'lunchbox' });
+      box.whyThisMeal = res.explanation;
+    } catch(e) { console.error('Why This Meal failed:', e); }
   }
 };
 
