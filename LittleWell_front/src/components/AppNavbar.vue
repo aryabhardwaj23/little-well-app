@@ -39,6 +39,16 @@
             My Plans
           </button>
 
+          <!-- Temporary Food Analyser entry -->
+          <button
+            @click="router.push('/food-analyser')"
+            :class="['nav-link', { 'nav-link-active': isRouteActive('/food-analyser') }]"
+            :aria-current="isRouteActive('/food-analyser') ? 'page' : undefined"
+            type="button"
+          >
+            Food Analyser
+          </button>
+
           <button
             @click="router.push('/knowledge-hub-prototype')"
             :class="['nav-link', { 'nav-link-active': isRouteActive('/knowledge-hub-prototype') }]"
@@ -286,6 +296,16 @@
           type="button"
         >
           My Plans
+        </button>
+
+        <!-- Temporary Food Analyser entry -->
+        <button
+          @click="handleMobileAction(() => router.push('/food-analyser'))"
+          :class="['mobile-nav-link', { 'mobile-nav-link-active': isRouteActive('/food-analyser') }]"
+          :aria-current="isRouteActive('/food-analyser') ? 'page' : undefined"
+          type="button"
+        >
+          Food Analyser
         </button>
 
         <button
