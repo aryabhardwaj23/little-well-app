@@ -7,66 +7,123 @@
       aria-hidden="true"
     ></div>
 
-    <div
-      class="container mx-auto px-4 sm:px-6 max-w-5xl text-center relative z-10"
-    >
-      <p class="text-2xl text-[#2C5F2D]">LittleHelp</p>
+    <div class="container mx-auto px-4 sm:px-6 max-w-6xl relative z-10">
+      <div class="grid gap-10 md:grid-cols-[1.4fr,1fr,1fr]">
+        <!-- Brand -->
+        <div>
+          <button
+            type="button"
+            @click="goHome"
+            class="text-left"
+            aria-label="Go to LittleHelp home page"
+          >
+            <p class="text-2xl font-semibold text-[#2C5F2D]">LittleHelp</p>
+          </button>
 
-      <p
-        class="mt-4 text-muted-foreground max-w-3xl mx-auto leading-relaxed text-sm sm:text-base"
+          <p class="mt-4 text-muted-foreground max-w-md leading-relaxed text-sm sm:text-base">
+            Helping families create practical, balanced, and child-friendly
+            lunchbox plans through science-backed nutrition guidance.
+          </p>
+
+          <p class="mt-4 text-xs text-muted-foreground leading-relaxed max-w-md">
+            LittleHelp provides educational food guidance only and is not a replacement
+            for professional medical or dietetic advice.
+          </p>
+        </div>
+
+        <!-- Navigation -->
+        <nav aria-label="Footer navigation">
+          <p class="text-sm font-semibold uppercase tracking-wide text-[#2C5F2D] mb-4">
+            Explore
+          </p>
+
+          <div class="space-y-3 text-sm">
+            <button
+              type="button"
+              @click="goHome"
+              class="footer-link"
+            >
+              Home
+            </button>
+
+            <button
+              type="button"
+              @click="goProtected('/weekly-plan')"
+              class="footer-link"
+            >
+              Weekly Plan
+            </button>
+
+            <button
+              type="button"
+              @click="goProtected('/my-plans')"
+              class="footer-link"
+            >
+              My Plans
+            </button>
+
+            <button
+              type="button"
+              @click="goTo('/knowledge-hub-prototype')"
+              class="footer-link"
+            >
+              Knowledge Hub
+            </button>
+
+            <button
+              type="button"
+              @click="goTo('/about')"
+              class="footer-link"
+            >
+              About Us
+            </button>
+          </div>
+        </nav>
+
+        <!-- CTA -->
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-wide text-[#2C5F2D] mb-4">
+            Get started
+          </p>
+
+          <p class="text-sm text-muted-foreground leading-relaxed mb-5">
+            Create a child profile to receive more personalised lunchbox ideas based
+            on age, allergies, dietary needs, and nutrition focus.
+          </p>
+
+          <div class="flex flex-col gap-3">
+            <button
+              type="button"
+              @click="goProtected('/child-info')"
+              class="w-full sm:w-auto bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg px-6 py-3 font-semibold transition-colors"
+            >
+              Start Planning
+            </button>
+
+            <button
+              type="button"
+              @click="goTo('/quick-start')"
+              class="w-full sm:w-auto bg-white hover:bg-[#FAF9F6] text-[#2C5F2D] border border-[#A8D5BA] rounded-lg px-6 py-3 font-semibold transition-colors"
+            >
+              Try Quick Start
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="mt-10 pt-6 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground"
       >
-        Helping families create practical, balanced, and child-friendly
-        lunchbox plans through science-backed nutrition guidance.
-      </p>
-
-      <nav
-        class="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-[#2C5F2D]"
-        aria-label="Footer navigation"
-      >
-        <button
-          @click="goHomeSection('child-profiles')"
-          type="button"
-          class="hover:underline"
-        >
-          Lunchbox Plan
-        </button>
+        <p>© 2026 LittleHelp. All rights reserved.</p>
 
         <button
-          @click="goProtected('/weekly-plan')"
           type="button"
-          class="hover:underline"
+          @click="scrollToTop"
+          class="text-[#2C5F2D] hover:underline"
         >
-          Weekly Plan
+          Back to top
         </button>
-
-        <button
-          @click="goProtected('/my-plans')"
-          type="button"
-          class="hover:underline"
-        >
-          My Plans
-        </button>
-
-        <button
-          @click="router.push('/knowledge-hub-prototype')"
-          type="button"
-          class="hover:underline"
-        >
-          Knowledge Hub
-        </button>
-
-        <button
-          @click="router.push('/about')"
-          type="button"
-          class="hover:underline"
-        >
-          About Us
-        </button>
-      </nav>
-
-      <p class="mt-6 text-xs text-muted-foreground">
-        © 2026 LittleHelp. All rights reserved.
-      </p>
+      </div>
     </div>
   </footer>
 </template>
@@ -81,34 +138,52 @@ const authStore = useAuthStore();
 
 const isLoggedIn = computed(() => authStore.isAuthenticated);
 
-const goProtected = (path) => {
+const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth',
+  });
+};
+
+const goTo = async (path) => {
+  await router.push(path);
+  scrollToTop();
+};
+
+const goHome = async () => {
+  await router.push('/');
+  scrollToTop();
+};
+
+const goProtected = async (path) => {
   if (!isLoggedIn.value) {
-    router.push({
+    await router.push({
       path: '/login',
       query: { redirect: path },
     });
+    scrollToTop();
     return;
   }
 
-  router.push(path);
-};
-
-const goHomeSection = (sectionId) => {
-  if (router.currentRoute.value.path === '/') {
-    const section = document.getElementById(sectionId);
-    section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    return;
-  }
-
-  router.push({
-    path: '/',
-    hash: `#${sectionId}`,
-  });
+  await router.push(path);
+  scrollToTop();
 };
 </script>
 
 <style scoped>
 .text-muted-foreground {
   color: #6b7280;
+}
+
+.footer-link {
+  display: block;
+  color: #2C5F2D;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.footer-link:hover {
+  color: #214B24;
+  text-decoration: underline;
+  transform: translateX(2px);
 }
 </style>
