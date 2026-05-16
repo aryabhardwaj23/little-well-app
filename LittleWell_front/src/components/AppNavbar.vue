@@ -57,7 +57,7 @@
             About Us
           </button>
 
-          <!-- Accessibility Dropdown -->
+          <!-- Desktop Accessibility Dropdown -->
           <div ref="accessibilityMenuRef" class="relative">
             <button
               @click="toggleAccessibilityMenu"
@@ -175,18 +175,91 @@
           </template>
         </div>
 
-        <!-- Mobile Menu Button -->
-        <button
-          class="lg:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg text-[#2C5F2D] hover:bg-[#A8D5BA]/10 transition-colors"
-          type="button"
-          aria-label="Open main menu"
-          :aria-expanded="showMobileMenu"
-          aria-controls="mobile-menu"
-          @click="toggleMobileMenu"
-        >
-          <Menu v-if="!showMobileMenu" class="w-6 h-6" aria-hidden="true" />
-          <X v-else class="w-6 h-6" aria-hidden="true" />
-        </button>
+        <!-- Mobile Actions -->
+        <div class="lg:hidden flex items-center gap-2">
+          <!-- Mobile Accessibility Button -->
+          <div ref="mobileAccessibilityMenuRef" class="relative">
+            <button
+              type="button"
+              class="mobile-accessibility-button"
+              :aria-expanded="showMobileAccessibilityMenu"
+              aria-haspopup="true"
+              aria-controls="mobile-accessibility-popover"
+              @click="toggleMobileAccessibilityMenu"
+            >
+              <span class="hidden xs:inline">Accessibility</span>
+              <span class="xs:hidden">Access</span>
+              <ChevronDown
+                :class="[
+                  'w-3.5 h-3.5 transition-transform duration-200',
+                  showMobileAccessibilityMenu ? 'rotate-180' : 'rotate-0',
+                ]"
+                aria-hidden="true"
+              />
+            </button>
+
+            <div
+              v-if="showMobileAccessibilityMenu"
+              id="mobile-accessibility-popover"
+              class="absolute right-0 mt-2 w-64 rounded-2xl border border-[#D6E7DC] bg-white shadow-xl p-4 z-50"
+            >
+              <p class="text-sm font-semibold text-[#2C5F2D]">
+                Accessibility
+              </p>
+
+              <div class="h-px bg-[#E5E7EB] my-3" aria-hidden="true"></div>
+
+              <button
+                v-if="isHomePage"
+                type="button"
+                @click="handleMobileAccessibilityAction(openHomeGuide)"
+                class="accessibility-popover-button"
+              >
+                Interactive Guide
+              </button>
+
+              <button
+                type="button"
+                @click="toggleLargeTextMode"
+                :aria-pressed="largeTextMode"
+                :class="[
+                  'accessibility-popover-button',
+                  isHomePage ? 'mt-2' : '',
+                  largeTextMode ? 'bg-[#F8F5EC] font-semibold' : '',
+                ]"
+              >
+                Large Text Mode
+                <span v-if="largeTextMode" class="ml-2 text-xs">(on)</span>
+              </button>
+
+              <button
+                type="button"
+                @click="toggleHighContrastMode"
+                :aria-pressed="highContrastMode"
+                :class="[
+                  'accessibility-popover-button mt-2',
+                  highContrastMode ? 'bg-[#F8F5EC] font-semibold' : '',
+                ]"
+              >
+                High Contrast Mode
+                <span v-if="highContrastMode" class="ml-2 text-xs">(on)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Mobile Menu Button -->
+          <button
+            class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-[#2C5F2D] hover:bg-[#A8D5BA]/10 transition-colors"
+            type="button"
+            aria-label="Open main menu"
+            :aria-expanded="showMobileMenu"
+            aria-controls="mobile-menu"
+            @click="toggleMobileMenu"
+          >
+            <Menu v-if="!showMobileMenu" class="w-6 h-6" aria-hidden="true" />
+            <X v-else class="w-6 h-6" aria-hidden="true" />
+          </button>
+        </div>
       </div>
     </div>
 
@@ -232,47 +305,6 @@
         >
           About Us
         </button>
-
-        <div class="pt-3 mt-3 border-t border-gray-200">
-          <p class="px-3 pb-2 text-sm font-semibold text-[#2C5F2D]">
-            Accessibility
-          </p>
-
-          <button
-            v-if="isHomePage"
-            @click="handleMobileAction(openHomeGuide)"
-            class="mobile-nav-link"
-            type="button"
-          >
-            Interactive Guide
-          </button>
-
-          <button
-            @click="toggleLargeTextMode"
-            :aria-pressed="largeTextMode"
-            :class="[
-              'mobile-nav-link',
-              largeTextMode ? 'bg-[#F8F5EC] font-semibold' : '',
-            ]"
-            type="button"
-          >
-            Large Text Mode
-            <span v-if="largeTextMode" class="ml-2 text-xs">(on)</span>
-          </button>
-
-          <button
-            @click="toggleHighContrastMode"
-            :aria-pressed="highContrastMode"
-            :class="[
-              'mobile-nav-link',
-              highContrastMode ? 'bg-[#F8F5EC] font-semibold' : '',
-            ]"
-            type="button"
-          >
-            High Contrast Mode
-            <span v-if="highContrastMode" class="ml-2 text-xs">(on)</span>
-          </button>
-        </div>
 
         <div class="pt-3 mt-3 border-t border-gray-200">
           <template v-if="isLoggedIn">
@@ -342,6 +374,8 @@ const {
 } = useAccessibility();
 
 const showMobileMenu = ref(false);
+const showMobileAccessibilityMenu = ref(false);
+const mobileAccessibilityMenuRef = ref(null);
 
 const isLoggedIn = computed(() => authStore.isAuthenticated);
 const username = computed(() => authStore.user?.username || 'User');
@@ -357,21 +391,45 @@ const isRouteActive = (path) => {
   return currentPath.value === path || currentPath.value.startsWith(`${path}/`);
 };
 
-const toggleMobileMenu = () => {
-  showMobileMenu.value = !showMobileMenu.value;
-};
-
 const closeMobileMenu = () => {
   showMobileMenu.value = false;
 };
 
+const closeMobileAccessibilityMenu = () => {
+  showMobileAccessibilityMenu.value = false;
+};
+
+const toggleMobileMenu = () => {
+  showMobileMenu.value = !showMobileMenu.value;
+
+  if (showMobileMenu.value) {
+    closeMobileAccessibilityMenu();
+  }
+};
+
+const toggleMobileAccessibilityMenu = () => {
+  showMobileAccessibilityMenu.value = !showMobileAccessibilityMenu.value;
+
+  if (showMobileAccessibilityMenu.value) {
+    closeMobileMenu();
+  }
+};
+
 const handleMobileAction = (action) => {
+  closeMobileMenu();
+  closeMobileAccessibilityMenu();
+  action();
+};
+
+const handleMobileAccessibilityAction = (action) => {
+  closeMobileAccessibilityMenu();
   closeMobileMenu();
   action();
 };
 
 const goHome = () => {
   closeMobileMenu();
+  closeMobileAccessibilityMenu();
   router.push('/');
 };
 
@@ -379,6 +437,7 @@ const openHomeGuide = () => {
   window.dispatchEvent(new CustomEvent('open-home-user-guide'));
   showAccessibilityMenu.value = false;
   closeMobileMenu();
+  closeMobileAccessibilityMenu();
 };
 
 const goProtected = (path) => {
@@ -485,6 +544,40 @@ const handleLogout = () => {
   background-color: rgba(168, 213, 186, 0.12);
 }
 
+.mobile-accessibility-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #2C5F2D;
+  padding: 0.55rem 0.7rem;
+  border-radius: 0.65rem;
+  font-size: 0.82rem;
+  line-height: 1.2;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+}
+
+.mobile-accessibility-button:hover {
+  background-color: rgba(168, 213, 186, 0.12);
+}
+
+.accessibility-popover-button {
+  width: 100%;
+  display: block;
+  text-align: left;
+  color: #2C5F2D;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.75rem;
+  font-size: 0.9rem;
+  line-height: 1.2;
+  transition: background-color 0.2s ease;
+}
+
+.accessibility-popover-button:hover {
+  background-color: #F8F5EC;
+}
+
 .mobile-nav-link {
   width: 100%;
   display: block;
@@ -549,5 +642,13 @@ const handleLogout = () => {
 
 .mobile-outline-button:hover {
   background-color: rgba(168, 213, 186, 0.12);
+}
+
+@media (max-width: 360px) {
+  .mobile-accessibility-button {
+    padding-left: 0.55rem;
+    padding-right: 0.55rem;
+    font-size: 0.78rem;
+  }
 }
 </style>
