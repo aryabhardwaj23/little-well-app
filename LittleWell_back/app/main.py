@@ -29,6 +29,8 @@ app.include_router(recommendations.router)
 app.include_router(weekly_plans.router)
 app.include_router(ml_router.router)
 app.include_router(knowledge.router)
+app.include_router(photo_analyser.router)
+app.include_router(ai_insights.router)
 
 
 @app.get("/")

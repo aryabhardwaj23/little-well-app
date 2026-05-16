@@ -1,0 +1,1483 @@
+"reference_food_id","food_group_id","ausnut_food_id","food_name","is_raw","adg_group_code","value","is_vegan","is_vegetarian","is_gluten_free","is_dairy_free","is_egg_free","is_nut_free","is_halal","is_kosher","is_pork_free"
+61,11,F001029,"Beverage base, chocolate flavour, added vitamins & minerals (Milo)",0,DRINKS,,0,1,0,0,1,1,1,1,1
+62,11,F001032,"Beverage base, chocolate flavour, unfortified (Nesquik brand)",0,DRINKS,,0,1,1,0,1,1,1,1,1
+63,11,F001036,"Beverage base, drinking chocolate, unfortified",0,DRINKS,,0,1,1,0,1,1,1,1,1
+64,11,F002980,Cocoa powder,0,DRINKS,,1,1,1,1,1,1,1,1,1
+65,11,F001068,"Beverage, chocolate flavour, from Milo powder, with regular fat cow's milk",0,DRINKS,,0,1,1,0,1,1,1,1,1
+66,11,F001073,"Beverage, chocolate flavour, from Nesquik powder, with regular fat cow's milk",0,DRINKS,,0,1,1,0,1,1,1,1,1
+67,11,F001064,"Beverage, chocolate flavour, from drinking chocolate, with regular fat cow's milk",0,DRINKS,,0,1,1,0,1,1,1,1,1
+68,30,F010642,"Protein powder, hemp seed based",0,ADDITIONAL,,1,1,1,1,1,1,1,1,1
+69,30,F007493,"Protein powder, whey based, protein >70%, unfortified",0,ADDITIONAL,,0,1,1,0,1,1,1,1,1
+70,30,F009818,"Protein powder, whey based, protein >70%, unfortified, prepared with water",0,ADDITIONAL,,0,1,1,0,1,1,1,1,1
+71,11,F003060,"Coffee, instant, dry powder or granules",0,DRINKS,,0,1,1,0,1,1,1,1,1
+72,11,F003061,"Coffee, instant, dry powder or granules, decaffeinated",0,DRINKS,,1,1,1,1,1,1,1,1,1
+73,11,F003014,"Coffee mix, with beverage whitener & sugar, dry powder",0,DRINKS,,0,1,1,0,1,1,1,1,1
+74,11,F003084,"Coffee, prepared from coffee mix with sugar & whitener, no added milk",0,DRINKS,,0,1,1,0,1,1,1,1,1
+75,11,F003017,"Coffee, black, from instant coffee powder",0,DRINKS,,0,1,1,0,1,1,1,1,1
+76,11,F003018,"Coffee, black, from instant coffee powder, decaffeinated",0,DRINKS,,0,1,1,0,1,1,1,1,1
+77,11,F003041,"Coffee, espresso, from ground coffee beans",0,DRINKS,,0,1,1,0,1,1,1,1,1
+78,11,F003065,"Coffee, long black, from ground coffee beans",0,DRINKS,,0,1,1,0,1,1,1,1,1
+79,11,F009796,"Coffee, flat white/latte/cappuccino, from ground coffee beans, with regular fat cow's milk",0,DRINKS,,0,1,1,0,1,1,1,1,1
+80,11,F003130,"Cordial base, 25% citrus fruit juice, regular",0,DRINKS,,1,1,1,1,1,1,1,1,1
+81,11,F003135,"Cordial base, 40% citrus fruit juice, regular",0,DRINKS,,1,1,1,1,1,1,1,1,1
+82,11,F003128,"Cordial base, blackcurrant juice, regular",0,DRINKS,,1,1,1,1,1,1,1,1,1
+83,11,F009928,"Cordial base, fruit juice/flavours, intense sweetened or diet",0,DRINKS,,1,1,1,1,1,1,1,1,1
+84,11,F003158,"Cordial, 25% citrus fruit juice, regular, recommended dilution",0,DRINKS,,1,1,1,1,1,1,1,1,1
+85,11,F003160,"Cordial, 40% citrus fruit juice, regular, recommended dilution",0,DRINKS,,1,1,1,1,1,1,1,1,1
+86,11,F003156,"Cordial, blackcurrant juice, regular, recommended dilution",0,DRINKS,,1,1,1,1,1,1,1,1,1
+87,11,F009927,"Cordial, fruit juice/flavours, recommended dilution",0,DRINKS,,1,1,1,1,1,1,1,1,1
+88,11,F009931,"Cordial, fruit juice/flavours, intense sweetened or diet, recommended dilution",0,DRINKS,,1,1,1,1,1,1,1,1,1
+89,11,F004663,"Juice, apple, commercial, added vitamin C",0,DRINKS,,1,1,1,1,1,1,1,1,1
+90,11,F004656,"Juice, apple & blackcurrant, commercial",0,DRINKS,,1,1,1,1,1,1,1,1,1
+91,11,F004726,"Juice, lemon",0,DRINKS,,1,1,1,1,1,1,1,1,1
+92,11,F004729,"Juice, lime",0,DRINKS,,1,1,1,1,1,1,1,1,1
+93,11,F004739,"Juice, orange, commercial",0,DRINKS,,1,1,1,1,1,1,1,1,1
+94,11,F004731,"Juice, orange & mango, commercial",0,DRINKS,,1,1,1,1,1,1,1,1,1
+95,11,F010307,"Juice, vegetable blend, commercial",0,DRINKS,,1,1,1,1,1,1,1,1,1
+96,11,F004099,"Fruit drink, apple juice",0,DRINKS,,1,1,1,1,1,1,1,1,1
+97,11,F004101,"Fruit drink, blackcurrant, commercial",0,DRINKS,,1,1,1,1,1,1,1,1,1
+98,11,F004102,"Fruit drink, cranberry",0,DRINKS,,1,1,1,1,1,1,1,1,1
+99,11,F004114,"Fruit drink, orange juice",0,DRINKS,,1,1,1,1,1,1,1,1,1
+100,11,F008402,"Soft drink, cola flavour",0,DRINKS,,1,1,1,1,1,1,1,1,1
+101,11,F008403,"Soft drink, cola flavour, decaffeinated",0,DRINKS,,1,1,1,1,1,1,1,1,1
+102,11,F008404,"Soft drink, cola flavour, intense sweetened or diet",0,DRINKS,,1,1,1,1,1,1,1,1,1
+103,11,F008405,"Soft drink, cola flavour, intense sweetened or diet, decaffeinated",0,DRINKS,,1,1,1,1,1,1,1,1,1
+104,11,F008411,"Soft drink, dry ginger ale or ginger beer, regular",0,DRINKS,,0,1,1,0,1,1,1,1,1
+105,11,F008438,"Soft drink, fruit flavours",0,DRINKS,,1,1,1,1,1,1,1,1,1
+106,11,F008460,"Soft drink, tonic water",0,DRINKS,,1,1,1,1,1,1,1,1,1
+107,11,F008439,"Soft drink, fruit flavours, intense sweetened or diet",0,DRINKS,,1,1,1,1,1,1,1,1,1
+108,11,F008461,"Soft drink, tonic water, intense sweetened or diet",0,DRINKS,,1,1,1,1,1,1,1,1,1
+109,11,F008421,"Soft drink, energy drink, Red Bull",0,DRINKS,,1,1,1,1,1,1,1,1,1
+110,11,F008424,"Soft drink, energy drink, V",0,DRINKS,,1,1,1,1,1,1,1,1,1
+111,11,F009795,"Kombucha, flavoured, added juice or intense sweeteners",0,DRINKS,,1,1,1,1,1,1,1,1,1
+112,11,F009125,"Tea, regular, black, brewed from leaf or teabags, without milk",0,DRINKS,,0,1,1,0,1,1,1,1,1
+113,11,F009115,"Tea, black, brewed from leaf or teabags, decaffeinated",0,DRINKS,,0,1,1,0,1,1,1,1,1
+114,11,F009117,"Tea, green, plain, without milk",0,DRINKS,,0,1,1,0,1,1,1,1,1
+115,11,F005696,"Mineral water, natural, unflavoured",0,DRINKS,,1,1,1,1,1,1,1,1,1
+116,11,F005694,"Mineral water, citrus flavoured",0,DRINKS,,1,1,1,1,1,1,1,1,1
+117,11,F009516,"Water, bottled, still",0,DRINKS,,1,1,1,1,1,1,1,1,1
+118,11,F008377,"Water, soda",0,DRINKS,,1,1,1,1,1,1,1,1,1
+119,11,F009527,"Water, tap",0,DRINKS,,1,1,1,1,1,1,1,1,1
+120,13,F001115,"Biscuit, savoury, corn cake, plain, salted",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+121,13,F001152,"Biscuit, savoury, rice cracker, plain",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+122,13,F009833,"Biscuit, savoury, rice cracker, added vegetable powder",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+123,13,F001147,"Biscuit, savoury, rice cake, from brown rice, plain",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+124,13,F001151,"Biscuit, savoury, rice cracker, flavoured (excluding seaweed)",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+125,13,F001153,"Biscuit, savoury, rice cracker, seaweed flavoured",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+126,13,F001118,"Biscuit, savoury, from rye flour, crispbread",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+127,13,F009832,"Biscuit, savoury, seed based",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+128,13,F001123,"Biscuit, savoury, from white wheat flour, flaky cracker style",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+129,13,F001126,"Biscuit, savoury, from white wheat flour, plain snack cracker style",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+130,13,F001129,"Biscuit, savoury, from white wheat flour, Salada style",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+131,13,F001133,"Biscuit, savoury, from white wheat flour, water cracker style",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+132,13,F001122,"Biscuit, savoury, from white wheat flour, cheese-flavoured",0,GRAINS_WHOLEGRAINS,,0,1,0,0,1,1,1,1,1
+133,13,F010958,"Biscuit, savoury, from white wheat flour, flavoured (excluding cheese)",0,GRAINS_WHOLEGRAINS,,0,1,0,0,1,1,1,1,1
+134,13,F001137,"Biscuit, savoury, from wholemeal wheat flour, crispbread",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+135,13,F001135,"Biscuit, savoury, from wholemeal wheat flour & rye flour, crispbread, puffed",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+136,13,F001120,"Biscuit, savoury, from wheat flour, crispbread, puffed & toasted",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+137,13,F001164,"Biscuit, sweet, Anzac style, commercial",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,0,1,1,1
+138,13,F001165,"Biscuit, sweet, Anzac style, homemade from basic ingredients",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,0,1,1,1
+139,13,F001195,"Biscuit, sweet, ginger flavoured, commercial",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+140,13,F001215,"Biscuit, sweet, plain",0,GRAINS_WHOLEGRAINS,,0,1,1,0,1,1,1,1,1
+141,13,F001227,"Biscuit, sweet, plain, with icing, commercial",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+142,13,F001244,"Biscuit, sweet, shortbread style, commercial",0,GRAINS_WHOLEGRAINS,,0,1,0,0,1,1,1,1,1
+143,13,F001251,"Biscuit, sweet, wheatmeal",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+144,13,F001167,"Biscuit, sweet, biscuit base, caramel filling, chocolate-coated, commercial",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+145,13,F001168,"Biscuit, sweet, biscuit base, mint filling, chocolate-coated",0,GRAINS_WHOLEGRAINS,,0,1,1,0,1,0,1,1,1
+146,13,F001170,"Biscuit, sweet, chocolate chip or coated",0,GRAINS_WHOLEGRAINS,,0,1,1,0,1,1,1,1,1
+147,13,F001174,"Biscuit, sweet, chocolate chip, homemade from basic ingredients, fat not further defined",0,GRAINS_WHOLEGRAINS,,0,1,0,1,0,1,1,1,1
+148,13,F001182,"Biscuit, sweet, chocolate flavoured, commercial",0,GRAINS_WHOLEGRAINS,,0,1,0,1,0,1,1,1,1
+149,13,F009834,"Biscuit, sweet, cream filled, commercial",0,GRAINS_WHOLEGRAINS,,0,1,1,0,1,1,1,1,1
+150,13,F001233,"Biscuit, sweet, sandwich, cream & jam filling",0,GRAINS_WHOLEGRAINS,,0,1,1,0,1,1,1,1,1
+151,13,F001234,"Biscuit, sweet, sandwich, cream filling, chocolate-coated, tim tam style",0,GRAINS_WHOLEGRAINS,,0,1,1,0,1,1,1,1,1
+152,13,F009839,"Biscuit, sweet, breakfast style, with or without dried fruit",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+153,13,F003095,"Cone, wafer style, for ice cream",0,GRAINS_WHOLEGRAINS,,0,1,1,0,1,1,1,1,1
+154,12,F001401,"Bread, flat (pita or Lebanese), white, commercial",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+155,12,F001404,"Bread, flat (pita or Lebanese), wholemeal, commercial",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+156,12,F001647,"Bread, Naan, commercial",0,GRAINS_WHOLEGRAINS,,0,1,0,0,1,1,1,1,1
+157,12,F001669,"Bread, tortilla, white, commercial",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+158,12,F001415,"Bread, wrap, white, commercial",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+159,12,F009854,"Bread, flat wrap or tortilla, corn, commercial",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+160,12,F001683,"Breadcrumbs, white",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+161,12,F000233,"Bagel, from white flour, commercial",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+162,12,F000234,"Bagel, from white flour, commercial, toasted",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+163,12,F001387,"Bread, damper, from white flour, homemade",0,GRAINS_WHOLEGRAINS,,0,1,0,0,1,1,1,1,1
+164,12,F009904,"Bread, damper, homemade, toasted",0,GRAINS_WHOLEGRAINS,,0,1,0,0,1,1,1,1,1
+165,12,F001463,"Bread, from white flour",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+166,12,F001541,"Bread, from white flour, toasted",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+167,12,F001528,"Bread, from white flour, Italian-style, commercial",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+168,12,F001529,"Bread, from white flour, Italian-style, commercial, toasted",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+169,12,F001671,"Bread, from white flour, Turkish",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+170,12,F001672,"Bread, from white flour, Turkish, toasted",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+171,12,F001537,"Bread, from white flour, sour dough, commercial",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+172,12,F001538,"Bread, from white flour, sour dough, toasted",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+173,12,F001545,"Bread, organic",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+174,12,F001548,"Bread, organic, toasted",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+175,12,F001653,"Bread, pizza base, commercial",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+176,12,F001353,"Bread roll, from white flour",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+177,12,F001553,"Bread, from wholemeal flour",0,GRAINS_WHOLEGRAINS,,0,1,0,0,1,1,1,1,1
+178,12,F001597,"Bread, from wholemeal flour, toasted",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+179,12,F001360,"Bread roll, from wholemeal flour",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+180,12,F001621,"Bread, mixed grain",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+181,12,F001644,"Bread, mixed grain, toasted",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+182,12,F001365,"Bread roll, mixed grain",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+183,12,F001450,"Bread, from rye flour, sour dough",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+184,12,F001451,"Bread, from rye flour, sour dough, toasted",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+185,12,F001468,"Bread, from white flour, added fibre",0,GRAINS_WHOLEGRAINS,,0,1,0,0,1,1,1,1,1
+186,12,F001479,"Bread, from white flour, added fibre, toasted",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+187,12,F001484,"Bread, from white flour, added omega-3 polyunsaturates",0,GRAINS_WHOLEGRAINS,,0,1,0,0,1,1,1,1,1
+188,12,F001485,"Bread, from white flour, added omega-3 polyunsaturates, toasted",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+189,12,F001543,"Bread, from white Jackaroo flour, added fibre and vitamins B1 & folate & Fe",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+190,12,F001544,"Bread, from white Jackaroo flour, added fibre and vitamins B1 & folate & Fe, toasted",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+191,12,F001603,"Bread, gluten free",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+192,12,F001609,"Bread, gluten free, toasted",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+193,12,F001600,"Bread, garlic, commercial, baked",0,GRAINS_WHOLEGRAINS,,0,1,1,0,1,1,1,1,1
+194,12,F001601,"Bread, garlic or herb, homemade, cooked",0,GRAINS_WHOLEGRAINS,,0,1,1,0,1,1,1,1,1
+195,12,F001372,"Bread roll, topped with cheese",0,GRAINS_WHOLEGRAINS,,0,1,0,0,1,1,1,1,1
+196,12,F001373,"Bread roll, topped with cheese & bacon",0,GRAINS_WHOLEGRAINS,,0,1,0,0,1,1,0,0,0
+197,12,F010407,"Bread, brioche",0,GRAINS_WHOLEGRAINS,,0,1,0,0,0,1,1,1,1
+198,12,F001457,"Bread, from white flour, commercial, added dried fruit",0,GRAINS_WHOLEGRAINS,,0,1,0,0,1,1,1,1,1
+199,12,F001458,"Bread, from white wheat flour, added dried fruit, toasted",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+200,12,F009792,"Bun, sweet, hot cross bun, with dried fruit",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+201,12,F001940,"Bun, sweet, with dried fruit, uniced",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+202,12,F001939,"Bun, sweet, with dried fruit, iced",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+203,13,F003313,"Crumpet, from white flour, toasted",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+204,12,F005896,"Muffin, English style, from white flour",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+205,12,F005898,"Muffin, English style, from white flour, toasted",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+206,12,F005897,"Muffin, English style, from white flour, added dried fruit, toasted",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+207,11,F001688,"Breakfast cereal, beverage, non-chocolate flavours, added vitamins & minerals (Up & Go)",0,DRINKS,,0,1,0,0,1,1,1,1,1
+208,12,F001708,"Breakfast cereal, flakes of corn, unfortified",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+209,12,F001701,"Breakfast cereal, flakes of corn, added vitamins & minerals (Kellogg's Cornflakes)",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+210,12,F001788,"Breakfast cereal, mixed grain (wheat, rice & oat), flakes, honey, unfortified (Be Natural Honey Flakes)",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+211,12,F001720,"Breakfast cereal, mixed grain (rice & wheat), flakes, added vitamins & minerals (Kellogg's Special K)",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+212,12,F001767,"Breakfast cereal, mixed grain (wheat, oat & corn), added vitamins & minerals (Kellogg's Nutri-grain)",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+213,12,F001733,"Breakfast cereal, mixed grain (wheat & oat), flakes, apricot & sultana, added vitamins & minerals (Kellogg's Just Right)",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+214,12,F001811,"Breakfast cereal, puffed or popped rice, no added sugar or salt, unfortified",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+215,12,F001803,"Breakfast cereal, puffed or popped rice, added vitamins & minerals (Kellogg's Rice Bubbles)",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+216,12,F001807,"Breakfast cereal, puffed or popped rice, cocoa coating, added vitamins & minerals (Kellogg's Coco Pops)",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+217,12,F001871,"Breakfast cereal, whole wheat, puffed, no added sugar or salt, unfortified",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+218,12,F001849,"Breakfast cereal, whole wheat, biscuit, no added sugar, unfortified",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+219,12,F001829,"Breakfast cereal, wheat bran, pellets, added vitamins & minerals (Kellogg's All Bran)",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+220,12,F001818,"Breakfast cereal, wheat bran, flakes, added vitamins & minerals (Kellogg's Bran Flakes)",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+221,12,F001844,"Breakfast cereal, whole wheat, biscuit, added vitamins & minerals (Sanitarium Weet Bix)",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+222,12,F001845,"Breakfast cereal, whole wheat, biscuit, bran, added vitamins & minerals (Sanitarium Weet-Bix Hi-Bran)",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,0,1,1,1
+223,12,F001860,"Breakfast cereal, whole wheat, flakes, added vitamins & minerals (Weeties style)",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+224,12,F001862,"Breakfast cereal, whole wheat, flakes, dried fruit & nuts, added vitamins & minerals (Uncle Toby's Fibre Plus)",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+225,12,F001823,"Breakfast cereal, wheat bran, flakes, sultanas, added vitamins & minerals (Kellogg's Sultana Bran)",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+226,12,F009807,"Muesli, granola, toasted, added nuts & seeds, unfortified",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,0,1,1,1
+227,12,F009808,"Muesli, granola, non-oat based, toasted, added nuts & seeds, unfortified",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,0,1,1,1
+228,12,F005856,"Muesli, toasted, added dried fruit & nuts, unfortified",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,0,1,1,1
+229,12,F005857,"Muesli, untoasted or natural style, added dried fruit, unfortified",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,0,1,1,1
+230,12,F007164,"Porridge, rolled oats, prepared with water",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+231,12,F007156,"Porridge, rolled oats, prepared with regular fat cow's milk",0,GRAINS_WHOLEGRAINS,,0,1,0,0,1,1,1,1,1
+232,12,F007143,"Porridge, rolled oats mixed with sugar or honey & other flavours, prepared with cow's milk",0,GRAINS_WHOLEGRAINS,,0,1,0,0,1,1,1,1,1
+233,13,F001374,"Bread, banana, commercial",0,GRAINS_WHOLEGRAINS,,0,1,0,1,0,1,1,1,1
+234,13,F001376,"Bread, banana, homemade",0,GRAINS_WHOLEGRAINS,,0,1,0,1,0,1,1,1,1
+235,13,F008273,"Slice, brownie, chocolate, without nuts, commercial",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+236,13,F008272,"Slice, brownie, chocolate, with nuts, homemade",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+237,13,F008278,"Slice, caramel",0,GRAINS_WHOLEGRAINS,,0,1,1,0,1,0,1,1,1
+238,13,F002021,"Cake mix, plain, dry powder",0,GRAINS_WHOLEGRAINS,,0,1,0,0,1,1,1,1,1
+239,13,F002100,"Cake, carrot, commercial, iced",0,GRAINS_WHOLEGRAINS,,0,1,1,0,1,1,1,1,1
+240,13,F002102,"Cake, carrot, homemade, uniced",0,GRAINS_WHOLEGRAINS,,0,1,1,0,0,1,1,1,1
+241,13,F002101,"Cake, carrot, homemade, iced",0,GRAINS_WHOLEGRAINS,,0,1,1,0,0,1,1,1,1
+242,13,F002112,"Cake, chocolate, homemade, uniced",0,GRAINS_WHOLEGRAINS,,0,1,1,0,0,1,1,1,1
+243,13,F002111,"Cake, chocolate, homemade, iced",0,GRAINS_WHOLEGRAINS,,0,1,1,0,0,1,1,1,1
+244,13,F002150,"Cake, fruit, homemade, uniced",0,GRAINS_WHOLEGRAINS,,0,1,1,0,0,1,1,1,1
+245,13,F002159,"Cake, lamington, unfilled",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,0,1,1,1
+246,13,F002163,"Cake, mud, dark chocolate, commercial, chocolate ganache icing",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+247,13,F002165,"Cake, mud, dark chocolate, homemade, uniced",0,GRAINS_WHOLEGRAINS,,0,1,1,0,0,1,1,1,1
+248,13,F002164,"Cake, mud, dark chocolate, homemade, chocolate ganache icing",0,GRAINS_WHOLEGRAINS,,0,1,1,0,0,1,1,1,1
+249,13,F002169,"Cake, plain butter cake, commercial, uniced",0,GRAINS_WHOLEGRAINS,,0,1,1,0,1,1,1,1,1
+250,13,F002168,"Cake, plain butter cake, commercial, iced",0,GRAINS_WHOLEGRAINS,,0,1,1,0,1,1,1,1,1
+251,13,F002171,"Cake, plain butter cake, homemade, uniced",0,GRAINS_WHOLEGRAINS,,0,1,1,0,0,1,1,1,1
+252,13,F002170,"Cake, plain butter cake, homemade, iced",0,GRAINS_WHOLEGRAINS,,0,1,1,0,0,1,1,1,1
+253,13,F002178,"Cake, sponge, plain, commercial, uniced, unfilled",0,GRAINS_WHOLEGRAINS,,0,1,1,1,0,1,1,1,1
+254,13,F002177,"Cake, sponge, plain, commercial, uniced, filled with jam & cream",0,GRAINS_WHOLEGRAINS,,0,1,1,0,0,1,1,1,1
+255,13,F002088,"Cake or cupcake, sponge, plain, commercial, iced, unfilled",0,GRAINS_WHOLEGRAINS,,0,1,1,1,0,1,1,1,1
+256,13,F005877,"Muffin, cake-style, berry, commercial",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+257,13,F005882,"Muffin, cake-style, chocolate chip, commercial",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+258,13,F003573,"Doughnut, dusted with cinnamon & sugar",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+259,13,F003574,"Doughnut, iced",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+260,13,F003575,"Doughnut, jam filled, sugar coated",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+261,13,F006298,"Pancake, plain, homemade",0,GRAINS_WHOLEGRAINS,,0,1,0,0,0,1,1,1,1
+262,13,F006701,"Pikelet, plain, homemade",0,GRAINS_WHOLEGRAINS,,0,1,1,0,0,1,1,1,1
+263,13,F006700,"Pikelet or pancake, sweet, commercial",0,GRAINS_WHOLEGRAINS,,0,1,1,0,1,1,1,1,1
+264,13,F007507,"Pudding, chocolate, homemade",0,GRAINS_WHOLEGRAINS,,0,1,1,0,1,1,1,1,1
+265,13,F007512,"Pudding, plum, steamed or boiled, homemade",0,GRAINS_WHOLEGRAINS,,0,1,1,0,0,1,1,1,1
+266,13,F007529,"Pudding, sticky date, homemade",0,GRAINS_WHOLEGRAINS,,0,1,1,0,0,1,1,1,1
+267,13,F008173,"Scone, plain, commercial",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+268,13,F008174,"Scone, plain, homemade",0,GRAINS_WHOLEGRAINS,,0,1,1,0,0,1,1,1,1
+269,13,F008172,"Scone, fruit, commercial",0,GRAINS_WHOLEGRAINS,,0,1,1,1,0,1,1,1,1
+270,13,F008176,"Scone, pumpkin, homemade",0,GRAINS_WHOLEGRAINS,,0,1,0,0,0,1,1,1,1
+271,12,F000061,"Amaranth, grain, whole, uncooked",1,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+272,12,F000379,"Barley, pearl, uncooked",1,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+273,12,F000378,"Barley, pearl, boiled, no added fat or salt",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+274,12,F001919,"Buckwheat groats, uncooked",1,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+275,12,F001918,"Buckwheat groats, cooked in water, no added salt",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+276,12,F001929,"Bulgur, uncooked",1,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+277,12,F001928,"Bulgur, soaked in water, no added fat or salt",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+278,12,F007729,"Sago, dry, uncooked",1,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+279,12,F007728,"Sago, cooked in water, no added salt",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+280,12,F003230,"Cornmeal (polenta), uncooked",1,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+281,12,F003227,"Cornmeal (polenta), boiled, no added fat or salt",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+282,12,F003239,"Couscous, uncooked",1,GRAINS_WHOLEGRAINS,,0,1,0,0,1,1,1,1,1
+283,12,F003235,"Couscous, boiled, no added fat or salt",0,GRAINS_WHOLEGRAINS,,0,1,0,0,1,1,1,1,1
+284,12,F005692,"Millet, uncooked",1,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+285,12,F005690,"Millet, boiled, no added fat or salt",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+286,12,F005279,"Maize, grits, uncooked",1,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+287,12,F006134,"Oat bran, unprocessed, uncooked",1,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+288,12,F006136,"Oats, hulled, uncooked",1,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+289,12,F006143,"Oats, rolled, uncooked",1,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+290,12,F006141,"Oats, rolled, mixed with sugar or honey & other flavours, uncooked",1,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+291,22,F007502,"Psyllium, uncooked",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+292,12,F007593,"Quinoa, black, uncooked",1,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+293,12,F007597,"Quinoa, red, uncooked",1,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+294,12,F007599,"Quinoa, white, uncooked",1,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+295,12,F007598,"Quinoa, uncooked",1,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+296,12,F007596,"Quinoa, cooked in water, no added salt",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+297,12,F007722,"Rye, grain, whole, uncooked",1,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+298,12,F007724,"Rye, rolled, uncooked",1,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+299,12,F008474,"Sorghum, grain, uncooked",1,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+300,12,F009860,"Teff, uncooked",1,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+301,12,F009260,"Triticale, grain, uncooked",1,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+302,12,F008222,"Semolina, uncooked",1,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+303,12,F008220,"Semolina, boiled, no added fat or salt",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+304,12,F008745,"Spelt, uncooked",1,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+305,12,F008744,"Spelt, boiled, no added fat or salt",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+306,12,F009090,"Tapioca, pearl or seed style, uncooked",1,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+307,12,F009089,"Tapioca, pearl or seed style, boiled, no added fat or salt",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+308,12,F009535,"Wheat bran, unprocessed, uncooked",1,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+309,12,F009537,"Wheat, whole, uncooked",1,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+310,12,F009536,Wheat germ,0,GRAINS_WHOLEGRAINS,,0,1,0,0,1,1,1,1,1
+311,12,F007682,"Rice, white, uncooked",1,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+312,12,F007661,"Rice, white, boiled or rice cooker, no added salt",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+313,12,F007678,"Rice, white, purchased as 'instant', microwaved",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+314,12,F007648,"Rice, brown, uncooked",1,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+315,12,F007641,"Rice, brown, boiled, no added salt",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+316,12,F007684,"Rice, wild, uncooked",1,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+317,12,F007683,"Rice, wild, boiled, no added salt",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+318,12,F007639,"Rice paper wrapper, soaked in water",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+319,13,F007666,"Rice, white, fried with bacon or ham, egg, prawns & vegetables ",1,GRAINS_WHOLEGRAINS,,0,0,1,1,0,1,0,0,0
+320,12,F003983,"Flour, arrowroot",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+321,12,F003988,"Flour, cornflour, from maize starch",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+322,12,F003989,"Flour, cornflour, from maize & wheat starch",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+323,25,F003986,"Flour, chickpea (besan)",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+324,12,F003990,"Flour, gluten free, plain",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+325,12,F003998,"Flour, rice",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+326,12,F004000,"Flour, rye",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+327,25,F004002,"Flour, soya (soy)",0,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+328,12,F004004,"Flour, spelt",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+329,12,F004006,"Flour, wheat, white, high protein or bread making flour",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+330,12,F004007,"Flour, wheat, white, plain",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+331,12,F004008,"Flour, wheat, white, plain, added vitamins B1, B2, B3, B6, E & folate & Fe, Mg & Zn (Jackaroo)",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+332,12,F004009,"Flour, wheat, white, self-raising",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+333,12,F004013,"Flour, wheat, white, self-raising, added vitamins B1, B2, B3, B6, E & folate & Fe, Mg & Zn (Jackaroo)",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+334,12,F004014,"Flour, wheat, wholemeal, plain",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+335,12,F004015,"Flour, wheat, wholemeal, self-raising",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+336,12,F004220,"Gluten, from wheat (vital wheat gluten)",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+337,24,F008831,"Starch, potato",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+338,13,F004358,"Hamburger, white roll, beef patty, with cheese, onion, pickles & sauce, fast food chain",0,GRAINS_WHOLEGRAINS,,0,1,1,0,1,1,1,1,1
+339,13,F004362,"Hamburger, white roll, beef patty, with salad, independent takeaway outlet",0,GRAINS_WHOLEGRAINS,,0,1,1,0,1,1,1,1,1
+340,13,F004389,"Hot dog, bread roll, frankfurt & sauce filling",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+341,13,F006725,"Pizza, cheese & tomato, commercial",0,GRAINS_WHOLEGRAINS,,0,1,1,0,1,1,1,1,1
+342,13,F006761,"Pizza, ham & pineapple, purchased frozen, baked",0,GRAINS_WHOLEGRAINS,,0,1,1,0,1,1,0,0,0
+343,13,F006762,"Pizza, ham & pineapple, takeaway style",0,GRAINS_WHOLEGRAINS,,0,1,1,0,1,1,0,0,0
+344,13,F006800,"Pizza, supreme, takeaway style",0,GRAINS_WHOLEGRAINS,,0,0,1,0,1,1,1,0,1
+345,13,F006795,"Pizza, supreme, fast food chain",0,GRAINS_WHOLEGRAINS,,0,1,1,0,1,1,1,1,1
+346,13,F006797,"Pizza, supreme, purchased frozen, baked",0,GRAINS_WHOLEGRAINS,,0,1,1,0,1,1,1,1,1
+347,13,F006805,"Pizza, vegetable, fast food chain",0,GRAINS_WHOLEGRAINS,,0,1,1,0,1,1,1,1,1
+348,12,F006038,"Noodle, rice stick, boiled, drained",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+349,12,F006043,"Noodle, soba, dry",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+350,12,F006042,"Noodle, soba, boiled, drained",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+351,12,F006048,"Noodle, wheat, fresh, soaked, drained",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+352,12,F006055,"Noodle, wheat, instant, flavoured, dry, uncooked",1,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+353,12,F006066,"Noodle, wheat, instant, unflavoured, boiled, drained",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+354,12,F006067,"Noodle, wheat, instant, unflavoured, boiled, undrained",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+355,12,F006068,"Noodle, wheat, instant, unflavoured, dry, uncooked",1,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+356,12,F006053,"Noodle, wheat, instant, flavoured, boiled, drained",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+357,12,F006054,"Noodle, wheat, instant, flavoured, boiled, undrained",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+358,12,F006044,"Noodle, wheat with egg, plain, boiled, no added fat",0,GRAINS_WHOLEGRAINS,,0,1,0,1,0,1,1,1,1
+359,12,F006429,"Pasta, gluten free, boiled from dry, no added salt",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+360,12,F009835,"Pasta, legume based, boiled, no added salt",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+361,12,F006458,"Pasta, white wheat flour, dry",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+362,12,F006456,"Pasta, white wheat flour, boiled from dry, no added salt",0,GRAINS_WHOLEGRAINS,,0,1,0,1,0,1,1,1,1
+363,12,F006460,"Pasta, white wheat flour, fresh, uncooked",1,GRAINS_WHOLEGRAINS,,0,1,0,1,0,1,1,1,1
+364,12,F006459,"Pasta, white wheat flour, fresh, boiled, no added salt",0,GRAINS_WHOLEGRAINS,,0,1,0,1,0,1,1,1,1
+365,12,F006445,"Pasta, white wheat flour & egg, dry",0,GRAINS_WHOLEGRAINS,,0,1,0,1,0,1,1,1,1
+366,12,F006444,"Pasta, white wheat flour & egg, boiled from dry, no added salt",0,GRAINS_WHOLEGRAINS,,0,1,0,1,0,1,1,1,1
+367,12,F006453,"Pasta, white wheat flour & spinach, dry",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+368,12,F006451,"Pasta, white wheat flour & spinach, boiled from dry, no added salt",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+369,12,F006465,"Pasta, wholemeal wheat flour, dry",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+370,12,F006464,"Pasta, wholemeal wheat flour, boiled from dry, no added salt",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+371,13,F006409,"Pasta in cream based sauce, dry mix",0,GRAINS_WHOLEGRAINS,,0,1,1,0,1,1,1,1,1
+372,13,F009830,"Pasta in cream based sauce, prepared from dry mix",0,GRAINS_WHOLEGRAINS,,0,1,1,0,1,1,1,1,1
+373,13,F005145,"Lasagne, beef, commercial, purchased frozen, baked",0,GRAINS_WHOLEGRAINS,,0,1,1,0,1,1,1,1,1
+374,13,F005146,"Lasagne, beef, homemade",0,GRAINS_WHOLEGRAINS,,0,1,1,0,1,1,1,1,1
+375,13,F005259,"Macaroni & cheese, homemade, cooked unfilled pasta, homemade cheese sauce",0,GRAINS_WHOLEGRAINS,,0,1,1,0,1,1,1,1,1
+376,13,F006393,"Pasta dish, homemade, cooked unfilled pasta, homemade beef bolognese sauce & added vegetables",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+377,13,F008737,"Spaghetti in tomato & cheese sauce, canned",0,GRAINS_WHOLEGRAINS,,0,1,1,0,1,1,1,1,1
+378,13,F008738,"Spaghetti in tomato & cheese sauce, canned, reduced salt",0,GRAINS_WHOLEGRAINS,,0,1,1,0,1,1,1,1,1
+379,13,F003305,"Croissant, plain",0,GRAINS_WHOLEGRAINS,,0,1,0,0,0,1,1,1,1
+380,13,F006497,"Pastry, filo, commercial, raw",1,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+381,13,F006496,"Pastry, filo, commercial, baked",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+382,13,F006505,"Pastry, puff, with butter, commercial, raw",1,GRAINS_WHOLEGRAINS,,0,1,0,0,1,1,1,1,1
+383,13,F006504,"Pastry, puff, with butter, commercial, baked",0,GRAINS_WHOLEGRAINS,,0,1,0,0,1,1,1,1,1
+384,13,F006503,"Pastry, puff, vegetable oil, commercial, raw",1,GRAINS_WHOLEGRAINS,,0,1,0,0,1,1,1,1,1
+385,13,F006502,"Pastry, puff, vegetable oil, commercial, baked",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+386,13,F006507,"Pastry, shortcrust style, commercial, raw",1,GRAINS_WHOLEGRAINS,,0,1,0,0,1,1,1,1,1
+387,13,F006506,"Pastry, shortcrust style, commercial, baked",0,GRAINS_WHOLEGRAINS,,1,1,0,1,1,1,1,1,1
+388,13,F006493,"Pastry, filled with spinach & cheese, purchased frozen, baked",0,GRAINS_WHOLEGRAINS,,0,1,1,0,1,1,1,1,1
+389,13,F006656,"Pie, savoury, chicken & vegetable, commercial",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+390,13,F006665,"Pie, savoury, meat, commercial, ready to eat",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+391,13,F006667,"Pie, savoury, meat, purchased frozen, baked",0,GRAINS_WHOLEGRAINS,,0,1,1,0,1,1,1,1,1
+392,13,F008098,"Sausage roll, commercial, ready to eat",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+393,13,F008101,"Sausage roll, purchased frozen, baked",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+394,13,F008794,"Spring roll, meat & vegetable filling, commercial, deep fried",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+395,13,F010173,"Pastry, danish, sweet, all types",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+396,13,F006679,"Pie, sweet, apple, commercial",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+397,13,F009102,"Tart, custard, commercial",0,GRAINS_WHOLEGRAINS,,0,1,1,1,0,1,1,1,1
+407,25,F005702,"Paste, soybean",0,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+408,15,F006476,"Paste, shrimp",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,0,1
+417,18,F008032,"Sauce, pasta, bolognese, homemade using beef mince & homemade tomato based sauce",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+418,18,F008031,"Sauce, pasta, bolognese, homemade using beef mince & commercial tomato based sauce",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+436,22,F006577,"Peanut butter, smooth & crunchy, added sugar & salt",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,0,1,0,1,1,1
+437,22,F006579,"Peanut butter, smooth & crunchy, no added sugar or salt",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,0,1,0,1,1,1
+440,19,F002405,"Cheese, blue vein",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+441,19,F002406,"Cheese, bocconcini",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+442,19,F002407,"Cheese, brie",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+443,19,F002408,"Cheese, camembert",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+444,19,F002414,"Cheese, cheddar, natural, regular fat",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+445,19,F002413,"Cheese, cheddar, natural, reduced fat (~25%)",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+446,19,F002428,"Cheese, cheddar, processed, regular fat",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+447,19,F002425,"Cheese, cheddar, processed, reduced fat (~15%), added vitamin D",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+448,19,F002435,"Cheese, cottage",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+449,19,F002444,"Cheese, cream, plain",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+450,19,F002448,"Cheese, edam",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+451,19,F002452,"Cheese, fetta (feta)",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+452,19,F002462,"Cheese, goat, firm",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+453,19,F002463,"Cheese, goat, soft",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+454,19,F002466,"Cheese, haloumi (halloumi)",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+455,19,F010020,"Cheese, haloumi (halloumi), reduced salt",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+456,19,F002472,"Cheese, mozzarella",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+457,19,F002478,"Cheese, parmesan, dried, finely grated",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+458,19,F002479,"Cheese, parmesan, fresh, regular fat",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+459,19,F002488,"Cheese, ricotta",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+460,20,F010574,"Cheese, hard, dairy alternative",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+461,19,F003270,"Cream, thickened, regular fat (~35%)",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+462,19,F003269,"Cream, sour, regular fat",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+463,19,F003267,"Cream, sour, light (~18% fat)",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+464,19,F003255,"Cream, imitation (non-dairy)",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+465,19,F004508,"Ice cream, vanilla flavour, regular fat",0,DAIRY_ALTERNATE,,0,1,1,0,0,1,1,1,1
+466,19,F004507,"Ice cream, vanilla flavour, premium or rich (~15% fat)",0,DAIRY_ALTERNATE,,0,1,1,0,0,1,1,1,1
+467,19,F004419,"Ice confection, stick, milk-based, various flavours",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+468,27,F004421,"Ice confection, stick, water-based, various flavours",0,SNACKS/SUGARS,,1,1,1,1,1,1,1,1,1
+469,27,F004415,"Ice confection, stick or tub, fruit juice or fruit flavoured",0,SNACKS/SUGARS,,1,1,1,1,1,1,1,1,1
+470,19,F005634,"Milk, cow, fluid, regular fat (~3.5%)",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+471,19,F005602,"Milk, cow, fluid, prepared from dry powder, regular fat, standard dilution",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+472,19,F005635,"Milk, cow, fluid, regular fat (~3.5%), added omega 3 polyunsaturates",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+473,19,F005614,"Milk, cow, fluid, reduced fat (~1%)",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+474,19,F005621,"Milk, cow, fluid, reduced fat (~1.5%), added omega 3 polyunsaturates",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+475,19,F005637,"Milk, cow, fluid, skim (~0.15% fat)",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+476,19,F005605,"Milk, cow, fluid, prepared from dry powder, skim, standard dilution",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+477,19,F005599,"Milk, cow, fluid, lactose free, regular fat (~3.5%)",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+478,19,F005598,"Milk, cow, fluid, lactose free, reduced fat (~1%)",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+479,19,F005581,"Milk, cow, canned, evaporated, regular",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+480,19,F005580,"Milk, cow, canned, evaporated, reduced fat (~2%)",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+481,19,F005582,"Milk, cow, canned, sweetened, condensed, regular",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+482,19,F005587,"Milk, cow, fluid, flavoured, chocolate, reduced fat",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+483,19,F005648,"Milk, cow, powder, regular fat",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+484,19,F005650,"Milk, cow, powder, regular fat, unfortified",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+485,19,F005649,"Milk, cow, powder, regular fat, added vitamins A & D",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+486,19,F005652,"Milk, cow, powder, skim",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+487,32,F005647,"Milk, human/breast, mature, fluid",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+488,19,F003442,"Custard, vanilla, regular fat",0,DAIRY_ALTERNATE,,0,1,1,0,0,1,1,1,1
+489,12,F003426,"Custard powder, vanilla, dry mix",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+490,19,F003441,"Custard, vanilla, prepared from dry mix",0,DAIRY_ALTERNATE,,1,1,1,1,1,1,1,1,1
+491,19,F009694,"Yoghurt, natural, regular fat (~3%)",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+492,19,F009919,"Yoghurt, natural, sheep's milk",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+493,19,F009811,"Yoghurt, flavoured, high fat (~5%)",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+494,19,F009608,"Yoghurt, apricot pieces or flavoured, regular fat (~3%)",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+495,19,F009741,"Yoghurt, strawberry pieces or flavoured, regular fat (~3%)",1,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+496,19,F009810,"Yoghurt, flavoured, low fat (~2%)",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+497,19,F009749,"Yoghurt, vanilla flavoured (~2%)",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+498,19,F009809,"Yoghurt, flavoured, low fat (0.2%), intense sweetened, increased protein",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+499,19,F009752,"Yoghurt, vanilla flavoured, low fat (<0.5%)",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+500,20,F009797,"Yoghurt, almond based, flavoured",0,DAIRY_ALTERNATE,,0,1,1,0,1,0,1,1,1
+501,20,F009798,"Yoghurt, coconut based, flavoured",0,DAIRY_ALTERNATE,,0,1,1,0,1,0,1,1,1
+502,20,F009738,"Yoghurt, soy based, berry flavoured, regular fat (~3%)",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+503,20,F009739,"Yoghurt, soy based, vanilla flavoured, reduced fat (~1%)",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+504,19,F003488,"Dairy or yoghurt dessert, chocolate, regular fat",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+505,20,F009825,"Almond beverage, added sugar, unfortified",0,DAIRY_ALTERNATE,,0,1,1,0,1,0,1,1,1
+506,20,F009824,"Almond beverage, no added sugar, unfortified",0,DAIRY_ALTERNATE,,0,1,1,0,1,0,1,1,1
+507,20,F009827,"Almond beverage, added sugar & Ca",0,DAIRY_ALTERNATE,,0,1,1,0,1,0,1,1,1
+508,20,F009826,"Almond beverage, no added sugar, added Ca",0,DAIRY_ALTERNATE,,0,1,1,0,1,0,1,1,1
+509,20,F009828,"Almond beverage, added sugar & vitamins B1, B2, B12, C & Ca",0,DAIRY_ALTERNATE,,0,1,1,0,1,0,1,1,1
+510,20,F009812,"Coconut beverage, unfortified",0,DAIRY_ALTERNATE,,0,1,1,0,1,0,1,1,1
+511,20,F009813,"Coconut beverage, added Ca",0,DAIRY_ALTERNATE,,0,1,1,0,1,0,1,1,1
+512,20,F006132,"Oat beverage, fluid, unfortified",0,DAIRY_ALTERNATE,,0,1,0,0,1,1,1,1,1
+513,20,F006131,"Oat beverage, fluid, added Ca",0,DAIRY_ALTERNATE,,0,1,0,0,1,1,1,1,1
+514,20,F011006,"Oat beverage, fluid, added calcium & vitamins",0,DAIRY_ALTERNATE,,0,1,0,0,1,1,1,1,1
+515,20,F009980,"Rice beverage, unfortified",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+516,20,F007632,"Rice beverage, fluid, added calcium",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+517,20,F008721,"Soy beverage, regular fat (~3%), unfortified",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+518,20,F008719,"Soy beverage, regular fat (~3%), added Ca",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+519,20,F008720,"Soy beverage, regular fat (~3%), added Ca & vitamins A, B1, B2 & B12",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+520,20,F008704,"Soy beverage, reduced fat (~1%), added Ca & vitamins A, B1, B2 & B12",0,DAIRY_ALTERNATE,,0,1,1,0,1,1,1,1,1
+521,20,F009147,Textured vegetable protein/soy granules,0,DAIRY_ALTERNATE,,1,1,1,1,1,1,1,1,1
+522,20,F009176,"Tofu (soy bean curd), firm, as purchased",0,DAIRY_ALTERNATE,,1,1,1,1,1,1,1,1,1
+523,20,F009799,"Meat alternative, mycoprotein/fungus base, commercial, as purchased",0,DAIRY_ALTERNATE,,1,1,1,1,1,1,1,1,1
+524,20,F010550,"Meat alternative, mycoprotein/fungus base, schnitzels/fish alternative/patty/sausages, as purchased",0,DAIRY_ALTERNATE,,0,0,1,1,1,1,1,1,1
+525,20,F009821,"Meat alternative, mycoprotein/fungus base, cooked",0,DAIRY_ALTERNATE,,1,1,1,1,1,1,1,1,1
+526,20,F009822,"Meat alternative, protein (soy/wheat/pea) base, as purchased",0,DAIRY_ALTERNATE,,1,1,0,1,1,1,1,1,1
+527,20,F009823,"Meat alternative, protein (soy/wheat/pea) base, cooked",0,DAIRY_ALTERNATE,,1,1,0,1,1,1,1,1,1
+528,20,F010472,"Meat alternative, protein (soy/wheat/pea) base, added vitamins & minerals, as purchased",0,DAIRY_ALTERNATE,,1,1,0,1,1,1,1,1,1
+529,20,F009814,"Meat alternative, legume and/or vegetable base, as purchased",0,DAIRY_ALTERNATE,,1,1,1,1,1,1,1,1,1
+530,20,F009816,"Meat alternative, legume and/or vegetable base, cooked",0,DAIRY_ALTERNATE,,1,1,1,1,1,1,1,1,1
+531,20,F008155,"Sausage, vegetarian style, unfortified, raw",1,DAIRY_ALTERNATE,,1,1,1,1,1,1,1,1,1
+532,20,F008151,"Sausage, vegetarian style, added Fe, Zn and vitamin B12, raw",1,DAIRY_ALTERNATE,,1,1,1,1,1,1,1,1,1
+533,20,F008153,"Sausage, vegetarian style, fried, no added fat",0,DAIRY_ALTERNATE,,1,1,1,1,1,1,1,1,1
+534,21,F008509,"Soup, broth style, with meat, instant dry mix",0,ADDITIONAL,,1,1,0,1,1,1,1,1,1
+535,21,F008508,"Soup, broth style, with meat & noodles, instant dry mix",0,ADDITIONAL,,0,1,0,0,1,1,1,1,1
+536,21,F008571,"Soup, cream variety, instant dry mix",0,ADDITIONAL,,0,1,0,0,1,1,1,1,1
+537,21,F008670,"Soup, vegetable, instant dry mix",0,ADDITIONAL,,0,1,0,0,1,1,1,1,1
+538,21,F008661,"Soup, vegetable & noodle, instant dry mix",0,ADDITIONAL,,1,1,0,1,1,1,1,1,1
+539,21,F008513,"Soup, chicken & noodle, cup of soup, prepared from instant dry mix with water",0,ADDITIONAL,,1,1,0,1,1,1,1,1,1
+540,14,F001973,"Butter, plain, salted",0,ADDITIONAL,,0,1,1,0,1,1,1,1,1
+541,14,F001972,"Butter, plain, reduced salt",0,ADDITIONAL,,0,1,1,0,1,1,1,1,1
+542,14,F001971,"Butter, plain, no added salt",0,ADDITIONAL,,0,1,1,0,1,1,1,1,1
+543,14,F004205,"Ghee, clarified butter",0,ADDITIONAL,,0,1,1,0,1,1,1,1,1
+544,14,F003466,"Dairy blend, butter & edible oil spread (~80% fat), sodium 600 mg/100 g",0,ADDITIONAL,,0,1,1,0,1,1,1,1,1
+545,14,F003464,"Dairy blend, butter & edible oil spread (~80% fat), reduced salt (sodium 400 mg/100 g)",0,ADDITIONAL,,0,1,1,0,1,1,1,1,1
+546,14,F005309,"Margarine spread, monounsaturated (>65% fat)",0,ADDITIONAL,,1,1,1,1,1,1,1,1,1
+547,14,F005310,"Margarine spread, monounsaturated (>65% fat), reduced salt (sodium 360 mg/100 g)",0,ADDITIONAL,,1,1,1,1,1,1,1,1,1
+548,14,F005345,"Margarine spread, monounsaturated, reduced fat (<65%)",0,ADDITIONAL,,1,1,1,1,1,1,1,1,1
+549,14,F005352,"Margarine spread, monounsaturated, reduced fat (~55%) & salt (sodium 380 mg/100 g)",0,ADDITIONAL,,1,1,1,1,1,1,1,1,1
+550,14,F005319,"Margarine spread, monounsaturated (~70% fat), reduced salt (sodium 350 mg/100 g), added phytosterols",0,ADDITIONAL,,1,1,1,1,1,1,1,1,1
+551,14,F005370,"Margarine spread, polyunsaturated (~70% fat)",0,ADDITIONAL,,1,1,1,1,1,1,1,1,1
+552,14,F005373,"Margarine spread, polyunsaturated (~70% fat), reduced salt (sodium 280 mg/100 g)",0,ADDITIONAL,,1,1,1,1,1,1,1,1,1
+553,14,F006154,"Oil, almond",0,ADDITIONAL,,1,1,1,1,1,0,1,1,1
+554,14,F010968,"Oil, avocado",0,ADDITIONAL,,1,1,1,1,1,1,1,1,1
+555,14,F006159,"Oil, canola",0,ADDITIONAL,,1,1,1,1,1,1,1,1,1
+556,14,F006163,"Oil, coconut",0,ADDITIONAL,,0,1,1,0,1,0,1,1,1
+557,14,F006165,"Oil, copha",0,ADDITIONAL,,1,1,1,1,1,0,1,1,1
+558,14,F006166,"Oil, cottonseed",0,ADDITIONAL,,1,1,1,1,1,1,1,1,1
+559,14,F006167,"Oil, grapeseed",0,ADDITIONAL,,1,1,1,1,1,1,1,1,1
+560,14,F009855,"Oil, hemp",0,ADDITIONAL,,1,1,1,1,1,1,1,1,1
+561,14,F006168,"Oil, linseed or flaxseed",0,ADDITIONAL,,1,1,1,1,1,1,1,1,1
+562,14,F006169,"Oil, macadamia",0,ADDITIONAL,,1,1,1,1,1,0,1,1,1
+563,14,F006170,"Oil, maize",0,ADDITIONAL,,1,1,1,1,1,1,1,1,1
+564,14,F006172,"Oil, mustard seed",0,ADDITIONAL,,1,1,1,1,1,1,1,1,1
+565,14,F006177,"Oil, olive",0,ADDITIONAL,,1,1,1,1,1,1,1,1,1
+566,14,F006181,"Oil, palm",0,ADDITIONAL,,1,1,1,1,1,1,1,1,1
+567,14,F006183,"Oil, peanut",0,ADDITIONAL,,1,1,1,1,1,0,1,1,1
+568,14,F006185,"Oil, rice bran",0,ADDITIONAL,,1,1,1,1,1,1,1,1,1
+569,14,F006186,"Oil, safflower",0,ADDITIONAL,,1,1,1,1,1,1,1,1,1
+570,14,F006187,"Oil, sesame",0,ADDITIONAL,,1,1,1,1,1,1,1,1,1
+571,14,F006188,"Oil, soybean",0,ADDITIONAL,,1,1,1,1,1,1,1,1,1
+572,14,F006189,"Oil, sunflower",0,ADDITIONAL,,1,1,1,1,1,1,1,1,1
+573,14,F006156,"Oil, blend of polyunsaturated vegetable oils",0,ADDITIONAL,,1,1,1,1,1,1,1,1,1
+574,14,F006155,"Oil, blend of monounsaturated vegetable oils",0,ADDITIONAL,,1,1,1,1,1,1,1,1,1
+575,14,F006191,"Oil, vegetable",0,ADDITIONAL,,1,1,1,1,1,1,1,1,1
+576,14,F003627,"Dripping, beef",0,ADDITIONAL,,1,1,1,1,1,1,1,1,1
+577,14,F003817,"Fat, solid, vegetable oil based",0,ADDITIONAL,,1,1,1,1,1,1,1,1,1
+578,17,F003729,"Egg, chicken, whole, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,0,1,1,1,1
+579,17,F003725,"Egg, chicken, whole, poached",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,0,1,1,1,1
+580,17,F003721,"Egg, chicken, whole, hard-boiled",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,0,1,1,1,1
+581,17,F003718,"Egg, chicken, whole, fried, no fat added",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,0,1,1,1,1
+582,17,F003724,"Egg, chicken, whole, omega-3 polyunsaturate enriched, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,0,1,1,1,1
+583,17,F003723,"Egg, chicken, whole, omega-3 polyunsaturate enriched, boiled",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,0,1,1,1,1
+584,17,F003737,"Egg, chicken, yolk, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,0,1,1,1,1
+585,17,F003736,"Egg, chicken, yolk, hard-boiled",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,0,1,1,1,1
+586,17,F003706,"Egg, chicken, white (albumen), raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,0,1,1,1,1
+587,17,F003705,"Egg, chicken, white (albumen), hard-boiled",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,0,1,1,1,1
+588,17,F003732,"Egg, chicken, whole, scrambled, with regular fat cow's milk, no fat added",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,0,0,1,1,1,1
+589,16,F000086,"Apple, bonza, unpeeled, raw",1,FRUIT,,0,1,1,0,1,1,1,1,1
+590,16,F000091,"Apple, fuji, unpeeled, raw",1,FRUIT,,0,1,1,0,1,1,1,1,1
+591,16,F000092,"Apple, golden delicious, unpeeled, raw",1,FRUIT,,0,1,1,0,1,1,1,1,1
+592,16,F000098,"Apple, green skin, unpeeled, raw",1,FRUIT,,0,1,1,0,1,1,1,1,1
+593,16,F000095,"Apple, granny-smith, unpeeled, raw",1,FRUIT,,0,1,1,0,1,1,1,1,1
+594,16,F000099,"Apple, jonathan, unpeeled, raw",1,FRUIT,,0,1,1,0,1,1,1,1,1
+595,16,F000105,"Apple, pink lady, unpeeled, raw",1,FRUIT,,0,1,1,0,1,1,1,1,1
+596,16,F000107,"Apple, red delicious, unpeeled, raw",1,FRUIT,,0,1,1,0,1,1,1,1,1
+597,16,F000111,"Apple, royal gala, unpeeled, raw",1,FRUIT,,0,1,1,0,1,1,1,1,1
+598,16,F000108,"Apple, red skin, peeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+599,16,F000110,"Apple, red skin, unpeeled, raw",1,FRUIT,,0,1,1,0,1,1,1,1,1
+600,16,F000089,"Apple, dried",0,FRUIT,,0,1,1,0,1,1,1,1,1
+601,16,F000134,"Apricot, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+602,16,F000130,"Apricot, dried",0,FRUIT,,1,1,1,1,1,1,1,1,1
+603,16,F000122,"Apricot, canned in pear juice",0,FRUIT,,1,1,1,1,1,1,1,1,1
+604,16,F000123,"Apricot, canned in pear juice, drained",0,FRUIT,,1,1,1,1,1,1,1,1,1
+605,16,F000124,"Apricot, canned in pear juice, juice only",0,FRUIT,,1,1,1,1,1,1,1,1,1
+606,16,F000262,"Banana, cavendish, peeled, raw",1,FRUIT,,0,1,1,0,1,1,1,1,1
+607,16,F000267,"Banana, lady finger or sugar, peeled, raw",1,FRUIT,,0,1,1,0,1,1,1,1,1
+608,16,F009884,"Banana, frozen",0,FRUIT,,0,1,1,0,1,1,1,1,1
+609,16,F000257,Banana chip,0,FRUIT,,1,1,1,1,1,1,1,1,1
+610,16,F009880,"Currant, fresh",0,FRUIT,,1,1,1,1,1,1,1,1,1
+611,16,F001267,"Blackberry, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+612,16,F001266,"Blackberry, purchased frozen",0,FRUIT,,1,1,1,1,1,1,1,1,1
+613,16,F001290,"Blueberry, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+614,16,F001289,"Blueberry, purchased frozen",0,FRUIT,,1,1,1,1,1,1,1,1,1
+615,16,F002522,"Cherry, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+616,16,F002513,"Cherry, black, canned in syrup",0,FRUIT,,1,1,1,1,1,1,1,1,1
+617,16,F002514,"Cherry, black, canned in syrup, drained",0,FRUIT,,1,1,1,1,1,1,1,1,1
+618,16,F002517,"Cherry, black, canned in syrup, syrup only",0,FRUIT,,1,1,1,1,1,1,1,1,1
+619,16,F009883,"Cherry, pitted, frozen",0,FRUIT,,1,1,1,1,1,1,1,1,1
+620,16,F003249,"Cranberry, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+621,16,F003248,"Cranberry, dried, sweetened",0,FRUIT,,1,1,1,1,1,1,1,1,1
+622,16,F003331,"Currant, dried",0,FRUIT,,1,1,1,1,1,1,1,1,1
+623,16,F003328,"Cumquat (kumquat), raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+624,16,F003423,"Custard apple, African pride, peeled, raw",1,FRUIT,,0,1,1,0,1,1,1,1,1
+625,16,F003496,"Date, dried",0,FRUIT,,1,1,1,1,1,1,1,1,1
+626,16,F003818,"Feijoa, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+627,16,F003834,"Fig, fresh, unpeeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+628,16,F003832,"Fig, dried",0,FRUIT,,1,1,1,1,1,1,1,1,1
+629,16,F004244,"Goji berry, dried",0,FRUIT,,1,1,1,1,1,1,1,1,1
+630,16,F004253,"Grape, black muscatel (muscat), raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+631,16,F004254,"Grape, black sultana, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+632,16,F004256,"Grape, cornichon, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+633,16,F004260,"Grape, green, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+634,16,F004259,"Grape, red globe, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+635,16,F004261,"Grape, waltham cross, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+636,16,F011002,"Grapefruit, pink flesh, peeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+637,16,F004262,"Grapefruit, yellow flesh, peeled, raw",1,FRUIT,,0,1,1,0,1,1,1,1,1
+638,16,F004286,"Guava, Hawaiian, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+639,16,F004594,"Jackfruit, peeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+640,16,F004816,"Kiwifruit, green (hayward), peeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+641,16,F004815,"Kiwifruit, gold, peeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+642,16,F005174,"Lemon, peeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+643,16,F005172,"Lemon peel, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+644,16,F005175,"Lemon, preserved",0,FRUIT,,1,1,1,1,1,1,1,1,1
+645,16,F005199,"Lime, peeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+646,16,F005198,"Lime, native, fruit",0,FRUIT,,1,1,1,1,1,1,1,1,1
+647,16,F005244,"Loquat, peeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+648,16,F005255,"Lychee, peeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+649,16,F009886,"Lychee, peeled, frozen",0,FRUIT,,1,1,1,1,1,1,1,1,1
+650,16,F005293,"Mandarin, peeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+651,16,F005288,"Mandarin, canned in syrup",0,FRUIT,,1,1,1,1,1,1,1,1,1
+652,16,F005289,"Mandarin, canned in syrup, drained",0,FRUIT,,1,1,1,1,1,1,1,1,1
+653,16,F005292,"Mandarin, canned in syrup, syrup only",0,FRUIT,,1,1,1,1,1,1,1,1,1
+654,16,F005299,"Mango, peeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+655,16,F009887,"Mango, peeled, frozen",0,FRUIT,,1,1,1,1,1,1,1,1,1
+656,16,F005300,"Mango, pulped, canned",0,FRUIT,,1,1,1,1,1,1,1,1,1
+657,16,F005516,"Melon, honey dew, white skin, peeled, raw",1,FRUIT,,0,1,1,0,1,1,1,1,1
+658,16,F005517,"Melon, honey dew, yellow skin, peeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+659,16,F005515,"Melon, honey dew, peeled, raw",1,FRUIT,,0,1,1,0,1,1,1,1,1
+660,16,F005519,"Melon, rockmelon, peeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+661,16,F005520,"Melon, watermelon, peeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+662,16,F005916,"Mulberry, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+663,16,F009882,"Nectarine, white, unpeeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+664,16,F006021,"Nectarine, yellow, unpeeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+665,16,F006276,"Orange, navel, peeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+666,16,F006279,"Orange, valencia, peeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+667,16,F006277,"Orange, peeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+668,16,F006333,"Passionfruit, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+669,16,F009888,"Passionfruit, pulp, frozen",0,FRUIT,,1,1,1,1,1,1,1,1,1
+670,16,F006332,"Passionfruit, pulp, canned",0,FRUIT,,1,1,1,1,1,1,1,1,1
+671,16,F006528,"Pawpaw (papaya), peeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+672,16,F011001,"Papaya, red, peeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+673,16,F011000,"Papaya, yellow, peeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+674,16,F006571,"Peach, white, unpeeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+675,16,F006573,"Peach, yellow, unpeeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+676,16,F006553,"Peach, canned in pear juice",0,FRUIT,,1,1,1,1,1,1,1,1,1
+677,16,F006554,"Peach, canned in pear juice, drained",0,FRUIT,,1,1,1,1,1,1,1,1,1
+678,16,F006555,"Peach, canned in pear juice, juice only",0,FRUIT,,1,1,1,1,1,1,1,1,1
+679,16,F006606,"Pear, Packham's triumph, unpeeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+680,16,F006612,"Pear, William Bartlett, unpeeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+681,16,F006601,"Pear, green skin, unpeeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+682,16,F006585,"Pear, brown skin, unpeeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+683,16,F006593,"Pear, canned in pear juice",0,FRUIT,,1,1,1,1,1,1,1,1,1
+684,16,F006594,"Pear, canned in pear juice, drained",0,FRUIT,,1,1,1,1,1,1,1,1,1
+685,16,F006595,"Pear, canned in pear juice, juice only",0,FRUIT,,1,1,1,1,1,1,1,1,1
+686,16,F006604,"Pear, nashi, unpeeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+687,16,F006628,"Persimmon, peeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+688,16,F006702,"Pineapple, peeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+689,16,F009885,"Pineapple, peeled, frozen",0,FRUIT,,1,1,1,1,1,1,1,1,1
+690,16,F006707,"Pineapple, canned in pineapple juice",0,FRUIT,,1,1,1,1,1,1,1,1,1
+691,16,F006708,"Pineapple, canned in juice, drained",0,FRUIT,,1,1,1,1,1,1,1,1,1
+692,16,F006710,"Pineapple, canned in pineapple juice, juice only",0,FRUIT,,1,1,1,1,1,1,1,1,1
+693,16,F006711,"Pineapple, canned in syrup",0,FRUIT,,1,1,1,1,1,1,1,1,1
+694,16,F006712,"Pineapple, canned in syrup, drained",0,FRUIT,,1,1,1,1,1,1,1,1,1
+695,16,F006713,"Pineapple, canned in syrup, syrup only",0,FRUIT,,1,1,1,1,1,1,1,1,1
+696,16,F006832,"Plum, unpeeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+697,16,F006825,"Plum, dark, canned in syrup",0,FRUIT,,1,1,1,1,1,1,1,1,1
+698,16,F006826,"Plum, dark, canned in syrup, drained",0,FRUIT,,1,1,1,1,1,1,1,1,1
+699,16,F006827,"Plum, dark, canned in syrup, syrup only",0,FRUIT,,1,1,1,1,1,1,1,1,1
+700,16,F006828,"Plum, davidson (native), flesh",0,FRUIT,,1,1,1,1,1,1,1,1,1
+701,16,F006830,"Plum, salted",0,FRUIT,,1,1,1,1,1,1,1,1,1
+702,16,F006842,"Pomegranate, peeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+703,16,F007457,"Prickly pear, peeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+704,16,F007494,Prune (dried plum),0,FRUIT,,1,1,1,1,1,1,1,1,1
+705,16,F007571,"Quandong, fruit, flesh",0,FRUIT,,1,1,1,1,1,1,1,1,1
+706,16,F007591,"Quince, peeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+707,16,F007610,Raisin,0,FRUIT,,1,1,1,1,1,1,1,1,1
+708,16,F007612,"Rambutan, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+709,16,F007619,"Raspberry, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+710,16,F007618,"Raspberry, purchased frozen",0,FRUIT,,1,1,1,1,1,1,1,1,1
+711,16,F007614,"Raspberry, canned in syrup",0,FRUIT,,1,1,1,1,1,1,1,1,1
+712,16,F007615,"Raspberry, canned in syrup, drained",0,FRUIT,,1,1,1,1,1,1,1,1,1
+713,16,F007616,"Raspberry, canned in syrup, syrup only",0,FRUIT,,1,1,1,1,1,1,1,1,1
+714,16,F007628,"Rhubarb, stalk, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+715,16,F007630,"Rhubarb, stewed, sugar sweetened, no added fat",0,FRUIT,,1,1,1,1,1,1,1,1,1
+716,16,F008983,Sultana,0,FRUIT,,1,1,1,1,1,1,1,1,1
+717,16,F008952,"Strawberry, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+718,16,F008951,"Strawberry, purchased frozen",1,FRUIT,,1,1,1,1,1,1,1,1,1
+719,16,F008945,"Strawberry, canned in syrup",1,FRUIT,,1,1,1,1,1,1,1,1,1
+720,16,F008946,"Strawberry, canned in syrup, drained",1,FRUIT,,1,1,1,1,1,1,1,1,1
+721,16,F008947,"Strawberry, canned in syrup, syrup only",1,FRUIT,,1,1,1,1,1,1,1,1,1
+722,16,F009080,"Tamarillo, peeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+723,16,F009081,"Tamarind, paste, pure",0,FRUIT,,1,1,1,1,1,1,1,1,1
+724,16,F009087,"Tangelo, peeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+725,16,F009088,"Tangerine or tangor, peeled, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+726,16,F009534,"Wax jambu, raw",1,FRUIT,,1,1,1,1,1,1,1,1,1
+727,16,F004141,"Fruit salad, canned in fruit juice",0,FRUIT,,1,1,1,1,1,1,1,1,1
+728,16,F004142,"Fruit salad, canned in fruit juice, drained",0,FRUIT,,1,1,1,1,1,1,1,1,1
+729,16,F004143,"Fruit salad, canned in fruit juice, juice only",0,FRUIT,,1,1,1,1,1,1,1,1,1
+730,16,F009881,"Mixed berry, frozen",0,FRUIT,,1,1,1,1,1,1,1,1,1
+731,16,F005712,Mixed dried fruit,0,FRUIT,,1,1,1,1,1,1,1,1,1
+732,25,F000243,"Baked beans, canned in tomato sauce",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+733,25,F000244,"Baked beans, canned in tomato sauce, reduced salt",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+734,24,F000416,"Bean, broad, dried",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+735,24,F000419,"Bean, broad, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+736,24,F000418,"Bean, broad, fresh, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+737,24,F000422,"Bean, butter, fresh, raw",1,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+738,24,F000421,"Bean, butter, fresh, boiled, drained",0,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+739,25,F000436,"Bean, haricot, dried",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+740,25,F000437,"Bean, haricot, dried, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+741,25,F000441,"Bean, lima, dried",0,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+742,25,F000442,"Bean, lima, dried, boiled, drained",0,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+743,24,F000446,"Bean, mung, whole, dried, uncooked",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+744,25,F000449,"Bean, red kidney, dried",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+745,25,F000451,"Bean, red kidney, dried, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+746,24,F000453,"Bean, red kidney, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+747,24,F000452,"Bean, red kidney, fresh, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+748,25,F000448,"Bean, red kidney, canned, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+749,25,F000458,"Bean, soya (soy), dried",0,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+750,25,F000459,"Bean, soya (soy), dried, boiled, drained",0,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+751,25,F002881,"Chickpea, dried",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+752,25,F002882,"Chickpea, dried, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+753,25,F002880,"Chickpea, canned, drained",0,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+755,25,F005178,"Lentil, French, hulled, dry",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+756,25,F005181,"Lentil, green, hulled, dry",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+757,25,F005184,"Lentil, red, hulled, dry",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+758,25,F005182,"Lentil, hulled, dry",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+759,25,F005177,"Lentil, dried, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+760,25,F005249,"Lupin, dehulled, splits, uncooked",1,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+761,25,F005248,"Lupin, dehulled, flakes, uncooked",1,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+762,25,F005250,"Lupin, whole, uncooked",1,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+763,25,F006543,"Pea, split, dried",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+764,25,F006544,"Pea, split, dried, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+765,24,F006541,"Pea, green, whole, dried",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+766,24,F006545,"Pea, yellow, whole, dried",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+767,18,F000473,"Beef, all cuts, separable fat, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+768,18,F000472,"Beef, all cuts, separable fat, cooked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+769,18,F000514,"Beef, casserole meat, boneless or bone-in, shin, lean, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+770,18,F000513,"Beef, casserole meat, boneless or bone-in, shin, lean, casseroled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+771,18,F000518,"Beef, casserole meat, boneless or bone-in, shin, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+772,18,F000517,"Beef, casserole meat, boneless or bone-in, shin, untrimmed, casseroled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+773,18,F000523,"Beef, casserole meat, boneless, chuck, lean, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+774,18,F000522,"Beef, casserole meat, boneless, chuck, lean, casseroled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+775,18,F000527,"Beef, casserole meat, boneless, chuck, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+776,18,F000526,"Beef, casserole meat, boneless, chuck, untrimmed, casseroled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+777,18,F000561,"Beef, diced, lean, raw ",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+778,18,F000560,"Beef, diced, lean, dry-fried, no added fat ",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+779,18,F000559,"Beef, diced, lean, casseroled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+780,18,F000564,"Beef, diced, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+781,18,F000563,"Beef, diced, untrimmed, dry-fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+782,18,F000562,"Beef, diced, untrimmed, casseroled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+783,18,F000931,"Beef, stir-fry strips, lean, raw ",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+784,18,F000929,"Beef, stir-fry strips, lean, dry-fried, no added fat ",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+785,18,F000934,"Beef, strips, lean, casseroled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+786,18,F000933,"Beef, stir-fry strips, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+787,18,F000932,"Beef, stir-fry strips, untrimmed, dry-fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+788,18,F000935,"Beef, strips, untrimmed, casseroled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+789,18,F000666,"Beef, mince, lower fat, raw ",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+790,18,F000667,"Beef, mince, lower fat, stir-fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+791,18,F000678,"Beef, mince, regular fat, raw ",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+792,18,F000679,"Beef, mince, regular fat, stir-fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+793,18,F000655,"Beef, mince, higher fat, raw ",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+794,18,F000656,"Beef, mince, higher fat, stir-fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+795,18,F000739,"Beef, rump steak, lean, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+796,18,F000738,"Beef, rump steak, lean, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+797,18,F000765,"Beef, rump steak, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+798,18,F000764,"Beef, rump steak, untrimmed, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+799,18,F000810,"Beef, sirloin steak, lean, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+800,18,F000809,"Beef, sirloin steak, lean, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+801,18,F000825,"Beef, sirloin steak, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+802,18,F000824,"Beef, sirloin steak, untrimmed, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+803,18,F000836,"Beef, steak, boneless, fillet or tenderloin, lean, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+804,18,F000835,"Beef, steak, boneless, fillet or tenderloin, lean, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+805,18,F000839,"Beef, steak, boneless, fillet or tenderloin, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+806,18,F000838,"Beef, steak, boneless, fillet or tenderloin, untrimmed, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+807,18,F000826,"Beef, steak, boneless or bone-in, blade, lean, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+808,18,F000877,"Beef, steak, boneless or bone-in, blade, lean, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+809,18,F000828,"Beef, steak, boneless or bone-in, blade, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+810,18,F000879,"Beef, steak, with bone, blade, untrimmed, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+811,18,F000841,"Beef, steak, boneless, round, lean, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+812,18,F000840,"Beef, steak, boneless, round, lean, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+813,18,F000845,"Beef, steak, boneless, round, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+814,18,F000844,"Beef, steak, boneless, round, untrimmed, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+815,18,F000847,"Beef, steak, boneless, scotch fillet, lean, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+816,18,F000846,"Beef, steak, boneless, scotch fillet, lean, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+817,18,F000851,"Beef, steak, boneless, scotch fillet, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+818,18,F000850,"Beef, steak, boneless, scotch fillet, untrimmed, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+819,18,F000887,"Beef, steak, with bone, T-bone, lean, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+820,18,F000886,"Beef, steak, with bone, T-bone, lean, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+821,18,F000891,"Beef, steak, with bone, T-bone, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+822,18,F000890,"Beef, steak, with bone, T-bone, untrimmed, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+823,18,F000792,"Beef, silverside roast, lean, raw ",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+824,18,F000793,"Beef, silverside roast, lean, roasted, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+825,18,F000798,"Beef, silverside roast, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+826,18,F000799,"Beef, silverside roast, untrimmed, roasted, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+827,18,F000961,"Beef, topside roast, lean, raw ",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+828,18,F000962,"Beef, topside roast, lean, roasted, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+829,18,F000966,"Beef, topside roast, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+830,18,F000967,"Beef, topside roast, untrimmed, roasted, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+831,18,F010944,"Meatball or rissole, beef mince, commercial, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+832,18,F005484,"Meatball or rissole, beef, commercial, cooked",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+833,18,F009360,"Veal, all cuts, separable fat, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+834,18,F009359,"Veal, all cuts, separable fat, cooked",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+835,18,F009370,"Veal, cutlet, with bone, lean, raw ",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+836,18,F009369,"Veal, cutlet, with bone, lean, grilled, no added fat ",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+837,18,F009374,"Veal, cutlet, with bone, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+838,18,F009373,"Veal, cutlet, with bone, untrimmed, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+839,18,F009379,"Veal, diced, lean, raw ",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+840,18,F009380,"Veal, diced, lean, stir-fried, no added fat ",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+841,18,F009381,"Veal, diced, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+842,18,F009382,"Veal, diced, untrimmed, stir-fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+843,18,F009438,"Veal, stir-fry strips, lean, raw ",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+844,18,F009439,"Veal, stir-fry strips, lean, stir-fried, no added fat ",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+845,18,F009440,"Veal, stir-fry strips, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+846,18,F009441,"Veal, stir-fry strips, untrimmed, stir-fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+847,18,F009433,"Veal, steak, boneless, leg, lean, raw ",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+848,18,F009432,"Veal, steak, boneless, leg, lean, grilled, no added fat ",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+849,18,F009435,"Veal, steak, boneless, leg, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+850,18,F009434,"Veal, steak, boneless, leg, untrimmed, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+851,18,F004831,"Lamb, all cuts, separable fat, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+852,18,F004830,"Lamb, all cuts, separable fat, cooked",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+853,18,F004899,"Lamb, chop, with bone, chump, lean, raw ",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+854,18,F004898,"Lamb, chop, with bone, chump, lean, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+855,18,F004911,"Lamb, chop, with bone, chump, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+856,18,F004910,"Lamb, chop, with bone, chump, untrimmed, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+857,18,F004885,"Lamb, chop, with bone, forequarter, lean, raw ",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+858,18,F004884,"Lamb, chop, with bone, forequarter, lean, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+859,18,F004888,"Lamb, chop, with bone, forequarter, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+860,18,F004883,"Lamb, chop, with bone, forequarter, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+861,18,F005027,"Lamb, loin chop, lean, raw ",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+862,18,F005026,"Lamb, loin chop, lean, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+863,18,F005044,"Lamb, loin chop, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+864,18,F005043,"Lamb, loin chop, untrimmed, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+865,18,F004919,"Lamb, cutlet or frenched cutlet, with bone, lean, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+866,18,F004918,"Lamb, cutlet or frenched cutlet, with bone, lean, grilled, no added fat ",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+867,18,F004923,"Lamb, cutlet or frenched cutlet, with bone, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+868,18,F004922,"Lamb, cutlet or frenched cutlet, with bone, untrimmed, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+869,18,F004928,"Lamb, diced, lean, raw ",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+870,18,F004929,"Lamb, diced, lean, stir-fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+871,18,F004927,"Lamb, diced, lean, casseroled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+872,18,F004931,"Lamb, diced, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+873,18,F004932,"Lamb, diced, untrimmed, stir-fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+874,18,F004930,"Lamb, diced, untrimmed, casseroled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+875,18,F005121,"Lamb, stir-fry strips, lean, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+876,18,F005122,"Lamb, stir-fry strips, lean, stir-fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+877,18,F005120,"Lamb, stir-fry strips, lean, casseroled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+878,18,F005125,"Lamb, stir-fry strips, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+879,18,F005126,"Lamb, stir-fry strips, untrimmed, stir-fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+880,18,F005124,"Lamb, stir-fry strips, untrimmed, casseroled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+881,18,F005049,"Lamb, mince, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+882,18,F005050,"Lamb, mince, stir-fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+883,18,F005013,"Lamb, leg roast, lean, raw ",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+884,18,F005014,"Lamb, leg roast, lean, roasted, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+885,18,F005017,"Lamb, leg roast, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+886,18,F005018,"Lamb, leg roast, untrimmed, roasted, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+887,18,F005053,"Lamb, mini roast, lean, roasted, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+888,18,F005055,"Lamb, mini roast, untrimmed, roasted, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+889,18,F005074,"Lamb, roasting piece, shoulder, lean, raw ",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+890,18,F005067,"Lamb, roasting piece, shoulder, lean, roasted, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+891,18,F005077,"Lamb, roasting piece, shoulder, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+892,18,F005078,"Lamb, roasting piece, shoulder, untrimmed, roasted, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+893,18,F004948,"Lamb, eye of loin, lean, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+894,18,F004947,"Lamb, eye of loin, lean, microwaved, no added fat ",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+895,18,F004951,"Lamb, eye of loin, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+896,18,F004950,"Lamb, eye of loin, untrimmed, microwaved, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+897,18,F004954,"Lamb, fillet, lean, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+898,18,F004953,"Lamb, fillet, lean, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+899,18,F004956,"Lamb, fillet, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+900,18,F004955,"Lamb, fillet, untrimmed, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+901,18,F005095,"Lamb, steak, boneless, lean, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+902,18,F005094,"Lamb, steak, boneless, lean, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+903,18,F005099,"Lamb, steak, boneless, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+904,18,F005098,"Lamb, steak, boneless, untrimmed, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+905,18,F005139,"Lamb, with bone, shin, lean, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+906,18,F005138,"Lamb, with bone, shin, lean, casseroled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+907,18,F005143,"Lamb, with bone, shin, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+908,18,F005142,"Lamb, with bone, shin, untrimmed, casseroled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+909,18,F005977,"Mutton, all cuts, separable fat, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+910,18,F005976,"Mutton, all cuts, separable fat, cooked",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+911,18,F005979,"Mutton, boneless dice or strips, shoulder, lean, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+912,18,F005978,"Mutton, boneless dice or strips, shoulder, lean, casseroled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+913,18,F005980,"Mutton, boneless dice or strips, shoulder, semi-trimmed, casseroled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+914,18,F005983,"Mutton, boneless dice or strips, shoulder, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+915,18,F005982,"Mutton, boneless dice or strips, shoulder, untrimmed, casseroled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+916,18,F005997,"Mutton, roasting piece, with bone, leg, lean, raw ",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+917,18,F005998,"Mutton, roasting piece, with bone, leg, lean, roasted, no added fat ",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+918,18,F006001,"Mutton, roasting piece, with bone, leg, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+919,18,F006002,"Mutton, roasting piece, with bone, leg, untrimmed, roasted, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+920,18,F001920,"Buffalo, riverine, cube roll, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+921,18,F001921,"Buffalo, riverine, topside, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+922,18,F001922,"Buffalo, swamp, cube roll, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+923,18,F001923,"Buffalo, swamp, topside, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+924,18,F002205,"Camel, cube roll, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+925,18,F002206,"Camel, rump, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+926,18,F009789,"Camel, steak, as purchased, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+927,18,F009829,"Camel, steak, as purchased, fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+928,18,F004230,"Goat, all cuts, separable fat, raw ",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+929,18,F004229,"Goat, all cuts, separable fat, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+930,18,F004233,"Goat, forequarter, lean, raw ",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+931,18,F004232,"Goat, forequarter, lean, baked, no added fat ",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+932,18,F004235,"Goat, leg, lean, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+933,18,F004234,"Goat, leg, lean, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+934,18,F004237,"Goat, loin, lean, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+935,18,F004236,"Goat, loin, lean, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+936,18,F004240,"Goat, meat, all cuts, lean, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+937,18,F004238,"Goat, meat, all cuts, lean, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+938,18,F004239,"Goat, meat, all cuts, lean, casseroled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+939,18,F004243,"Goat, meat, all cuts, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+940,18,F004241,"Goat, meat, all cuts, untrimmed, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+941,18,F004242,"Goat, meat, all cuts, untrimmed, casseroled, no added fat ",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+942,18,F007601,"Rabbit, farmed, whole, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+943,18,F007602,"Rabbit, flesh, casseroled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+944,18,F009465,"Venison, leg medallion, lean, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+945,18,F009464,"Venison, leg medallion, lean, baked, roasted, fried, stir-fried, grilled or BBQ'd, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+946,18,F009467,"Venison, mince, premium, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+947,18,F009466,"Venison, mince, premium, baked, roasted, fried, stir-fried, grilled or BBQ'd, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+948,18,F006862,"Pork, belly, rind removed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+949,18,F006860,"Pork, belly, rind removed, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+950,18,F006880,"Pork, crackling, roasted, salted",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+951,18,F006883,"Pork, diced, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+952,18,F006881,"Pork, diced, untrimmed, fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+953,18,F007128,"Pork, strips, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+954,18,F007127,"Pork, strips, untrimmed, fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+955,18,F006906,"Pork, forequarter (chop, roast, neck), separable fat, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+956,18,F006940,"Pork, forequarter, separable fat, BBQ'd, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+957,18,F006922,"Pork, forequarter chop, lean, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+958,18,F006921,"Pork, forequarter chop, lean, BBQ'd, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+959,18,F006910,"Pork, forequarter chop, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+960,18,F006908,"Pork, forequarter chop, untrimmed, BBQ'd, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+961,18,F007016,"Pork, loin chop, separable fat, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+962,18,F007015,"Pork, loin chop, separable fat, BBQ'd, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+963,18,F007019,"Pork, loin chop, lean, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+964,18,F007017,"Pork, loin chop, lean, BBQ'd, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+965,18,F006993,"Pork, loin chop, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+966,18,F006991,"Pork, loin chop, untrimmed, BBQ'd, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+967,18,F007028,"Pork, loin cutlet, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+968,18,F007027,"Pork, loin cutlet, untrimmed, fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+969,18,F007057,"Pork, mince, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+970,18,F007055,"Pork, mince, as purchased, fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+971,18,F006875,"Pork, butterfly steak, lean, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,0,1,1,0,0,0
+972,18,F006874,"Pork, butterfly steak, lean, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,0,1,1,0,0,0
+973,18,F006866,"Pork, butterfly steak, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,0,1,1,0,0,0
+974,18,F006864,"Pork, butterfly steak, untrimmed, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,0,1,1,0,0,0
+975,18,F007046,"Pork, medallion or loin steak, separable fat, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+976,18,F007045,"Pork, medallion or loin steak, separable fat, fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+977,18,F007049,"Pork, medallion or loin steak, lean, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+978,18,F007048,"Pork, medallion or loin steak, lean, fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+979,18,F007043,"Pork, medallion or loin steak, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+980,18,F007042,"Pork, medallion or loin steak, untrimmed, fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+981,18,F006965,"Pork, leg steak (rump), separable fat, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+982,18,F006964,"Pork, leg steak (rump), separable fat, fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+983,18,F007085,"Pork, rump steak, lean, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+984,18,F007084,"Pork, rump steak, lean, fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+985,18,F007082,"Pork, rump steak, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+986,18,F007081,"Pork, rump steak, untrimmed, fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+987,18,F006899,"Pork, fillet, lean, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+988,18,F006892,"Pork, fillet, fully-trimmed, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+989,18,F006933,"Pork, forequarter shoulder roast, lean, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+990,18,F006932,"Pork, forequarter shoulder roast, lean, BBQ'd, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+991,18,F006929,"Pork, forequarter shoulder roast, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+992,18,F006927,"Pork, forequarter shoulder roast, untrimmed, BBQ'd, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+993,18,F006953,"Pork, leg roast, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+994,18,F006951,"Pork, leg roast, untrimmed, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+995,18,F007035,"Pork, loin roast, separable fat, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+996,18,F007034,"Pork, loin roast, separable fat, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+997,18,F007037,"Pork, loin roast, lean, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+998,18,F007036,"Pork, loin roast, lean, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+999,18,F007030,"Pork, loin roast, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+1000,18,F007029,"Pork, loin roast, untrimmed, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+1001,18,F007074,"Pork, round mini roast, separable fat, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+1002,18,F007073,"Pork, round mini roast, separable fat, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+1003,18,F007077,"Pork, round mini roast, lean, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+1004,18,F007076,"Pork, round mini roast, lean, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+1005,18,F007092,"Pork, scotch roast, separable fat, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+1006,18,F007091,"Pork, scotch roast, separable fat, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+1007,18,F007094,"Pork, scotch roast, lean, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+1008,18,F007093,"Pork, scotch roast, lean, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+1009,18,F007089,"Pork, scotch roast, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+1010,18,F007087,"Pork, scotch roast, untrimmed, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+1011,18,F007117,"Pork, spare ribs, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+1012,18,F007113,"Pork, spare ribs, untrimmed, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+1013,18,F007108,"Pork, spare ribs, marinated, baked, roasted, fried, grilled or BBQ'd, fat not further defined",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+1014,18,F002769,"Chicken, separable fat, composite, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1015,18,F002767,"Chicken, separable fat, composite, baked or roasted, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1016,18,F002768,"Chicken, separable fat, composite, cooked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1017,18,F002773,"Chicken, skin, composite, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1018,18,F002771,"Chicken, skin, composite, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1019,18,F002772,"Chicken, skin, composite, casseroled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1020,18,F002568,"Chicken, barbecued, with skin",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1021,18,F002594,"Chicken, breast, lean flesh, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1022,18,F002590,"Chicken, breast, lean flesh, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1023,18,F002593,"Chicken, breast, lean flesh, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1024,18,F002592,"Chicken, breast, lean flesh, fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1025,18,F002591,"Chicken, breast, lean flesh, casseroled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1026,18,F002597,"Chicken, breast, lean flesh, skin & fat, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1027,18,F002595,"Chicken, breast, lean flesh, skin & fat, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1028,18,F002647,"Chicken, drumstick, lean flesh, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1029,18,F002645,"Chicken, drumstick, lean flesh, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1030,18,F002646,"Chicken, drumstick, lean flesh, casseroled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1031,18,F002650,"Chicken, drumstick, lean flesh, skin & fat, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1032,18,F002648,"Chicken, drumstick, lean flesh, skin & fat, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1033,18,F002649,"Chicken, drumstick, lean flesh, skin & fat, casseroled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1034,18,F002739,"Chicken, mince, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1035,18,F009831,"Chicken, mince, fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1036,18,F002806,"Chicken, thigh, lean flesh, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1037,18,F002804,"Chicken, thigh, lean flesh, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1038,18,F002805,"Chicken, thigh, lean flesh, casseroled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1039,18,F009806,"Chicken, thigh, lean flesh, fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1040,18,F002809,"Chicken, thigh, lean flesh, skin & fat, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1041,18,F002807,"Chicken, thigh, lean flesh, skin & fat, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1042,18,F002808,"Chicken, thigh, lean flesh, skin & fat, casseroled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1043,18,F002849,"Chicken, wing, lean flesh, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1044,18,F002847,"Chicken, wing, lean flesh, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1045,18,F002848,"Chicken, wing, lean flesh, casseroled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1046,18,F002852,"Chicken, wing, lean flesh, skin & fat, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1047,18,F002850,"Chicken, wing, lean flesh, skin & fat, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1048,18,F002851,"Chicken, wing, lean flesh, skin & fat, casseroled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1049,18,F002755,"Chicken, nugget, purchased frozen, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1050,18,F002752,"Chicken, nugget, purchased from independent takeaway & fast food chain, fried, undefined oil",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1051,18,F002751,"Chicken, nugget, purchased from fast food chain, grilled",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1052,18,F002559,"Chicken piece, flesh, skin & fat, coated, fast food outlet, fried",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1053,18,F009790,"Chicken, schnitzel, baked without fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1054,18,F009307,"Turkey, breast, lean flesh, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1055,18,F009306,"Turkey, breast, lean flesh, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1056,18,F009309,"Turkey, breast, lean flesh, skin & fat, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1057,18,F009308,"Turkey, breast, lean flesh, skin & fat, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1058,18,F009320,"Turkey, hindquarter, lean flesh, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1059,18,F009319,"Turkey, hindquarter, lean flesh, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1060,18,F009322,"Turkey, hindquarter, lean flesh, skin & fat, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1061,18,F009321,"Turkey, hindquarter, lean flesh, skin & fat, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1062,18,F003642,"Duck, skin & fat, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1063,18,F003641,"Duck, skin & fat, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1064,18,F009805,"Duck, breast, lean flesh, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1065,18,F009819,"Duck, breast, lean, fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1066,18,F003632,"Duck, lean flesh, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1067,18,F003631,"Duck, lean flesh, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1068,18,F003634,"Duck, lean flesh, skin & fat, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1069,18,F003633,"Duck, lean flesh, skin & fat, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1070,18,F007570,"Quail, lean flesh & skin, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1071,18,F007569,"Quail, lean flesh & skin, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1072,18,F003776,"Emu, fan fillet, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1073,18,F003779,"Emu, steak, as purchased, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1074,18,F003778,"Emu, steak, as purchased, fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1075,18,F004787,"Kangaroo, loin fillet, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1076,18,F004786,"Kangaroo, loin fillet, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1077,18,F004790,"Kangaroo, rump, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1078,18,F004789,"Kangaroo, rump, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1079,18,F009791,"Kangaroo, steak, as purchased, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1080,18,F009815,"Kangaroo, steak, as purchased, fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1081,18,F004793,"Kangaroo, tail, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1082,18,F004792,"Kangaroo, tail, cooked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1083,18,F006282,"Ostrich, fan fillet, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1084,18,F006283,"Ostrich, moon steak, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1085,18,F006698,"Pigeon (squab), whole, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1086,18,F010381,"Pigeon (squab), meat, cooked",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1087,33,F003299,"Crocodile, back leg, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1088,33,F003301,"Crocodile, tail fillet, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1089,33,F009793,"Crocodile, steak, as purchased, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1090,33,F009817,"Crocodile, steak, as purchased, fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1091,18,F002709,"Chicken, liver, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1092,18,F002708,"Chicken, liver, fried, added butter",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,0,1,1,1,1,1
+1093,18,F005021,"Lamb, liver, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1094,18,F000228,"Bacon, middle rasher, untrimmed, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+1095,18,F000227,"Bacon, middle rasher, untrimmed, baked, roasted, fried, grilled or BBQ'd, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+1096,18,F000224,"Bacon, middle rasher, separable lean, fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+1097,18,F000223,"Bacon, middle rasher, separable fat, fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+1098,18,F000231,"Bacon, shortcut, as purchased without rind, fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+1099,18,F004299,"Ham, leg, lean",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+1100,18,F007459,Prosciutto,0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+1101,18,F004025,"Frankfurt, cooked",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,0,1,1,1,1,1,1
+1102,18,F008112,"Sausage, beef, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,0,1,1,1,1,1,1
+1103,18,F008106,"Sausage, beef, fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,0,1,1,1,1,1,1
+1104,18,F008107,"Sausage, beef, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,0,1,1,1,1,1,1
+1105,18,F008119,"Sausage, chicken, plain, fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,0,1,1,1,1,1,1
+1106,18,F008116,"Sausage, chicken, flavoured, fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,0,1,1,1,1,1,1
+1107,18,F008137,"Sausage, lamb, plain, fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,0,1,1,1,1,1,1
+1108,18,F008136,"Sausage, lamb, flavoured, fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,0,1,1,1,1,1,1
+1109,18,F008143,"Sausage, pork, fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,0,1,1,1,0,0,0
+1110,18,F008126,"Sausage, chorizo, uncooked",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+1111,18,F008125,"Sausage, chorizo, fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+1112,18,F007814,"Salami, danish",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+1113,18,F007815,"Salami, hungarian",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+1114,18,F007816,"Salami, mettwurst",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,0,1,1,0,0,0
+1115,18,F007817,"Salami, milano",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+1116,18,F007819,"Salami, pepperoni",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+1117,18,F007818,"Salami, all varieties, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,0,0,0
+1118,18,F002756,"Chicken, processed luncheon meat, low or reduced fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1119,18,F000544,"Beef, corned, canned",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1120,18,F001322,"Braised steak & onions, canned",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,0,1,1,1,1,1,1
+1121,13,F006675,"Pie, steak & kidney, canned",0,GRAINS_WHOLEGRAINS,,1,1,1,1,1,1,1,1,1
+1122,18,F009450,"Sausages & vegetables, canned",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,0,1,1,1,1,1,1
+1123,18,F008740,"Spam, canned",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1124,18,F009452,"Steak & vegetables, canned",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,0,1,1,1,1,1,1
+1125,22,F002983,"Coconut, fresh, mature fruit, flesh",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,0,1,1,1
+1126,22,F002985,"Coconut, fresh, young or immature, flesh",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,0,1,1,1
+1127,22,F002984,"Coconut, fresh, mature, water or juice",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,0,1,1,1
+1128,22,F002986,"Coconut, fresh, young or immature, water or juice",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,0,1,1,1
+1129,22,F009794,"Water, coconut, commercial",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,0,1,1,1
+1130,22,F002987,"Coconut, grated & desiccated",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,0,1,1,1
+1131,22,F002982,"Coconut, cream, regular fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,0,1,0,1,1,1
+1132,22,F002991,"Coconut, milk, canned, regular fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,0,1,0,1,1,1
+1133,22,F002990,"Coconut, milk, canned, reduced fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,0,1,0,1,1,1
+1134,22,F006081,"Nut, almond, with skin, raw, unsalted",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,0,1,0,1,1,1
+1135,22,F006082,"Nut, almond, with skin, roasted, unsalted",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,0,1,0,1,1,1
+1136,22,F006077,"Nut, almond meal",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,0,1,1,1
+1137,22,F006087,"Nut, brazil, raw or blanched, unsalted",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,0,1,0,1,1,1
+1138,22,F006088,"Nut, cashew, raw, unsalted",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,0,1,0,1,1,1
+1139,22,F006092,"Nut, cashew, roasted, unsalted",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,0,1,1,1
+1140,22,F006090,"Nut, cashew, roasted, salted",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,0,1,0,1,1,1
+1141,22,F006095,"Nut, chestnut, raw, unsalted",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,0,1,1,1
+1142,22,F006096,"Nut, chestnut, roasted, unsalted",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,0,1,1,1
+1143,22,F006098,"Nut, hazelnut, raw, unsalted",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,0,1,1,1
+1144,22,F006099,"Nut, macadamia, raw, unsalted",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,0,1,1,1
+1145,22,F006107,"Nut, peanut, with skin, raw, unsalted",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,0,1,0,1,1,1
+1146,22,F006108,"Nut, peanut, with skin, roasted, with oil, salted",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,0,1,0,1,1,1
+1147,22,F006110,"Nut, peanut, without skin, roasted, with oil, unsalted",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,0,1,1,1
+1148,22,F006109,"Nut, peanut, without skin, roasted, with oil, salted",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,0,1,0,1,1,1
+1149,22,F006111,"Nut, pecan, raw, unsalted",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,0,1,1,1
+1150,22,F006112,"Nut, pine, raw, unsalted",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,0,1,0,1,1,1
+1151,22,F006113,"Nut, pistachio, raw, unsalted",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,0,1,0,1,1,1
+1152,22,F006116,"Nut, walnut, raw, unsalted",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,0,1,1,1
+1153,22,F008209,"Seed, chia, dried",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1154,22,F009977,"Seed, hemp, dried",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1155,22,F008210,"Seed, linseed or flaxseed",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1156,22,F008211,"Seed, poppy",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1157,22,F008212,"Seed, pumpkin, hulled & dried",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1158,22,F008215,"Seed, sunflower",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1159,22,F008214,"Seed, sesame, unsalted",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1160,22,F009533,"Wattle seed (acacia), ground",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1161,22,F010328,"Flour, hemp",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1162,22,F009076,"Tahini, sesame seed pulp",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1163,15,F000386,"Barramundi, aquacultured, fillet, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1164,15,F000385,"Barramundi, aquacultured, fillet, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1165,15,F000387,"Barramundi, aquacultured, fillet, steamed with no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1166,15,F000402,"Bassa (basa), fillet, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1167,15,F000401,"Bassa (basa), fillet, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1168,15,F000403,"Bassa (basa), fillet, steamed, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1169,15,F001277,"Blue grenadier (hoki), fillet, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1170,15,F001276,"Blue grenadier (hoki), fillet, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1171,15,F001278,"Blue grenadier (hoki), fillet, steamed, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1172,15,F001884,"Bream, fillet, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1173,15,F001881,"Bream, fillet, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1174,15,F001885,"Bream, fillet, steamed, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1175,15,F003973,"Flathead, fillet, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1176,15,F003970,"Flathead, fillet, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1177,15,F003974,"Flathead, fillet, steamed, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1178,15,F004202,"Gemfish, fillet, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1179,15,F004201,"Gemfish, fillet, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1180,15,F004203,"Gemfish, fillet, steamed, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1181,15,F004811,"Kingfish, yellowtail, aquacultured, fillet, with skin, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1182,15,F004810,"Kingfish, yellowtail, aquacultured, fillet, with skin, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1183,15,F004812,"Kingfish, yellowtail, aquacultured, fillet, with skin, steamed, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1184,15,F005268,"Mackerel, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1185,15,F005267,"Mackerel, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1186,15,F005270,"Mackerel, steamed, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1187,15,F005659,"Milkfish, aquacultured, fillet, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,0,1,1,1,1,1
+1188,15,F005658,"Milkfish, aquacultured, fillet, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,0,1,1,1,1,1
+1189,15,F005660,"Milkfish, aquacultured, fillet, steamed, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,0,1,1,1,1,1
+1190,15,F005824,"Morwong, fillet, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1191,15,F005823,"Morwong, fillet, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1192,15,F005825,"Morwong, fillet, steamed, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1193,15,F005922,"Mullet, yelloweye, fillet, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1194,15,F005921,"Mullet, yelloweye, fillet, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1195,15,F005923,"Mullet, yelloweye, fillet, steamed, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1196,15,F005930,"Mulloway, fillet, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1197,15,F005926,"Mulloway, fillet baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1198,15,F005932,"Mulloway, fillet, steamed, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1199,15,F007827,"Salmon, Atlantic, fillet, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1200,15,F007826,"Salmon, Atlantic, fillet, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1201,15,F007828,"Salmon, Atlantic, fillet, steamed, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1202,15,F007849,"Salmon, Pacific King, fillet, skinless, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1203,15,F007848,"Salmon, Pacific King, fillet, skinless, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1204,15,F007850,"Salmon, Pacific King, fillet, steamed, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1205,15,F007973,"Sardine, Australian, whole, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1206,15,F007972,"Sardine, Australian, whole, fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1207,15,F008775,"Sprat, blue, wild caught, flesh, skin & bones, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1208,15,F008774,"Sprat, blue, wild caught, flesh, skin & bones, fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1209,15,F008237,"Shark, fillet, without skin, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1210,15,F008236,"Shark, fillet, without skin, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1211,15,F008238,"Shark, fillet, without skin, steamed, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1212,15,F008233,"Shark, battered, deep-fried, takeaway outlet",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1213,15,F008263,"Silver perch, aquacultured, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1214,15,F008258,"Silver perch, aquacultured, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1215,15,F008264,"Silver perch, aquacultured, steamed, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1216,15,F008359,"Snapper, fillet, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1217,15,F008358,"Snapper, fillet, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1218,15,F008360,"Snapper, fillet, steamed, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1219,15,F009163,"Tilapia, fillet, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1220,15,F009161,"Tilapia, fillet, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1221,15,F009164,"Tilapia, fillet, steamed, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1222,15,F009268,"Trout, ocean, aquacultured, fillet, without skin, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1223,15,F009267,"Trout, ocean, aquacultured, fillet, without skin, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1224,15,F009269,"Trout, ocean, aquacultured, fillet, without skin, steamed, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1225,15,F009271,"Trout, rainbow, aquacultured, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1226,15,F009270,"Trout, rainbow, aquacultured, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1227,15,F009273,"Trout, rainbow, aquacultured, steamed, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1228,15,F009303,"Tuna, yellowfin, fillet, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1229,15,F009302,"Tuna, yellowfin, fillet, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1230,15,F009304,"Tuna, yellowfin, fillet, steamed, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1231,15,F009560,"Whiting, King George, fillet, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1232,15,F009557,"Whiting, King George, fillet, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1233,15,F009561,"Whiting, King George, fillet, steamed, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1234,15,F003920,"Fish, eel, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1235,15,F003897,"Fish finger, crumbed, purchased frozen, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1236,15,F003896,"Fish finger, crumbed, purchased frozen, grilled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1237,15,F003950,"Fish, white flesh, battered, packaged frozen, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1238,15,F003954,"Fish, white flesh, crumbed, packaged frozen, baked, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1239,15,F000002,"Abalone, black lip, aquacultured, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,0,1
+1240,15,F000003,"Abalone, black lip, wild, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,0,1
+1241,15,F000005,"Abalone, green lip, aquacultured, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,0,1
+1242,15,F000006,"Abalone, green lip, wild, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,0,1
+1243,15,F000004,"Abalone, brown lip, wild, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,0,1
+1244,15,F003243,"Crab, flesh, purchased steamed or boiled",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,0,1
+1245,15,F005228,"Lobster, southern rock, wild, flesh, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,0,1
+1246,15,F005227,"Lobster or crayfish, flesh, purchased steamed, poached or boiled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,0,1
+1247,15,F005968,"Mussel, blue, steamed",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,0,1
+1248,15,F006150,"Octopus, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,0,1
+1249,15,F006148,"Octopus, boiled, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,0,1
+1250,15,F006288,"Oyster, native, aquacultured, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,0,1
+1251,15,F006289,"Oyster, Pacific, aquacultured, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,0,1
+1252,15,F006291,"Oyster, Sydney rock, aquacultured, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,0,1
+1253,15,F006285,"Oyster, aquacultured, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,0,1
+1254,15,F007422,"Prawn, banana, wild, flesh, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,0,1
+1255,15,F007421,"Prawn, banana, aquacultured, purchased cooked",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,0,1
+1256,15,F007424,"Prawn, brown tiger, wild, flesh, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,0,1
+1257,15,F007423,"Prawn, black tiger, aquacultured, purchased cooked",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,0,1
+1258,15,F007431,"Prawn, endeavour, wild, flesh, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,0,1
+1259,15,F007451,"Prawn, school, wild, flesh, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,0,1
+1260,15,F007454,"Prawn, Western king, wild, flesh, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,0,1,1,1,0,1
+1261,15,F007433,"Prawn, flesh, raw (green)",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,0,1
+1262,15,F007432,"Prawn, flesh, cooked from raw, no added fat",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,0,1
+1263,15,F008166,"Scallop, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,0,1
+1264,15,F008165,"Scallop, fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,0,1
+1265,15,F008828,"Squid or calamari, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,0,1
+1266,15,F008825,"Squid or calamari, fried, no added fat",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,0,1
+1267,15,F000074,"Anchovy, canned in oil, drained",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1268,15,F003009,"Cod, smoked, raw",1,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1269,15,F003003,"Cod or hake, smoked, steamed",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1270,15,F007853,"Salmon, pink, canned in brine, drained",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1271,15,F007860,"Salmon, red, canned in brine, drained",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1272,15,F007847,"Salmon, flavoured, canned",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1273,15,F007864,"Salmon, smoked, sliced",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1274,15,F009300,"Tuna, unflavoured, canned in water, drained",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1275,15,F009285,"Tuna, canned in brine, drained",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1276,15,F009293,"Tuna, flavoured, canned in oil",0,LEAN_MEAT_POULTRY_FISH_SEEDS,,0,0,1,1,1,1,1,1,1
+1277,28,F009804,"Snack ball, date based",0,SNACKS/SUGARS,,1,1,1,1,1,1,1,1,1
+1278,28,F000333,"Bar, muesli, plain or with dried fruit",0,SNACKS/SUGARS,,1,1,0,1,1,0,1,1,1
+1279,28,F000337,"Bar, muesli, plain or with dried fruit, chocolate-coated",0,SNACKS/SUGARS,,0,1,0,0,1,0,1,1,1
+1280,28,F010956,"Bar, muesli, plain or with dried fruit, yoghurt-coated",0,SNACKS/SUGARS,,0,1,0,0,1,1,1,1,1
+1281,28,F000344,"Bar, muesli, with nuts",0,SNACKS/SUGARS,,1,1,0,1,1,0,1,1,1
+1282,28,F009803,"Bar, snack, oat based, baked",0,SNACKS/SUGARS,,0,1,0,0,1,1,1,1,1
+1283,28,F000368,"Bar, snack, fruit filled, baked",0,SNACKS/SUGARS,,1,1,0,1,1,1,1,1,1
+1284,28,F009801,"Bar, snack, with >55% nuts",0,SNACKS/SUGARS,,1,1,0,1,1,1,1,1,1
+1285,28,F009802,"Bar, snack, with >35% nuts, added protein",0,SNACKS/SUGARS,,1,1,0,1,1,1,1,1,1
+1286,26,F003802,"Extruded snack, cheese flavoured",0,SNACKS/SUGARS,,0,1,0,0,1,1,1,1,1
+1287,26,F004248,"Snack, grain based, extruded, flavoured",0,SNACKS/SUGARS,,0,1,0,0,1,1,1,1,1
+1288,26,F006030,"Noodle snack, wheat, flavoured, dry",0,SNACKS/SUGARS,,1,1,0,1,1,1,1,1,1
+1289,26,F003198,"Corn chips, plain, salted",0,SNACKS/SUGARS,,1,1,1,1,1,1,1,1,1
+1290,26,F009073,"Taco shell, from corn flour, plain",0,SNACKS/SUGARS,,1,1,1,1,1,1,1,1,1
+1291,26,F006844,"Popcorn, commercial, butter flavoured, salted",0,SNACKS/SUGARS,,0,1,1,0,1,1,1,1,1
+1292,26,F007193,"Potato crisps or chips, plain, salted",0,SNACKS/SUGARS,,1,1,1,1,1,1,1,1,1
+1293,26,F007201,"Potato crisps or chips, salt & vinegar flavoured",0,SNACKS/SUGARS,,0,1,1,0,1,1,1,1,1
+1294,26,F007189,"Potato crisps or chips, flavoured (other than salt & vinegar)",0,SNACKS/SUGARS,,0,1,1,0,1,1,1,1,1
+1295,26,F007198,"Potato crisps or chips, reformed, salted",0,SNACKS/SUGARS,,1,1,1,1,1,1,1,1,1
+1296,26,F007204,"Potato straws, French fries, plain",1,SNACKS/SUGARS,,1,1,1,1,1,1,1,1,1
+1297,26,F009836,"Vegetable crisps or chips, sweet potato & taro, flavoured",0,SNACKS/SUGARS,,1,1,1,1,1,1,1,1,1
+1298,28,F000279,"Bar, cherry & coconut centre, dark chocolate-coated",0,SNACKS/SUGARS,,0,1,1,0,1,0,1,1,1
+1299,28,F000285,"Bar, coconut cream centre, milk chocolate-coated",0,SNACKS/SUGARS,,0,1,1,0,1,0,1,1,1
+1300,28,F000296,"Bar, honeycomb centre, milk chocolate-coated",0,SNACKS/SUGARS,,0,1,1,0,1,1,1,1,1
+1301,28,F000348,"Bar, nougat & caramel centre, milk chocolate-coated",0,SNACKS/SUGARS,,0,1,1,0,1,1,1,1,1
+1302,28,F000372,"Bar, wafer & cream layers, chocolate-coated",0,SNACKS/SUGARS,,0,1,1,0,1,1,1,1,1
+1303,28,F002916,"Chocolate, compound, cooking",0,SNACKS/SUGARS,,0,1,1,0,1,1,1,1,1
+1304,28,F009837,"Chocolate, dark, no added sugar",0,SNACKS/SUGARS,,1,1,1,1,1,1,1,1,1
+1305,28,F002921,"Chocolate, dark, high cocoa solids",0,SNACKS/SUGARS,,0,1,1,0,1,1,1,1,1
+1306,28,F002929,"Chocolate, milk",0,SNACKS/SUGARS,,0,1,1,0,1,1,1,1,1
+1307,28,F002934,"Chocolate, milk, fondant or caramel filled",0,SNACKS/SUGARS,,0,1,1,0,1,1,1,1,1
+1308,28,F002937,"Chocolate, milk, with dried fruit & nuts",0,SNACKS/SUGARS,,0,1,1,0,1,0,1,1,1
+1309,28,F002939,"Chocolate, milk, with nuts",0,SNACKS/SUGARS,,0,1,1,0,1,1,1,1,1
+1310,28,F002946,"Chocolate, white",0,SNACKS/SUGARS,,0,1,1,0,1,1,1,1,1
+1311,28,F003097,"Confectionery, almond, chocolate-coated",0,SNACKS/SUGARS,,1,1,1,1,1,0,1,1,1
+1312,28,F003100,"Confectionery, chocolate centre, sugar-coated",0,SNACKS/SUGARS,,0,1,1,0,1,1,1,1,1
+1313,28,F003105,"Confectionery, dried fruit & nuts, chocolate-coated",0,SNACKS/SUGARS,,1,1,1,1,1,0,1,1,1
+1314,28,F003114,"Confectionery, peanut, chocolate-coated",0,SNACKS/SUGARS,,1,1,1,1,1,0,1,1,1
+1315,28,F003118,"Confectionery, sultana, chocolate-coated",0,SNACKS/SUGARS,,1,1,1,1,1,1,1,1,1
+1316,28,F005215,"Liquorice, chocolate-coated",0,SNACKS/SUGARS,,0,1,1,0,1,1,1,1,1
+1319,27,F004600,"Jam, berry",0,SNACKS/SUGARS,,1,1,1,1,1,1,1,1,1
+1320,27,F004604,"Jam, plum",0,SNACKS/SUGARS,,1,1,1,1,1,1,1,1,1
+1321,27,F004607,"Jam, stone fruit",0,SNACKS/SUGARS,,1,1,1,1,1,1,1,1,1
+1322,27,F005421,"Marmalade, orange",0,SNACKS/SUGARS,,1,1,1,1,1,1,1,1,1
+1323,27,F008777,"Spread, hazelnut & chocolate flavoured",0,SNACKS/SUGARS,,0,1,1,0,1,0,1,1,1
+1324,27,F008969,"Sugar, brown",0,SNACKS/SUGARS,,1,1,1,1,1,1,1,1,1
+1325,27,F008973,"Sugar, raw",1,SNACKS/SUGARS,,1,1,1,1,1,1,1,1,1
+1326,27,F008976,"Sugar, white, granulated or lump",0,SNACKS/SUGARS,,1,1,1,1,1,1,1,1,1
+1327,27,F008980,"Sugar, white, icing",0,SNACKS/SUGARS,,1,1,1,1,1,1,1,1,1
+1328,27,F008981,"Sugar, white, icing mixture",0,SNACKS/SUGARS,,1,1,0,1,1,1,1,1,1
+1329,27,F004219,"Glucose, liquid or syrup",0,SNACKS/SUGARS,,1,1,1,1,1,1,1,1,1
+1330,27,F004380,Honey,0,SNACKS/SUGARS,,1,1,1,1,1,1,1,1,1
+1331,27,F009049,"Syrup, golden",0,SNACKS/SUGARS,,1,1,1,1,1,1,1,1,1
+1332,27,F009052,"Syrup, maple, pure",0,SNACKS/SUGARS,,1,1,1,1,1,1,1,1,1
+1333,27,F009949,"Syrup, malt",0,SNACKS/SUGARS,,1,1,0,1,1,1,1,1,1
+1334,27,F009937,"Syrup, rice malt",0,SNACKS/SUGARS,,1,1,1,1,1,1,1,1,1
+1335,27,F009956,Treacle or molasses,0,SNACKS/SUGARS,,1,1,1,1,1,1,1,1,1
+1336,27,F004611,"Jelly crystals, sugar sweetened, all flavours",0,SNACKS/SUGARS,,1,1,1,1,1,1,1,1,1
+1337,27,F004615,"Jelly, sugar sweetened, all flavours, prepared",0,SNACKS/SUGARS,,1,1,1,1,1,1,1,1,1
+1338,28,F002257,"Caramels, soft & hard",0,SNACKS/SUGARS,,0,1,1,0,1,1,1,1,1
+1339,28,F005213,"Liquorice, allsorts",0,SNACKS/SUGARS,,1,1,1,1,1,1,1,1,1
+1340,28,F005214,"Liquorice, black",0,SNACKS/SUGARS,,1,1,0,1,1,1,1,1,1
+1341,28,F005235,"Lolly, hard varieties",0,SNACKS/SUGARS,,1,1,1,1,1,1,1,1,1
+1342,28,F005236,"Lolly, jelly varieties",0,SNACKS/SUGARS,,1,1,1,1,1,1,1,1,1
+1343,28,F005241,"Lolly, mint flavoured, sugar sweetened",0,SNACKS/SUGARS,,1,1,1,1,1,1,1,1,1
+1344,28,F010772,"Lolly, with fruit juice",0,SNACKS/SUGARS,,1,1,1,1,1,1,1,1,1
+1345,27,F005522,"Meringue, all flavours, commercial",0,SNACKS/SUGARS,,0,1,1,0,0,1,1,1,1
+1346,24,F000396,"Basil, green, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1347,24,F002907,"Chives, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1348,24,F003192,"Coriander, fresh, raw",1,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+1349,24,F003509,"Dill, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1350,24,F010451,"Marjoram, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1351,24,F005700,"Mint, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1352,24,F010452,"Oregano, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1353,24,F006321,"Parsley, continental, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1354,24,F006322,"Parsley, curly, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1355,24,F007716,"Rosemary, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1356,24,F010439,"Sage, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1358,24,F000144,"Artichoke, globe, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1359,24,F000142,"Artichoke, globe, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1360,24,F000146,"Artichoke, jerusalem, peeled, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1361,24,F000145,"Artichoke, jerusalem, peeled, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1362,24,F000141,"Artichoke heart, canned in brine, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1363,24,F000155,"Asparagus, green, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1364,24,F000151,"Asparagus, green, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1365,24,F000153,"Asparagus, green, fresh or frozen, baked, roasted, stir-fried or fried, grilled or BBQ'd, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1366,24,F000149,"Asparagus, canned in brine, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1367,24,F000162,"Avocado, hass, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1368,24,F010994,"Avocado, shepard, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1369,24,F000253,"Bamboo shoot, canned in water, heated, drained",0,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+1370,24,F000431,"Bean, green, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1371,24,F000430,"Bean, green, fresh, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1372,24,F000434,"Bean, green, frozen, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1373,24,F000428,"Bean, green, fresh, cooked, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1374,24,F001015,"Beetroot, fresh, purple, peeled, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1375,24,F001013,"Beetroot, fresh, purple, peeled, baked, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1376,24,F001014,"Beetroot, fresh, purple, peeled, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1377,24,F001010,"Beetroot, canned in brine, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1378,24,F001301,"Bok choy, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1379,24,F001300,"Bok choy, fried, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1380,24,F001302,"Bok choy, steamed",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1381,24,F001905,"Broccoli, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1382,24,F001904,"Broccoli, fresh, microwaved",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1383,24,F001900,"Broccoli, fresh, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1384,24,F001899,"Broccoli, fresh, baked, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1385,24,F001909,"Broccolini, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1386,24,F001908,"Broccolini, fresh, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1387,24,F001914,"Brussels sprout, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1388,24,F001913,"Brussels sprout, fresh, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1389,24,F011003,"Brussels sprout, fresh, baked, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1390,24,F001996,"Cabbage, Chinese, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1391,24,F001993,"Cabbage, Chinese, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1392,24,F001990,"Cabbage, Chinese flowering, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1393,24,F001988,"Cabbage, Chinese flowering, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1394,24,F001998,"Cabbage, mustard, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1395,24,F001997,"Cabbage, mustard, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1396,24,F002006,"Cabbage, red, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1397,24,F002003,"Cabbage, red, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1398,24,F002010,"Cabbage, savoy, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1399,24,F002009,"Cabbage, savoy, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1400,24,F002015,"Cabbage, white, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1401,24,F002014,"Cabbage, white, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1402,24,F002239,"Capsicum, green, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1403,24,F002238,"Capsicum, green, fresh, fried, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1404,24,F002247,"Capsicum, red, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1405,24,F002246,"Capsicum, red, fresh, fried, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1406,24,F010259,"Capsicum, yellow, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1407,24,F002266,"Carrot, baby, peeled, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1408,24,F002265,"Carrot, baby, peeled, fresh, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1409,24,F002263,"Carrot, baby, baked, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1410,24,F002276,"Carrot, mature, peeled, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1411,24,F002274,"Carrot, mature, peeled, fresh, baked, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1412,24,F002275,"Carrot, mature, peeled, fresh, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1413,24,F002286,"Cassava, peeled, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1414,24,F002285,"Cassava, peeled, fresh, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1415,24,F002288,"Cassava, white flesh, peeled, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1416,24,F002287,"Cassava, white flesh, peeled, fresh, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1417,24,F002290,"Cassava, yellow flesh, peeled, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1418,24,F002289,"Cassava, yellow flesh, peeled, fresh, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1419,24,F002378,"Cauliflower, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1420,24,F002377,"Cauliflower, fresh, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1421,24,F002374,"Cauliflower, fresh, baked, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1422,24,F002384,"Celeriac, peeled, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1423,24,F002383,"Celeriac, peeled, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1424,24,F002390,"Celery, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1425,24,F002389,"Celery, fresh, fried, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1426,24,F002884,"Chicory, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1427,24,F002883,"Chicory, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1432,24,F002949,"Choko, peeled, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1433,24,F002948,"Choko, peeled, fresh, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1434,24,F003209,"Corn, fresh on cob, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1435,24,F003200,"Corn, fresh on cob, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1436,24,F003213,"Sweetcorn, fresh or frozen on cob, baked, roasted, fried, stir-fried, grilled or BBQ'd, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1437,24,F003202,"Corn, kernels, purchased frozen, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1438,24,F003201,"Corn, kernels, purchased frozen, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1439,24,F003220,"Corn, kernels, canned in brine, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1440,24,F003319,"Cucumber, common, peeled, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1441,24,F003320,"Cucumber, common, unpeeled, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1442,24,F010995,"Cucumber, Lebanese, peeled, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1443,24,F003321,"Cucumber, Lebanese, unpeeled, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1444,24,F003324,"Cucumber, telegraph, unpeeled, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1445,24,F003761,"Eggplant, unpeeled, fresh, raw",1,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+1446,24,F003753,"Eggplant, unpeeled, fresh, roasted, no added fat",0,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+1447,24,F003784,"Endive, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1448,24,F003820,"Fennel, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1449,24,F003819,"Fennel, fresh, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1450,24,F004193,"Garlic, peeled, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1451,24,F004192,"Garlic, peeled, fresh, fried, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1453,24,F004213,"Ginger, peeled, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1454,24,F004212,"Ginger, peeled, fresh, fried, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1455,24,F004781,"Kale, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1456,24,F004780,"Kale, fried, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1457,24,F004820,"Kohlrabi, peeled, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1458,24,F004819,"Kohlrabi, peeled, fresh, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1459,24,F005164,"Leek, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1460,24,F005163,"Leek, fresh, fried, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1461,24,F005162,"Leek, fresh, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1462,24,F005191,"Lettuce, cos, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1463,24,F005192,"Lettuce, iceberg, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1464,24,F005193,"Lettuce, mignonette, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1465,24,F005513,"Melon, bitter, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1466,24,F005514,"Melon, hairy, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1467,24,F005946,"Mushroom, common, fresh, raw",1,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+1468,24,F005945,"Mushroom, common, fresh, fried, no added fat",0,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+1469,24,F005949,"Mushroom, common, vitamin D enhanced, fresh, raw",1,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+1470,24,F005948,"Mushroom, common, vitamin D enhanced, fresh, fried, no added fat",0,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+1471,24,F006195,"Okra, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1472,24,F006194,"Okra, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1474,24,F006225,"Onion, mature, brown skinned, peeled, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1475,24,F006224,"Onion, mature, brown skinned, peeled, fresh, fried, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1476,24,F009800,"Onion, mature, red skinned, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1477,24,F009820,"Onion, mature, red skinned, peeled, fried, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1478,24,F006243,"Onion, mature, white skinned, peeled, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1479,24,F006250,"Onion, spring, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1480,24,F006249,"Onion, spring, fresh, fried, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1481,24,F006328,"Parsnip, peeled, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1482,24,F006326,"Parsnip, peeled, fresh, baked, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1483,24,F006327,"Parsnip, peeled, fresh, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1484,24,F006536,"Pea, green, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1485,24,F006535,"Pea, green, fresh, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1486,24,F006538,"Pea, green, frozen, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1487,24,F007247,"Potato, coliban, peeled, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1488,24,F007244,"Potato, coliban, peeled, baked, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1489,24,F007245,"Potato, coliban, peeled, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1490,24,F007254,"Potato, desiree, peeled, raw",1,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+1491,24,F007250,"Potato, desiree, peeled, baked, no added fat",0,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+1492,24,F007252,"Potato, desiree, peeled, boiled, drained",0,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+1493,24,F007308,"Potato, new, peeled, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1494,24,F007305,"Potato, new, peeled, baked, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1495,24,F007306,"Potato, new, peeled, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1496,24,F007325,"Potato, pale skin, peeled, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1497,24,F007320,"Potato, pale skin, peeled, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1498,24,F007314,"Potato, pale skin, peeled, baked, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1499,24,F007361,"Potato, pontiac, peeled, raw",1,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+1500,24,F007358,"Potato, pontiac, peeled, baked, no added fat",0,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+1501,24,F007359,"Potato, pontiac, peeled, boiled, drained",0,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+1502,24,F007368,"Potato, red skin, peeled, raw",1,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+1503,24,F007364,"Potato, red skin, peeled, baked, no added fat",0,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+1504,24,F007366,"Potato, red skin, peeled, boiled, drained",0,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+1505,24,F007386,"Potato, sebago, peeled, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1506,24,F007383,"Potato, sebago, peeled, baked, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1507,24,F007384,"Potato, sebago, peeled, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1508,24,F007235,"Potato, chips, regular, fast food outlet, deep fried, blended oil, salted",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1509,24,F007236,"Potato, chips, regular, fast food outlet, deep fried, monounsaturated oil, salted",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1510,24,F007238,"Potato, chips, regular, independent takeaway outlet, deep fried, blended oil, salted",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1511,24,F007242,"Potato, chips, regular, purchased frozen, baked, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1512,24,F007269,"Potato, fries, fast food outlet, deep fried, monounsaturated oil, salted",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1513,24,F007279,"Potato, fries, independent takeaway outlet, deep fried, blended oil, salted",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1514,24,F007411,"Potato, wedges, regular, purchased frozen, baked or roasted, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1515,24,F007535,"Pumpkin, butternut, peeled, fresh, raw",1,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+1516,24,F007533,"Pumpkin, butternut, peeled, fresh, baked, no added fat",0,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+1517,24,F007534,"Pumpkin, butternut, peeled, fresh, boiled, drained",0,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+1518,24,F007540,"Pumpkin, golden nugget, peeled, fresh, raw",1,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+1519,24,F007538,"Pumpkin, golden nugget, peeled, fresh, baked, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1520,24,F007539,"Pumpkin, golden nugget, peeled, fresh, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1521,24,F007545,"Pumpkin, jarrahdale, peeled, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1522,24,F007543,"Pumpkin, jarrahdale, peeled, fresh, baked, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1523,24,F007544,"Pumpkin, jarrahdale, peeled, fresh, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1524,24,F011004,"Pumpkin, kent/jap, peeled, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1525,24,F010998,"Pumpkin, kent/jap, peeled, fresh, boiled, drained, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1526,24,F011005,"Pumpkin, kent/jap, peeled, fresh, baked, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1527,24,F007559,"Pumpkin, Queensland blue, peeled, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1528,24,F007557,"Pumpkin, Queensland blue, peeled, fresh, baked, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1529,24,F007558,"Pumpkin, Queensland blue, peeled, fresh, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1530,24,F007555,"Pumpkin, peeled, fresh, raw",1,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+1531,24,F007553,"Pumpkin, peeled, fresh, baked, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1532,24,F007554,"Pumpkin, peeled, fresh, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1533,24,F007606,"Radish, red skinned, unpeeled, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1534,24,F007608,"Radish, white skinned, peeled, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1535,24,F007712,"Rocket, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1536,24,F008204,"Seaweed, nori, dried",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1537,24,F008203,"Seaweed, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1538,24,F008227,"Shallot, peeled, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1539,24,F008226,"Shallot, peeled, fresh, fried, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1540,24,F008267,"Silverbeet, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1541,24,F008266,"Silverbeet, fresh, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1542,24,F008373,"Snow pea, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1543,24,F008372,"Snow pea, fresh, fried, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1544,24,F008371,"Snow pea, fresh, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1545,24,F008749,"Spinach, baby, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1546,24,F008761,"Spinach, Mature English, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1547,24,F008760,"Spinach, Mature English, fresh, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1548,24,F008763,"Spinach, water, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1549,24,F008803,"Sprout, alfalfa, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1550,24,F008806,"Sprout, bean, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1551,24,F008811,"Squash, button, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1552,24,F008810,"Squash, button, fresh, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1553,24,F008813,"Squash, scallopini, fresh, raw",1,VEGETABLE_LEGUMES,,0,0,1,1,1,1,1,0,1
+1554,24,F008812,"Squash, scallopini, fresh, boiled, drained",0,VEGETABLE_LEGUMES,,0,0,1,1,1,1,1,0,1
+1555,24,F009021,"Swede, peeled, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1556,24,F009020,"Swede, peeled, fresh, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1557,24,F009035,"Sweet potato, orange flesh, peeled, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1558,24,F010942,"Sweet potato, orange flesh, unpeeled, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1559,24,F009033,"Sweet potato, orange flesh, peeled, fresh, baked, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1560,24,F009034,"Sweet potato, orange flesh, peeled, fresh, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1561,24,F010943,"Sweet potato, purple flesh, peeled, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1562,24,F010999,"Sweet potato, purple flesh, peeled, baked, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1563,24,F009037,"Sweet potato, white flesh, peeled or unpeeled, fresh or frozen, baked, roasted, fried, stir-fried, grilled or BBQ'd, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1564,24,F009039,"Sweet potato, white flesh, peeled, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1565,24,F009094,"Taro, peeled, fresh, raw",1,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+1566,24,F009093,"Taro, peeled, fresh, boiled, drained",0,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+1567,24,F009190,"Tomato, cherry, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1568,24,F009193,"Tomato, common, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1569,24,F009208,"Tomato, paste, with added salt",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1570,24,F009206,"Tomato, paste, no added salt",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1571,24,F009209,"Tomato, puree, commercial",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1572,24,F009217,"Tomato, sundried",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1573,24,F009222,"Tomato, whole, canned in tomato juice, undrained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1574,24,F009221,"Tomato, whole, canned in tomato juice, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1575,24,F010071,"Tomato, whole, canned in tomato juice, no added salt, undrained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1576,24,F009340,"Turnip, white, peeled, fresh, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1577,24,F009339,"Turnip, white, peeled, fresh, boiled, no added fat",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1578,24,F009491,"Vine leaf, grape, canned",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1579,24,F009514,"Water chestnut, peeled, canned, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,0,1,1,1
+1580,24,F009532,"Watercress, raw",1,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1581,24,F009604,"Yam, wild harvested, cooked",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1582,24,F009775,"Zucchini, green skin, fresh, unpeeled, raw",1,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+1583,24,F009774,"Zucchini, green skin, fresh, unpeeled, fried, no added fat",0,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+1584,24,F009773,"Zucchini, green skin, fresh, unpeeled, boiled, drained",0,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+1585,24,F009766,"Zucchini, golden, fresh, unpeeled, raw",1,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+1586,24,F009764,"Zucchini, golden, fresh, unpeeled, boiled, drained",0,VEGETABLE_LEGUMES,,0,1,1,0,1,1,1,1,1
+1587,24,F009788,"Mixed leafy greens, pre-packaged, all types",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
+1588,24,F005813,"Mixed vegetables, purchased frozen, carrot, corn & pea/bean, boiled, drained",0,VEGETABLE_LEGUMES,,1,1,1,1,1,1,1,1,1
