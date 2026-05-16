@@ -180,7 +180,7 @@
           </div>
 
           <p v-if="isShowingDemoProfiles" class="text-xs text-muted-foreground mt-3 max-w-2xl">
-            Showing sample child cards for preview. Sign in and add profiles under Child Information to use your own children here.
+            Preview mode: these sample profiles show how the calculator works. Sign in to use your saved child profiles and receive personalised serving guidance.
           </p>
 
           <p
@@ -408,23 +408,48 @@
             <div v-if="additiveSummary" class="grid md:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
               <div class="rounded-2xl border border-[#E5E7EB] bg-[#FAF9F6] p-4">
                 <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Highest added sugar</p>
-                <p class="text-lg font-semibold text-[#2C5F2D] mt-2">{{ additiveSummary.highest_added_sugar?.category || 'N/A' }}</p>
+                <p
+                  class="text-lg font-semibold text-[#2C5F2D] mt-2"
+                  :title="additiveSummary.highest_added_sugar?.category"
+                >
+                  {{ getFriendlyCategoryName(additiveSummary.highest_added_sugar?.category) }}
+                </p>
                 <p class="text-2xl font-bold text-[#111827] mt-1">{{ additiveSummary.highest_added_sugar?.percent ?? 0 }}%</p>
               </div>
+
               <div class="rounded-2xl border border-[#E5E7EB] bg-[#FAF9F6] p-4">
                 <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Highest preservatives</p>
-                <p class="text-lg font-semibold text-[#2C5F2D] mt-2">{{ additiveSummary.highest_preservatives?.category || 'N/A' }}</p>
+                <p
+                  class="text-lg font-semibold text-[#2C5F2D] mt-2"
+                  :title="additiveSummary.highest_preservatives?.category"
+                >
+                  {{ getFriendlyCategoryName(additiveSummary.highest_preservatives?.category) }}
+                </p>
                 <p class="text-2xl font-bold text-[#111827] mt-1">{{ additiveSummary.highest_preservatives?.percent ?? 0 }}%</p>
               </div>
+
               <div class="rounded-2xl border border-[#E5E7EB] bg-[#FAF9F6] p-4">
                 <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Highest colours</p>
-                <p class="text-lg font-semibold text-[#2C5F2D] mt-2">{{ additiveSummary.highest_artificial_colours?.category || 'N/A' }}</p>
+                <p
+                  class="text-lg font-semibold text-[#2C5F2D] mt-2"
+                  :title="additiveSummary.highest_artificial_colours?.category"
+                >
+                  {{ getFriendlyCategoryName(additiveSummary.highest_artificial_colours?.category) }}
+                </p>
                 <p class="text-2xl font-bold text-[#111827] mt-1">{{ additiveSummary.highest_artificial_colours?.percent ?? 0 }}%</p>
               </div>
+
               <div class="rounded-2xl border border-amber-200 bg-amber-50 p-4">
                 <p class="text-xs font-semibold text-amber-800 uppercase tracking-wide">Highest label-check priority</p>
-                <p class="text-lg font-semibold text-amber-950 mt-2">{{ additiveSummary.highest_overall_priority?.category || 'N/A' }}</p>
-                <p class="text-sm text-amber-900 mt-1">{{ additiveSummary.highest_overall_priority?.label_priority || 'No signal' }}</p>
+                <p
+                  class="text-lg font-semibold text-amber-950 mt-2"
+                  :title="additiveSummary.highest_overall_priority?.category"
+                >
+                  {{ getFriendlyCategoryName(additiveSummary.highest_overall_priority?.category) }}
+                </p>
+                <p class="text-sm text-amber-900 mt-1">
+                  {{ simplifyLabelPriority(additiveSummary.highest_overall_priority?.label_priority) }}
+                </p>
               </div>
             </div>
 
@@ -432,12 +457,13 @@
               <p class="text-sm text-muted-foreground leading-relaxed">{{ additiveGuide.disclaimer }}</p>
             </div>
 
+            <!-- Desktop Table -->
             <div class="hidden md:block overflow-x-auto rounded-xl border border-[#E5E7EB]">
               <table class="w-full text-sm min-w-[760px] table-fixed">
                 <thead>
                   <tr class="bg-[#FAF9F6]">
                     <th scope="col" class="px-3 py-3 text-left font-semibold text-[#374151] w-[22%]">Category</th>
-                    <th scope="col" class="px-3 py-3 text-left font-semibold text-[#374151] w-[22%]">Label priority</th>
+                    <th scope="col" class="px-3 py-3 text-left font-semibold text-[#374151] w-[18%]">Label priority</th>
                     <th
                       v-for="col in additiveColumns"
                       :key="col.key"
@@ -451,15 +477,33 @@
                 <tbody>
                   <tr v-for="row in additiveRows" :key="row.category" class="border-t border-[#E5E7EB]">
                     <td class="px-3 py-3 font-medium text-gray-800 align-middle">
-                      {{ row.category }}
-                      <p class="text-xs text-muted-foreground mt-1">{{ row.total_products }} products</p>
+                      <div :title="row.category">
+                        <p class="text-[#111827] font-semibold">
+                          {{ getFriendlyCategoryName(row.category) }}
+                        </p>
+
+                        <p
+                          v-if="getShortCategoryDescription(row.category)"
+                          class="text-xs text-muted-foreground mt-1 leading-snug"
+                        >
+                          {{ getShortCategoryDescription(row.category) }}
+                        </p>
+
+                        <p class="text-xs text-muted-foreground mt-1">
+                          {{ row.total_products }} products
+                        </p>
+                      </div>
                     </td>
+
                     <td class="px-3 py-3 align-middle">
                       <div class="rounded-xl bg-[#FAF9F6] border border-[#E5E7EB] p-3">
-                        <p class="font-semibold text-[#2C5F2D]">{{ row.label_priority }}</p>
+                        <p class="font-semibold text-[#2C5F2D]">
+                          {{ simplifyLabelPriority(row.label_priority) }}
+                        </p>
                         <p class="text-xs text-muted-foreground mt-1">Score: {{ row.risk_score }}</p>
                       </div>
                     </td>
+
                     <td v-for="col in additiveColumns" :key="col.key" class="px-3 py-2 align-middle text-center">
                       <div
                         :class="[
@@ -480,15 +524,30 @@
               </table>
             </div>
 
+            <!-- Mobile Cards -->
             <div class="md:hidden space-y-4">
               <article v-for="row in additiveRows" :key="row.category" class="rounded-2xl border border-[#E5E7EB] bg-[#FAF9F6] p-4">
                 <div class="flex items-start justify-between gap-3 mb-3">
                   <div>
-                    <h3 class="font-semibold text-[#2C5F2D]">{{ row.category }}</h3>
-                    <p class="text-xs text-muted-foreground">{{ row.total_products }} products</p>
+                    <h3 class="font-semibold text-[#2C5F2D]" :title="row.category">
+                      {{ getFriendlyCategoryName(row.category) }}
+                    </h3>
+
+                    <p
+                      v-if="getShortCategoryDescription(row.category)"
+                      class="text-xs text-muted-foreground mt-0.5 leading-snug"
+                    >
+                      {{ getShortCategoryDescription(row.category) }}
+                    </p>
+
+                    <p class="text-xs text-muted-foreground mt-1">{{ row.total_products }} products</p>
                   </div>
-                  <span class="text-xs rounded-full bg-white border border-[#D6E7DC] px-3 py-1 text-[#2C5F2D]">{{ row.label_priority }}</span>
+
+                  <span class="text-xs rounded-full bg-white border border-[#D6E7DC] px-3 py-1 text-[#2C5F2D]">
+                    {{ simplifyLabelPriority(row.label_priority) }}
+                  </span>
                 </div>
+
                 <div class="space-y-2">
                   <div
                     v-for="col in additiveColumns"
@@ -501,7 +560,10 @@
                     </span>
                   </div>
                 </div>
-                <p class="text-xs text-muted-foreground mt-3 leading-relaxed">{{ row.parent_tip }}</p>
+
+                <p class="text-xs text-muted-foreground mt-3 leading-relaxed">
+                  {{ getSimpleAdditiveTip(row) }}
+                </p>
               </article>
             </div>
 
@@ -1227,6 +1289,85 @@ const loadAdditiveAwareness = async () => {
   } finally {
     isLoadingAdditive.value = false;
   }
+};
+
+const getFriendlyCategoryName = (category = '') => {
+  const text = String(category).trim();
+  const lower = text.toLowerCase();
+
+  const rules = [
+    { keywords: ['ice creams', 'ice cream'], label: 'Ice creams' },
+    { keywords: ['breakfast cereals'], label: 'Breakfast cereals' },
+    { keywords: ['candies', 'confectioneries'], label: 'Candies' },
+    { keywords: ['biscuits'], label: 'Biscuits' },
+    { keywords: ['crackers'], label: 'Crackers' },
+    { keywords: ['breads'], label: 'Breads' },
+    { keywords: ['yogurts', 'yoghurt', 'yoghurts'], label: 'Yogurts' },
+    { keywords: ['chocolate candies', 'bars covered with chocolate', 'chocolate'], label: 'Chocolate bars' },
+    { keywords: ['honeys', 'sweeteners', 'sweet spreads'], label: 'Honey / sweet spreads' },
+    { keywords: ['condiments'], label: 'Condiments' },
+    { keywords: ['baking'], label: 'Baking products' },
+    { keywords: ['snacks'], label: 'Snacks' },
+  ];
+
+  const matched = rules.find((rule) =>
+    rule.keywords.some((keyword) => lower.includes(keyword)),
+  );
+
+  if (matched) return matched.label;
+
+  const parts = text
+    .split(',')
+    .map((part) => part.trim())
+    .filter(Boolean);
+
+  return parts[parts.length - 1] || 'Other category';
+};
+
+const getShortCategoryDescription = (category = '') => {
+  const text = String(category).trim();
+  const parts = text
+    .split(',')
+    .map((part) => part.trim())
+    .filter(Boolean);
+
+  if (parts.length <= 1) return '';
+
+  return parts.slice(0, -1).slice(-2).join(' / ');
+};
+
+const getSimpleAdditiveTip = (row) => {
+  const name = getFriendlyCategoryName(row.category);
+
+  const sugar = row.added_sugar?.percent || 0;
+  const preservatives = row.preservatives?.percent || 0;
+  const colours = row.artificial_colours?.percent || 0;
+
+  const highest = Math.max(sugar, preservatives, colours);
+
+  if (highest === sugar && sugar >= 60) {
+    return `${name} often contains added sugar in the available records. Compare labels and choose lower-sugar options when possible.`;
+  }
+
+  if (highest === colours && colours >= 40) {
+    return `${name} often contains artificial colours. Check the ingredient list before choosing regular lunchbox items.`;
+  }
+
+  if (highest === preservatives && preservatives >= 30) {
+    return `${name} may need closer preservative checking. Compare simpler ingredient lists when possible.`;
+  }
+
+  return `${name} shows a lower additive signal, but it is still useful to compare labels.`;
+};
+
+const simplifyLabelPriority = (priority = '') => {
+  const text = String(priority).toLowerCase();
+
+  if (text.includes('high')) return 'High priority';
+  if (text.includes('moderate')) return 'Moderate';
+  if (text.includes('low')) return 'Low priority';
+
+  return priority || 'No signal';
 };
 
 function heatCellClass(level) {

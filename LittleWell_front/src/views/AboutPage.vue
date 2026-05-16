@@ -1,33 +1,7 @@
 <template>
   <div class="min-h-screen bg-white">
-    <!-- Navigation Bar -->
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm">
-      <div class="container mx-auto px-6 max-w-6xl">
-        <div class="flex items-center justify-between h-16">
-          <!-- Logo -->
-          <div
-            class="flex items-center cursor-pointer"
-            @click="goToHome"
-          >
-            <img
-              :src="logoUrl"
-              alt="LittleHelp logo"
-              class="h-10 w-auto object-contain"
-            />
-          </div>
-
-          <!-- Back Button -->
-          <button
-            @click="goToHome"
-            type="button"
-            class="inline-flex items-center px-4 py-2 text-[#2C5F2D] hover:bg-[#A8D5BA]/10 rounded-lg transition-colors"
-          >
-            <ArrowLeftIcon class="w-4 h-4 mr-2" />
-            Back to Home
-          </button>
-        </div>
-      </div>
-    </nav>
+    <!-- Use shared global navigation bar -->
+    <AppNavbar />
 
     <!-- Main Content -->
     <div class="pt-16">
@@ -57,7 +31,7 @@
 
               <div class="mt-8 flex flex-col sm:flex-row gap-3">
                 <button
-                  @click="goToHome"
+                  @click="goToStartPlanning"
                   type="button"
                   class="bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-xl px-8 py-3 font-semibold transition-colors shadow-sm"
                 >
@@ -65,7 +39,7 @@
                 </button>
 
                 <button
-                  @click="router.push('/quick-start')"
+                  @click="goToQuickStart"
                   type="button"
                   class="bg-white hover:bg-[#FAF9F6] text-[#2C5F2D] border border-[#A8D5BA] rounded-xl px-8 py-3 font-semibold transition-colors"
                 >
@@ -358,7 +332,7 @@
           </p>
 
           <button
-            @click="goToHome"
+            @click="goToStartPlanning"
             type="button"
             class="bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-xl px-10 py-4 text-lg font-semibold transition-colors shadow-sm"
           >
@@ -372,6 +346,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
+import AppNavbar from '../components/AppNavbar.vue';
 import logoUrl from '../assets/littlehelp-logo.jpg';
 import {
   Heart as HeartIcon,
@@ -380,7 +355,6 @@ import {
   CheckCircle as CheckCircleIcon,
   Shield as ShieldIcon,
   Sparkles as SparklesIcon,
-  ArrowLeft as ArrowLeftIcon,
   Leaf as LeafIcon,
   BookOpen as BookOpenIcon,
   CalendarDays as CalendarDaysIcon,
@@ -388,8 +362,12 @@ import {
 
 const router = useRouter();
 
-const goToHome = () => {
-  router.push('/');
+const goToStartPlanning = () => {
+  router.push('/child-profile');
+};
+
+const goToQuickStart = () => {
+  router.push('/quick-start');
 };
 </script>
 
