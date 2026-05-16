@@ -1,12 +1,7 @@
 <template>
   <footer
-    class="relative bg-[#FAF9F6] border-t border-gray-200 pt-12 sm:pt-16 pb-10 sm:pb-12 overflow-visible"
+    class="relative bg-[#F4F1EA] border-t border-[#D8D2C4] shadow-[0_-8px_24px_rgba(44,95,45,0.06)] pt-12 sm:pt-16 pb-10 sm:pb-12"
   >
-    <div
-      class="absolute -top-24 left-0 right-0 h-24 bg-gradient-to-t from-[#FAF9F6] via-[#FAF9F6]/75 to-transparent pointer-events-none z-30"
-      aria-hidden="true"
-    ></div>
-
     <div class="container mx-auto px-4 sm:px-6 max-w-6xl relative z-10">
       <div class="grid gap-10 md:grid-cols-[1.4fr,1fr,1fr]">
         <!-- Brand -->
@@ -112,7 +107,7 @@
       </div>
 
       <div
-        class="mt-10 pt-6 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground"
+        class="mt-10 pt-6 border-t border-[#D8D2C4] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground"
       >
         <p>© 2026 LittleHelp. All rights reserved.</p>
 
@@ -178,7 +173,9 @@ const goProtected = async (path) => {
 .footer-link {
   display: block;
   color: #2C5F2D;
-  transition: color 0.2s ease, transform 0.2s ease;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .footer-link:hover {

@@ -688,8 +688,6 @@
         </div>
       </section>
     </main>
-
-    <AppFooter />
   </div>
 </template>
 
@@ -705,7 +703,6 @@ import {
 } from 'lucide-vue-next';
 import { getChildren, deleteChild } from '../services/api';
 import { useAuthStore } from '../stores/auth';
-import AppFooter from '../components/AppFooter.vue';
 
 const router = useRouter();
 const authStore = useAuthStore();
