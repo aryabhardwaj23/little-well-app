@@ -163,7 +163,13 @@ def get_cook_title(frequency: int, index: int) -> str:
     titles = {
         2: ["Cook on Sunday", "Cook on Wednesday"],
         3: ["Cook on Sunday", "Cook on Tuesday", "Cook on Thursday"],
-        5: ["Cook on Monday", "Cook on Tuesday", "Cook on Wednesday", "Cook on Thursday", "Cook on Friday"],
+        5: [
+            "Cook on Monday",
+            "Cook on Tuesday",
+            "Cook on Wednesday",
+            "Cook on Thursday",
+            "Cook on Friday",
+        ],
     }
 
     title_list = titles.get(frequency, [f"Cook Session {index + 1}"])
@@ -174,14 +180,47 @@ def get_cook_title(frequency: int, index: int) -> str:
     return f"Cook Session {index + 1}"
 
 
-def get_prep_time(frequency: int) -> str:
+def get_prep_time(frequency: int, index: int) -> str:
+    """
+    Return varied prep time text for UI.
+    This prevents every generated batch from showing the same prep value.
+    """
     if frequency == 5:
-        return "20 mins"
+        times = ["20 mins", "22 mins", "18 mins", "25 mins", "20 mins"]
+    elif frequency == 3:
+        times = ["30 mins", "35 mins", "28 mins"]
+    else:
+        times = ["40 mins", "35 mins"]
 
-    if frequency == 3:
-        return "30 mins"
+    return times[index % len(times)]
 
-    return "40 mins"
+
+def get_storage_tip(frequency: int, index: int) -> str:
+    """
+    Return varied storage tips for UI.
+    This prevents every generated batch from showing the same storage message.
+    """
+    if frequency == 5:
+        tips = [
+            "Prepare fresh and keep chilled until lunch.",
+            "Store in an airtight container and keep cold with an ice pack.",
+            "Pack wet ingredients separately to keep the lunchbox fresh.",
+            "Refrigerate overnight and avoid leaving it at room temperature.",
+            "Use a sealed lunchbox and eat within the school day.",
+        ]
+    elif frequency == 3:
+        tips = [
+            "Cook in batch, portion safely, and store in the fridge.",
+            "Keep refrigerated and use within two school days.",
+            "Store sauce or dressing separately to avoid soggy food.",
+        ]
+    else:
+        tips = [
+            "Batch cook, portion safely, and refrigerate.",
+            "Use airtight containers and reheat only when needed.",
+        ]
+
+    return tips[index % len(tips)]
 
 
 def get_season_name_from_id(season_id: int | None) -> str:
@@ -378,6 +417,7 @@ async def generate_weekly_plan(
 
     used_recipe_ids = set()
     batches = []
+    season_name = get_season_name_from_id(payload.season_id)
 
     for index in range(frequency):
         lunchbox = all_lunchboxes[index % len(all_lunchboxes)]
@@ -390,20 +430,14 @@ async def generate_weekly_plan(
         if recipe.get("id"):
             used_recipe_ids.add(str(recipe["id"]))
 
-        season_name = get_season_name_from_id(payload.season_id)
-
         batches.append(
             {
                 "id": f"batch-{index + 1}",
                 "cookDay": get_cook_title(frequency, index),
                 "coverDays": get_cover_text(frequency, index),
-                "prepTime": get_prep_time(frequency),
+                "prepTime": get_prep_time(frequency, index),
                 "seasonalNote": f"{season_name} ingredients are prioritised where available.",
-                "storageTip": (
-                    "Prepare fresh and keep chilled until lunch."
-                    if frequency == 5
-                    else "Cook in batch, portion safely, and store in the fridge."
-                ),
+                "storageTip": get_storage_tip(frequency, index),
                 "lunchbox": lunchbox,
                 "recipe": recipe,
             }
@@ -484,7 +518,6 @@ def create_weekly_plan(
                 cover_days=meal.cover_days,
                 meal_title=meal.meal_title,
 
-                # Save complete lunchbox items into weekly_plan_meal.lunchbox_items JSON.
                 lunchbox_items=[
                     pydantic_to_dict(item)
                     for item in meal.lunchbox_items
@@ -654,7 +687,6 @@ def duplicate_weekly_plan(
                 cover_days=meal.cover_days,
                 meal_title=meal.meal_title,
 
-                # Copy saved lunchbox items when duplicating a plan.
                 lunchbox_items=meal.lunchbox_items or [],
 
                 servings=meal.servings,
