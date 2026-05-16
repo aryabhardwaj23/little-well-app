@@ -66,12 +66,23 @@
           v-show="activeHubTab === 'serving'"
           class="bg-white rounded-3xl border border-[#E8E4DC] shadow-sm p-6 md:p-10"
         >
-          <h2 class="text-2xl md:text-3xl text-[#2C5F2D] mb-1">
-            Serving Size Calculator
-          </h2>
-          <p class="text-muted-foreground mb-8 max-w-2xl">
-            Choose one of your child profiles, then review guideline daily serves matched to their age band.
-          </p>
+          <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-5 mb-8">
+            <div>
+              <h2 class="text-2xl md:text-3xl text-[#2C5F2D] mb-1">
+                Serving Size Calculator
+              </h2>
+              <p class="text-muted-foreground max-w-2xl">
+                Choose one of your child profiles, then review age-based daily serves with personalised guidance.
+              </p>
+            </div>
+
+            <div class="rounded-2xl bg-[#F8F5EC] border border-[#E8E4DC] px-4 py-3 text-sm max-w-sm">
+              <p class="font-semibold text-[#2C5F2D] mb-1">Personalised calculation</p>
+              <p class="text-muted-foreground leading-relaxed">
+                Base targets come from age-band serving data. Notes are adjusted using saved nutrition focus, allergies, and dietary needs.
+              </p>
+            </div>
+          </div>
 
           <p class="text-sm font-semibold text-[#2C5F2D] uppercase tracking-wide mb-3">
             Step 1 — Select your child
@@ -103,12 +114,12 @@
           </div>
 
           <div
-            v-else-if="isLoggedIn && isLoadingProfiles"
+            v-else-if="isLoggedIn && (isLoadingProfiles || isLoadingServingTargets)"
             class="p-4 rounded-xl border bg-[#FAF9F6] text-center text-muted-foreground text-sm"
             aria-live="polite"
             aria-busy="true"
           >
-            Loading your child profiles…
+            Loading your child profiles and serving targets…
           </div>
 
           <div v-else class="flex gap-4 overflow-x-auto pb-2 -mx-1 px-1 snap-x snap-mandatory">
@@ -146,10 +157,24 @@
               </p>
 
               <p
+                v-if="p.dietaryRestriction"
+                class="text-xs text-[#1B4965] bg-[#CDE7F0]/40 rounded-lg px-2 py-1 mt-2"
+              >
+                {{ p.dietaryRestriction }}
+              </p>
+
+              <p
                 v-if="p.isDemo"
                 class="text-[10px] uppercase tracking-wide text-muted-foreground mt-2"
               >
                 Demo profile
+              </p>
+
+              <p
+                v-else
+                class="text-[10px] uppercase tracking-wide text-[#2C5F2D] mt-2"
+              >
+                Saved profile
               </p>
             </button>
           </div>
@@ -158,10 +183,26 @@
             Showing sample child cards for preview. Sign in and add profiles under Child Information to use your own children here.
           </p>
 
+          <p
+            v-if="servingTargetError"
+            class="text-xs text-red-600 mt-3 max-w-2xl"
+          >
+            {{ servingTargetError }}
+          </p>
+
           <template v-if="selectedChild && dailyServeRows.length">
-            <p class="text-sm font-semibold text-[#2C5F2D] uppercase tracking-wide mt-10 mb-4">
-              Step 2 — Recommended daily serves
-            </p>
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mt-10 mb-4">
+              <p class="text-sm font-semibold text-[#2C5F2D] uppercase tracking-wide">
+                Step 2 — Recommended daily serves
+              </p>
+
+              <div
+                class="inline-flex items-center gap-2 rounded-full border border-[#D6E7DC] bg-[#F8F5EC] px-3 py-1 text-xs text-[#2C5F2D] w-fit"
+              >
+                <Info class="w-3.5 h-3.5" aria-hidden="true" />
+                <span>{{ servingDataSourceLabel }}</span>
+              </div>
+            </div>
 
             <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
               <div
@@ -172,31 +213,71 @@
                 <div class="w-10 h-10 rounded-full bg-white border border-[#D6E7DC] flex items-center justify-center mb-3 text-[#2C5F2D]" aria-hidden="true">
                   <component :is="row.icon" class="w-5 h-5" />
                 </div>
+
                 <h3 class="font-semibold text-[#2C5F2D]">{{ row.group }}</h3>
+
                 <p class="text-2xl font-bold text-[#111827] mt-1">
-                  {{ row.serves }}
+                  {{ formatServe(row.serves) }}
                   <span class="text-sm font-normal text-muted-foreground">serves</span>
                 </p>
+
+                <p class="text-sm font-semibold text-[#2C5F2D] mt-1">
+                  ≈ {{ row.estimatedGrams }} g/day
+                </p>
+
                 <p class="text-xs text-muted-foreground mt-2 leading-snug flex-1">
                   {{ row.example }}
+                </p>
+
+                <p
+                  v-if="row.personalisedNote"
+                  class="mt-3 rounded-xl bg-white border border-[#D6E7DC] px-3 py-2 text-xs text-[#2C5F2D] leading-relaxed"
+                >
+                  {{ row.personalisedNote }}
                 </p>
               </div>
             </div>
 
             <div class="mt-8 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-[#2C5F2D] text-white px-5 py-4">
               <span class="text-sm font-medium flex items-center gap-2">
-                Total daily target (illustrative)
-                <span class="inline-flex" title="Educational estimate based on age band; not medical advice.">
-                  <Info class="w-4 h-4 opacity-80" aria-label="Educational estimate based on age band; not medical advice." />
+                Total daily target
+                <span class="inline-flex" title="Educational serving target based on age band; not medical advice.">
+                  <Info class="w-4 h-4 opacity-80" aria-label="Educational serving target based on age band; not medical advice." />
                 </span>
               </span>
-              <span class="text-lg font-semibold tabular-nums">
-                {{ totalDailyGrams }} g across all food groups
+              <span class="text-lg font-semibold tabular-nums text-right">
+                {{ totalDailyServes }} serves
+                <span v-if="totalEstimatedGrams">
+                  · ≈ {{ totalEstimatedGrams }} g/day
+                </span>
               </span>
             </div>
 
+            <div
+              v-if="personalisedFocusNotes.length"
+              class="mt-8 rounded-2xl border border-[#D6E7DC] bg-[#F8F5EC]/80 p-5"
+            >
+              <p class="text-sm font-semibold text-[#2C5F2D] uppercase tracking-wide mb-3">
+                Step 3 — Personalised notes for {{ selectedChild.name }}
+              </p>
+
+              <ul class="space-y-2 text-sm text-muted-foreground leading-relaxed">
+                <li
+                  v-for="note in personalisedFocusNotes"
+                  :key="note.label + note.message"
+                  class="flex gap-2"
+                >
+                  <span class="text-[#2C5F2D] mt-0.5" aria-hidden="true">•</span>
+                  <span>
+                    <strong class="text-[#2C5F2D]">{{ note.label }}:</strong>
+                    {{ note.message }}
+                  </span>
+                </li>
+              </ul>
+            </div>
+
             <p class="text-xs text-muted-foreground mt-3">
-              Figures follow general Australian-style children's guidelines for the selected age band. Adjust with your clinician for medical diets.
+              Serve targets are based on the selected child's age band. Gram values are estimated using standard grams per serve by food group, because actual grams can vary by food type and preparation method.
             </p>
           </template>
 
@@ -351,7 +432,6 @@
               <p class="text-sm text-muted-foreground leading-relaxed">{{ additiveGuide.disclaimer }}</p>
             </div>
 
-            <!-- Desktop Table -->
             <div class="hidden md:block overflow-x-auto rounded-xl border border-[#E5E7EB]">
               <table class="w-full text-sm min-w-[760px] table-fixed">
                 <thead>
@@ -400,7 +480,6 @@
               </table>
             </div>
 
-            <!-- Mobile Cards -->
             <div class="md:hidden space-y-4">
               <article v-for="row in additiveRows" :key="row.category" class="rounded-2xl border border-[#E5E7EB] bg-[#FAF9F6] p-4">
                 <div class="flex items-start justify-between gap-3 mb-3">
@@ -430,7 +509,6 @@
               No additive records are available yet.
             </div>
 
-            <!-- How to read + tips -->
             <div class="grid lg:grid-cols-2 gap-6 mt-8">
               <div class="rounded-2xl border border-[#E5E7EB] bg-white p-5">
                 <p class="text-sm font-semibold text-[#2C5F2D] uppercase tracking-wide mb-3">How to read this</p>
@@ -474,7 +552,11 @@ import {
   ChevronRight,
   AlertTriangle,
 } from 'lucide-vue-next';
-import { getChildren, getKnowledgeAdditiveAwareness } from '../services/api';
+import {
+  getChildren,
+  getKnowledgeAdditiveAwareness,
+  getKnowledgeChildrenServes,
+} from '../services/api';
 import { useAuthStore } from '../stores/auth';
 
 const authStore = useAuthStore();
@@ -488,7 +570,7 @@ const hubTabs = [
   {
     id: 'serving',
     label: 'Serving Size Calculator',
-    hint: 'Pick a child profile, then see guideline serves for vegetables, fruit, grains, protein and dairy—matched to their age band.',
+    hint: 'Pick a child profile, then see age-based serving targets with personalised notes from saved child information.',
   },
   {
     id: 'guide',
@@ -514,19 +596,52 @@ const profiles = ref([]);
 const isLoadingProfiles = ref(false);
 const selectedChildId = ref(null);
 
+const servingTargets = ref({});
+const isLoadingServingTargets = ref(false);
+const servingTargetError = ref('');
+
 const USE_STEP1_LOGIN_GATE = false;
 
 const MOCK_STEP1_CHILDREN = [
-  { id: 'demo-emma', name: 'Emma', ageGroup: '7-9 years', allergies: [], isDemo: true },
-  { id: 'demo-oliver', name: 'Oliver', ageGroup: '5-6 years', allergies: ['Peanuts'], isDemo: true },
-  { id: 'demo-maya', name: 'Maya', ageGroup: '10-12 years', allergies: [], isDemo: true },
+  {
+    id: 'demo-emma',
+    name: 'Emma',
+    ageGroup: '7-9 years',
+    allergies: [],
+    nutritionFocus: ['calcium', 'variety'],
+    dietaryRestriction: '',
+    restrictionFlags: {},
+    isDemo: true,
+  },
+  {
+    id: 'demo-oliver',
+    name: 'Oliver',
+    ageGroup: '5-6 years',
+    allergies: ['Peanuts'],
+    nutritionFocus: ['iron'],
+    dietaryRestriction: '',
+    restrictionFlags: {},
+    isDemo: true,
+  },
+  {
+    id: 'demo-maya',
+    name: 'Maya',
+    ageGroup: '10-12 years',
+    allergies: ['Milk'],
+    nutritionFocus: ['vitamin_d'],
+    dietaryRestriction: 'Dairy-free',
+    restrictionFlags: { excludes_dairy: true },
+    isDemo: true,
+  },
 ];
 
 const step1Profiles = computed(() => {
   if (USE_STEP1_LOGIN_GATE && !isLoggedIn.value) return [];
+
   if (isLoggedIn.value && profiles.value.length > 0) {
     return profiles.value.map((p) => ({ ...p, isDemo: false }));
   }
+
   return MOCK_STEP1_CHILDREN;
 });
 
@@ -536,6 +651,17 @@ const isShowingDemoProfiles = computed(() => {
 });
 
 const allowedAgeGroups = ['5-6 years', '7-9 years', '10-12 years'];
+
+const allergenIdToName = {
+  47: 'Peanuts',
+  40: 'Tree nuts',
+  16: 'Milk',
+  18: 'Eggs',
+  24: 'Wheat',
+  50: 'Soy',
+  22: 'Fish',
+  15: 'Shellfish',
+};
 
 const normalizeAgeGroup = (ageGroup) => {
   const mapping = {
@@ -556,12 +682,44 @@ const normalizeAgeGroup = (ageGroup) => {
   return mapping[ageGroup] || '';
 };
 
+const isActiveStatus = (value) => {
+  return value === 1 || value === '1' || value === true;
+};
+
 const mapAllergiesToNames = (allergies) => {
   if (!Array.isArray(allergies)) return [];
 
-  return allergies.map((a) =>
-    typeof a === 'string' && Number.isNaN(Number(a)) ? a : `Allergen #${a}`,
-  );
+  return allergies.map((allergy) => {
+    if (typeof allergy === 'string' && Number.isNaN(Number(allergy))) {
+      return allergy;
+    }
+
+    return allergenIdToName[Number(allergy)] || `Allergen #${allergy}`;
+  });
+};
+
+const mapNutritionFocus = (child) => {
+  const focus = [];
+
+  if (isActiveStatus(child.iron_status)) focus.push('iron');
+  if (isActiveStatus(child.calcium_status)) focus.push('calcium');
+  if (isActiveStatus(child.vitamin_d_status)) focus.push('vitamin_d');
+  if (isActiveStatus(child.variety_status)) focus.push('variety');
+
+  return focus;
+};
+
+const mapRestrictionFlags = (child) => {
+  return {
+    excludes_meat: isActiveStatus(child.excludes_meat),
+    excludes_fish: isActiveStatus(child.excludes_fish),
+    excludes_dairy: isActiveStatus(child.excludes_dairy),
+    excludes_egg: isActiveStatus(child.excludes_egg),
+    excludes_pork: isActiveStatus(child.excludes_pork),
+    excludes_shellfish: isActiveStatus(child.excludes_shellfish),
+    excludes_gluten: isActiveStatus(child.excludes_gluten),
+    excludes_nuts: isActiveStatus(child.excludes_nuts),
+  };
 };
 
 const mapChildToProfile = (child) => {
@@ -572,6 +730,9 @@ const mapChildToProfile = (child) => {
     name: child.child_name,
     ageGroup: normalizedAgeGroup || child.age_band || '',
     allergies: mapAllergiesToNames(child.allergies),
+    nutritionFocus: mapNutritionFocus(child),
+    dietaryRestriction: child.restriction_name || '',
+    restrictionFlags: mapRestrictionFlags(child),
     isSupportedAge: allowedAgeGroups.includes(normalizedAgeGroup),
   };
 };
@@ -592,16 +753,49 @@ const loadProfiles = async () => {
       selectedChildId.value = profiles.value[0].id;
     }
   } catch (e) {
-    console.error(e);
+    console.error('Failed to load child profiles:', e);
     profiles.value = [];
   } finally {
     isLoadingProfiles.value = false;
   }
 };
 
+const loadServingTargets = async () => {
+  if (!isLoggedIn.value) {
+    servingTargets.value = {};
+    servingTargetError.value = '';
+    return;
+  }
+
+  try {
+    isLoadingServingTargets.value = true;
+    servingTargetError.value = '';
+
+    const data = await getKnowledgeChildrenServes();
+    const children = Array.isArray(data.children) ? data.children : [];
+
+    servingTargets.value = children.reduce((acc, child) => {
+      acc[String(child.child_id)] = child;
+      return acc;
+    }, {});
+  } catch (error) {
+    console.error('Failed to load serving targets:', error);
+    servingTargetError.value =
+      error.message || 'Failed to load serving size data.';
+    servingTargets.value = {};
+  } finally {
+    isLoadingServingTargets.value = false;
+  }
+};
+
 const selectedChild = computed(() =>
   step1Profiles.value.find((p) => p.id === selectedChildId.value) || null,
 );
+
+const selectedServingTarget = computed(() => {
+  if (!selectedChildId.value) return null;
+  return servingTargets.value[String(selectedChildId.value)] || null;
+});
 
 const ageBandKey = computed(() => {
   const g = selectedChild.value?.ageGroup || '';
@@ -610,35 +804,337 @@ const ageBandKey = computed(() => {
   return 'older';
 });
 
+const foodGroupDisplayMap = {
+  vegetables: {
+    label: 'Vegetables',
+    icon: Carrot,
+    example: 'e.g. ½ cup cooked vegetables or 1 cup salad',
+    gramsPerServe: 75,
+  },
+  fruit: {
+    label: 'Fruit',
+    icon: Apple,
+    example: 'e.g. 1 medium piece or 1 cup diced fruit',
+    gramsPerServe: 150,
+  },
+  grains: {
+    label: 'Grains',
+    icon: Wheat,
+    example: 'e.g. 1 slice bread or ½ cup cooked rice',
+    gramsPerServe: 40,
+  },
+  protein: {
+    label: 'Protein',
+    icon: Drumstick,
+    example: 'e.g. lean meat, eggs, beans, tofu, or fish',
+    gramsPerServe: 65,
+  },
+  dairy: {
+    label: 'Dairy / Alternatives',
+    icon: Milk,
+    example: 'e.g. milk, yoghurt, cheese, or fortified alternatives',
+    gramsPerServe: 250,
+  },
+};
+
+const normaliseFoodGroupKey = (name = '') => {
+  const lower = String(name).toLowerCase();
+
+  if (lower.includes('vegetable') || lower.includes('legume')) return 'vegetables';
+  if (lower.includes('fruit')) return 'fruit';
+  if (lower.includes('grain') || lower.includes('cereal')) return 'grains';
+  if (
+    lower.includes('protein') ||
+    lower.includes('lean meat') ||
+    lower.includes('meat') ||
+    lower.includes('egg') ||
+    lower.includes('tofu') ||
+    lower.includes('nut') ||
+    lower.includes('seed')
+  ) {
+    return 'protein';
+  }
+  if (
+    lower.includes('dairy') ||
+    lower.includes('milk') ||
+    lower.includes('cheese') ||
+    lower.includes('yoghurt') ||
+    lower.includes('yogurt')
+  ) {
+    return 'dairy';
+  }
+
+  return lower;
+};
+
+const hasAllergy = (keyword) => {
+  const allergies = selectedChild.value?.allergies || [];
+  return allergies.some((item) =>
+    String(item).toLowerCase().includes(keyword.toLowerCase()),
+  );
+};
+
+const hasNutritionFocus = (focus) => {
+  return selectedChild.value?.nutritionFocus?.includes(focus);
+};
+
+const hasRestriction = (flag) => {
+  return Boolean(selectedChild.value?.restrictionFlags?.[flag]);
+};
+
+const buildGroupPersonalisedNote = (groupKey) => {
+  if (!selectedChild.value) return '';
+
+  if (groupKey === 'dairy') {
+    if (hasAllergy('milk') || hasRestriction('excludes_dairy')) {
+      return 'Milk or dairy restriction detected. Choose safe calcium-fortified alternatives instead of regular dairy.';
+    }
+
+    if (hasNutritionFocus('calcium') || hasNutritionFocus('vitamin_d')) {
+      return 'This profile has calcium or vitamin D support selected. Prioritise dairy or fortified alternatives when suitable.';
+    }
+  }
+
+  if (groupKey === 'protein') {
+    if (hasAllergy('peanut') || hasAllergy('tree nuts') || hasRestriction('excludes_nuts')) {
+      return 'Nut allergy or nut restriction detected. Avoid nut-based snacks and choose safe protein options such as egg, tuna, chicken, beans, lentils, or tofu.';
+    }
+
+    if (hasRestriction('excludes_meat')) {
+      return 'This profile avoids meat. Try beans, lentils, tofu, eggs, yoghurt, or other suitable protein options.';
+    }
+
+    if (hasNutritionFocus('iron')) {
+      return 'Iron support selected. Include iron-rich protein options such as lean meat, eggs, beans, lentils, tofu, or fortified grains.';
+    }
+  }
+
+  if (groupKey === 'grains') {
+    if (hasRestriction('excludes_gluten') || hasAllergy('wheat')) {
+      return 'Gluten or wheat restriction detected. Choose suitable grain options such as rice, corn, quinoa, or gluten-free bread.';
+    }
+  }
+
+  if (groupKey === 'vegetables') {
+    if (hasNutritionFocus('variety')) {
+      return 'Food variety support selected. Try rotating colours and textures across the week.';
+    }
+  }
+
+  if (groupKey === 'fruit') {
+    if (hasNutritionFocus('variety')) {
+      return 'Use different fruit colours across the week to support variety and acceptance.';
+    }
+  }
+
+  return '';
+};
+
+const mapBackendServeRow = (row) => {
+  const key = normaliseFoodGroupKey(row.food_group_name);
+  const display = foodGroupDisplayMap[key] || {
+    label: row.food_group_name || 'Food group',
+    icon: Info,
+    example: row.example || 'Use this as a general daily serving guide.',
+    gramsPerServe: 100,
+  };
+
+  const serves = Number(row.recommended_serves || 0);
+  const gramsPerServe = Number(row.grams_per_serve || display.gramsPerServe || 100);
+  const estimatedGrams = Number(row.estimated_grams || Math.round(serves * gramsPerServe));
+
+  return {
+    group: display.label,
+    groupKey: key,
+    serves,
+    gramsPerServe,
+    estimatedGrams,
+    example: row.example || display.example,
+    icon: display.icon,
+    personalisedNote: row.personalised_note || buildGroupPersonalisedNote(key),
+  };
+};
+
 const servePresets = {
   young: [
-    { group: 'Vegetables', serves: 4.5, example: 'e.g. ½ cup cooked vegetables', grams: 340, icon: Carrot },
-    { group: 'Fruit', serves: 2, example: 'e.g. 1 medium apple or 2 small mandarins', grams: 300, icon: Apple },
-    { group: 'Grains', serves: 5, example: 'e.g. 1 slice wholegrain bread per serve', grams: 600, icon: Wheat },
-    { group: 'Protein', serves: 2, example: 'e.g. 65 g cooked lean meat per serve', grams: 260, icon: Drumstick },
-    { group: 'Dairy', serves: 2, example: 'e.g. 1 cup milk or 2 slices cheese', grams: 500, icon: Milk },
+    { group: 'Vegetables', groupKey: 'vegetables', serves: 4.5, icon: Carrot },
+    { group: 'Fruit', groupKey: 'fruit', serves: 1.5, icon: Apple },
+    { group: 'Grains', groupKey: 'grains', serves: 4, icon: Wheat },
+    { group: 'Protein', groupKey: 'protein', serves: 1.5, icon: Drumstick },
+    { group: 'Dairy / Alternatives', groupKey: 'dairy', serves: 2, icon: Milk },
   ],
   mid: [
-    { group: 'Vegetables', serves: 5, example: 'e.g. ½ cup cooked veg or 1 cup salad', grams: 375, icon: Carrot },
-    { group: 'Fruit', serves: 2, example: 'e.g. 1 medium piece or 1 cup diced fruit', grams: 320, icon: Apple },
-    { group: 'Grains', serves: 6, example: 'e.g. ½ cup cooked rice = 1 serve', grams: 720, icon: Wheat },
-    { group: 'Protein', serves: 2.5, example: 'e.g. 80 g fish or 2 eggs', grams: 325, icon: Drumstick },
-    { group: 'Dairy', serves: 2.5, example: 'e.g. 200 g yoghurt + milk in cereal', grams: 625, icon: Milk },
+    { group: 'Vegetables', groupKey: 'vegetables', serves: 5, icon: Carrot },
+    { group: 'Fruit', groupKey: 'fruit', serves: 2, icon: Apple },
+    { group: 'Grains', groupKey: 'grains', serves: 5, icon: Wheat },
+    { group: 'Protein', groupKey: 'protein', serves: 2.5, icon: Drumstick },
+    { group: 'Dairy / Alternatives', groupKey: 'dairy', serves: 2.5, icon: Milk },
   ],
   older: [
-    { group: 'Vegetables', serves: 5.5, example: 'e.g. include leafy greens most days', grams: 400, icon: Carrot },
-    { group: 'Fruit', serves: 2, example: 'e.g. whole fruit preferred over juice', grams: 320, icon: Apple },
-    { group: 'Grains', serves: 6, example: 'e.g. mostly wholegrain varieties', grams: 720, icon: Wheat },
-    { group: 'Protein', serves: 2.5, example: 'e.g. mix legumes, fish, lean meats', grams: 340, icon: Drumstick },
-    { group: 'Dairy', serves: 3, example: 'e.g. fortified plant milks count if chosen', grams: 650, icon: Milk },
+    { group: 'Vegetables', groupKey: 'vegetables', serves: 5.5, icon: Carrot },
+    { group: 'Fruit', groupKey: 'fruit', serves: 2, icon: Apple },
+    { group: 'Grains', groupKey: 'grains', serves: 6, icon: Wheat },
+    { group: 'Protein', groupKey: 'protein', serves: 2.5, icon: Drumstick },
+    { group: 'Dairy / Alternatives', groupKey: 'dairy', serves: 3, icon: Milk },
   ],
 };
 
-const dailyServeRows = computed(() => servePresets[ageBandKey.value] || servePresets.mid);
+const mapPresetServeRow = (row) => {
+  const display = foodGroupDisplayMap[row.groupKey] || foodGroupDisplayMap.vegetables;
+  const gramsPerServe = display.gramsPerServe;
+  const estimatedGrams = Math.round(Number(row.serves || 0) * gramsPerServe);
 
-const totalDailyGrams = computed(() =>
-  dailyServeRows.value.reduce((sum, r) => sum + (r.grams || 0), 0),
-);
+  return {
+    ...row,
+    example: display.example,
+    gramsPerServe,
+    estimatedGrams,
+    personalisedNote: buildGroupPersonalisedNote(row.groupKey),
+  };
+};
+
+const dailyServeRows = computed(() => {
+  const backendRows = selectedServingTarget.value?.recommended_serves;
+
+  if (Array.isArray(backendRows) && backendRows.length > 0) {
+    return backendRows.map(mapBackendServeRow);
+  }
+
+  return (servePresets[ageBandKey.value] || servePresets.mid).map(mapPresetServeRow);
+});
+
+const totalDailyServes = computed(() => {
+  if (selectedServingTarget.value?.total_daily_serves != null) {
+    return Number(selectedServingTarget.value.total_daily_serves).toFixed(1);
+  }
+
+  if (selectedServingTarget.value?.total_daily_target != null) {
+    return Number(selectedServingTarget.value.total_daily_target).toFixed(1);
+  }
+
+  const total = dailyServeRows.value.reduce(
+    (sum, r) => sum + Number(r.serves || 0),
+    0,
+  );
+
+  return total.toFixed(1);
+});
+
+const totalEstimatedGrams = computed(() => {
+  if (selectedServingTarget.value?.total_estimated_grams != null) {
+    return Number(selectedServingTarget.value.total_estimated_grams);
+  }
+
+  const total = dailyServeRows.value.reduce(
+    (sum, r) => sum + Number(r.estimatedGrams || 0),
+    0,
+  );
+
+  return total || null;
+});
+
+const servingDataSourceLabel = computed(() => {
+  if (selectedServingTarget.value?.recommended_serves?.length) {
+    return 'Loaded from database age-band guideline table';
+  }
+
+  return 'Preview estimate';
+});
+
+const formatServe = (value) => {
+  const number = Number(value);
+
+  if (Number.isNaN(number)) return value;
+
+  return Number.isInteger(number) ? String(number) : number.toFixed(1);
+};
+
+const personalisedFocusNotes = computed(() => {
+  const child = selectedChild.value;
+
+  if (!child) return [];
+
+  const notes = [];
+
+  if (child.isDemo) {
+    notes.push({
+      label: 'Preview mode',
+      message: 'These notes show how saved nutrition focus, allergies, and dietary restrictions can change guidance.',
+    });
+  }
+
+  if (hasNutritionFocus('iron')) {
+    notes.push({
+      label: 'Iron support',
+      message: 'Include iron-rich foods such as lean meat, eggs, beans, lentils, tofu, or fortified grains.',
+    });
+  }
+
+  if (hasNutritionFocus('calcium')) {
+    notes.push({
+      label: 'Calcium support',
+      message: 'Dairy or calcium-fortified alternatives are important for this profile.',
+    });
+  }
+
+  if (hasNutritionFocus('vitamin_d')) {
+    notes.push({
+      label: 'Vitamin D support',
+      message: 'Consider vitamin D supportive foods such as eggs, oily fish, fortified milk, or fortified alternatives.',
+    });
+  }
+
+  if (hasNutritionFocus('variety')) {
+    notes.push({
+      label: 'Food variety',
+      message: 'Rotate colours, textures, and food groups across the school week.',
+    });
+  }
+
+  if (hasAllergy('milk')) {
+    notes.push({
+      label: 'Milk allergy',
+      message: 'Use safe calcium-fortified alternatives instead of regular dairy foods.',
+    });
+  }
+
+  if (hasAllergy('peanut') || hasAllergy('tree nuts')) {
+    notes.push({
+      label: 'Nut allergy',
+      message: 'Avoid nut-based snacks and choose safe protein options.',
+    });
+  }
+
+  if (hasAllergy('wheat') || hasRestriction('excludes_gluten')) {
+    notes.push({
+      label: 'Gluten or wheat restriction',
+      message: 'Choose suitable grain options such as rice, corn, quinoa, or gluten-free bread.',
+    });
+  }
+
+  if (hasRestriction('excludes_meat')) {
+    notes.push({
+      label: 'Meat-free profile',
+      message: 'Use beans, lentils, tofu, eggs, yoghurt, or other suitable protein alternatives.',
+    });
+  }
+
+  if (hasRestriction('excludes_dairy')) {
+    notes.push({
+      label: 'Dairy-free profile',
+      message: 'Choose calcium-fortified alternatives where suitable.',
+    });
+  }
+
+  if (!notes.length) {
+    notes.push({
+      label: 'Balanced lunchbox',
+      message: 'No special restriction was detected, so the calculator shows general age-based guidance.',
+    });
+  }
+
+  return notes;
+});
 
 const foodGroupCatalog = [
   {
@@ -761,6 +1257,7 @@ const goToRegister = () => {
 // ── Lifecycle ────────────────────────────────────────────────────────────────
 onMounted(() => {
   loadProfiles();
+  loadServingTargets();
   loadAdditiveAwareness();
 });
 
@@ -779,11 +1276,19 @@ watch(
   { immediate: true },
 );
 
-watch(() => authStore.token, () => loadProfiles());
+watch(() => authStore.token, () => {
+  loadProfiles();
+  loadServingTargets();
+});
 
 watch(isLoggedIn, (v) => {
-  if (v) loadProfiles();
-  else profiles.value = [];
+  if (v) {
+    loadProfiles();
+    loadServingTargets();
+  } else {
+    profiles.value = [];
+    servingTargets.value = {};
+  }
 });
 </script>
 
