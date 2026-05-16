@@ -634,76 +634,62 @@
           <div
             class="bg-white/85 backdrop-blur-[1px] border border-[#E6E2D8] rounded-3xl p-6 sm:p-8 md:p-12 text-center shadow-sm"
           >
-            <h2 class="text-2xl sm:text-3xl text-[#2C5F2D]">
-              Questions about your lunchbox plan?
-            </h2>
-            <p class="mt-2 text-muted-foreground leading-relaxed">
-              Why Choose LittleHelp
+            <p class="inline-flex items-center justify-center rounded-full bg-[#A8D5BA]/20 text-[#2C5F2D] px-4 py-2 text-xs sm:text-sm font-semibold mb-4">
+              Knowledge Hub
             </p>
+
+            <h2 class="text-2xl sm:text-3xl text-[#2C5F2D]">
+              Learn the reason behind each lunchbox choice
+            </h2>
+
+            <p class="mt-3 text-muted-foreground leading-relaxed max-w-2xl mx-auto text-sm sm:text-base">
+              Explore serving sizes, food group guidance, and additive awareness
+              in simple parent-friendly language.
+            </p>
+
+            <div class="mt-6 grid sm:grid-cols-3 gap-3 text-left">
+              <div class="rounded-2xl bg-white border border-[#E6E2D8] p-4">
+                <p class="text-sm font-semibold text-[#2C5F2D]">
+                  Serving sizes
+                </p>
+                <p class="mt-1 text-xs text-muted-foreground leading-relaxed">
+                  Understand daily serves and approximate gram amounts for
+                  children.
+                </p>
+              </div>
+
+              <div class="rounded-2xl bg-white border border-[#E6E2D8] p-4">
+                <p class="text-sm font-semibold text-[#2C5F2D]">
+                  Food groups
+                </p>
+                <p class="mt-1 text-xs text-muted-foreground leading-relaxed">
+                  Learn why vegetables, grains, fruit, protein, and dairy matter.
+                </p>
+              </div>
+
+              <div class="rounded-2xl bg-white border border-[#E6E2D8] p-4">
+                <p class="text-sm font-semibold text-[#2C5F2D]">
+                  Additive awareness
+                </p>
+                <p class="mt-1 text-xs text-muted-foreground leading-relaxed">
+                  Check simple label signals for sugar, preservatives, and colours.
+                </p>
+              </div>
+            </div>
 
             <button
               @click="router.push('/knowledge-hub-prototype')"
               class="mt-7 w-full sm:w-auto bg-[#2C5F2D] hover:bg-[#254F25] text-white rounded-lg px-8 py-3 font-semibold transition-colors"
               type="button"
             >
-              Click to enter Knowledge Hub
+              Open Knowledge Hub
             </button>
           </div>
         </div>
       </section>
     </main>
 
-    <!-- Footer -->
-    <footer
-      class="relative bg-[#FAF9F6] border-t border-gray-200 pt-12 sm:pt-16 pb-10 sm:pb-12 overflow-visible"
-    >
-      <div
-        class="absolute -top-24 left-0 right-0 h-24 bg-gradient-to-t from-[#FAF9F6] via-[#FAF9F6]/75 to-transparent pointer-events-none z-30"
-        aria-hidden="true"
-      ></div>
-
-      <div
-        class="container mx-auto px-4 sm:px-6 max-w-5xl text-center relative z-10"
-      >
-        <p class="text-2xl text-[#2C5F2D]">LittleHelp</p>
-
-        <p
-          class="mt-4 text-muted-foreground max-w-3xl mx-auto leading-relaxed text-sm sm:text-base"
-        >
-          Helping families create practical, balanced, and child-friendly
-          lunchbox plans through science-backed nutrition guidance.
-        </p>
-
-        <nav
-          class="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-[#2C5F2D]"
-          aria-label="Footer navigation"
-        >
-          <button @click="handleLunchboxPlan" type="button" class="hover:underline">
-            Lunchbox Plan
-          </button>
-          <button @click="goProtected('/weekly-plan')" type="button" class="hover:underline">
-            Weekly Plan
-          </button>
-          <button @click="goProtected('/my-plans')" type="button" class="hover:underline">
-            My Plans
-          </button>
-          <button
-            @click="router.push('/knowledge-hub-prototype')"
-            type="button"
-            class="hover:underline"
-          >
-            Knowledge Hub
-          </button>
-          <button @click="router.push('/about')" type="button" class="hover:underline">
-            About Us
-          </button>
-        </nav>
-
-        <p class="mt-6 text-xs text-muted-foreground">
-          © 2026 LittleHelp. All rights reserved.
-        </p>
-      </div>
-    </footer>
+    <AppFooter />
   </div>
 </template>
 
@@ -719,6 +705,7 @@ import {
 } from 'lucide-vue-next';
 import { getChildren, deleteChild } from '../services/api';
 import { useAuthStore } from '../stores/auth';
+import AppFooter from '../components/AppFooter.vue';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -775,7 +762,7 @@ const guideSteps = [
   },
   {
     title: 'Learn More in Knowledge Hub',
-    text: 'Visit Knowledge Hub to understand why LittleHelp recommends certain lunchbox ideas and nutrition choices.',
+    text: 'Visit Knowledge Hub to understand serving sizes, food group guidance, and additive awareness in simple parent-friendly language.',
     target: 'knowledge',
   },
 ];
@@ -1049,10 +1036,6 @@ watch(
 const handleAddChild = () => {
   localStorage.removeItem('littlewell_edit_child_id');
   goProtected('/child-info');
-};
-
-const handleLunchboxPlan = () => {
-  childProfileSection.value?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 };
 
 const toggleFamilySelection = (id) => {
