@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-[#FAF9F6]">
     <div class="pt-10 pb-8">
-      <div class="container mx-auto px-6 max-w-4xl text-center">
+      <div class="container mx-auto px-4 sm:px-6 max-w-4xl text-center">
         <h1 class="text-4xl md:text-5xl mb-3 text-[#2C5F2D]">Knowledge Hub</h1>
         <p class="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
           Learn about serving sizes, food groups, and what to watch out for in everyday foods.
@@ -20,7 +20,7 @@
         <div class="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-[#FAF9F6] via-[#FAF9F6]/80 to-transparent z-[1]"></div>
       </div>
 
-      <div class="container relative z-10 mx-auto max-w-5xl px-6">
+      <div class="container relative z-10 mx-auto max-w-5xl px-4 sm:px-6">
         <!-- Tabs -->
         <div
           role="tablist"
@@ -64,7 +64,7 @@
           role="tabpanel"
           aria-labelledby="tab-serving"
           v-show="activeHubTab === 'serving'"
-          class="bg-white rounded-3xl border border-[#E8E4DC] shadow-sm p-6 md:p-10"
+          class="bg-white rounded-3xl border border-[#E8E4DC] shadow-sm p-5 sm:p-6 md:p-10"
         >
           <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-5 mb-8">
             <div>
@@ -72,14 +72,14 @@
                 Serving Size Calculator
               </h2>
               <p class="text-muted-foreground max-w-2xl">
-                Choose one of your child profiles, then review age-based daily serves with personalised guidance.
+                Choose one child profile, then see an age-based serving guide personalised with saved child information.
               </p>
             </div>
 
             <div class="rounded-2xl bg-[#F8F5EC] border border-[#E8E4DC] px-4 py-3 text-sm max-w-sm">
-              <p class="font-semibold text-[#2C5F2D] mb-1">Personalised calculation</p>
+              <p class="font-semibold text-[#2C5F2D] mb-1">How this is personalised</p>
               <p class="text-muted-foreground leading-relaxed">
-                Base targets come from age-band serving data. Notes are adjusted using saved nutrition focus, allergies, and dietary needs.
+                Serving amounts come from the age-band guideline. Notes and safer choices are adjusted using allergies, dietary needs, and nutrition focus.
               </p>
             </div>
           </div>
@@ -192,9 +192,14 @@
 
           <template v-if="selectedChild && dailyServeRows.length">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mt-10 mb-4">
-              <p class="text-sm font-semibold text-[#2C5F2D] uppercase tracking-wide">
-                Step 2 — Recommended daily serves
-              </p>
+              <div>
+                <p class="text-sm font-semibold text-[#2C5F2D] uppercase tracking-wide">
+                  Step 2 — Personalised daily serves
+                </p>
+                <p class="text-xs text-muted-foreground mt-1">
+                  Serving amounts use the age-band guideline. Personalised tags and notes come from the selected child profile.
+                </p>
+              </div>
 
               <div
                 class="inline-flex items-center gap-2 rounded-full border border-[#D6E7DC] bg-[#F8F5EC] px-3 py-1 text-xs text-[#2C5F2D] w-fit"
@@ -207,16 +212,30 @@
             <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
               <div
                 v-for="row in dailyServeRows"
-                :key="row.group"
+                :key="row.groupKey"
                 class="rounded-2xl border border-[#E5E7EB] bg-[#FAF9F6] p-4 flex flex-col"
               >
-                <div class="w-10 h-10 rounded-full bg-white border border-[#D6E7DC] flex items-center justify-center mb-3 text-[#2C5F2D]" aria-hidden="true">
-                  <component :is="row.icon" class="w-5 h-5" />
+                <div class="flex items-start justify-between gap-3 mb-3">
+                  <div
+                    class="w-10 h-10 rounded-full bg-white border border-[#D6E7DC] flex items-center justify-center text-[#2C5F2D] shrink-0"
+                    aria-hidden="true"
+                  >
+                    <component :is="row.icon" class="w-5 h-5" />
+                  </div>
+
+                  <span
+                    v-if="row.personalisedTags?.length"
+                    class="rounded-full bg-white border border-[#D6E7DC] px-2 py-1 text-[10px] text-[#2C5F2D] whitespace-nowrap"
+                  >
+                    Personalised
+                  </span>
                 </div>
 
-                <h3 class="font-semibold text-[#2C5F2D]">{{ row.group }}</h3>
+                <h3 class="font-semibold text-[#2C5F2D] leading-tight">
+                  {{ row.group }}
+                </h3>
 
-                <p class="text-2xl font-bold text-[#111827] mt-1">
+                <p class="text-2xl font-bold text-[#111827] mt-2">
                   {{ formatServe(row.serves) }}
                   <span class="text-sm font-normal text-muted-foreground">serves</span>
                 </p>
@@ -225,7 +244,20 @@
                   ≈ {{ row.estimatedGrams }} g/day
                 </p>
 
-                <p class="text-xs text-muted-foreground mt-2 leading-snug flex-1">
+                <div
+                  v-if="row.personalisedTags?.length"
+                  class="flex flex-wrap gap-1 mt-3"
+                >
+                  <span
+                    v-for="tag in row.personalisedTags"
+                    :key="tag"
+                    class="rounded-full bg-white border border-[#D6E7DC] px-2 py-1 text-[11px] text-[#2C5F2D]"
+                  >
+                    {{ tag }}
+                  </span>
+                </div>
+
+                <p class="text-xs text-muted-foreground mt-3 leading-snug flex-1">
                   {{ row.example }}
                 </p>
 
@@ -258,7 +290,7 @@
               class="mt-8 rounded-2xl border border-[#D6E7DC] bg-[#F8F5EC]/80 p-5"
             >
               <p class="text-sm font-semibold text-[#2C5F2D] uppercase tracking-wide mb-3">
-                Step 3 — Personalised notes for {{ selectedChild.name }}
+                Step 3 — Profile-based guidance for {{ selectedChild.name }}
               </p>
 
               <ul class="space-y-2 text-sm text-muted-foreground leading-relaxed">
@@ -949,17 +981,17 @@ const buildGroupPersonalisedNote = (groupKey) => {
 
   if (groupKey === 'dairy') {
     if (hasAllergy('milk') || hasRestriction('excludes_dairy')) {
-      return 'Milk or dairy restriction detected. Choose safe calcium-fortified alternatives instead of regular dairy.';
+      return 'Milk or dairy restriction detected. Choose calcium-fortified alternatives that are safe for this child.';
     }
 
     if (hasNutritionFocus('calcium') || hasNutritionFocus('vitamin_d')) {
-      return 'This profile has calcium or vitamin D support selected. Prioritise dairy or fortified alternatives when suitable.';
+      return 'Prioritise dairy or fortified alternatives because this profile has calcium or vitamin D support selected.';
     }
   }
 
   if (groupKey === 'protein') {
     if (hasAllergy('peanut') || hasAllergy('tree nuts') || hasRestriction('excludes_nuts')) {
-      return 'Nut allergy or nut restriction detected. Avoid nut-based snacks and choose safe protein options such as egg, tuna, chicken, beans, lentils, or tofu.';
+      return 'Nut allergy or nut restriction detected. Avoid nut-based snacks and choose safe protein options.';
     }
 
     if (hasRestriction('excludes_meat')) {
@@ -992,6 +1024,52 @@ const buildGroupPersonalisedNote = (groupKey) => {
   return '';
 };
 
+const buildPersonalisedTags = (groupKey) => {
+  const tags = [];
+
+  if (groupKey === 'dairy') {
+    if (hasAllergy('milk') || hasRestriction('excludes_dairy')) {
+      tags.push('Dairy-safe option');
+    }
+
+    if (hasNutritionFocus('calcium')) {
+      tags.push('Calcium focus');
+    }
+
+    if (hasNutritionFocus('vitamin_d')) {
+      tags.push('Vitamin D support');
+    }
+  }
+
+  if (groupKey === 'protein') {
+    if (hasAllergy('peanut') || hasAllergy('tree nuts') || hasRestriction('excludes_nuts')) {
+      tags.push('Nut-safe choices');
+    }
+
+    if (hasRestriction('excludes_meat')) {
+      tags.push('Meat-free protein');
+    }
+
+    if (hasNutritionFocus('iron')) {
+      tags.push('Iron focus');
+    }
+  }
+
+  if (groupKey === 'grains') {
+    if (hasAllergy('wheat') || hasRestriction('excludes_gluten')) {
+      tags.push('Gluten-free options');
+    }
+  }
+
+  if (groupKey === 'vegetables' || groupKey === 'fruit') {
+    if (hasNutritionFocus('variety')) {
+      tags.push('Variety focus');
+    }
+  }
+
+  return tags;
+};
+
 const mapBackendServeRow = (row) => {
   const key = normaliseFoodGroupKey(row.food_group_name);
   const display = foodGroupDisplayMap[key] || {
@@ -1013,8 +1091,51 @@ const mapBackendServeRow = (row) => {
     estimatedGrams,
     example: row.example || display.example,
     icon: display.icon,
-    personalisedNote: row.personalised_note || buildGroupPersonalisedNote(key),
+    personalisedNote: buildGroupPersonalisedNote(key),
+    personalisedTags: buildPersonalisedTags(key),
   };
+};
+
+const buildAgeBasedPersonalisedServeRows = (rows = []) => {
+  const order = ['vegetables', 'fruit', 'grains', 'protein', 'dairy'];
+
+  const grouped = rows.reduce((acc, row) => {
+    const key = row.groupKey || normaliseFoodGroupKey(row.group);
+
+    if (!acc[key]) {
+      acc[key] = {
+        ...row,
+        servesList: [],
+        gramsList: [],
+      };
+    }
+
+    acc[key].servesList.push(Number(row.serves || 0));
+    acc[key].gramsList.push(Number(row.estimatedGrams || 0));
+
+    return acc;
+  }, {});
+
+  return order
+    .map((key) => grouped[key])
+    .filter(Boolean)
+    .map((row) => {
+      const averageServes =
+        row.servesList.reduce((sum, value) => sum + value, 0) /
+        row.servesList.length;
+
+      const averageGrams =
+        row.gramsList.reduce((sum, value) => sum + value, 0) /
+        row.gramsList.length;
+
+      return {
+        ...row,
+        serves: Math.round(averageServes * 2) / 2,
+        estimatedGrams: Math.round(averageGrams),
+        personalisedNote: buildGroupPersonalisedNote(row.groupKey),
+        personalisedTags: buildPersonalisedTags(row.groupKey),
+      };
+    });
 };
 
 const servePresets = {
@@ -1052,6 +1173,7 @@ const mapPresetServeRow = (row) => {
     gramsPerServe,
     estimatedGrams,
     personalisedNote: buildGroupPersonalisedNote(row.groupKey),
+    personalisedTags: buildPersonalisedTags(row.groupKey),
   };
 };
 
@@ -1059,23 +1181,16 @@ const dailyServeRows = computed(() => {
   const backendRows = selectedServingTarget.value?.recommended_serves;
 
   if (Array.isArray(backendRows) && backendRows.length > 0) {
-    return backendRows.map(mapBackendServeRow);
+    const mappedRows = backendRows.map(mapBackendServeRow);
+    return buildAgeBasedPersonalisedServeRows(mappedRows);
   }
 
   return (servePresets[ageBandKey.value] || servePresets.mid).map(mapPresetServeRow);
 });
 
 const totalDailyServes = computed(() => {
-  if (selectedServingTarget.value?.total_daily_serves != null) {
-    return Number(selectedServingTarget.value.total_daily_serves).toFixed(1);
-  }
-
-  if (selectedServingTarget.value?.total_daily_target != null) {
-    return Number(selectedServingTarget.value.total_daily_target).toFixed(1);
-  }
-
   const total = dailyServeRows.value.reduce(
-    (sum, r) => sum + Number(r.serves || 0),
+    (sum, row) => sum + Number(row.serves || 0),
     0,
   );
 
@@ -1083,12 +1198,8 @@ const totalDailyServes = computed(() => {
 });
 
 const totalEstimatedGrams = computed(() => {
-  if (selectedServingTarget.value?.total_estimated_grams != null) {
-    return Number(selectedServingTarget.value.total_estimated_grams);
-  }
-
   const total = dailyServeRows.value.reduce(
-    (sum, r) => sum + Number(r.estimatedGrams || 0),
+    (sum, row) => sum + Number(row.estimatedGrams || 0),
     0,
   );
 
@@ -1097,7 +1208,7 @@ const totalEstimatedGrams = computed(() => {
 
 const servingDataSourceLabel = computed(() => {
   if (selectedServingTarget.value?.recommended_serves?.length) {
-    return 'Loaded from database age-band guideline table';
+    return 'Age-based guideline personalised with child profile';
   }
 
   return 'Preview estimate';

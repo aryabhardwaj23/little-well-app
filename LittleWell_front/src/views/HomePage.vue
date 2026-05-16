@@ -618,7 +618,7 @@
         ></div>
 
         <div
-          class="absolute inset-0 bg-center bg-cover opacity-55"
+          class="absolute inset-0 bg-center bg-cover opacity-35"
           style="background-image: url('https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=1600');"
           aria-hidden="true"
         ></div>
@@ -628,16 +628,10 @@
           aria-hidden="true"
         ></div>
 
-        <div
-          class="container mx-auto px-4 sm:px-6 max-w-5xl relative z-10 mt-4"
-        >
+        <div class="container mx-auto px-4 sm:px-6 max-w-6xl relative z-10">
           <div
-            class="bg-white/85 backdrop-blur-[1px] border border-[#E6E2D8] rounded-3xl p-6 sm:p-8 md:p-12 text-center shadow-sm"
+            class="bg-white/90 backdrop-blur-[1px] border border-[#E6E2D8] rounded-3xl p-6 sm:p-8 md:p-10 text-center shadow-sm"
           >
-            <p class="inline-flex items-center justify-center rounded-full bg-[#A8D5BA]/20 text-[#2C5F2D] px-4 py-2 text-xs sm:text-sm font-semibold mb-4">
-              Knowledge Hub
-            </p>
-
             <h2 class="text-2xl sm:text-3xl text-[#2C5F2D]">
               Learn the reason behind each lunchbox choice
             </h2>
@@ -647,8 +641,10 @@
               in simple parent-friendly language.
             </p>
 
-            <div class="mt-6 grid sm:grid-cols-3 gap-3 text-left">
-              <div class="rounded-2xl bg-white border border-[#E6E2D8] p-4">
+            <div class="mt-7 grid sm:grid-cols-3 gap-4 lg:gap-5 text-left">
+              <div
+                class="rounded-2xl bg-[#FAF9F6] border border-[#E6E2D8] p-4 sm:p-5"
+              >
                 <p class="text-sm font-semibold text-[#2C5F2D]">
                   Serving sizes
                 </p>
@@ -658,7 +654,9 @@
                 </p>
               </div>
 
-              <div class="rounded-2xl bg-white border border-[#E6E2D8] p-4">
+              <div
+                class="rounded-2xl bg-[#FAF9F6] border border-[#E6E2D8] p-4 sm:p-5"
+              >
                 <p class="text-sm font-semibold text-[#2C5F2D]">
                   Food groups
                 </p>
@@ -667,7 +665,9 @@
                 </p>
               </div>
 
-              <div class="rounded-2xl bg-white border border-[#E6E2D8] p-4">
+              <div
+                class="rounded-2xl bg-[#FAF9F6] border border-[#E6E2D8] p-4 sm:p-5"
+              >
                 <p class="text-sm font-semibold text-[#2C5F2D]">
                   Additive awareness
                 </p>
@@ -679,7 +679,7 @@
 
             <button
               @click="router.push('/knowledge-hub-prototype')"
-              class="mt-7 w-full sm:w-auto bg-[#2C5F2D] hover:bg-[#254F25] text-white rounded-lg px-8 py-3 font-semibold transition-colors"
+              class="mt-7 w-full sm:w-auto bg-[#2C5F2D] hover:bg-[#254F25] text-white rounded-lg px-7 py-3 font-semibold transition-colors"
               type="button"
             >
               Open Knowledge Hub
