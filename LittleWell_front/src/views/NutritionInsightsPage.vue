@@ -1,84 +1,127 @@
 <template>
-  <div class="min-h-screen py-12 bg-[#FAF9F6]">
-    <div class="container mx-auto px-6 max-w-5xl">
+  <div class="min-h-screen bg-[#FAF9F6] py-6 sm:py-10 md:py-12">
+    <div class="container mx-auto max-w-5xl px-4 sm:px-6">
       <!-- Header -->
-      <div class="text-center mb-12">
-        <div :class="['w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4', getScoreColor(score)]">
-          <Sparkles class="w-10 h-10 text-white" />
+      <header class="mb-8 text-center sm:mb-12">
+        <div
+          :class="[
+            'mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full sm:h-20 sm:w-20',
+            getScoreColor(score)
+          ]"
+          aria-hidden="true"
+        >
+          <Sparkles class="h-8 w-8 text-white sm:h-10 sm:w-10" />
         </div>
-        <h1 class="text-4xl mb-4">Your Nutrition Insights</h1>
-        <p class="text-lg text-muted-foreground">
+
+        <h1 class="mb-3 text-3xl font-semibold leading-tight text-[#2C5F2D] sm:mb-4 sm:text-4xl">
+          Your Nutrition Insights
+        </h1>
+
+        <p class="text-sm leading-relaxed text-muted-foreground sm:text-lg">
           Based on your child's current diet
         </p>
-      </div>
+      </header>
 
       <!-- Overall Score Card -->
-      <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
-        <div class="text-center">
-          <p class="text-muted-foreground mb-2">Overall Nutrition Score</p>
-          <div class="text-5xl font-bold mb-4" :class="getScoreTextColor(score)">
-            {{ Math.round(score) }}%
-          </div>
-          <p class="text-lg">{{ getScoreMessage(score) }}</p>
+      <section class="mb-6 rounded-2xl bg-white p-6 text-center shadow-sm sm:mb-8 sm:p-8">
+        <p class="mb-2 text-sm text-muted-foreground sm:text-base">
+          Overall Nutrition Score
+        </p>
+
+        <div
+          class="mb-3 text-5xl font-bold leading-none sm:mb-4 sm:text-6xl"
+          :class="getScoreTextColor(score)"
+        >
+          {{ Math.round(score) }}%
         </div>
-      </div>
+
+        <p class="mx-auto max-w-xl text-base leading-relaxed text-[#111827] sm:text-lg">
+          {{ getScoreMessage(score) }}
+        </p>
+      </section>
 
       <!-- Detailed Insights -->
-      <div class="grid md:grid-cols-2 gap-6 mb-8">
-        <div
+      <section class="mb-6 grid grid-cols-1 gap-4 sm:mb-8 md:grid-cols-2 md:gap-6">
+        <article
           v-for="(status, area) in insights"
           :key="area"
-          class="bg-white rounded-2xl shadow-md p-6"
+          class="rounded-2xl bg-white p-5 shadow-sm sm:p-6"
         >
-          <div class="flex items-start gap-4 mb-4">
-            <div :class="['w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0', getAreaColor(status)]">
-              <component :is="getAreaIcon(area)" class="w-6 h-6 text-white" />
+          <div class="mb-4 flex items-start gap-3 sm:gap-4">
+            <div
+              :class="[
+                'flex h-11 w-11 shrink-0 items-center justify-center rounded-full sm:h-12 sm:w-12',
+                getAreaColor(status)
+              ]"
+              aria-hidden="true"
+            >
+              <component :is="getAreaIcon(area)" class="h-5 w-5 text-white sm:h-6 sm:w-6" />
             </div>
-            <div class="flex-1">
-              <h3 class="text-lg font-medium mb-1">{{ getAreaTitle(area) }}</h3>
-              <span :class="['text-sm px-3 py-1 rounded-full', getStatusBadge(status)]">
+
+            <div class="min-w-0 flex-1">
+              <h3 class="mb-2 text-base font-semibold leading-tight text-[#111827] sm:text-lg">
+                {{ getAreaTitle(area) }}
+              </h3>
+
+              <span
+                :class="[
+                  'inline-flex rounded-full px-3 py-1 text-xs font-medium sm:text-sm',
+                  getStatusBadge(status)
+                ]"
+              >
                 {{ getStatusLabel(status) }}
               </span>
             </div>
           </div>
-          <p class="text-sm text-muted-foreground">
+
+          <p class="text-sm leading-relaxed text-muted-foreground">
             {{ getAreaAdvice(area, status) }}
           </p>
-        </div>
-      </div>
+        </article>
+      </section>
 
       <!-- Recommendations -->
-      <div class="bg-gradient-to-br from-[#A8D5BA]/20 to-[#CDE7F0]/20 rounded-2xl p-8 mb-8">
-        <h2 class="text-2xl mb-6 flex items-center gap-2">
-          <Lightbulb class="w-6 h-6 text-[#F7B267]" />
+      <section class="mb-6 rounded-2xl bg-gradient-to-br from-[#A8D5BA]/20 to-[#CDE7F0]/20 p-5 sm:mb-8 sm:p-8">
+        <h2 class="mb-5 flex items-center gap-2 text-xl font-semibold leading-tight text-[#2C5F2D] sm:mb-6 sm:text-2xl">
+          <Lightbulb class="h-5 w-5 shrink-0 text-[#F7B267] sm:h-6 sm:w-6" aria-hidden="true" />
           Personalized Recommendations
         </h2>
-        <div class="space-y-4">
+
+        <div class="space-y-3 sm:space-y-4">
           <div
             v-for="(rec, idx) in recommendations"
             :key="idx"
-            class="flex items-start gap-3 p-4 bg-white rounded-lg"
+            class="flex items-start gap-3 rounded-xl bg-white p-4 shadow-sm"
           >
-            <div class="w-8 h-8 bg-[#A8D5BA] rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-              <Check class="w-4 h-4 text-white" />
+            <div
+              class="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#A8D5BA] sm:h-8 sm:w-8"
+              aria-hidden="true"
+            >
+              <Check class="h-4 w-4 text-white" />
             </div>
-            <p class="flex-1">{{ rec }}</p>
+
+            <p class="flex-1 text-sm leading-relaxed text-[#111827] sm:text-base">
+              {{ rec }}
+            </p>
           </div>
         </div>
-      </div>
+      </section>
 
       <!-- Action Buttons -->
-      <div class="flex flex-col sm:flex-row gap-4">
+      <div class="flex flex-col gap-3 sm:flex-row sm:gap-4">
         <button
           @click="handleViewResults"
-          class="flex-1 px-8 py-4 bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg transition-colors inline-flex items-center justify-center gap-2"
+          class="inline-flex w-full flex-1 items-center justify-center gap-2 rounded-lg bg-[#A8D5BA] px-6 py-3.5 font-medium text-[#2C5F2D] transition-colors hover:bg-[#8FC2A4] sm:px-8 sm:py-4"
+          type="button"
         >
-          <ChevronRight class="w-4 h-4" />
+          <ChevronRight class="h-4 w-4" aria-hidden="true" />
           View Personalized Lunchboxes
         </button>
+
         <button
           @click="router.push('/')"
-          class="flex-1 px-8 py-4 bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+          class="w-full flex-1 rounded-lg border-2 border-gray-300 bg-white px-6 py-3.5 font-medium text-gray-700 transition-colors hover:bg-gray-50 sm:px-8 sm:py-4"
+          type="button"
         >
           Back to Home
         </button>
@@ -90,7 +133,16 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { Sparkles, Check, ChevronRight, Lightbulb, Apple, Droplet, Cookie, Carrot } from 'lucide-vue-next';
+import {
+  Sparkles,
+  Check,
+  ChevronRight,
+  Lightbulb,
+  Apple,
+  Droplet,
+  Cookie,
+  Carrot,
+} from 'lucide-vue-next';
 import { useNutritionCheckStore } from '../stores/nutritionCheck';
 
 const router = useRouter();
@@ -106,11 +158,13 @@ onMounted(() => {
 
   if (!result || !result.nutritionInsights) {
     const childId = route.query.childId || '';
+
     if (childId) {
       router.push(`/nutrition-check?childId=${childId}`);
     } else {
       router.push('/nutrition-check');
     }
+
     return;
   }
 
@@ -145,9 +199,9 @@ const getScoreTextColor = (score) => {
 };
 
 const getScoreMessage = (score) => {
-  if (score >= 75) return 'Great job! Your child\'s diet is well-balanced.';
+  if (score >= 75) return "Great job! Your child's diet is well-balanced.";
   if (score >= 50) return 'Good start! A few improvements can make a big difference.';
-  return 'Let\'s work together to improve your child\'s nutrition.';
+  return "Let's work together to improve your child's nutrition.";
 };
 
 const getAreaColor = (status) => {
@@ -157,6 +211,7 @@ const getAreaColor = (status) => {
     needs: 'bg-[#F7B267]',
     poor: 'bg-[#E57373]',
   };
+
   return colors[status] || 'bg-gray-400';
 };
 
@@ -167,6 +222,7 @@ const getStatusBadge = (status) => {
     needs: 'bg-[#F7B267]/20 text-[#8B4513]',
     poor: 'bg-red-100 text-red-700',
   };
+
   return badges[status] || '';
 };
 
@@ -177,6 +233,7 @@ const getStatusLabel = (status) => {
     needs: 'Needs Improvement',
     poor: 'Needs Attention',
   };
+
   return labels[status] || status;
 };
 
@@ -187,6 +244,7 @@ const getAreaIcon = (area) => {
     sugar: Cookie,
     protein: Carrot,
   };
+
   return icons[area] || Apple;
 };
 
@@ -197,6 +255,7 @@ const getAreaTitle = (area) => {
     sugar: 'Sugar Intake',
     protein: 'Protein Variety',
   };
+
   return titles[area] || area;
 };
 
@@ -227,6 +286,7 @@ const getAreaAdvice = (area, status) => {
       poor: 'Protein is vital for growth. Start with child-friendly options like cheese.',
     },
   };
+
   return advice[area]?.[status] || '';
 };
 
@@ -249,7 +309,7 @@ const generateRecommendations = (insights) => {
     recs.push('Include protein in every meal - try hard-boiled eggs, cheese, or nut butter.');
   }
 
-  recs.push('Involve your child in meal planning - they\'re more likely to eat what they help choose!');
+  recs.push("Involve your child in meal planning - they're more likely to eat what they help choose!");
   recs.push('Make meals colorful and fun with different shapes and arrangements.');
 
   return recs;

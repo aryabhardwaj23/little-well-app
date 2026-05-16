@@ -1,53 +1,68 @@
 <template>
-  <div class="min-h-screen py-12 bg-[#FAF9F6]">
-    <div class="container mx-auto px-6 max-w-4xl">
+  <div class="min-h-screen bg-[#FAF9F6] py-6 sm:py-10 md:py-12">
+    <div class="container mx-auto max-w-4xl px-4 sm:px-6">
       <!-- Header -->
-      <div class="text-center mb-12">
-        <div class="w-16 h-16 bg-gradient-to-br from-[#A8D5BA] to-[#8FC2A4] rounded-full flex items-center justify-center mx-auto mb-4">
-          <Check class="w-8 h-8 text-white" />
+      <header class="mb-8 text-center sm:mb-12">
+        <div
+          class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-[#A8D5BA] to-[#8FC2A4] sm:h-16 sm:w-16"
+          aria-hidden="true"
+        >
+          <Check class="h-7 w-7 text-white sm:h-8 sm:w-8" />
         </div>
-        <h1 class="text-4xl mb-4">Profile Complete!</h1>
-        <p class="text-lg text-muted-foreground">
+
+        <h1 class="mb-3 text-3xl font-semibold leading-tight text-[#2C5F2D] sm:mb-4 sm:text-4xl">
+          Profile Complete!
+        </h1>
+
+        <p class="mx-auto max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-lg">
           Here's a summary of {{ childName }}'s profile
         </p>
-      </div>
+      </header>
 
       <!-- Loading -->
       <div
         v-if="loading"
-        class="bg-white rounded-2xl shadow-sm p-8 text-center text-muted-foreground mb-8"
+        class="mb-6 rounded-2xl bg-white p-6 text-center text-sm text-muted-foreground shadow-sm sm:mb-8 sm:p-8 sm:text-base"
+        aria-live="polite"
+        aria-busy="true"
       >
         Loading profile...
       </div>
 
       <!-- Profile Summary Card -->
-      <div v-else class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+      <section v-else class="mb-6 rounded-2xl bg-white p-5 shadow-sm sm:mb-8 sm:p-8">
         <!-- Basic Info -->
-        <div class="mb-8">
-          <h2 class="text-2xl mb-6 flex items-center gap-2">
-            <User class="w-6 h-6 text-[#A8D5BA]" />
+        <div class="mb-7 sm:mb-8">
+          <h2 class="mb-5 flex items-center gap-2 text-xl font-semibold text-[#2C5F2D] sm:mb-6 sm:text-2xl">
+            <User class="h-5 w-5 text-[#A8D5BA] sm:h-6 sm:w-6" aria-hidden="true" />
             Basic Information
           </h2>
 
-          <div class="grid md:grid-cols-2 gap-6">
-            <div>
-              <p class="text-sm text-muted-foreground mb-1">Name</p>
-              <p class="text-lg font-medium">{{ profile.name || '-' }}</p>
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
+            <div class="rounded-xl bg-[#FAF9F6] p-4">
+              <p class="mb-1 text-xs text-muted-foreground sm:text-sm">Name</p>
+              <p class="text-base font-semibold text-[#111827] sm:text-lg">
+                {{ profile.name || '-' }}
+              </p>
             </div>
 
-            <div>
-              <p class="text-sm text-muted-foreground mb-1">Age Group</p>
-              <p class="text-lg font-medium">{{ profile.ageGroup || '-' }}</p>
+            <div class="rounded-xl bg-[#FAF9F6] p-4">
+              <p class="mb-1 text-xs text-muted-foreground sm:text-sm">Age Group</p>
+              <p class="text-base font-semibold text-[#111827] sm:text-lg">
+                {{ profile.ageGroup || '-' }}
+              </p>
             </div>
 
-            <div v-if="profile.gender">
-              <p class="text-sm text-muted-foreground mb-1">Gender</p>
-              <p class="text-lg font-medium">{{ profile.gender }}</p>
+            <div v-if="profile.gender" class="rounded-xl bg-[#FAF9F6] p-4">
+              <p class="mb-1 text-xs text-muted-foreground sm:text-sm">Gender</p>
+              <p class="text-base font-semibold text-[#111827] sm:text-lg">
+                {{ profile.gender }}
+              </p>
             </div>
 
-            <div>
-              <p class="text-sm text-muted-foreground mb-1">Activity Level</p>
-              <p class="text-lg font-medium capitalize">
+            <div class="rounded-xl bg-[#FAF9F6] p-4">
+              <p class="mb-1 text-xs text-muted-foreground sm:text-sm">Activity Level</p>
+              <p class="text-base font-semibold capitalize text-[#111827] sm:text-lg">
                 {{ profile.activityLevel || 'Moderate' }}
               </p>
             </div>
@@ -55,125 +70,132 @@
         </div>
 
         <!-- Dietary Information -->
-        <div class="mb-8 pt-8 border-t">
-          <h2 class="text-2xl mb-6 flex items-center gap-2">
-            <Apple class="w-6 h-6 text-[#F7B267]" />
+        <div class="mb-7 border-t pt-7 sm:mb-8 sm:pt-8">
+          <h2 class="mb-5 flex items-center gap-2 text-xl font-semibold text-[#2C5F2D] sm:mb-6 sm:text-2xl">
+            <Apple class="h-5 w-5 text-[#F7B267] sm:h-6 sm:w-6" aria-hidden="true" />
             Dietary Information
           </h2>
 
-          <div class="space-y-4">
-            <div v-if="profile.allergies && profile.allergies.length > 0">
-              <p class="text-sm text-muted-foreground mb-2">Food Allergies</p>
-              <div class="flex flex-wrap gap-2">
+          <div class="space-y-5">
+            <div>
+              <p class="mb-2 text-sm text-muted-foreground">Food Allergies</p>
+
+              <div v-if="profile.allergies && profile.allergies.length > 0" class="flex flex-wrap gap-2">
                 <span
                   v-for="allergy in profile.allergies"
                   :key="allergy"
-                  class="bg-[#F7B267]/20 text-[#8B4513] px-3 py-1 rounded-full text-sm"
+                  class="rounded-full bg-[#F7B267]/20 px-3 py-1 text-sm text-[#8B4513]"
                 >
                   {{ allergy }}
                 </span>
               </div>
+
+              <p v-else class="text-base text-[#111827]">
+                No allergies selected
+              </p>
             </div>
 
-            <div v-else>
-              <p class="text-sm text-muted-foreground mb-2">Food Allergies</p>
-              <p class="text-base">No allergies selected</p>
-            </div>
+            <div>
+              <p class="mb-2 text-sm text-muted-foreground">Dietary Restriction</p>
 
-            <div v-if="profile.dietaryRestriction">
-              <p class="text-sm text-muted-foreground mb-2">Dietary Restriction</p>
-              <span class="bg-[#CDE7F0]/30 text-[#1B4965] px-3 py-1 rounded-full text-sm">
+              <span
+                v-if="profile.dietaryRestriction"
+                class="inline-flex rounded-full bg-[#CDE7F0]/30 px-3 py-1 text-sm text-[#1B4965]"
+              >
                 {{ profile.dietaryRestriction }}
               </span>
-            </div>
 
-            <div v-else>
-              <p class="text-sm text-muted-foreground mb-2">Dietary Restriction</p>
-              <p class="text-base">No restrictions</p>
+              <p v-else class="text-base text-[#111827]">
+                No restrictions
+              </p>
             </div>
 
             <div v-if="profile.eatingHabit">
-              <p class="text-sm text-muted-foreground mb-2">Eating Habits</p>
-              <p class="text-base">{{ profile.eatingHabit }}</p>
+              <p class="mb-2 text-sm text-muted-foreground">Eating Habits</p>
+              <p class="text-base leading-relaxed text-[#111827]">
+                {{ profile.eatingHabit }}
+              </p>
             </div>
           </div>
         </div>
 
         <!-- Nutrition Focus -->
-        <div v-if="nutritionFocus && nutritionFocus.length > 0" class="pt-8 border-t">
-          <h2 class="text-2xl mb-6 flex items-center gap-2">
-            <Sparkles class="w-6 h-6 text-[#A8D5BA]" />
+        <div class="border-t pt-7 sm:pt-8">
+          <h2 class="mb-5 flex items-center gap-2 text-xl font-semibold text-[#2C5F2D] sm:mb-6 sm:text-2xl">
+            <Sparkles class="h-5 w-5 text-[#A8D5BA] sm:h-6 sm:w-6" aria-hidden="true" />
             Nutrition Focus Areas
           </h2>
 
-          <div class="flex flex-wrap gap-3">
+          <div v-if="nutritionFocus && nutritionFocus.length > 0" class="flex flex-wrap gap-2 sm:gap-3">
             <span
               v-for="focus in nutritionFocus"
               :key="focus"
-              class="bg-[#A8D5BA]/20 text-[#2C5F2D] px-4 py-2 rounded-full"
+              class="rounded-full bg-[#A8D5BA]/20 px-3 py-1.5 text-sm text-[#2C5F2D] sm:px-4 sm:py-2"
             >
               {{ getNutritionAreaName(focus) }}
             </span>
           </div>
-        </div>
 
-        <div v-else class="pt-8 border-t">
-          <h2 class="text-2xl mb-4 flex items-center gap-2">
-            <Sparkles class="w-6 h-6 text-[#A8D5BA]" />
-            Nutrition Focus Areas
-          </h2>
-
-          <p class="text-muted-foreground">
+          <p v-else class="text-sm leading-relaxed text-muted-foreground sm:text-base">
             No focus areas selected.
           </p>
         </div>
-      </div>
+      </section>
 
       <!-- Action Buttons -->
-      <div class="flex flex-col sm:flex-row gap-4">
+      <div class="flex flex-col-reverse gap-3 sm:flex-row sm:gap-4">
         <button
           @click="handleEdit"
           :disabled="saving || loading"
-          class="flex-1 px-8 py-4 bg-white border-2 border-[#A8D5BA] text-[#2C5F2D] rounded-lg hover:bg-[#A8D5BA]/10 transition-colors inline-flex items-center justify-center gap-2 disabled:opacity-50"
+          class="inline-flex w-full flex-1 items-center justify-center gap-2 rounded-lg border-2 border-[#A8D5BA] bg-white px-8 py-3.5 font-medium text-[#2C5F2D] transition-colors hover:bg-[#A8D5BA]/10 disabled:cursor-not-allowed disabled:opacity-50 sm:py-4"
+          type="button"
         >
-          <Edit class="w-4 h-4" />
+          <Edit class="h-4 w-4" aria-hidden="true" />
           Edit Profile
         </button>
 
         <button
           @click="handleSave"
           :disabled="saving || loading"
-          class="flex-1 px-8 py-4 bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg transition-colors inline-flex items-center justify-center gap-2 disabled:opacity-50"
+          class="inline-flex w-full flex-1 items-center justify-center gap-2 rounded-lg bg-[#A8D5BA] px-8 py-3.5 font-medium text-[#2C5F2D] transition-colors hover:bg-[#8FC2A4] disabled:cursor-not-allowed disabled:opacity-50 sm:py-4"
+          type="button"
         >
-          <Check class="w-4 h-4" />
+          <Check class="h-4 w-4" aria-hidden="true" />
           {{ saving ? 'Saving...' : 'Save & View Lunchboxes' }}
         </button>
       </div>
 
       <!-- Nutrition Check Prompt -->
-      <div class="mt-8 p-6 bg-gradient-to-r from-[#CDE7F0]/30 to-[#A8D5BA]/20 rounded-2xl border border-[#A8D5BA]/30">
-        <div class="flex items-start gap-4">
-          <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center flex-shrink-0">
-            <ClipboardCheck class="w-6 h-6 text-[#2C5F2D]" />
+      <section class="mt-6 rounded-2xl border border-[#A8D5BA]/30 bg-gradient-to-r from-[#CDE7F0]/30 to-[#A8D5BA]/20 p-5 sm:mt-8 sm:p-6">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-start">
+          <div
+            class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white sm:h-12 sm:w-12"
+            aria-hidden="true"
+          >
+            <ClipboardCheck class="h-5 w-5 text-[#2C5F2D] sm:h-6 sm:w-6" />
           </div>
 
           <div class="flex-1">
-            <h3 class="text-lg font-medium mb-2">Want more personalized suggestions?</h3>
-            <p class="text-sm text-muted-foreground mb-4">
+            <h3 class="mb-2 text-lg font-semibold text-[#2C5F2D]">
+              Want more personalized suggestions?
+            </h3>
+
+            <p class="mb-4 text-sm leading-relaxed text-muted-foreground">
               Take our quick nutrition check to get even more tailored meal recommendations based on your child's current diet.
             </p>
 
             <button
               @click="handleNutritionCheck"
               :disabled="saving || loading"
-              class="text-sm text-[#2C5F2D] font-medium hover:underline inline-flex items-center gap-1 disabled:opacity-50"
+              class="inline-flex w-full items-center justify-center gap-1 rounded-lg bg-white px-4 py-3 text-sm font-medium text-[#2C5F2D] transition-colors hover:bg-[#A8D5BA]/10 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:bg-transparent sm:px-0 sm:py-0 sm:hover:underline"
+              type="button"
             >
               Take Nutrition Check
-              <ChevronRight class="w-4 h-4" />
+              <ChevronRight class="h-4 w-4" aria-hidden="true" />
             </button>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   </div>
 </template>

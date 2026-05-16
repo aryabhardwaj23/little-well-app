@@ -1,87 +1,123 @@
 <template>
-  <div class="min-h-screen py-12 bg-[#FAF9F6]">
-    <div class="container mx-auto px-6 max-w-5xl">
+  <div class="min-h-screen bg-[#FAF9F6] py-6 sm:py-10 md:py-12">
+    <div class="container mx-auto max-w-5xl px-4 sm:px-6">
       <!-- Back Button -->
       <button
         @click="router.push('/child-info')"
-        class="mb-6 px-4 py-2 hover:bg-white rounded-lg transition-colors inline-flex items-center gap-2"
+        class="mb-5 inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-white sm:mb-6 sm:px-4"
+        type="button"
+        aria-label="Go back to child information"
       >
-        <ArrowLeft class="w-4 h-4" />
+        <ArrowLeft class="h-4 w-4" aria-hidden="true" />
         Back
       </button>
 
       <!-- Header -->
-      <div class="text-center mb-12">
-        <h1 class="text-4xl mb-4">Nutrition Focus Areas</h1>
-        <p class="text-lg text-muted-foreground">
+      <header class="mb-8 text-center sm:mb-12">
+        <h1 class="mb-3 text-3xl font-semibold leading-tight text-[#2C5F2D] sm:mb-4 sm:text-4xl">
+          Nutrition Focus Areas
+        </h1>
+
+        <p class="mx-auto max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-lg">
           What would you like to focus on for {{ childName }}'s nutrition?
         </p>
-        <p class="text-sm text-muted-foreground mt-2">
-          Select up to 3 areas (optional - you can skip this step)
+
+        <p class="mt-2 text-xs leading-relaxed text-muted-foreground sm:text-sm">
+          Select up to 3 areas. This step is optional.
         </p>
-      </div>
+      </header>
 
       <!-- Focus Areas Grid -->
-      <div class="grid md:grid-cols-2 gap-6 mb-8">
-        <div
+      <section class="mb-6 grid grid-cols-1 gap-4 md:mb-8 md:grid-cols-2 md:gap-6">
+        <button
           v-for="area in nutritionAreas"
           :key="area.id"
           @click="toggleArea(area.id)"
+          :disabled="selectedAreas.length >= 3 && !selectedAreas.includes(area.id)"
+          :aria-pressed="selectedAreas.includes(area.id)"
+          :aria-label="`${area.title}. ${area.description}`"
           :class="[
-            'p-6 rounded-2xl border-2 cursor-pointer transition-all',
+            'w-full rounded-2xl border-2 p-5 text-left transition-all sm:p-6',
             selectedAreas.includes(area.id)
-              ? 'border-[#A8D5BA] bg-[#A8D5BA]/10'
-              : 'border-gray-200 hover:border-[#A8D5BA]/50 bg-white',
+              ? 'border-[#A8D5BA] bg-[#A8D5BA]/10 shadow-sm'
+              : 'border-gray-200 bg-white hover:border-[#A8D5BA]/50',
             selectedAreas.length >= 3 && !selectedAreas.includes(area.id)
-              ? 'opacity-50 cursor-not-allowed'
-              : ''
+              ? 'cursor-not-allowed opacity-50'
+              : 'cursor-pointer'
           ]"
+          type="button"
         >
-          <div class="flex items-start gap-4">
-            <div :class="['w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0', area.bgColor]">
-              <component :is="area.icon" :class="['w-6 h-6', area.iconColor]" />
+          <div class="flex items-start gap-3 sm:gap-4">
+            <div
+              :class="[
+                'flex h-11 w-11 shrink-0 items-center justify-center rounded-full sm:h-12 sm:w-12',
+                area.bgColor
+              ]"
+              aria-hidden="true"
+            >
+              <component :is="area.icon" :class="['h-5 w-5 sm:h-6 sm:w-6', area.iconColor]" />
             </div>
-            <div class="flex-1">
-              <h3 class="text-lg font-medium mb-2">{{ area.title }}</h3>
-              <p class="text-sm text-muted-foreground mb-3">{{ area.description }}</p>
-              <div class="flex flex-wrap gap-1">
+
+            <div class="min-w-0 flex-1">
+              <h3 class="mb-2 text-base font-semibold leading-snug text-[#111827] sm:text-lg">
+                {{ area.title }}
+              </h3>
+
+              <p class="mb-3 text-sm leading-relaxed text-muted-foreground">
+                {{ area.description }}
+              </p>
+
+              <div class="flex flex-wrap gap-1.5">
                 <span
                   v-for="tag in area.tags"
                   :key="tag"
-                  class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full"
+                  class="rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-600"
                 >
                   {{ tag }}
                 </span>
               </div>
             </div>
-            <div v-if="selectedAreas.includes(area.id)" class="flex-shrink-0">
-              <div class="w-6 h-6 bg-[#A8D5BA] rounded-full flex items-center justify-center">
-                <Check class="w-4 h-4 text-white" />
+
+            <div v-if="selectedAreas.includes(area.id)" class="shrink-0">
+              <div
+                class="flex h-6 w-6 items-center justify-center rounded-full bg-[#A8D5BA]"
+                aria-hidden="true"
+              >
+                <Check class="h-4 w-4 text-white" />
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </button>
+      </section>
 
       <!-- Selected Counter -->
-      <div v-if="selectedAreas.length > 0" class="bg-white border rounded-xl p-4 mb-8 text-center">
+      <div
+        v-if="selectedAreas.length > 0"
+        class="mb-6 rounded-xl border bg-white p-4 text-center shadow-sm sm:mb-8"
+        aria-live="polite"
+      >
         <p class="text-sm text-muted-foreground">
-          <strong class="text-[#2C5F2D]">{{ selectedAreas.length }}</strong> of 3 focus areas selected
+          <strong class="text-[#2C5F2D]">{{ selectedAreas.length }}</strong>
+          of 3 focus areas selected
         </p>
       </div>
 
       <!-- Action Buttons -->
-      <div class="flex gap-4">
+      <div class="flex flex-col-reverse gap-3 sm:flex-row sm:gap-4">
         <button
           @click="handleSkip"
-          class="flex-1 px-8 py-4 bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+          class="w-full flex-1 rounded-lg border-2 border-gray-300 bg-white px-8 py-3.5 font-medium text-gray-700 transition-colors hover:bg-gray-50 sm:py-4"
+          type="button"
         >
           Skip This Step
         </button>
+
         <button
           @click="handleContinue"
           :disabled="selectedAreas.length === 0"
-          class="flex-1 px-8 py-4 bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          class="w-full flex-1 rounded-lg bg-[#A8D5BA] px-8 py-3.5 font-medium text-[#2C5F2D] transition-colors hover:bg-[#8FC2A4] disabled:cursor-not-allowed disabled:opacity-50 sm:py-4"
+          type="button"
+          :aria-disabled="selectedAreas.length === 0"
         >
           Continue
         </button>
@@ -93,7 +129,16 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { ArrowLeft, Check, Heart, Brain, Zap, Shield, Sparkles, Leaf } from 'lucide-vue-next';
+import {
+  ArrowLeft,
+  Check,
+  Heart,
+  Brain,
+  Zap,
+  Shield,
+  Sparkles,
+  Leaf,
+} from 'lucide-vue-next';
 import { useChildProfileStore } from '../stores/childProfile';
 
 const router = useRouter();
@@ -166,7 +211,7 @@ onMounted(() => {
 
 const toggleArea = (id) => {
   if (selectedAreas.value.includes(id)) {
-    selectedAreas.value = selectedAreas.value.filter(a => a !== id);
+    selectedAreas.value = selectedAreas.value.filter((areaId) => areaId !== id);
   } else if (selectedAreas.value.length < 3) {
     selectedAreas.value = [...selectedAreas.value, id];
   }
@@ -176,6 +221,7 @@ const handleContinue = () => {
   childProfileStore.updateDraft({
     nutritionFocus: selectedAreas.value,
   });
+
   router.push('/profile-summary');
 };
 
@@ -183,6 +229,13 @@ const handleSkip = () => {
   childProfileStore.updateDraft({
     nutritionFocus: [],
   });
+
   router.push('/profile-summary');
 };
 </script>
+
+<style scoped>
+.text-muted-foreground {
+  color: #6b7280;
+}
+</style>

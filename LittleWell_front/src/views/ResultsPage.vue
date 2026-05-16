@@ -1,134 +1,158 @@
 <template>
-  <div class="min-h-screen py-12 bg-[#FAF9F6]">
-    <div class="container mx-auto px-6 max-w-6xl">
+  <div class="min-h-screen bg-[#FAF9F6] py-6 sm:py-10 md:py-12">
+    <div class="container mx-auto max-w-6xl px-4 sm:px-6">
       <!-- Header -->
-      <div class="text-center mb-8">
-        <h1 class="text-4xl mb-4">Nutritious Lunchboxes for Children Aged 5–12</h1>
-        <p class="text-lg text-muted-foreground">
+      <header class="mb-6 text-center sm:mb-8">
+        <h1 class="mb-3 text-3xl font-semibold leading-tight text-[#2C5F2D] sm:mb-4 sm:text-4xl">
+          Nutritious Lunchboxes for Children Aged 5–12
+        </h1>
+
+        <p class="mx-auto max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-lg">
           Colorful, balanced lunchbox ideas designed for school-aged children
         </p>
 
         <div v-if="isFamilyMode" class="mt-3">
-          <span class="inline-block px-3 py-1 rounded-full text-sm bg-[#CDE7F0]/30 text-[#1B4965]">
+          <span class="inline-block rounded-full bg-[#CDE7F0]/30 px-3 py-1 text-sm text-[#1B4965]">
             Family plan mode
           </span>
         </div>
 
         <div v-if="isQuickMode" class="mt-3 text-center">
-          <span class="inline-block px-3 py-1 rounded-full text-sm bg-[#F7B267]/20 text-[#8B4513]">
+          <span class="inline-block rounded-full bg-[#F7B267]/20 px-3 py-1 text-sm text-[#8B4513]">
             Quick start mode
           </span>
         </div>
-      </div>
+      </header>
 
       <!-- Seasonal Recommendation Info -->
-      <div class="p-6 rounded-2xl shadow-sm mb-8 bg-white border">
-        <div class="flex items-start gap-4">
-          <div class="w-12 h-12 bg-[#A8D5BA] rounded-full flex items-center justify-center flex-shrink-0">
-            <Leaf class="w-6 h-6 text-[#2C5F2D]" />
+      <section class="mb-6 rounded-2xl border bg-white p-5 shadow-sm sm:mb-8 sm:p-6">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-4">
+          <div
+            class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#A8D5BA] sm:h-12 sm:w-12"
+            aria-hidden="true"
+          >
+            <Leaf class="h-5 w-5 text-[#2C5F2D] sm:h-6 sm:w-6" />
           </div>
 
-          <div>
-            <h3 class="text-lg font-medium">
+          <div class="min-w-0 flex-1">
+            <h3 class="text-lg font-semibold leading-tight text-[#2C5F2D]">
               {{ seasonNames[season] }} seasonal ingredients included
             </h3>
 
-            <p class="text-sm text-muted-foreground mt-1 leading-relaxed">
+            <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
               These lunchbox suggestions prioritise fresh, in-season vegetables where possible.
               Seasonal vegetables are often fresher, more flavourful, and easier to include in everyday school meals.
             </p>
 
             <div class="mt-3 flex flex-wrap gap-2">
-              <span class="text-xs bg-[#A8D5BA]/20 text-[#2C5F2D] px-3 py-1 rounded-full">
+              <span class="rounded-full bg-[#A8D5BA]/20 px-3 py-1 text-xs text-[#2C5F2D]">
                 Fresher choices
               </span>
-              <span class="text-xs bg-[#CDE7F0]/30 text-[#1B4965] px-3 py-1 rounded-full">
+              <span class="rounded-full bg-[#CDE7F0]/30 px-3 py-1 text-xs text-[#1B4965]">
                 Better flavour
               </span>
-              <span class="text-xs bg-[#F7B267]/20 text-[#8B4513] px-3 py-1 rounded-full">
+              <span class="rounded-full bg-[#F7B267]/20 px-3 py-1 text-xs text-[#8B4513]">
                 School-friendly nutrition
               </span>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       <!-- Nutrition Support Areas -->
-      <div v-if="needsSupport.length > 0" class="mb-8 p-6 bg-white border rounded-2xl shadow-sm">
+      <section
+        v-if="needsSupport.length > 0"
+        class="mb-6 rounded-2xl border bg-white p-5 shadow-sm sm:mb-8 sm:p-6"
+      >
         <div class="flex items-start gap-3">
-          <Sparkles class="w-5 h-5 text-[#F7B267] mt-1" />
-          <div>
-            <h4 class="font-medium mb-2">Personalised for Your Child's Needs</h4>
-            <p class="text-sm text-muted-foreground mb-3">
+          <Sparkles class="mt-1 h-5 w-5 shrink-0 text-[#F7B267]" aria-hidden="true" />
+
+          <div class="min-w-0 flex-1">
+            <h4 class="mb-2 font-semibold text-[#2C5F2D]">
+              Personalised for Your Child's Needs
+            </h4>
+
+            <p class="mb-3 text-sm leading-relaxed text-muted-foreground">
               These meals are tailored to provide extra support for:
             </p>
+
             <div class="flex flex-wrap gap-2">
               <span
                 v-for="area in needsSupport"
                 :key="area"
-                class="text-xs bg-[#F7B267]/20 text-[#8B4513] px-3 py-1 rounded-full"
+                class="rounded-full bg-[#F7B267]/20 px-3 py-1 text-xs text-[#8B4513]"
               >
                 {{ formatNeedLabel(area) }}
               </span>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       <!-- Loading -->
-      <div v-if="isLoading" class="text-center py-10 text-muted-foreground">
+      <div
+        v-if="isLoading"
+        class="rounded-2xl bg-white p-6 text-center text-sm text-muted-foreground shadow-sm sm:py-10 sm:text-base"
+        aria-live="polite"
+        aria-busy="true"
+      >
         Loading personalised lunchbox recommendations...
       </div>
 
       <!-- Empty -->
-      <div v-else-if="lunchboxes.length === 0" class="text-center py-10 text-muted-foreground">
+      <div
+        v-else-if="lunchboxes.length === 0"
+        class="rounded-2xl bg-white p-6 text-center text-sm text-muted-foreground shadow-sm sm:py-10 sm:text-base"
+      >
         No recommendations available yet. Please create a child profile first.
       </div>
 
       <!-- Main Lunchbox Grid -->
-      <div v-else>
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-2xl font-medium">Recommended Lunchboxes</h2>
-          <span class="text-sm text-muted-foreground">
+      <section v-else>
+        <div class="mb-4 flex items-end justify-between gap-3">
+          <h2 class="text-xl font-semibold text-[#2C5F2D] sm:text-2xl">
+            Recommended Lunchboxes
+          </h2>
+          <span class="shrink-0 text-sm text-muted-foreground">
             {{ lunchboxes.length }} options
           </span>
         </div>
 
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
+          <article
             v-for="lunchbox in lunchboxes"
             :key="lunchbox.id"
-            class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+            class="overflow-hidden rounded-2xl bg-white shadow-sm transition-shadow hover:shadow-md"
           >
             <!-- Child Badge -->
-            <div v-if="lunchbox.childName" class="px-6 pt-4">
-              <span class="inline-flex items-center px-3 py-1 bg-[#CDE7F0]/30 text-[#1B4965] text-sm rounded-full">
+            <div v-if="lunchbox.childName" class="px-5 pt-4 sm:px-6">
+              <span class="inline-flex items-center rounded-full bg-[#CDE7F0]/30 px-3 py-1 text-sm text-[#1B4965]">
                 For {{ lunchbox.childName }}
               </span>
             </div>
 
-            <div class="p-6">
-              <h3 class="text-lg font-medium mb-2">
+            <div class="p-5 sm:p-6">
+              <h3 class="mb-2 text-lg font-semibold leading-tight text-[#111827]">
                 {{ lunchbox.title || lunchbox.mealName || 'Recommended Lunchbox' }}
               </h3>
 
-              <div v-if="lunchbox.source || lunchbox.category" class="flex flex-wrap gap-2 mb-4">
+              <div v-if="lunchbox.source || lunchbox.category" class="mb-4 flex flex-wrap gap-2">
                 <span
                   v-if="lunchbox.source === 'mealdb'"
-                  class="text-xs bg-[#CDE7F0]/30 text-[#1B4965] px-2 py-1 rounded-full"
+                  class="rounded-full bg-[#CDE7F0]/30 px-2 py-1 text-xs text-[#1B4965]"
                 >
                   Recipe-based
                 </span>
                 <span
                   v-if="lunchbox.category"
-                  class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full"
+                  class="rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-600"
                 >
                   {{ lunchbox.category }}
                 </span>
               </div>
 
               <!-- Food Items List -->
-              <div class="space-y-2 mb-4">
+              <div class="mb-4 space-y-2">
                 <div
                   v-for="(item, idx) in lunchbox.items"
                   :key="`${lunchbox.id}-${idx}`"
@@ -136,13 +160,16 @@
                 >
                   <div
                     :class="[
-                      'w-2 h-2 rounded-full mt-1.5',
+                      'mt-1.5 h-2 w-2 shrink-0 rounded-full',
                       getSectionColor(item.section)
                     ]"
                   ></div>
-                  <div class="flex-1">
-                    <p class="text-sm font-medium">{{ item.name }}</p>
-                    <p class="text-xs text-muted-foreground">
+
+                  <div class="min-w-0 flex-1">
+                    <p class="text-sm font-medium leading-snug text-[#111827]">
+                      {{ item.name }}
+                    </p>
+                    <p class="text-xs leading-relaxed text-muted-foreground">
                       {{ formatItemAmount(item.amount) }}
                     </p>
                   </div>
@@ -152,13 +179,13 @@
               <!-- Nutrition Focus Tags -->
               <div
                 v-if="Array.isArray(lunchbox.nutritionFocus) && lunchbox.nutritionFocus.length > 0"
-                class="flex flex-wrap gap-2 mb-3"
+                class="mb-3 flex flex-wrap gap-2"
               >
                 <span
                   v-for="focus in lunchbox.nutritionFocus"
                   :key="focus"
                   :class="[
-                    'text-xs px-3 py-1 rounded-full',
+                    'rounded-full px-3 py-1 text-xs',
                     supportColors[lunchbox.supportType] || supportColors.general,
                     supportTextColors[lunchbox.supportType] || supportTextColors.general
                   ]"
@@ -168,78 +195,86 @@
               </div>
 
               <!-- Why This Meal -->
-              <p v-if="lunchbox.whyThisMeal" class="text-sm text-muted-foreground leading-relaxed">
+              <p v-if="lunchbox.whyThisMeal" class="text-sm leading-relaxed text-muted-foreground">
                 {{ lunchbox.whyThisMeal }}
               </p>
             </div>
-          </div>
+          </article>
         </div>
-      </div>
+      </section>
 
       <!-- Recipe Inspiration -->
-      <div v-if="showRecipeInspiration" class="mt-16">
-        <div class="flex items-center justify-between mb-6">
+      <section v-if="showRecipeInspiration" class="mt-10 sm:mt-16">
+        <div class="mb-5 flex flex-col gap-3 sm:mb-6 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h2 class="text-2xl font-medium">Recipe Inspiration</h2>
-            <p class="text-sm text-muted-foreground">
+            <h2 class="text-xl font-semibold text-[#2C5F2D] sm:text-2xl">
+              Recipe Inspiration
+            </h2>
+            <p class="mt-1 text-sm leading-relaxed text-muted-foreground">
               {{ isFamilyMode
                 ? 'Recipe ideas combined from multiple children in your family plan'
                 : 'Extra recipe ideas powered by MealDB and AUSNUT' }}
             </p>
           </div>
+
           <button
             @click="loadRecipeInspiration"
-            class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+            class="inline-flex w-full items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium transition-colors hover:bg-gray-50 sm:w-auto sm:py-2"
             type="button"
           >
             Refresh Recipes
           </button>
         </div>
 
-        <div v-if="recipeLoading" class="text-center py-8 text-muted-foreground">
+        <div
+          v-if="recipeLoading"
+          class="rounded-2xl bg-white p-6 text-center text-sm text-muted-foreground shadow-sm sm:py-8 sm:text-base"
+          aria-live="polite"
+          aria-busy="true"
+        >
           Loading recipe inspiration...
         </div>
 
-        <div v-else-if="recipeMeals.length > 0" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div
+        <div v-else-if="recipeMeals.length > 0" class="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
+          <article
             v-for="meal in recipeMeals"
             :key="meal.id || meal.idMeal || meal.title || meal.mealName"
-            class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+            class="cursor-pointer overflow-hidden rounded-2xl bg-white shadow-sm transition-shadow hover:shadow-md"
             @click="handleRecipeClick(meal)"
           >
             <div
               v-if="meal.heroImage || meal.mealImage"
-              class="aspect-[16/9] bg-gray-100 overflow-hidden"
+              class="aspect-[16/9] overflow-hidden bg-gray-100"
             >
               <img
                 :src="meal.heroImage || meal.mealImage"
                 :alt="meal.title || meal.mealName || 'Recipe image'"
-                class="w-full h-full object-cover"
+                class="h-full w-full object-cover"
                 @error="handleImageError"
               />
             </div>
 
-            <div class="p-6">
-              <h3 class="text-lg font-medium mb-2">
+            <div class="p-5 sm:p-6">
+              <h3 class="mb-2 text-lg font-semibold leading-tight text-[#111827]">
                 {{ meal.title || meal.mealName || 'Recipe Inspiration' }}
               </h3>
 
-              <div v-if="meal.category || meal.area || meal.childName" class="flex flex-wrap gap-2 mb-3">
+              <div v-if="meal.category || meal.area || meal.childName" class="mb-3 flex flex-wrap gap-2">
                 <span
                   v-if="meal.category"
-                  class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full"
+                  class="rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-600"
                 >
                   {{ meal.category }}
                 </span>
                 <span
                   v-if="meal.area"
-                  class="text-xs bg-[#CDE7F0]/30 text-[#1B4965] px-2 py-1 rounded-full"
+                  class="rounded-full bg-[#CDE7F0]/30 px-2 py-1 text-xs text-[#1B4965]"
                 >
                   {{ meal.area }}
                 </span>
                 <span
                   v-if="meal.childName && !isFamilyMode"
-                  class="text-xs bg-[#A8D5BA]/20 text-[#2C5F2D] px-2 py-1 rounded-full"
+                  class="rounded-full bg-[#A8D5BA]/20 px-2 py-1 text-xs text-[#2C5F2D]"
                 >
                   For {{ meal.childName }}
                 </span>
@@ -247,34 +282,37 @@
 
               <div
                 v-if="Array.isArray(meal.nutritionFocus) && meal.nutritionFocus.length > 0"
-                class="flex flex-wrap gap-2 mb-3"
+                class="mb-3 flex flex-wrap gap-2"
               >
                 <span
                   v-for="focus in meal.nutritionFocus"
                   :key="focus"
-                  class="text-xs px-3 py-1 rounded-full bg-[#A8D5BA]/20 text-[#2C5F2D]"
+                  class="rounded-full bg-[#A8D5BA]/20 px-3 py-1 text-xs text-[#2C5F2D]"
                 >
                   {{ focus }}
                 </span>
               </div>
 
-              <p v-if="meal.whyThisMeal" class="text-sm text-muted-foreground leading-relaxed">
+              <p v-if="meal.whyThisMeal" class="text-sm leading-relaxed text-muted-foreground">
                 {{ meal.whyThisMeal }}
               </p>
             </div>
-          </div>
+          </article>
         </div>
 
-        <div v-else class="text-center py-8 text-muted-foreground">
+        <div
+          v-else
+          class="rounded-2xl bg-white p-6 text-center text-sm text-muted-foreground shadow-sm sm:py-8 sm:text-base"
+        >
           No recipe inspiration available right now.
         </div>
-      </div>
+      </section>
 
       <!-- Action Buttons -->
-      <div class="mt-12 flex gap-4 justify-center">
+      <div class="mt-10 flex flex-col gap-3 sm:mt-12 sm:flex-row sm:justify-center sm:gap-4">
         <button
           @click="router.push('/')"
-          class="px-8 py-3 bg-white border-2 border-[#A8D5BA] text-[#2C5F2D] rounded-lg hover:bg-[#A8D5BA]/10 transition-colors"
+          class="inline-flex w-full items-center justify-center rounded-lg border-2 border-[#A8D5BA] bg-white px-8 py-3 font-medium text-[#2C5F2D] transition-colors hover:bg-[#A8D5BA]/10 sm:w-auto"
           type="button"
         >
           Back to Home
@@ -282,10 +320,10 @@
 
         <button
           @click="loadEverything"
-          class="px-8 py-3 bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg transition-colors inline-flex items-center gap-2"
+          class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#A8D5BA] px-8 py-3 font-medium text-[#2C5F2D] transition-colors hover:bg-[#8FC2A4] sm:w-auto"
           type="button"
         >
-          <RefreshCw class="w-4 h-4" />
+          <RefreshCw class="h-4 w-4" aria-hidden="true" />
           Generate New Meals
         </button>
       </div>

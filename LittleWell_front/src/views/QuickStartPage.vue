@@ -1,83 +1,110 @@
 <template>
-  <div class="min-h-screen py-12">
-    <div class="container mx-auto px-6 max-w-3xl">
+  <div class="min-h-screen bg-[#FAF9F6] py-6 sm:py-10 md:py-12">
+    <div class="container mx-auto max-w-3xl px-4 sm:px-6">
       <!-- Back Button -->
       <button
         @click="router.push('/')"
-        class="mb-6 px-4 py-2 hover:bg-gray-100 rounded-lg transition-colors inline-flex items-center gap-2"
+        class="mb-5 inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-white sm:mb-6 sm:px-4"
+        type="button"
+        aria-label="Back to Home"
       >
-        <ArrowLeft class="w-4 h-4" />
+        <ArrowLeft class="h-4 w-4" aria-hidden="true" />
         Back to Home
       </button>
 
       <!-- Header -->
-      <div class="text-center mb-12">
-        <h1 class="text-4xl mb-4">Quick Meal Suggestions</h1>
-        <p class="text-lg text-muted-foreground">
+      <header class="mb-8 text-center sm:mb-12">
+        <h1 class="mb-3 text-3xl font-semibold leading-tight text-[#2C5F2D] sm:mb-4 sm:text-4xl">
+          Quick Meal Suggestions
+        </h1>
+
+        <p class="mx-auto max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-lg">
           Get simple lunchbox ideas for children aged 5–12
         </p>
-      </div>
+      </header>
 
       <!-- Age Group Selection -->
-      <div class="p-8 rounded-2xl shadow-sm mb-8 bg-white border">
-        <label class="text-lg mb-4 block font-medium">
-          What's your child's age?
-        </label>
+      <section class="mb-5 rounded-2xl border bg-white p-5 shadow-sm sm:mb-8 sm:p-8">
+        <fieldset>
+          <legend class="mb-3 block text-lg font-semibold text-[#111827] sm:mb-4">
+            What's your child's age?
+          </legend>
 
-        <p class="text-sm text-muted-foreground mb-4">
-          LittleWell currently supports school-aged children from 5 to 12 years old.
-        </p>
+          <p id="age-group-hint" class="mb-4 text-sm leading-relaxed text-muted-foreground">
+            LittleWell currently supports school-aged children from 5 to 12 years old.
+          </p>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <button
-            v-for="age in ageGroups"
-            :key="age"
-            @click="ageGroup = age"
-            :class="[
-              'p-4 rounded-lg border-2 transition-all',
-              ageGroup === age
-                ? 'border-[#A8D5BA] bg-[#A8D5BA]/10 text-[#2C5F2D]'
-                : 'border-gray-200 hover:border-[#A8D5BA]/50'
-            ]"
+          <div
+            class="grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-3"
+            role="group"
+            aria-describedby="age-group-hint"
           >
-            {{ age }}
-          </button>
-        </div>
-      </div>
+            <button
+              v-for="age in ageGroups"
+              :key="age"
+              @click="ageGroup = age"
+              :aria-pressed="ageGroup === age"
+              :class="[
+                'min-h-[48px] rounded-lg border-2 p-3 text-sm font-medium transition-all sm:p-4 sm:text-base',
+                ageGroup === age
+                  ? 'border-[#A8D5BA] bg-[#A8D5BA]/10 text-[#2C5F2D]'
+                  : 'border-gray-200 hover:border-[#A8D5BA]/50'
+              ]"
+              type="button"
+            >
+              {{ age }}
+            </button>
+          </div>
+        </fieldset>
+      </section>
 
       <!-- Allergies -->
-      <div class="p-8 rounded-2xl shadow-sm mb-8 bg-white border">
-        <label class="text-lg mb-4 block font-medium">
-          Any allergies or intolerances? (optional)
-        </label>
-        <p class="text-sm text-muted-foreground mb-4">
-          Select all that apply
-        </p>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <button
-            v-for="allergy in commonAllergies"
-            :key="allergy"
-            @click="toggleAllergy(allergy)"
-            :class="[
-              'p-4 rounded-lg border-2 transition-all',
-              allergies.includes(allergy)
-                ? 'border-[#F7B267] bg-[#F7B267]/10 text-[#8B4513]'
-                : 'border-gray-200 hover:border-[#F7B267]/50'
-            ]"
+      <section class="mb-5 rounded-2xl border bg-white p-5 shadow-sm sm:mb-8 sm:p-8">
+        <fieldset>
+          <legend class="mb-3 block text-lg font-semibold text-[#111827] sm:mb-4">
+            Any allergies or intolerances? (optional)
+          </legend>
+
+          <p id="allergy-hint" class="mb-4 text-sm text-muted-foreground">
+            Select all that apply
+          </p>
+
+          <div
+            class="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3"
+            role="group"
+            aria-describedby="allergy-hint"
           >
-            {{ allergy }}
-          </button>
-        </div>
-      </div>
+            <button
+              v-for="allergy in commonAllergies"
+              :key="allergy"
+              @click="toggleAllergy(allergy)"
+              :aria-pressed="allergies.includes(allergy)"
+              :class="[
+                'min-h-[48px] rounded-lg border-2 px-2 py-3 text-sm font-medium transition-all sm:p-4 sm:text-base',
+                allergies.includes(allergy)
+                  ? 'border-[#F7B267] bg-[#F7B267]/10 text-[#8B4513]'
+                  : 'border-gray-200 hover:border-[#F7B267]/50'
+              ]"
+              type="button"
+            >
+              {{ allergy }}
+            </button>
+          </div>
+        </fieldset>
+      </section>
 
       <!-- Continue Button -->
-      <button
-        @click="handleContinue"
-        :disabled="!ageGroup"
-        class="w-full bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg py-4 text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-      >
-        Get Meal Suggestions
-      </button>
+      <div class="sticky bottom-0 z-20 -mx-4 bg-[#FAF9F6]/95 px-4 py-4 backdrop-blur sm:static sm:mx-0 sm:bg-transparent sm:px-0 sm:py-0 sm:backdrop-blur-0">
+        <button
+          @click="handleContinue"
+          :disabled="!ageGroup"
+          class="w-full rounded-xl bg-[#A8D5BA] py-4 text-base font-semibold text-[#2C5F2D] shadow-sm transition-colors hover:bg-[#8FC2A4] disabled:cursor-not-allowed disabled:opacity-50 sm:text-lg"
+          type="button"
+          :aria-disabled="!ageGroup"
+        >
+          Get Meal Suggestions
+        </button>
+      </div>
     </div>
   </div>
 </template>

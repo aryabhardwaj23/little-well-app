@@ -1,41 +1,52 @@
 <template>
-  <div class="min-h-screen py-12 bg-[#FAF9F6]">
-    <div class="container mx-auto px-6 max-w-4xl">
+  <div class="min-h-screen bg-[#FAF9F6] py-6 sm:py-10 md:py-12">
+    <div class="container mx-auto max-w-4xl px-4 sm:px-6">
       <!-- Back Button -->
       <button
         @click="goBack"
-        class="mb-6 px-4 py-2 hover:bg-white rounded-lg transition-colors inline-flex items-center gap-2"
+        class="mb-5 inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-white sm:mb-6 sm:px-4"
         type="button"
         aria-label="Go back"
       >
-        <ArrowLeft class="w-4 h-4" aria-hidden="true" />
+        <ArrowLeft class="h-4 w-4" aria-hidden="true" />
         Back
       </button>
- 
+
       <!-- Header -->
-      <div class="text-center mb-12">
-        <div class="w-16 h-16 bg-gradient-to-br from-[#A8D5BA] to-[#8FC2A4] rounded-full flex items-center justify-center mx-auto mb-4" aria-hidden="true">
-          <ClipboardCheck class="w-8 h-8 text-white" />
+      <header class="mb-8 text-center sm:mb-12">
+        <div
+          class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-[#A8D5BA] to-[#8FC2A4] sm:h-16 sm:w-16"
+          aria-hidden="true"
+        >
+          <ClipboardCheck class="h-7 w-7 text-white sm:h-8 sm:w-8" />
         </div>
-        <h1 class="text-4xl mb-4">Quick Nutrition Check</h1>
-        <p class="text-lg text-muted-foreground">
+
+        <h1 class="mb-3 text-3xl font-semibold leading-tight text-[#2C5F2D] sm:mb-4 sm:text-4xl">
+          Quick Nutrition Check
+        </h1>
+
+        <p class="mx-auto max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-lg">
           Answer a few questions about your child's current diet
         </p>
-        <p class="text-sm text-muted-foreground mt-2">
+
+        <p class="mt-2 text-xs leading-relaxed text-muted-foreground sm:text-sm">
           This helps us provide more personalized meal suggestions
         </p>
-      </div>
- 
+      </header>
+
       <!-- Progress Bar -->
-      <div class="mb-8">
-        <div class="flex justify-between text-sm text-muted-foreground mb-2">
+      <section class="mb-6 sm:mb-8" aria-label="Nutrition check progress">
+        <div class="mb-2 flex justify-between gap-4 text-xs text-muted-foreground sm:text-sm">
           <span aria-live="polite">
             Question {{ currentQuestion + 1 }} of {{ questions.length }}
           </span>
-          <span>{{ Math.round(((currentQuestion + 1) / questions.length) * 100) }}% complete</span>
+          <span class="shrink-0">
+            {{ Math.round(((currentQuestion + 1) / questions.length) * 100) }}% complete
+          </span>
         </div>
+
         <div
-          class="w-full h-2 bg-gray-200 rounded-full overflow-hidden"
+          class="h-2 w-full overflow-hidden rounded-full bg-gray-200"
           role="progressbar"
           :aria-valuenow="currentQuestion + 1"
           :aria-valuemin="1"
@@ -47,29 +58,43 @@
             :style="{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }"
           ></div>
         </div>
-      </div>
- 
+      </section>
+
       <!-- Question Card -->
-      <div class="bg-white rounded-2xl shadow-lg p-8 mb-6">
-        <div class="mb-6">
-          <div class="flex items-start gap-3 mb-4">
+      <section class="mb-5 rounded-2xl bg-white p-5 shadow-sm sm:mb-6 sm:p-8">
+        <div class="mb-5 sm:mb-6">
+          <div class="flex items-start gap-3 sm:gap-4">
             <div
-              :class="['w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0', questions[currentQuestion].colorClass]"
+              :class="[
+                'flex h-10 w-10 shrink-0 items-center justify-center rounded-full sm:h-11 sm:w-11',
+                questions[currentQuestion].colorClass
+              ]"
               aria-hidden="true"
             >
-              <component :is="questions[currentQuestion].icon" class="w-5 h-5 text-white" />
+              <component :is="questions[currentQuestion].icon" class="h-5 w-5 text-white" />
             </div>
-            <div class="flex-1">
-              <p class="text-sm text-muted-foreground mb-2">{{ questions[currentQuestion].category }}</p>
-              <h2 class="text-xl font-medium" :id="`question-${currentQuestion}`">
+
+            <div class="min-w-0 flex-1">
+              <p class="mb-2 text-xs text-muted-foreground sm:text-sm">
+                {{ questions[currentQuestion].category }}
+              </p>
+
+              <h2
+                class="text-lg font-semibold leading-snug text-[#111827] sm:text-xl"
+                :id="`question-${currentQuestion}`"
+              >
                 {{ questions[currentQuestion].question }}
               </h2>
             </div>
           </div>
         </div>
- 
+
         <!-- Options -->
-        <div role="group" :aria-labelledby="`question-${currentQuestion}`" class="space-y-3">
+        <div
+          role="group"
+          :aria-labelledby="`question-${currentQuestion}`"
+          class="space-y-3"
+        >
           <button
             v-for="option in questions[currentQuestion].options"
             :key="option.value"
@@ -77,75 +102,80 @@
             @click="selectAnswer(option.value)"
             :aria-pressed="answers[questions[currentQuestion].id] === option.value"
             :class="[
-              'w-full p-4 rounded-lg border-2 text-left transition-all',
+              'w-full rounded-xl border-2 p-4 text-left transition-all sm:rounded-lg',
               answers[questions[currentQuestion].id] === option.value
                 ? 'border-[#A8D5BA] bg-[#A8D5BA]/10'
                 : 'border-gray-200 hover:border-[#A8D5BA]/50'
             ]"
           >
-            <div class="flex items-center justify-between">
-              <span>{{ option.label }}</span>
+            <div class="flex items-center justify-between gap-3">
+              <span class="text-sm leading-relaxed text-[#111827] sm:text-base">
+                {{ option.label }}
+              </span>
+
               <div
                 v-if="answers[questions[currentQuestion].id] === option.value"
-                class="w-5 h-5 bg-[#A8D5BA] rounded-full flex items-center justify-center"
+                class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#A8D5BA]"
                 aria-hidden="true"
               >
-                <Check class="w-3 h-3 text-white" />
+                <Check class="h-3 w-3 text-white" />
               </div>
             </div>
           </button>
         </div>
-      </div>
- 
+      </section>
+
       <!-- Navigation Buttons -->
-      <div class="flex gap-4">
+      <div class="flex flex-col-reverse gap-3 sm:flex-row sm:gap-4">
         <button
           v-if="currentQuestion > 0"
           @click="previousQuestion"
           type="button"
-          class="px-8 py-4 bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+          class="w-full rounded-lg border-2 border-gray-300 bg-white px-8 py-3.5 text-gray-700 transition-colors hover:bg-gray-50 sm:w-auto sm:py-4"
         >
           Previous
         </button>
+
         <button
           v-if="currentQuestion < questions.length - 1"
           @click="nextQuestion"
           type="button"
           :disabled="!answers[questions[currentQuestion].id]"
-          class="flex-1 px-8 py-4 bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          class="w-full flex-1 rounded-lg bg-[#A8D5BA] px-8 py-3.5 font-medium text-[#2C5F2D] transition-colors hover:bg-[#8FC2A4] disabled:cursor-not-allowed disabled:opacity-50 sm:py-4"
           :aria-disabled="!answers[questions[currentQuestion].id]"
         >
           Next Question
         </button>
+
         <button
           v-else
           @click="handleComplete"
           type="button"
           :disabled="!answers[questions[currentQuestion].id]"
-          class="flex-1 px-8 py-4 bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors inline-flex items-center justify-center gap-2"
+          class="inline-flex w-full flex-1 items-center justify-center gap-2 rounded-lg bg-[#A8D5BA] px-8 py-3.5 font-medium text-[#2C5F2D] transition-colors hover:bg-[#8FC2A4] disabled:cursor-not-allowed disabled:opacity-50 sm:py-4"
           :aria-disabled="!answers[questions[currentQuestion].id]"
         >
-          <Check class="w-4 h-4" aria-hidden="true" />
+          <Check class="h-4 w-4" aria-hidden="true" />
           Complete Check
         </button>
       </div>
     </div>
   </div>
 </template>
- 
+
 <script setup>
 import { ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { ArrowLeft, Check, ClipboardCheck, Apple, Droplet, Cookie, Carrot } from 'lucide-vue-next';
 import { useNutritionCheckStore } from '../stores/nutritionCheck';
- 
+
 const router = useRouter();
 const route = useRoute();
 const nutritionCheckStore = useNutritionCheckStore();
- 
+
 const currentQuestion = ref(0);
 const answers = ref({});
- 
+
 const questions = [
   {
     id: 'fruits',
@@ -200,24 +230,28 @@ const questions = [
     ],
   },
 ];
- 
+
 const selectAnswer = (value) => {
   answers.value[questions[currentQuestion.value].id] = value;
 };
- 
+
 const nextQuestion = () => {
-  if (currentQuestion.value < questions.length - 1) currentQuestion.value++;
+  if (currentQuestion.value < questions.length - 1) {
+    currentQuestion.value++;
+  }
 };
- 
+
 const previousQuestion = () => {
-  if (currentQuestion.value > 0) currentQuestion.value--;
+  if (currentQuestion.value > 0) {
+    currentQuestion.value--;
+  }
 };
- 
+
 const goBack = () => {
   const childId = route.query.childId;
   router.push(childId ? `/profile-summary?childId=${childId}` : '/profile-summary');
 };
- 
+
 const handleComplete = () => {
   const insights = {
     fruits: answers.value.fruits || 'needs',
@@ -225,20 +259,31 @@ const handleComplete = () => {
     sugar: answers.value.sugar || 'needs',
     protein: answers.value.protein || 'needs',
   };
-  const scoreMap = { excellent: 4, good: 3, needs: 2, poor: 1 };
+
+  const scoreMap = {
+    excellent: 4,
+    good: 3,
+    needs: 2,
+    poor: 1,
+  };
+
   const totalScore = Object.values(insights).reduce((sum, val) => sum + scoreMap[val], 0);
   const maxScore = Object.keys(insights).length * 4;
+
   nutritionCheckStore.setResult({
     answers: { ...answers.value },
     nutritionInsights: insights,
     score: (totalScore / maxScore) * 100,
     completedAt: new Date().toISOString(),
   });
+
   const childId = route.query.childId || '';
   router.push(childId ? `/nutrition-insights?childId=${childId}` : '/nutrition-insights');
 };
 </script>
- 
+
 <style scoped>
-.text-muted-foreground { color: #6b7280; }
+.text-muted-foreground {
+  color: #6b7280;
+}
 </style>

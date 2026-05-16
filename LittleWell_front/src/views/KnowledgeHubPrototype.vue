@@ -1,23 +1,27 @@
 <template>
   <div class="min-h-screen bg-[#FAF9F6]">
-    <div class="pt-10 pb-8">
-      <div class="container mx-auto px-4 sm:px-6 max-w-4xl text-center">
-        <h1 class="text-4xl md:text-5xl mb-3 text-[#2C5F2D]">Knowledge Hub</h1>
-        <p class="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+    <!-- Header -->
+    <div class="pt-7 pb-5 sm:pt-10 sm:pb-8">
+      <div class="container mx-auto max-w-4xl px-4 text-center sm:px-6">
+        <h1 class="mb-3 text-3xl font-semibold leading-tight text-[#2C5F2D] sm:text-4xl md:text-5xl">
+          Knowledge Hub
+        </h1>
+        <p class="mx-auto max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-lg md:text-xl">
           Learn about serving sizes, food groups, and what to watch out for in everyday foods.
         </p>
       </div>
     </div>
 
-    <div class="relative py-10 pb-24">
+    <div class="relative py-5 pb-16 sm:py-10 sm:pb-24">
+      <!-- Background -->
       <div class="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
         <div class="absolute inset-0 bg-[#FAF9F6]"></div>
         <div
-          class="absolute inset-0 bg-center bg-cover bg-fixed opacity-55"
+          class="absolute inset-0 bg-center bg-cover opacity-35 sm:opacity-55"
           style="background-image: url('https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=1600');"
         ></div>
-        <div class="absolute top-0 left-0 right-0 h-20 bg-gradient-to-b from-[#FAF9F6] via-[#FAF9F6]/75 to-transparent z-[1]"></div>
-        <div class="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-[#FAF9F6] via-[#FAF9F6]/80 to-transparent z-[1]"></div>
+        <div class="absolute top-0 left-0 right-0 z-[1] h-16 bg-gradient-to-b from-[#FAF9F6] via-[#FAF9F6]/80 to-transparent sm:h-20"></div>
+        <div class="absolute bottom-0 left-0 right-0 z-[1] h-20 bg-gradient-to-t from-[#FAF9F6] via-[#FAF9F6]/85 to-transparent sm:h-28"></div>
       </div>
 
       <div class="container relative z-10 mx-auto max-w-5xl px-4 sm:px-6">
@@ -25,12 +29,12 @@
         <div
           role="tablist"
           aria-label="Knowledge Hub sections"
-          class="flex flex-wrap justify-center gap-2 mb-5"
+          class="-mx-4 mb-4 flex gap-2 overflow-x-auto px-4 pb-2 sm:mx-0 sm:mb-5 sm:flex-wrap sm:justify-center sm:overflow-visible sm:px-0 sm:pb-0"
         >
           <div
             v-for="tab in hubTabs"
             :key="tab.id"
-            class="relative group"
+            class="relative shrink-0 group"
           >
             <button
               type="button"
@@ -40,7 +44,7 @@
               :id="`tab-${tab.id}`"
               @click="onHubTabActivate($event, tab.id)"
               :class="[
-                'px-5 py-2.5 rounded-full text-sm font-medium transition-all border',
+                'whitespace-nowrap rounded-full border px-4 py-2.5 text-sm font-medium transition-all sm:px-5',
                 activeHubTab === tab.id
                   ? 'bg-[#2C5F2D] text-white border-[#2C5F2D] shadow-sm'
                   : 'bg-white text-[#2C5F2D] border-[#D6E7DC] hover:border-[#A8D5BA] hover:bg-[#A8D5BA]/10',
@@ -51,7 +55,7 @@
 
             <div
               role="tooltip"
-              class="absolute bottom-full left-1/2 z-40 mb-3 hidden w-max max-w-[min(22rem,calc(100vw-2rem))] -translate-x-1/2 rounded-xl border border-[#A8D5BA]/40 bg-white p-4 text-left text-sm leading-relaxed text-muted-foreground shadow-lg opacity-0 pointer-events-none transition-all duration-200 translate-y-1 group-hover:translate-y-0 group-hover:opacity-100 md:block"
+              class="absolute bottom-full left-1/2 z-40 mb-3 hidden w-max max-w-[min(22rem,calc(100vw-2rem))] -translate-x-1/2 translate-y-1 rounded-xl border border-[#A8D5BA]/40 bg-white p-4 text-left text-sm leading-relaxed text-muted-foreground opacity-0 shadow-lg transition-all duration-200 pointer-events-none group-hover:translate-y-0 group-hover:opacity-100 md:block"
             >
               {{ tab.hint }}
             </div>
@@ -64,49 +68,49 @@
           role="tabpanel"
           aria-labelledby="tab-serving"
           v-show="activeHubTab === 'serving'"
-          class="bg-white rounded-3xl border border-[#E8E4DC] shadow-sm p-5 sm:p-6 md:p-10"
+          class="rounded-3xl border border-[#E8E4DC] bg-white p-5 shadow-sm sm:p-6 md:p-10"
         >
-          <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-5 mb-8">
+          <div class="mb-7 flex flex-col gap-4 lg:mb-8 lg:flex-row lg:items-start lg:justify-between lg:gap-5">
             <div>
-              <h2 class="text-2xl md:text-3xl text-[#2C5F2D] mb-1">
+              <h2 class="mb-1 text-2xl font-semibold leading-tight text-[#2C5F2D] md:text-3xl">
                 Serving Size Calculator
               </h2>
-              <p class="text-muted-foreground max-w-2xl">
+              <p class="max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
                 Choose one child profile, then see an age-based serving guide personalised with saved child information.
               </p>
             </div>
 
-            <div class="rounded-2xl bg-[#F8F5EC] border border-[#E8E4DC] px-4 py-3 text-sm max-w-sm">
-              <p class="font-semibold text-[#2C5F2D] mb-1">How this is personalised</p>
-              <p class="text-muted-foreground leading-relaxed">
+            <div class="max-w-sm rounded-2xl border border-[#E8E4DC] bg-[#F8F5EC] px-4 py-3 text-sm">
+              <p class="mb-1 font-semibold text-[#2C5F2D]">How this is personalised</p>
+              <p class="leading-relaxed text-muted-foreground">
                 Serving amounts come from the age-band guideline. Notes and safer choices are adjusted using allergies, dietary needs, and nutrition focus.
               </p>
             </div>
           </div>
 
-          <p class="text-sm font-semibold text-[#2C5F2D] uppercase tracking-wide mb-3">
+          <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-[#2C5F2D] sm:text-sm">
             Step 1 — Select your child
           </p>
 
           <div
             v-if="USE_STEP1_LOGIN_GATE && !isLoggedIn"
-            class="bg-white border border-gray-200 rounded-2xl p-5 text-center shadow-sm max-w-2xl mx-auto"
+            class="mx-auto max-w-2xl rounded-2xl border border-gray-200 bg-white p-5 text-center shadow-sm"
           >
-            <p class="text-muted-foreground">
+            <p class="text-sm text-muted-foreground sm:text-base">
               Sign in to save child profiles, weekly plans, and personalised recommendations.
             </p>
-            <div class="flex flex-wrap justify-center gap-3 mt-4">
+            <div class="mt-4 flex flex-col justify-center gap-3 sm:flex-row sm:flex-wrap">
               <button
                 type="button"
                 @click="goToLogin"
-                class="bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg px-6 py-2 transition-colors"
+                class="rounded-lg bg-[#A8D5BA] px-6 py-3 text-[#2C5F2D] transition-colors hover:bg-[#8FC2A4] sm:py-2"
               >
                 Sign in
               </button>
               <button
                 type="button"
                 @click="goToRegister"
-                class="bg-white border border-[#A8D5BA] text-[#2C5F2D] rounded-lg px-6 py-2 hover:bg-[#A8D5BA]/10 transition-colors"
+                class="rounded-lg border border-[#A8D5BA] bg-white px-6 py-3 text-[#2C5F2D] transition-colors hover:bg-[#A8D5BA]/10 sm:py-2"
               >
                 Create account
               </button>
@@ -115,14 +119,14 @@
 
           <div
             v-else-if="isLoggedIn && (isLoadingProfiles || isLoadingServingTargets)"
-            class="p-4 rounded-xl border bg-[#FAF9F6] text-center text-muted-foreground text-sm"
+            class="rounded-xl border bg-[#FAF9F6] p-4 text-center text-sm text-muted-foreground"
             aria-live="polite"
             aria-busy="true"
           >
             Loading your child profiles and serving targets…
           </div>
 
-          <div v-else class="flex gap-4 overflow-x-auto pb-2 -mx-1 px-1 snap-x snap-mandatory">
+          <div v-else class="-mx-1 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-2 sm:gap-4">
             <button
               v-for="p in step1Profiles"
               :key="p.id"
@@ -130,154 +134,154 @@
               @click="selectedChildId = p.id"
               :aria-pressed="selectedChildId === p.id"
               :class="[
-                'flex-shrink-0 w-[min(100%,280px)] snap-start text-left rounded-2xl border-2 p-5 transition-all',
+                'w-[82vw] max-w-[280px] shrink-0 snap-start rounded-2xl border-2 p-4 text-left transition-all sm:w-[280px] sm:p-5',
                 selectedChildId === p.id
                   ? 'border-[#2C5F2D] bg-[#A8D5BA]/15 shadow-md'
                   : 'border-gray-200 bg-[#FAF9F6] hover:border-[#A8D5BA]/60',
               ]"
             >
-              <div class="flex items-center gap-3 mb-2">
+              <div class="mb-2 flex items-center gap-3">
                 <div
-                  class="w-12 h-12 rounded-full bg-[#CDE7F0]/50 flex items-center justify-center text-[#1B4965] font-semibold text-lg"
+                  class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#CDE7F0]/50 text-base font-semibold text-[#1B4965] sm:h-12 sm:w-12 sm:text-lg"
                   aria-hidden="true"
                 >
                   {{ initials(p.name) }}
                 </div>
-                <div>
-                  <p class="font-semibold text-[#111827]">{{ p.name }}</p>
+                <div class="min-w-0">
+                  <p class="truncate font-semibold text-[#111827]">{{ p.name }}</p>
                   <p class="text-sm text-muted-foreground">{{ p.ageGroup || 'Age on file' }}</p>
                 </div>
               </div>
 
               <p
                 v-if="p.allergies?.length"
-                class="text-xs text-amber-800 bg-amber-50 rounded-lg px-2 py-1 mt-2"
+                class="mt-2 rounded-lg bg-amber-50 px-2 py-1 text-xs text-amber-800"
               >
                 Allergies: {{ p.allergies.join(', ') }}
               </p>
 
               <p
                 v-if="p.dietaryRestriction"
-                class="text-xs text-[#1B4965] bg-[#CDE7F0]/40 rounded-lg px-2 py-1 mt-2"
+                class="mt-2 rounded-lg bg-[#CDE7F0]/40 px-2 py-1 text-xs text-[#1B4965]"
               >
                 {{ p.dietaryRestriction }}
               </p>
 
               <p
                 v-if="p.isDemo"
-                class="text-[10px] uppercase tracking-wide text-muted-foreground mt-2"
+                class="mt-2 text-[10px] uppercase tracking-wide text-muted-foreground"
               >
                 Demo profile
               </p>
 
               <p
                 v-else
-                class="text-[10px] uppercase tracking-wide text-[#2C5F2D] mt-2"
+                class="mt-2 text-[10px] uppercase tracking-wide text-[#2C5F2D]"
               >
                 Saved profile
               </p>
             </button>
           </div>
 
-          <p v-if="isShowingDemoProfiles" class="text-xs text-muted-foreground mt-3 max-w-2xl">
+          <p v-if="isShowingDemoProfiles" class="mt-3 max-w-2xl text-xs leading-relaxed text-muted-foreground">
             Preview mode: these sample profiles show how the calculator works. Sign in to use your saved child profiles and receive personalised serving guidance.
           </p>
 
           <p
             v-if="servingTargetError"
-            class="text-xs text-red-600 mt-3 max-w-2xl"
+            class="mt-3 max-w-2xl text-xs text-red-600"
           >
             {{ servingTargetError }}
           </p>
 
           <template v-if="selectedChild && dailyServeRows.length">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mt-10 mb-4">
+            <div class="mt-8 mb-4 flex flex-col gap-3 md:mt-10 md:flex-row md:items-center md:justify-between">
               <div>
-                <p class="text-sm font-semibold text-[#2C5F2D] uppercase tracking-wide">
+                <p class="text-xs font-semibold uppercase tracking-wide text-[#2C5F2D] sm:text-sm">
                   Step 2 — Personalised daily serves
                 </p>
-                <p class="text-xs text-muted-foreground mt-1">
+                <p class="mt-1 text-xs leading-relaxed text-muted-foreground">
                   Serving amounts use the age-band guideline. Personalised tags and notes come from the selected child profile.
                 </p>
               </div>
 
               <div
-                class="inline-flex items-center gap-2 rounded-full border border-[#D6E7DC] bg-[#F8F5EC] px-3 py-1 text-xs text-[#2C5F2D] w-fit"
+                class="inline-flex w-fit items-center gap-2 rounded-full border border-[#D6E7DC] bg-[#F8F5EC] px-3 py-1 text-xs text-[#2C5F2D]"
               >
-                <Info class="w-3.5 h-3.5" aria-hidden="true" />
+                <Info class="h-3.5 w-3.5" aria-hidden="true" />
                 <span>{{ servingDataSourceLabel }}</span>
               </div>
             </div>
 
-            <div class="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-5">
               <div
                 v-for="row in dailyServeRows"
                 :key="row.groupKey"
-                class="rounded-2xl border border-[#E5E7EB] bg-[#FAF9F6] p-4 flex flex-col"
+                class="flex flex-col rounded-2xl border border-[#E5E7EB] bg-[#FAF9F6] p-4"
               >
-                <div class="flex items-start justify-between gap-3 mb-3">
+                <div class="mb-3 flex items-start justify-between gap-3">
                   <div
-                    class="w-10 h-10 rounded-full bg-white border border-[#D6E7DC] flex items-center justify-center text-[#2C5F2D] shrink-0"
+                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#D6E7DC] bg-white text-[#2C5F2D]"
                     aria-hidden="true"
                   >
-                    <component :is="row.icon" class="w-5 h-5" />
+                    <component :is="row.icon" class="h-5 w-5" />
                   </div>
 
                   <span
                     v-if="row.personalisedTags?.length"
-                    class="rounded-full bg-white border border-[#D6E7DC] px-2 py-1 text-[10px] text-[#2C5F2D] whitespace-nowrap"
+                    class="whitespace-nowrap rounded-full border border-[#D6E7DC] bg-white px-2 py-1 text-[10px] text-[#2C5F2D]"
                   >
                     Personalised
                   </span>
                 </div>
 
-                <h3 class="font-semibold text-[#2C5F2D] leading-tight">
+                <h3 class="font-semibold leading-tight text-[#2C5F2D]">
                   {{ row.group }}
                 </h3>
 
-                <p class="text-2xl font-bold text-[#111827] mt-2">
+                <p class="mt-2 text-2xl font-bold text-[#111827]">
                   {{ formatServe(row.serves) }}
                   <span class="text-sm font-normal text-muted-foreground">serves</span>
                 </p>
 
-                <p class="text-sm font-semibold text-[#2C5F2D] mt-1">
+                <p class="mt-1 text-sm font-semibold text-[#2C5F2D]">
                   ≈ {{ row.estimatedGrams }} g/day
                 </p>
 
                 <div
                   v-if="row.personalisedTags?.length"
-                  class="flex flex-wrap gap-1 mt-3"
+                  class="mt-3 flex flex-wrap gap-1"
                 >
                   <span
                     v-for="tag in row.personalisedTags"
                     :key="tag"
-                    class="rounded-full bg-white border border-[#D6E7DC] px-2 py-1 text-[11px] text-[#2C5F2D]"
+                    class="rounded-full border border-[#D6E7DC] bg-white px-2 py-1 text-[11px] text-[#2C5F2D]"
                   >
                     {{ tag }}
                   </span>
                 </div>
 
-                <p class="text-xs text-muted-foreground mt-3 leading-snug flex-1">
+                <p class="mt-3 flex-1 text-xs leading-snug text-muted-foreground">
                   {{ row.example }}
                 </p>
 
                 <p
                   v-if="row.personalisedNote"
-                  class="mt-3 rounded-xl bg-white border border-[#D6E7DC] px-3 py-2 text-xs text-[#2C5F2D] leading-relaxed"
+                  class="mt-3 rounded-xl border border-[#D6E7DC] bg-white px-3 py-2 text-xs leading-relaxed text-[#2C5F2D]"
                 >
                   {{ row.personalisedNote }}
                 </p>
               </div>
             </div>
 
-            <div class="mt-8 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-[#2C5F2D] text-white px-5 py-4">
-              <span class="text-sm font-medium flex items-center gap-2">
+            <div class="mt-6 flex flex-col gap-2 rounded-2xl bg-[#2C5F2D] px-5 py-4 text-white sm:mt-8 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+              <span class="flex items-center gap-2 text-sm font-medium">
                 Total daily target
                 <span class="inline-flex" title="Educational serving target based on age band; not medical advice.">
-                  <Info class="w-4 h-4 opacity-80" aria-label="Educational serving target based on age band; not medical advice." />
+                  <Info class="h-4 w-4 opacity-80" aria-label="Educational serving target based on age band; not medical advice." />
                 </span>
               </span>
-              <span class="text-lg font-semibold tabular-nums text-right">
+              <span class="text-left text-lg font-semibold tabular-nums sm:text-right">
                 {{ totalDailyServes }} serves
                 <span v-if="totalEstimatedGrams">
                   · ≈ {{ totalEstimatedGrams }} g/day
@@ -287,19 +291,19 @@
 
             <div
               v-if="personalisedFocusNotes.length"
-              class="mt-8 rounded-2xl border border-[#D6E7DC] bg-[#F8F5EC]/80 p-5"
+              class="mt-6 rounded-2xl border border-[#D6E7DC] bg-[#F8F5EC]/80 p-5 sm:mt-8"
             >
-              <p class="text-sm font-semibold text-[#2C5F2D] uppercase tracking-wide mb-3">
+              <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-[#2C5F2D] sm:text-sm">
                 Step 3 — Profile-based guidance for {{ selectedChild.name }}
               </p>
 
-              <ul class="space-y-2 text-sm text-muted-foreground leading-relaxed">
+              <ul class="space-y-2 text-sm leading-relaxed text-muted-foreground">
                 <li
                   v-for="note in personalisedFocusNotes"
                   :key="note.label + note.message"
                   class="flex gap-2"
                 >
-                  <span class="text-[#2C5F2D] mt-0.5" aria-hidden="true">•</span>
+                  <span class="mt-0.5 text-[#2C5F2D]" aria-hidden="true">•</span>
                   <span>
                     <strong class="text-[#2C5F2D]">{{ note.label }}:</strong>
                     {{ note.message }}
@@ -308,12 +312,12 @@
               </ul>
             </div>
 
-            <p class="text-xs text-muted-foreground mt-3">
+            <p class="mt-3 text-xs leading-relaxed text-muted-foreground">
               Serve targets are based on the selected child's age band. Gram values are estimated using standard grams per serve by food group, because actual grams can vary by food type and preparation method.
             </p>
           </template>
 
-          <p v-else-if="step1Profiles.length && !selectedChild" class="mt-8 text-center text-muted-foreground text-sm">
+          <p v-else-if="step1Profiles.length && !selectedChild" class="mt-8 text-center text-sm text-muted-foreground">
             Tap a child card above to load serving targets.
           </p>
         </section>
@@ -324,13 +328,16 @@
           role="tabpanel"
           aria-labelledby="tab-guide"
           v-show="activeHubTab === 'guide'"
-          class="flex flex-col md:flex-row gap-6 md:gap-8"
+          class="flex flex-col gap-4 md:flex-row md:gap-8"
         >
-          <aside class="w-full md:w-56 shrink-0 rounded-2xl border border-[#E8E4DC] bg-white shadow-sm overflow-hidden">
-            <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-4 pt-4 pb-2">
+          <aside class="w-full shrink-0 overflow-hidden rounded-2xl border border-[#E8E4DC] bg-white shadow-sm md:w-56">
+            <p class="px-4 pt-4 pb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               Food groups
             </p>
-            <nav aria-label="Food group navigation">
+            <nav
+              aria-label="Food group navigation"
+              class="flex gap-2 overflow-x-auto px-3 pb-3 md:block md:gap-0 md:overflow-visible md:px-0 md:pb-0"
+            >
               <button
                 v-for="g in foodGroupCatalog"
                 :key="g.id"
@@ -338,36 +345,42 @@
                 @click="selectedFoodGroupId = g.id"
                 :aria-pressed="selectedFoodGroupId === g.id"
                 :class="[
-                  'w-full flex items-center justify-between px-4 py-3 text-left text-sm transition-colors border-l-4',
+                  'flex shrink-0 items-center justify-between rounded-full border px-4 py-2.5 text-left text-sm transition-colors md:w-full md:rounded-none md:border-0 md:border-l-4 md:px-4 md:py-3',
                   selectedFoodGroupId === g.id
-                    ? 'bg-[#A8D5BA]/20 border-l-[#2C5F2D] text-[#2C5F2D] font-medium'
-                    : 'border-l-transparent hover:bg-[#FAF9F6] text-gray-700',
+                    ? 'bg-[#A8D5BA]/20 border-[#2C5F2D] text-[#2C5F2D] font-medium md:border-l-[#2C5F2D]'
+                    : 'border-[#D6E7DC] text-gray-700 hover:bg-[#FAF9F6] md:border-l-transparent',
                 ]"
               >
                 {{ g.label }}
-                <ChevronRight class="w-4 h-4 text-muted-foreground shrink-0" aria-hidden="true" />
+                <ChevronRight class="ml-2 hidden h-4 w-4 shrink-0 text-muted-foreground md:block" aria-hidden="true" />
               </button>
             </nav>
           </aside>
 
-          <div class="flex-1 min-w-0 rounded-3xl border border-[#E8E4DC] bg-white shadow-sm p-6 md:p-10">
+          <div class="min-w-0 flex-1 rounded-3xl border border-[#E8E4DC] bg-white p-5 shadow-sm sm:p-6 md:p-10">
             <template v-if="activeFoodGroup">
-              <div class="flex items-center gap-1.5 mb-6">
-                <span class="text-4xl md:text-5xl leading-none select-none shrink-0 -translate-y-0.5" aria-hidden="true">
+              <div class="mb-5 flex items-center gap-2 sm:mb-6">
+                <span class="-translate-y-0.5 shrink-0 select-none text-4xl leading-none md:text-5xl" aria-hidden="true">
                   {{ activeFoodGroup.emoji }}
                 </span>
-                <h2 class="text-2xl md:text-3xl text-[#2C5F2D]">
+                <h2 class="text-2xl font-semibold text-[#2C5F2D] md:text-3xl">
                   {{ activeFoodGroup.label }}
                 </h2>
               </div>
 
-              <h3 class="text-sm font-semibold text-[#2C5F2D] uppercase tracking-wide mb-2">Why it matters</h3>
-              <p class="text-muted-foreground leading-relaxed mb-8">{{ activeFoodGroup.why }}</p>
+              <h3 class="mb-2 text-xs font-semibold uppercase tracking-wide text-[#2C5F2D] sm:text-sm">
+                Why it matters
+              </h3>
+              <p class="mb-6 text-sm leading-relaxed text-muted-foreground sm:mb-8 sm:text-base">
+                {{ activeFoodGroup.why }}
+              </p>
 
-              <h3 class="text-sm font-semibold text-[#2C5F2D] uppercase tracking-wide mb-3">Serving guide (per day)</h3>
+              <h3 class="mb-3 text-xs font-semibold uppercase tracking-wide text-[#2C5F2D] sm:text-sm">
+                Serving guide (per day)
+              </h3>
 
               <div class="overflow-x-auto rounded-xl border border-[#E5E7EB]">
-                <table class="w-full text-sm">
+                <table class="w-full min-w-[560px] text-sm">
                   <thead>
                     <tr class="bg-[#FAF9F6] text-left text-[#374151]">
                       <th scope="col" class="px-4 py-3 font-semibold">Age (years)</th>
@@ -381,7 +394,7 @@
                       :key="idx"
                       class="border-t border-[#E5E7EB] text-gray-800"
                     >
-                      <td class="px-4 py-3 whitespace-nowrap">{{ r.age }}</td>
+                      <td class="whitespace-nowrap px-4 py-3">{{ r.age }}</td>
                       <td class="px-4 py-3">{{ r.servings }}</td>
                       <td class="px-4 py-3 text-muted-foreground">{{ r.examples }}</td>
                     </tr>
@@ -389,7 +402,9 @@
                 </table>
               </div>
 
-              <p class="text-xs text-muted-foreground mt-3">{{ activeFoodGroup.footnote }}</p>
+              <p class="mt-3 text-xs leading-relaxed text-muted-foreground">
+                {{ activeFoodGroup.footnote }}
+              </p>
             </template>
           </div>
         </section>
@@ -400,20 +415,20 @@
           role="tabpanel"
           aria-labelledby="tab-heatmap"
           v-show="activeHubTab === 'heatmap'"
-          class="bg-white rounded-3xl border border-[#E8E4DC] shadow-sm p-6 md:p-10"
+          class="rounded-3xl border border-[#E8E4DC] bg-white p-5 shadow-sm sm:p-6 md:p-10"
         >
-          <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 mb-8">
+          <div class="mb-7 flex flex-col gap-4 lg:mb-8 lg:flex-row lg:items-start lg:justify-between lg:gap-6">
             <div>
-              <h2 class="text-2xl md:text-3xl text-[#2C5F2D] mb-1">
+              <h2 class="mb-1 text-2xl font-semibold leading-tight text-[#2C5F2D] md:text-3xl">
                 {{ additiveGuide?.title || 'Additive Awareness Guide' }}
               </h2>
-              <p class="text-muted-foreground max-w-3xl leading-relaxed">
+              <p class="max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-base">
                 {{ additiveGuide?.description || 'Explore how often added sugar, preservatives, and artificial colours appear across packaged food categories in our database.' }}
               </p>
             </div>
-            <div class="rounded-2xl bg-[#F8F5EC] border border-[#E8E4DC] px-4 py-3 text-sm text-[#2C5F2D] max-w-sm">
-              <p class="font-semibold mb-1">Why this matters</p>
-              <p class="text-muted-foreground leading-relaxed">
+            <div class="max-w-sm rounded-2xl border border-[#E8E4DC] bg-[#F8F5EC] px-4 py-3 text-sm text-[#2C5F2D]">
+              <p class="mb-1 font-semibold">Why this matters</p>
+              <p class="leading-relaxed text-muted-foreground">
                 This guide helps parents decide which packaged food categories may need closer label checking.
               </p>
             </div>
@@ -421,7 +436,7 @@
 
           <div
             v-if="isLoadingAdditive"
-            class="p-5 rounded-2xl border bg-[#FAF9F6] text-center text-muted-foreground"
+            class="rounded-2xl border bg-[#FAF9F6] p-5 text-center text-muted-foreground"
             aria-live="polite"
             aria-busy="true"
           >
@@ -431,71 +446,71 @@
           <div
             v-else-if="additiveError"
             role="alert"
-            class="p-5 rounded-2xl border border-red-200 bg-red-50 text-red-700 text-sm"
+            class="rounded-2xl border border-red-200 bg-red-50 p-5 text-sm text-red-700"
           >
             {{ additiveError }}
           </div>
 
           <template v-else>
-            <div v-if="additiveSummary" class="grid md:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
+            <div v-if="additiveSummary" class="mb-7 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-4 xl:mb-8">
               <div class="rounded-2xl border border-[#E5E7EB] bg-[#FAF9F6] p-4">
-                <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Highest added sugar</p>
+                <p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Highest added sugar</p>
                 <p
-                  class="text-lg font-semibold text-[#2C5F2D] mt-2"
+                  class="mt-2 text-lg font-semibold text-[#2C5F2D]"
                   :title="additiveSummary.highest_added_sugar?.category"
                 >
                   {{ getFriendlyCategoryName(additiveSummary.highest_added_sugar?.category) }}
                 </p>
-                <p class="text-2xl font-bold text-[#111827] mt-1">{{ additiveSummary.highest_added_sugar?.percent ?? 0 }}%</p>
+                <p class="mt-1 text-2xl font-bold text-[#111827]">{{ additiveSummary.highest_added_sugar?.percent ?? 0 }}%</p>
               </div>
 
               <div class="rounded-2xl border border-[#E5E7EB] bg-[#FAF9F6] p-4">
-                <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Highest preservatives</p>
+                <p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Highest preservatives</p>
                 <p
-                  class="text-lg font-semibold text-[#2C5F2D] mt-2"
+                  class="mt-2 text-lg font-semibold text-[#2C5F2D]"
                   :title="additiveSummary.highest_preservatives?.category"
                 >
                   {{ getFriendlyCategoryName(additiveSummary.highest_preservatives?.category) }}
                 </p>
-                <p class="text-2xl font-bold text-[#111827] mt-1">{{ additiveSummary.highest_preservatives?.percent ?? 0 }}%</p>
+                <p class="mt-1 text-2xl font-bold text-[#111827]">{{ additiveSummary.highest_preservatives?.percent ?? 0 }}%</p>
               </div>
 
               <div class="rounded-2xl border border-[#E5E7EB] bg-[#FAF9F6] p-4">
-                <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Highest colours</p>
+                <p class="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Highest colours</p>
                 <p
-                  class="text-lg font-semibold text-[#2C5F2D] mt-2"
+                  class="mt-2 text-lg font-semibold text-[#2C5F2D]"
                   :title="additiveSummary.highest_artificial_colours?.category"
                 >
                   {{ getFriendlyCategoryName(additiveSummary.highest_artificial_colours?.category) }}
                 </p>
-                <p class="text-2xl font-bold text-[#111827] mt-1">{{ additiveSummary.highest_artificial_colours?.percent ?? 0 }}%</p>
+                <p class="mt-1 text-2xl font-bold text-[#111827]">{{ additiveSummary.highest_artificial_colours?.percent ?? 0 }}%</p>
               </div>
 
               <div class="rounded-2xl border border-amber-200 bg-amber-50 p-4">
-                <p class="text-xs font-semibold text-amber-800 uppercase tracking-wide">Highest label-check priority</p>
+                <p class="text-xs font-semibold uppercase tracking-wide text-amber-800">Highest label-check priority</p>
                 <p
-                  class="text-lg font-semibold text-amber-950 mt-2"
+                  class="mt-2 text-lg font-semibold text-amber-950"
                   :title="additiveSummary.highest_overall_priority?.category"
                 >
                   {{ getFriendlyCategoryName(additiveSummary.highest_overall_priority?.category) }}
                 </p>
-                <p class="text-sm text-amber-900 mt-1">
+                <p class="mt-1 text-sm text-amber-900">
                   {{ simplifyLabelPriority(additiveSummary.highest_overall_priority?.label_priority) }}
                 </p>
               </div>
             </div>
 
-            <div v-if="additiveGuide?.disclaimer" class="mb-8 rounded-2xl border border-[#D6E7DC] bg-[#F8F5EC]/70 p-4">
-              <p class="text-sm text-muted-foreground leading-relaxed">{{ additiveGuide.disclaimer }}</p>
+            <div v-if="additiveGuide?.disclaimer" class="mb-7 rounded-2xl border border-[#D6E7DC] bg-[#F8F5EC]/70 p-4 sm:mb-8">
+              <p class="text-sm leading-relaxed text-muted-foreground">{{ additiveGuide.disclaimer }}</p>
             </div>
 
             <!-- Desktop Table -->
-            <div class="hidden md:block overflow-x-auto rounded-xl border border-[#E5E7EB]">
-              <table class="w-full text-sm min-w-[760px] table-fixed">
+            <div class="hidden overflow-x-auto rounded-xl border border-[#E5E7EB] md:block">
+              <table class="w-full min-w-[760px] table-fixed text-sm">
                 <thead>
                   <tr class="bg-[#FAF9F6]">
-                    <th scope="col" class="px-3 py-3 text-left font-semibold text-[#374151] w-[22%]">Category</th>
-                    <th scope="col" class="px-3 py-3 text-left font-semibold text-[#374151] w-[18%]">Label priority</th>
+                    <th scope="col" class="w-[22%] px-3 py-3 text-left font-semibold text-[#374151]">Category</th>
+                    <th scope="col" class="w-[18%] px-3 py-3 text-left font-semibold text-[#374151]">Label priority</th>
                     <th
                       v-for="col in additiveColumns"
                       :key="col.key"
@@ -508,44 +523,44 @@
                 </thead>
                 <tbody>
                   <tr v-for="row in additiveRows" :key="row.category" class="border-t border-[#E5E7EB]">
-                    <td class="px-3 py-3 font-medium text-gray-800 align-middle">
+                    <td class="px-3 py-3 align-middle font-medium text-gray-800">
                       <div :title="row.category">
-                        <p class="text-[#111827] font-semibold">
+                        <p class="font-semibold text-[#111827]">
                           {{ getFriendlyCategoryName(row.category) }}
                         </p>
 
                         <p
                           v-if="getShortCategoryDescription(row.category)"
-                          class="text-xs text-muted-foreground mt-1 leading-snug"
+                          class="mt-1 text-xs leading-snug text-muted-foreground"
                         >
                           {{ getShortCategoryDescription(row.category) }}
                         </p>
 
-                        <p class="text-xs text-muted-foreground mt-1">
+                        <p class="mt-1 text-xs text-muted-foreground">
                           {{ row.total_products }} products
                         </p>
                       </div>
                     </td>
 
                     <td class="px-3 py-3 align-middle">
-                      <div class="rounded-xl bg-[#FAF9F6] border border-[#E5E7EB] p-3">
+                      <div class="rounded-xl border border-[#E5E7EB] bg-[#FAF9F6] p-3">
                         <p class="font-semibold text-[#2C5F2D]">
                           {{ simplifyLabelPriority(row.label_priority) }}
                         </p>
-                        <p class="text-xs text-muted-foreground mt-1">Score: {{ row.risk_score }}</p>
+                        <p class="mt-1 text-xs text-muted-foreground">Score: {{ row.risk_score }}</p>
                       </div>
                     </td>
 
-                    <td v-for="col in additiveColumns" :key="col.key" class="px-3 py-2 align-middle text-center">
+                    <td v-for="col in additiveColumns" :key="col.key" class="px-3 py-2 text-center align-middle">
                       <div
                         :class="[
-                          'relative rounded-xl px-4 py-3 font-semibold tabular-nums border w-full min-h-[3.5rem] flex items-center justify-center',
+                          'relative flex min-h-[3.5rem] w-full items-center justify-center rounded-xl border px-4 py-3 font-semibold tabular-nums',
                           heatCellClass(row[col.key]?.level),
                         ]"
                       >
                         <AlertTriangle
                           v-if="row[col.key]?.level === 'warning'"
-                          class="pointer-events-none absolute top-1/2 left-[calc(50%-2.1rem)] z-0 w-4 h-4 -translate-y-1/2 text-amber-700"
+                          class="pointer-events-none absolute top-1/2 left-[calc(50%-2.1rem)] z-0 h-4 w-4 -translate-y-1/2 text-amber-700"
                           aria-label="High prevalence"
                         />
                         <span class="relative z-10 text-center">{{ row[col.key]?.percent ?? 0 }}%</span>
@@ -557,25 +572,29 @@
             </div>
 
             <!-- Mobile Cards -->
-            <div class="md:hidden space-y-4">
-              <article v-for="row in additiveRows" :key="row.category" class="rounded-2xl border border-[#E5E7EB] bg-[#FAF9F6] p-4">
-                <div class="flex items-start justify-between gap-3 mb-3">
+            <div class="space-y-3 md:hidden">
+              <article
+                v-for="row in additiveRows"
+                :key="row.category"
+                class="rounded-2xl border border-[#E5E7EB] bg-[#FAF9F6] p-4"
+              >
+                <div class="mb-3 flex flex-col gap-2">
                   <div>
-                    <h3 class="font-semibold text-[#2C5F2D]" :title="row.category">
+                    <h3 class="font-semibold leading-tight text-[#2C5F2D]" :title="row.category">
                       {{ getFriendlyCategoryName(row.category) }}
                     </h3>
 
                     <p
                       v-if="getShortCategoryDescription(row.category)"
-                      class="text-xs text-muted-foreground mt-0.5 leading-snug"
+                      class="mt-0.5 text-xs leading-snug text-muted-foreground"
                     >
                       {{ getShortCategoryDescription(row.category) }}
                     </p>
 
-                    <p class="text-xs text-muted-foreground mt-1">{{ row.total_products }} products</p>
+                    <p class="mt-1 text-xs text-muted-foreground">{{ row.total_products }} products</p>
                   </div>
 
-                  <span class="text-xs rounded-full bg-white border border-[#D6E7DC] px-3 py-1 text-[#2C5F2D]">
+                  <span class="w-fit rounded-full border border-[#D6E7DC] bg-white px-3 py-1 text-xs text-[#2C5F2D]">
                     {{ simplifyLabelPriority(row.label_priority) }}
                   </span>
                 </div>
@@ -584,44 +603,48 @@
                   <div
                     v-for="col in additiveColumns"
                     :key="col.key"
-                    class="flex items-center justify-between rounded-xl bg-white border border-[#E5E7EB] px-3 py-2"
+                    class="flex items-center justify-between gap-3 rounded-xl border border-[#E5E7EB] bg-white px-3 py-2"
                   >
                     <span class="text-sm text-gray-700">{{ col.label }}</span>
-                    <span :class="['text-sm font-semibold rounded-lg px-2 py-1 border', heatCellClass(row[col.key]?.level)]">
+                    <span :class="['rounded-lg border px-2 py-1 text-sm font-semibold', heatCellClass(row[col.key]?.level)]">
                       {{ row[col.key]?.percent ?? 0 }}%
                     </span>
                   </div>
                 </div>
 
-                <p class="text-xs text-muted-foreground mt-3 leading-relaxed">
+                <p class="mt-3 text-xs leading-relaxed text-muted-foreground">
                   {{ getSimpleAdditiveTip(row) }}
                 </p>
               </article>
             </div>
 
-            <div v-if="!additiveRows.length" class="mt-6 p-5 rounded-2xl border bg-[#FAF9F6] text-center text-muted-foreground">
+            <div v-if="!additiveRows.length" class="mt-6 rounded-2xl border bg-[#FAF9F6] p-5 text-center text-muted-foreground">
               No additive records are available yet.
             </div>
 
-            <div class="grid lg:grid-cols-2 gap-6 mt-8">
+            <div class="mt-7 grid gap-4 lg:mt-8 lg:grid-cols-2 lg:gap-6">
               <div class="rounded-2xl border border-[#E5E7EB] bg-white p-5">
-                <p class="text-sm font-semibold text-[#2C5F2D] uppercase tracking-wide mb-3">How to read this</p>
+                <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-[#2C5F2D] sm:text-sm">
+                  How to read this
+                </p>
                 <div class="space-y-3">
                   <div v-for="item in additiveHowToRead" :key="item.level" class="flex items-start gap-3">
-                    <span :class="['w-10 h-5 rounded border shrink-0 mt-0.5', heatCellClass(item.level)]" aria-hidden="true"></span>
+                    <span :class="['mt-0.5 h-5 w-10 shrink-0 rounded border', heatCellClass(item.level)]" aria-hidden="true"></span>
                     <div>
                       <p class="text-sm font-semibold text-gray-800">{{ item.label }}</p>
-                      <p class="text-xs text-muted-foreground leading-relaxed">{{ item.meaning }}</p>
+                      <p class="text-xs leading-relaxed text-muted-foreground">{{ item.meaning }}</p>
                     </div>
                   </div>
                 </div>
               </div>
 
               <div class="rounded-2xl border border-[#E5E7EB] bg-white p-5">
-                <p class="text-sm font-semibold text-[#2C5F2D] uppercase tracking-wide mb-3">Parent tips</p>
-                <ul class="space-y-2 text-sm text-muted-foreground leading-relaxed">
+                <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-[#2C5F2D] sm:text-sm">
+                  Parent tips
+                </p>
+                <ul class="space-y-2 text-sm leading-relaxed text-muted-foreground">
                   <li v-for="tip in additiveTips" :key="tip" class="flex gap-2">
-                    <span class="text-[#2C5F2D] mt-0.5" aria-hidden="true">•</span>
+                    <span class="mt-0.5 text-[#2C5F2D]" aria-hidden="true">•</span>
                     <span>{{ tip }}</span>
                   </li>
                 </ul>

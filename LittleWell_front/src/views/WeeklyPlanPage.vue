@@ -1,106 +1,123 @@
 <template>
-  <div class="min-h-screen py-12 bg-[#FAF9F6]">
-    <div class="container mx-auto px-6 max-w-6xl">
+  <div class="min-h-screen bg-[#FAF9F6] py-6 sm:py-10 md:py-12">
+    <div class="container mx-auto max-w-6xl px-4 sm:px-6">
       <!-- Back Button -->
       <button
         @click="router.push('/')"
-        class="mb-6 px-4 py-2 hover:bg-white rounded-lg transition-colors inline-flex items-center gap-2"
+        class="mb-5 inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-white sm:mb-6 sm:px-4"
         type="button"
+        aria-label="Back to Home"
       >
-        <ArrowLeft class="w-4 h-4" />
+        <ArrowLeft class="h-4 w-4" aria-hidden="true" />
         Back to Home
       </button>
 
       <!-- Loading / Error -->
       <div
         v-if="isLoading"
-        class="mb-8 p-4 bg-white rounded-xl border text-center text-muted-foreground"
+        class="mb-6 rounded-xl border bg-white p-4 text-center text-sm text-muted-foreground sm:mb-8 sm:text-base"
+        aria-live="polite"
+        aria-busy="true"
       >
         Loading...
       </div>
 
       <div
         v-if="errorMessage"
-        class="mb-8 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl"
+        class="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 sm:mb-8"
+        role="alert"
+        aria-live="assertive"
       >
         {{ errorMessage }}
       </div>
 
       <!-- Header -->
-      <div v-if="!planGenerated" class="text-center mb-12">
-        <h1 class="text-4xl mb-4">Plan Your Week, Simply</h1>
-        <p class="text-lg text-muted-foreground mb-6">
+      <header v-if="!planGenerated" class="mb-8 text-center sm:mb-12">
+        <h1 class="mb-3 text-3xl font-semibold leading-tight text-[#2C5F2D] sm:mb-4 sm:text-4xl">
+          Plan Your Week, Simply
+        </h1>
+
+        <p class="mx-auto mb-5 max-w-3xl text-sm leading-relaxed text-muted-foreground sm:mb-6 sm:text-lg">
           Build a weekly lunchbox plan for children aged 5–12 using child profiles,
           database food recommendations, and recipe inspiration.
         </p>
 
-        <div class="inline-flex items-center gap-2 bg-white rounded-full px-6 py-3 shadow-sm border">
-          <component :is="getSeasonIcon()" class="w-5 h-5 text-[#A8D5BA]" />
-          <span class="font-medium">{{ getSeasonName() }} Plan</span>
+        <div class="inline-flex items-center gap-2 rounded-full border bg-white px-5 py-2.5 text-sm shadow-sm sm:px-6 sm:py-3 sm:text-base">
+          <component :is="getSeasonIcon()" class="h-5 w-5 text-[#A8D5BA]" aria-hidden="true" />
+          <span class="font-medium text-[#2C5F2D]">{{ getSeasonName() }} Plan</span>
         </div>
-      </div>
+      </header>
 
       <!-- Select Children -->
-      <div v-if="!planGenerated" class="mb-12">
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="text-2xl">Select Children</h2>
+      <section v-if="!planGenerated" class="mb-8 sm:mb-12">
+        <div class="mb-5 flex flex-col gap-3 sm:mb-6 sm:flex-row sm:items-center sm:justify-between">
+          <h2 class="text-2xl font-semibold text-[#2C5F2D]">Select Children</h2>
 
           <button
             v-if="profiles.length === 0"
             @click="router.push('/child-info')"
-            class="bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] px-5 py-2 rounded-lg transition-colors"
+            class="inline-flex w-full items-center justify-center rounded-lg bg-[#A8D5BA] px-5 py-3 text-sm font-medium text-[#2C5F2D] transition-colors hover:bg-[#8FC2A4] sm:w-auto sm:py-2"
             type="button"
           >
             Add a Child
           </button>
         </div>
 
-        <div v-if="profiles.length === 0" class="p-8 bg-white border rounded-2xl text-center">
-          <p class="text-muted-foreground mb-4">
+        <div v-if="profiles.length === 0" class="rounded-2xl border bg-white p-6 text-center sm:p-8">
+          <p class="mb-4 text-sm leading-relaxed text-muted-foreground sm:text-base">
             No supported child profiles found. Create a child profile for a child aged 5–12 first.
           </p>
 
           <button
             @click="router.push('/child-info')"
-            class="bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] px-8 py-3 rounded-lg transition-colors"
+            class="inline-flex w-full items-center justify-center rounded-lg bg-[#A8D5BA] px-8 py-3 font-medium text-[#2C5F2D] transition-colors hover:bg-[#8FC2A4] sm:w-auto"
             type="button"
           >
             Create 5–12 Child Profile
           </button>
         </div>
 
-        <div v-else class="grid md:grid-cols-3 gap-4">
-          <div
+        <div v-else class="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <button
             v-for="profile in profiles"
             :key="profile.id"
             @click="toggleChildSelection(profile.id)"
+            :aria-pressed="selectedChildren.includes(profile.id)"
             :class="[
-              'p-6 rounded-2xl border-2 cursor-pointer transition-all',
+              'w-full rounded-2xl border-2 p-5 text-left transition-all sm:p-6',
               selectedChildren.includes(profile.id)
-                ? 'border-[#A8D5BA] bg-[#A8D5BA]/10'
-                : 'border-gray-200 hover:border-[#A8D5BA]/50 bg-white'
+                ? 'border-[#A8D5BA] bg-[#A8D5BA]/10 shadow-sm'
+                : 'border-gray-200 bg-white hover:border-[#A8D5BA]/50'
             ]"
+            type="button"
           >
             <div class="flex items-start gap-3">
               <input
                 type="checkbox"
                 :checked="selectedChildren.includes(profile.id)"
-                class="mt-1"
+                class="mt-1 accent-[#A8D5BA]"
+                tabindex="-1"
+                aria-hidden="true"
                 @click.stop
               />
 
-              <div class="flex-1">
-                <h3 class="text-lg font-medium mb-1">{{ profile.name }}</h3>
-                <p class="text-sm text-muted-foreground mb-3">{{ profile.ageGroup }}</p>
+              <div class="min-w-0 flex-1">
+                <h3 class="mb-1 text-lg font-semibold leading-tight text-[#111827]">
+                  {{ profile.name }}
+                </h3>
+
+                <p class="mb-3 text-sm text-muted-foreground">
+                  {{ profile.ageGroup }}
+                </p>
 
                 <div v-if="profile.allergies.length > 0" class="mb-2">
-                  <p class="text-xs text-muted-foreground mb-1">Allergies</p>
+                  <p class="mb-1 text-xs text-muted-foreground">Allergies</p>
 
                   <div class="flex flex-wrap gap-1">
                     <span
                       v-for="allergy in profile.allergies"
                       :key="allergy"
-                      class="text-xs bg-[#F7B267]/20 text-[#8B4513] px-2 py-0.5 rounded-full"
+                      class="rounded-full bg-[#F7B267]/20 px-2 py-0.5 text-xs text-[#8B4513]"
                     >
                       {{ allergy }}
                     </span>
@@ -108,13 +125,13 @@
                 </div>
 
                 <div v-if="profile.nutritionFocus.length > 0">
-                  <p class="text-xs text-muted-foreground mb-1">Focus</p>
+                  <p class="mb-1 text-xs text-muted-foreground">Focus</p>
 
                   <div class="flex flex-wrap gap-1">
                     <span
                       v-for="focus in profile.nutritionFocus.slice(0, 2)"
                       :key="focus"
-                      class="text-xs bg-[#A8D5BA]/20 text-[#2C5F2D] px-2 py-0.5 rounded-full"
+                      class="rounded-full bg-[#A8D5BA]/20 px-2 py-0.5 text-xs text-[#2C5F2D]"
                     >
                       {{ focus }}
                     </span>
@@ -122,12 +139,13 @@
                 </div>
               </div>
             </div>
-          </div>
+          </button>
         </div>
 
         <div
           v-if="selectedChildren.length > 0"
-          class="mt-4 p-4 bg-white rounded-lg border text-center"
+          class="mt-4 rounded-lg border bg-white p-4 text-center shadow-sm"
+          aria-live="polite"
         >
           <p class="text-sm">
             <strong class="text-[#2C5F2D]">
@@ -135,135 +153,150 @@
             </strong>
           </p>
         </div>
-      </div>
+      </section>
 
       <!-- Cooking Frequency -->
-      <div v-if="!planGenerated" class="mb-12">
-        <h2 class="text-2xl mb-6">How often do you want to cook this week?</h2>
+      <section v-if="!planGenerated" class="mb-8 sm:mb-12">
+        <h2 class="mb-5 text-2xl font-semibold text-[#2C5F2D] sm:mb-6">
+          How often do you want to cook this week?
+        </h2>
 
-        <div class="grid md:grid-cols-3 gap-6">
-          <div
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6">
+          <button
             v-for="option in frequencyOptions"
             :key="option.value"
             @click="cookingFrequency = option.value"
+            :aria-pressed="cookingFrequency === option.value"
             :class="[
-              'p-8 rounded-2xl border-2 cursor-pointer transition-all text-center',
+              'w-full rounded-2xl border-2 p-5 text-center transition-all sm:p-8',
               cookingFrequency === option.value
                 ? option.activeClass
-                : 'border-gray-200 hover:border-[#A8D5BA]/50 bg-white'
+                : 'border-gray-200 bg-white hover:border-[#A8D5BA]/50'
             ]"
+            type="button"
           >
             <div
               :class="[
-                'w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4',
+                'mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full sm:h-16 sm:w-16',
                 option.iconClass
               ]"
+              aria-hidden="true"
             >
-              <ChefHat class="w-8 h-8" :class="option.iconTextClass" />
+              <ChefHat class="h-7 w-7 sm:h-8 sm:w-8" :class="option.iconTextClass" />
             </div>
 
-            <h3 class="text-2xl font-bold mb-2">{{ option.label }}</h3>
-            <p class="text-sm text-muted-foreground">{{ option.description }}</p>
-          </div>
+            <h3 class="mb-2 text-xl font-bold text-[#111827] sm:text-2xl">
+              {{ option.label }}
+            </h3>
+
+            <p class="text-sm leading-relaxed text-muted-foreground">
+              {{ option.description }}
+            </p>
+          </button>
         </div>
-      </div>
+      </section>
 
       <!-- Generate Button -->
-      <div v-if="!planGenerated" class="flex justify-center mb-12">
+      <div v-if="!planGenerated" class="mb-10 flex justify-center sm:mb-12">
         <button
           @click="generateWeeklyPlan"
           :disabled="selectedChildren.length === 0 || !cookingFrequency || isGenerating"
-          class="px-12 py-4 bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors inline-flex items-center gap-2"
+          class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#A8D5BA] px-8 py-4 text-base font-semibold text-[#2C5F2D] transition-colors hover:bg-[#8FC2A4] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:px-12 sm:text-lg"
           type="button"
+          :aria-busy="isGenerating"
         >
-          <CalendarDays class="w-5 h-5" />
+          <CalendarDays class="h-5 w-5" aria-hidden="true" />
           {{ isGenerating ? 'Generating...' : 'Generate Weekly Plan' }}
         </button>
       </div>
 
       <!-- Generated Output -->
-      <div v-if="planGenerated">
-        <div class="text-center mb-8">
-          <h1 class="text-4xl mb-4">Your Weekly Lunch Plan</h1>
-          <p class="text-lg text-muted-foreground">
+      <section v-if="planGenerated">
+        <header class="mb-6 text-center sm:mb-8">
+          <h1 class="mb-3 text-3xl font-semibold leading-tight text-[#2C5F2D] sm:mb-4 sm:text-4xl">
+            Your Weekly Lunch Plan
+          </h1>
+          <p class="mx-auto max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-lg">
             Each cooking session combines database food items with one API recipe idea.
           </p>
-        </div>
+        </header>
 
-        <div class="flex flex-wrap justify-center gap-4 mb-8">
+        <div class="mb-6 grid grid-cols-1 gap-3 sm:mb-8 sm:flex sm:flex-wrap sm:justify-center sm:gap-4">
           <button
             @click="showSaveDialog = true"
-            class="px-8 py-3 bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg inline-flex items-center gap-2 transition-colors"
+            class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#A8D5BA] px-8 py-3 font-medium text-[#2C5F2D] transition-colors hover:bg-[#8FC2A4]"
             type="button"
           >
-            <BookmarkPlus class="w-4 h-4" />
+            <BookmarkPlus class="h-4 w-4" aria-hidden="true" />
             Save Plan
           </button>
 
           <button
             @click="regeneratePlan"
-            class="px-8 py-3 bg-white border-2 border-[#A8D5BA] text-[#2C5F2D] rounded-lg hover:bg-[#A8D5BA]/10 transition-colors inline-flex items-center gap-2"
+            class="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-[#A8D5BA] bg-white px-8 py-3 font-medium text-[#2C5F2D] transition-colors hover:bg-[#A8D5BA]/10"
             type="button"
           >
-            <RefreshCw class="w-4 h-4" />
+            <RefreshCw class="h-4 w-4" aria-hidden="true" />
             Regenerate Plan
           </button>
 
           <button
             @click="router.push('/my-plans')"
-            class="px-8 py-3 bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            class="rounded-lg border-2 border-gray-300 bg-white px-8 py-3 font-medium text-gray-700 transition-colors hover:bg-gray-50"
             type="button"
           >
             My Plans
           </button>
         </div>
 
-        <div class="space-y-8">
-          <div
+        <div class="space-y-6 sm:space-y-8">
+          <article
             v-for="(batch, index) in weeklyBatches"
             :key="batch.id || index"
-            class="p-8 rounded-2xl bg-white border shadow-md"
+            class="rounded-2xl border bg-white p-5 shadow-sm sm:p-8"
           >
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-6">
-              <h2 class="text-2xl flex items-center gap-2">
-                <CalendarCheck class="w-6 h-6 text-[#A8D5BA]" />
+            <div class="mb-5 flex flex-col gap-3 sm:mb-6 md:flex-row md:items-center md:justify-between">
+              <h2 class="flex items-center gap-2 text-xl font-semibold text-[#2C5F2D] sm:text-2xl">
+                <CalendarCheck class="h-5 w-5 text-[#A8D5BA] sm:h-6 sm:w-6" aria-hidden="true" />
                 {{ batch.cookDay }}
               </h2>
 
-              <span class="bg-[#CDE7F0]/30 text-[#1B4965] px-4 py-1 rounded-full text-sm w-fit">
+              <span class="w-fit rounded-full bg-[#CDE7F0]/30 px-4 py-1 text-sm text-[#1B4965]">
                 Covers {{ batch.coverDays }}
               </span>
             </div>
 
-            <div class="grid lg:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 gap-5 lg:grid-cols-2 lg:gap-6">
               <!-- Database Lunchbox -->
-              <div class="rounded-2xl border bg-[#FAF9F6] p-6">
-                <div class="flex items-center justify-between gap-3 mb-4">
-                  <h3 class="text-xl font-medium">
+              <div class="rounded-2xl border bg-[#FAF9F6] p-5 sm:p-6">
+                <div class="mb-4 flex items-start justify-between gap-3">
+                  <h3 class="text-lg font-semibold leading-tight text-[#111827] sm:text-xl">
                     {{ batch.lunchbox.title }}
                   </h3>
 
-                  <span class="text-xs px-3 py-1 rounded-full bg-white border text-muted-foreground">
+                  <span class="shrink-0 rounded-full border bg-white px-3 py-1 text-xs text-muted-foreground">
                     Database
                   </span>
                 </div>
 
-                <div class="space-y-3 mb-4">
+                <div class="mb-4 space-y-3">
                   <div
                     v-for="(item, idx) in batch.lunchbox.items"
                     :key="`${batch.id}-db-${idx}`"
-                    class="flex items-start gap-3 bg-white rounded-lg p-3"
+                    class="flex items-start gap-3 rounded-lg bg-white p-3"
                   >
                     <div
                       :class="[
-                        'w-2.5 h-2.5 rounded-full mt-1.5',
+                        'mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full',
                         getSectionColor(item.section)
                       ]"
                     ></div>
 
-                    <div>
-                      <p class="text-sm font-medium">{{ item.name }}</p>
-                      <p class="text-xs text-muted-foreground">
+                    <div class="min-w-0">
+                      <p class="text-sm font-medium leading-snug text-[#111827]">
+                        {{ item.name }}
+                      </p>
+                      <p class="text-xs leading-relaxed text-muted-foreground">
                         {{ formatWeeklyItemAmount(item.amount, batch.coverDays) }}
                       </p>
                     </div>
@@ -272,12 +305,12 @@
 
                 <div
                   v-if="batch.lunchbox.nutritionFocus.length > 0"
-                  class="flex flex-wrap gap-2 mb-4"
+                  class="mb-4 flex flex-wrap gap-2"
                 >
                   <span
                     v-for="focus in batch.lunchbox.nutritionFocus"
                     :key="focus"
-                    class="bg-[#A8D5BA]/20 text-[#2C5F2D] text-xs px-3 py-1 rounded-full"
+                    class="rounded-full bg-[#A8D5BA]/20 px-3 py-1 text-xs text-[#2C5F2D]"
                   >
                     {{ focus }}
                   </span>
@@ -285,48 +318,48 @@
 
                 <p
                   v-if="batch.lunchbox.whyThisMeal"
-                  class="text-sm text-muted-foreground leading-relaxed"
+                  class="text-sm leading-relaxed text-muted-foreground"
                 >
                   {{ batch.lunchbox.whyThisMeal }}
                 </p>
               </div>
 
               <!-- API Recipe -->
-              <div class="rounded-2xl border bg-white overflow-hidden">
+              <div class="overflow-hidden rounded-2xl border bg-white">
                 <div
                   v-if="batch.recipe.image"
-                  class="aspect-[16/9] bg-gray-100 overflow-hidden"
+                  class="aspect-[16/9] overflow-hidden bg-gray-100"
                 >
                   <img
                     :src="batch.recipe.image"
                     :alt="batch.recipe.title"
-                    class="w-full h-full object-cover"
+                    class="h-full w-full object-cover"
                     @error="handleImageError"
                   />
                 </div>
 
-                <div class="p-6">
-                  <div class="flex items-center justify-between gap-3 mb-3">
-                    <h3 class="text-xl font-medium">
+                <div class="p-5 sm:p-6">
+                  <div class="mb-3 flex items-start justify-between gap-3">
+                    <h3 class="text-lg font-semibold leading-tight text-[#111827] sm:text-xl">
                       {{ batch.recipe.title }}
                     </h3>
 
-                    <span class="text-xs px-3 py-1 rounded-full bg-[#CDE7F0]/30 text-[#1B4965]">
+                    <span class="shrink-0 rounded-full bg-[#CDE7F0]/30 px-3 py-1 text-xs text-[#1B4965]">
                       API Recipe
                     </span>
                   </div>
 
-                  <div class="flex flex-wrap gap-2 mb-4">
+                  <div class="mb-4 flex flex-wrap gap-2">
                     <span
                       v-if="batch.recipe.category"
-                      class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full"
+                      class="rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-600"
                     >
                       {{ batch.recipe.category }}
                     </span>
 
                     <span
                       v-if="batch.recipe.area"
-                      class="text-xs bg-[#CDE7F0]/30 text-[#1B4965] px-2 py-1 rounded-full"
+                      class="rounded-full bg-[#CDE7F0]/30 px-2 py-1 text-xs text-[#1B4965]"
                     >
                       {{ batch.recipe.area }}
                     </span>
@@ -334,7 +367,7 @@
                     <span
                       v-for="focus in batch.recipe.nutritionFocus"
                       :key="focus"
-                      class="text-xs bg-[#A8D5BA]/20 text-[#2C5F2D] px-2 py-1 rounded-full"
+                      class="rounded-full bg-[#A8D5BA]/20 px-2 py-1 text-xs text-[#2C5F2D]"
                     >
                       {{ focus }}
                     </span>
@@ -342,28 +375,28 @@
 
                   <p
                     v-if="batch.recipe.whyThisMeal"
-                    class="text-sm text-muted-foreground leading-relaxed mb-4"
+                    class="mb-4 text-sm leading-relaxed text-muted-foreground"
                   >
                     {{ batch.recipe.whyThisMeal }}
                   </p>
 
-                  <div class="flex gap-3">
+                  <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3">
                     <button
                       @click="openRecipe(batch.recipe)"
                       :disabled="!batch.recipe.id"
-                      class="flex-1 bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg py-3 inline-flex items-center justify-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#A8D5BA] py-3 text-sm font-medium text-[#2C5F2D] transition-colors hover:bg-[#8FC2A4] disabled:cursor-not-allowed disabled:opacity-50"
                       type="button"
                     >
-                      <BookOpen class="w-4 h-4" />
+                      <BookOpen class="h-4 w-4" aria-hidden="true" />
                       View Recipe
                     </button>
 
                     <button
                       @click="swapApiRecipe(index)"
-                      class="flex-1 bg-white border-2 border-[#A8D5BA] text-[#2C5F2D] rounded-lg py-3 hover:bg-[#A8D5BA]/10 transition-colors inline-flex items-center justify-center gap-2"
+                      class="inline-flex items-center justify-center gap-2 rounded-lg border-2 border-[#A8D5BA] bg-white py-3 text-sm font-medium text-[#2C5F2D] transition-colors hover:bg-[#A8D5BA]/10"
                       type="button"
                     >
-                      <RefreshCw class="w-4 h-4" />
+                      <RefreshCw class="h-4 w-4" aria-hidden="true" />
                       Swap Recipe
                     </button>
                   </div>
@@ -371,45 +404,51 @@
               </div>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-4 mt-6">
-              <div class="p-4 bg-[#A8D5BA]/10 rounded-lg">
+            <div class="mt-5 grid grid-cols-1 gap-3 sm:mt-6 md:grid-cols-3 md:gap-4">
+              <div class="rounded-lg bg-[#A8D5BA]/10 p-4">
                 <div class="flex items-start gap-2">
-                  <Leaf class="w-4 h-4 text-[#A8D5BA] mt-0.5" />
-                  <p class="text-sm text-[#2C5F2D]">{{ batch.seasonalNote }}</p>
+                  <Leaf class="mt-0.5 h-4 w-4 shrink-0 text-[#A8D5BA]" aria-hidden="true" />
+                  <p class="text-sm leading-relaxed text-[#2C5F2D]">{{ batch.seasonalNote }}</p>
                 </div>
               </div>
 
-              <div class="p-4 bg-[#F7B267]/10 rounded-lg">
+              <div class="rounded-lg bg-[#F7B267]/10 p-4">
                 <div class="flex items-start gap-2">
-                  <AlertCircle class="w-4 h-4 text-[#F7B267] mt-0.5" />
-                  <p class="text-sm text-[#8B4513]">
+                  <AlertCircle class="mt-0.5 h-4 w-4 shrink-0 text-[#F7B267]" aria-hidden="true" />
+                  <p class="text-sm leading-relaxed text-[#8B4513]">
                     <strong>Storage:</strong> {{ batch.storageTip }}
                   </p>
                 </div>
               </div>
 
-              <div class="p-4 bg-[#CDE7F0]/20 rounded-lg">
+              <div class="rounded-lg bg-[#CDE7F0]/20 p-4">
                 <div class="flex items-start gap-2">
-                  <Clock class="w-4 h-4 text-[#1B4965] mt-0.5" />
-                  <p class="text-sm text-[#1B4965]">
+                  <Clock class="mt-0.5 h-4 w-4 shrink-0 text-[#1B4965]" aria-hidden="true" />
+                  <p class="text-sm leading-relaxed text-[#1B4965]">
                     <strong>Prep:</strong> {{ batch.prepTime }}
                   </p>
                 </div>
               </div>
             </div>
-          </div>
+          </article>
         </div>
-      </div>
+      </section>
 
       <!-- Save Dialog -->
       <div
         v-if="showSaveDialog"
-        class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+        class="fixed inset-0 z-50 flex items-end justify-center bg-black/50 px-4 py-4 sm:items-center"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="save-plan-title"
+        @click.self="showSaveDialog = false"
       >
-        <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
-          <h3 class="text-2xl mb-4">Name your plan</h3>
+        <div class="w-full max-w-md rounded-2xl bg-white p-5 shadow-2xl sm:p-8">
+          <h3 id="save-plan-title" class="mb-3 text-2xl font-semibold text-[#2C5F2D] sm:mb-4">
+            Name your plan
+          </h3>
 
-          <p class="text-sm text-muted-foreground mb-6">
+          <p class="mb-5 text-sm leading-relaxed text-muted-foreground sm:mb-6">
             Give your weekly plan a memorable name.
           </p>
 
@@ -417,13 +456,14 @@
             v-model="planName"
             type="text"
             placeholder="e.g. Week 1 - Simple family plan"
-            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8D5BA] focus:border-transparent mb-6"
+            class="mb-5 w-full rounded-lg border border-gray-300 px-4 py-3 text-base focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[#A8D5BA] sm:mb-6"
+            autocomplete="off"
           />
 
-          <div class="flex gap-3">
+          <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <button
               @click="showSaveDialog = false"
-              class="flex-1 px-6 py-3 bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              class="rounded-lg border-2 border-gray-300 bg-white px-6 py-3 font-medium text-gray-700 transition-colors hover:bg-gray-50"
               type="button"
             >
               Cancel
@@ -432,7 +472,7 @@
             <button
               @click="savePlan"
               :disabled="!planName.trim() || isSaving"
-              class="flex-1 px-6 py-3 bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              class="rounded-lg bg-[#A8D5BA] px-6 py-3 font-medium text-[#2C5F2D] transition-colors hover:bg-[#8FC2A4] disabled:cursor-not-allowed disabled:opacity-50"
               type="button"
             >
               {{ isSaving ? 'Saving...' : 'Save Plan' }}
