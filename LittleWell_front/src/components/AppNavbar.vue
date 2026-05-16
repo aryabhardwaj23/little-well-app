@@ -21,27 +21,39 @@
 
         <!-- Desktop Navigation Links -->
         <div class="hidden lg:flex items-center justify-end gap-2 flex-1" role="navigation">
-          <button @click="goHomeSection('child-profiles')" class="nav-link" type="button">
-            Lunchbox Plan
-          </button>
-
-          <button @click="goProtected('/weekly-plan')" class="nav-link" type="button">
+          <button
+            @click="goProtected('/weekly-plan')"
+            :class="['nav-link', { 'nav-link-active': isRouteActive('/weekly-plan') }]"
+            :aria-current="isRouteActive('/weekly-plan') ? 'page' : undefined"
+            type="button"
+          >
             Weekly Plan
           </button>
 
-          <button @click="goProtected('/my-plans')" class="nav-link" type="button">
+          <button
+            @click="goProtected('/my-plans')"
+            :class="['nav-link', { 'nav-link-active': isRouteActive('/my-plans') }]"
+            :aria-current="isRouteActive('/my-plans') ? 'page' : undefined"
+            type="button"
+          >
             My Plans
           </button>
 
           <button
             @click="router.push('/knowledge-hub-prototype')"
-            class="nav-link"
+            :class="['nav-link', { 'nav-link-active': isRouteActive('/knowledge-hub-prototype') }]"
+            :aria-current="isRouteActive('/knowledge-hub-prototype') ? 'page' : undefined"
             type="button"
           >
             Knowledge Hub
           </button>
 
-          <button @click="router.push('/about')" class="nav-link" type="button">
+          <button
+            @click="router.push('/about')"
+            :class="['nav-link', { 'nav-link-active': isRouteActive('/about') }]"
+            :aria-current="isRouteActive('/about') ? 'page' : undefined"
+            type="button"
+          >
             About Us
           </button>
 
@@ -139,7 +151,11 @@
           <template v-else>
             <button
               @click="router.push('/login')"
-              class="nav-link nav-signin-link"
+              :class="[
+                'nav-link nav-signin-link',
+                { 'nav-link-active': isRouteActive('/login') },
+              ]"
+              :aria-current="isRouteActive('/login') ? 'page' : undefined"
               type="button"
             >
               Sign in
@@ -147,7 +163,11 @@
 
             <button
               @click="router.push('/register')"
-              class="nav-primary-button"
+              :class="[
+                'nav-primary-button',
+                { 'nav-primary-button-active': isRouteActive('/register') },
+              ]"
+              :aria-current="isRouteActive('/register') ? 'page' : undefined"
               type="button"
             >
               Create account
@@ -178,16 +198,9 @@
     >
       <div class="px-4 py-4 space-y-2">
         <button
-          @click="handleMobileAction(() => goHomeSection('child-profiles'))"
-          class="mobile-nav-link"
-          type="button"
-        >
-          Lunchbox Plan
-        </button>
-
-        <button
           @click="handleMobileAction(() => goProtected('/weekly-plan'))"
-          class="mobile-nav-link"
+          :class="['mobile-nav-link', { 'mobile-nav-link-active': isRouteActive('/weekly-plan') }]"
+          :aria-current="isRouteActive('/weekly-plan') ? 'page' : undefined"
           type="button"
         >
           Weekly Plan
@@ -195,7 +208,8 @@
 
         <button
           @click="handleMobileAction(() => goProtected('/my-plans'))"
-          class="mobile-nav-link"
+          :class="['mobile-nav-link', { 'mobile-nav-link-active': isRouteActive('/my-plans') }]"
+          :aria-current="isRouteActive('/my-plans') ? 'page' : undefined"
           type="button"
         >
           My Plans
@@ -203,7 +217,8 @@
 
         <button
           @click="handleMobileAction(() => router.push('/knowledge-hub-prototype'))"
-          class="mobile-nav-link"
+          :class="['mobile-nav-link', { 'mobile-nav-link-active': isRouteActive('/knowledge-hub-prototype') }]"
+          :aria-current="isRouteActive('/knowledge-hub-prototype') ? 'page' : undefined"
           type="button"
         >
           Knowledge Hub
@@ -211,7 +226,8 @@
 
         <button
           @click="handleMobileAction(() => router.push('/about'))"
-          class="mobile-nav-link"
+          :class="['mobile-nav-link', { 'mobile-nav-link-active': isRouteActive('/about') }]"
+          :aria-current="isRouteActive('/about') ? 'page' : undefined"
           type="button"
         >
           About Us
@@ -276,7 +292,11 @@
           <template v-else>
             <button
               @click="handleMobileAction(() => router.push('/login'))"
-              class="mobile-nav-link underline underline-offset-4"
+              :class="[
+                'mobile-nav-link underline underline-offset-4',
+                { 'mobile-nav-link-active': isRouteActive('/login') },
+              ]"
+              :aria-current="isRouteActive('/login') ? 'page' : undefined"
               type="button"
             >
               Sign in
@@ -284,7 +304,11 @@
 
             <button
               @click="handleMobileAction(() => router.push('/register'))"
-              class="mobile-primary-button"
+              :class="[
+                'mobile-primary-button',
+                { 'mobile-primary-button-active': isRouteActive('/register') },
+              ]"
+              :aria-current="isRouteActive('/register') ? 'page' : undefined"
               type="button"
             >
               Create account
@@ -322,7 +346,16 @@ const showMobileMenu = ref(false);
 const isLoggedIn = computed(() => authStore.isAuthenticated);
 const username = computed(() => authStore.user?.username || 'User');
 
-const isHomePage = computed(() => router.currentRoute.value.path === '/');
+const currentPath = computed(() => router.currentRoute.value.path);
+const isHomePage = computed(() => currentPath.value === '/');
+
+const isRouteActive = (path) => {
+  if (path === '/') {
+    return currentPath.value === '/';
+  }
+
+  return currentPath.value === path || currentPath.value.startsWith(`${path}/`);
+};
 
 const toggleMobileMenu = () => {
   showMobileMenu.value = !showMobileMenu.value;
@@ -360,19 +393,6 @@ const goProtected = (path) => {
   router.push(path);
 };
 
-const goHomeSection = (sectionId) => {
-  if (router.currentRoute.value.path === '/') {
-    const section = document.getElementById(sectionId);
-    section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    return;
-  }
-
-  router.push({
-    path: '/',
-    hash: `#${sectionId}`,
-  });
-};
-
 const handleLogout = () => {
   authStore.logout();
   router.push('/');
@@ -385,17 +405,40 @@ const handleLogout = () => {
 }
 
 .nav-link {
+  position: relative;
   color: #2C5F2D;
   padding: 0.55rem 0.85rem;
   border-radius: 0.65rem;
   font-size: 0.92rem;
   line-height: 1.2;
   white-space: nowrap;
-  transition: background-color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .nav-link:hover {
   background-color: rgba(168, 213, 186, 0.12);
+}
+
+.nav-link-active {
+  background-color: rgba(168, 213, 186, 0.22);
+  color: #214B24;
+  font-weight: 700;
+  box-shadow: inset 0 0 0 1px rgba(44, 95, 45, 0.12);
+}
+
+.nav-link-active::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0.25rem;
+  width: 1.25rem;
+  height: 0.18rem;
+  border-radius: 999px;
+  background-color: #2C5F2D;
+  transform: translateX(-50%);
 }
 
 .nav-signin-link {
@@ -412,11 +455,18 @@ const handleLogout = () => {
   font-size: 0.92rem;
   font-weight: 600;
   white-space: nowrap;
-  transition: background-color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .nav-primary-button:hover {
   background-color: #8FC2A4;
+}
+
+.nav-primary-button-active {
+  background-color: #8FC2A4;
+  box-shadow: 0 0 0 2px rgba(44, 95, 45, 0.18);
 }
 
 .nav-outline-button {
@@ -444,11 +494,21 @@ const handleLogout = () => {
   border-radius: 0.75rem;
   font-size: 0.95rem;
   line-height: 1.2;
-  transition: background-color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .mobile-nav-link:hover {
   background-color: rgba(168, 213, 186, 0.12);
+}
+
+.mobile-nav-link-active {
+  background-color: rgba(168, 213, 186, 0.22);
+  color: #214B24;
+  font-weight: 700;
+  border-left: 4px solid #2C5F2D;
+  padding-left: 0.95rem;
 }
 
 .mobile-primary-button {
@@ -466,6 +526,11 @@ const handleLogout = () => {
 
 .mobile-primary-button:hover {
   background-color: #8FC2A4;
+}
+
+.mobile-primary-button-active {
+  background-color: #8FC2A4;
+  box-shadow: 0 0 0 2px rgba(44, 95, 45, 0.18);
 }
 
 .mobile-outline-button {
