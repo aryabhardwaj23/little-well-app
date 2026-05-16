@@ -22,8 +22,8 @@
             </button>
             
             <button
-              disabled
-              class="text-muted-foreground cursor-not-allowed relative px-4 py-2"
+              @click="router.push('/food-analyser')"
+              class="text-[#2C5F2D] hover:bg-[#A8D5BA]/10 rounded-lg px-4 py-2 transition-colors"
             >
               <BookOpen class="w-4 h-4 inline mr-2" />
               Knowledge Hub
@@ -33,8 +33,8 @@
             </button>
             
             <button
-              disabled
-              class="text-muted-foreground cursor-not-allowed relative px-4 py-2"
+              @click="router.push('/food-analyser')"
+              class="text-[#2C5F2D] hover:bg-[#A8D5BA]/10 rounded-lg px-4 py-2 transition-colors"
             >
               <ScanLine class="w-4 h-4 inline mr-2" />
               Label Reader
