@@ -184,3 +184,53 @@ export function getKnowledgeAdditiveAwareness() {
 export function getKnowledgeAdditiveHeatmap() {
   return request('/knowledge/additive-heatmap');
 }
+
+// AI insights
+export function getWhyThisMeal({
+  meal_name,
+  child_age,
+  allergens = [],
+  dietary_restrictions = [],
+  season = 'autumn',
+  meal_type = 'lunchbox',
+}) {
+  return request('/ai-insights/why-this-meal', {
+    method: 'POST',
+    body: JSON.stringify({
+      meal_name,
+      child_age,
+      allergens,
+      dietary_restrictions,
+      season,
+      meal_type,
+    }),
+  });
+}
+
+export function getWeeklyNutritionStory({
+  meals = [],
+  child_age,
+  child_name = 'your child',
+}) {
+  return request('/ai-insights/weekly-story', {
+    method: 'POST',
+    body: JSON.stringify({
+      meals,
+      child_age,
+      child_name,
+    }),
+  });
+}
+
+export function classifyNutrition({
+  nutriments,
+  child_age = 7,
+}) {
+  return request('/ai-insights/classify-nutrition', {
+    method: 'POST',
+    body: JSON.stringify({
+      nutriments,
+      child_age,
+    }),
+  });
+}

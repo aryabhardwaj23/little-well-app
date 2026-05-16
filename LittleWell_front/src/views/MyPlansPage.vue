@@ -20,9 +20,11 @@
         >
           <BookmarkCheck class="h-7 w-7 text-white sm:h-8 sm:w-8" />
         </div>
+
         <h1 class="mb-3 text-3xl font-semibold leading-tight text-[#2C5F2D] sm:mb-4 sm:text-4xl">
           My Saved Plans
         </h1>
+
         <p class="mx-auto max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-lg">
           View, reuse, duplicate, and delete saved weekly plans
         </p>
@@ -66,6 +68,7 @@
             <h3 class="mb-2 text-lg font-semibold text-[#2C5F2D]">
               Use your previous weekly plan?
             </h3>
+
             <p class="mb-4 text-sm leading-relaxed text-muted-foreground">
               You can reuse "{{ weeklyPlans[0].name }}" or adjust it to fit this week's needs.
             </p>
@@ -159,10 +162,15 @@
           >
             <CalendarDays class="h-9 w-9 text-gray-400 sm:h-10 sm:w-10" />
           </div>
-          <h2 class="mb-2 text-xl font-semibold text-[#2C5F2D]">No weekly plans saved yet</h2>
+
+          <h2 class="mb-2 text-xl font-semibold text-[#2C5F2D]">
+            No weekly plans saved yet
+          </h2>
+
           <p class="mb-6 text-sm text-muted-foreground sm:text-base">
             Create your first weekly plan to get started.
           </p>
+
           <button
             @click="router.push('/weekly-plan')"
             class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#A8D5BA] px-8 py-3 text-[#2C5F2D] transition-colors hover:bg-[#8FC2A4] sm:w-auto"
@@ -184,6 +192,7 @@
                 <h2 class="mb-2 truncate text-lg font-semibold text-[#111827] sm:text-xl">
                   {{ plan.name }}
                 </h2>
+
                 <div class="mb-2 flex items-center gap-2 text-sm text-muted-foreground">
                   <Clock class="h-4 w-4 shrink-0" aria-hidden="true" />
                   <span>{{ formatDate(plan.createdAt) }}</span>
@@ -250,12 +259,60 @@
                       />
                     </div>
 
-                    <div class="min-w-0">
-                      <p class="mb-1 text-xs text-muted-foreground">{{ batch.cookDay }}</p>
-                      <p class="truncate text-sm font-medium">{{ batch.lunchbox.title }}</p>
+                    <div class="min-w-0 flex-1">
+                      <p class="mb-1 text-xs text-muted-foreground">
+                        {{ batch.cookDay }}
+                      </p>
+
+                      <p class="truncate text-sm font-medium">
+                        {{ batch.lunchbox.title }}
+                      </p>
+
                       <p class="truncate text-xs text-[#1B4965]">
                         API recipe: {{ batch.recipe.title }}
                       </p>
+
+                      <!-- Why This Meal AI Explanation -->
+                      <div class="mt-3 rounded-lg border border-[#A8D5BA]/30 bg-[#FAF9F6] p-3">
+                        <div class="flex items-center justify-between gap-3">
+                          <div>
+                            <p class="text-xs font-semibold text-[#2C5F2D]">
+                              Why this meal?
+                            </p>
+                            <p class="text-xs text-muted-foreground">
+                              AI explanation for this lunchbox choice.
+                            </p>
+                          </div>
+
+                          <button
+                            @click="explainMeal(plan, batch)"
+                            :disabled="aiExplanationLoading[getMealKey(plan, batch)]"
+                            class="shrink-0 rounded-lg bg-[#A8D5BA] px-3 py-2 text-xs font-medium text-[#2C5F2D] transition-colors hover:bg-[#8FC2A4] disabled:opacity-50"
+                            type="button"
+                          >
+                            <span v-if="!aiExplanationLoading[getMealKey(plan, batch)]">
+                              Generate
+                            </span>
+                            <span v-else>
+                              Thinking...
+                            </span>
+                          </button>
+                        </div>
+
+                        <p
+                          v-if="aiExplanations[getMealKey(plan, batch)]"
+                          class="mt-3 text-xs leading-relaxed text-gray-700"
+                        >
+                          ✨ {{ aiExplanations[getMealKey(plan, batch)] }}
+                        </p>
+
+                        <p
+                          v-if="aiExplanationErrors[getMealKey(plan, batch)]"
+                          class="mt-3 text-xs text-red-500"
+                        >
+                          {{ aiExplanationErrors[getMealKey(plan, batch)] }}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -316,10 +373,15 @@
           >
             <UtensilsCrossed class="h-9 w-9 text-gray-400 sm:h-10 sm:w-10" />
           </div>
-          <h2 class="mb-2 text-xl font-semibold text-[#2C5F2D]">No saved lunchboxes yet</h2>
+
+          <h2 class="mb-2 text-xl font-semibold text-[#2C5F2D]">
+            No saved lunchboxes yet
+          </h2>
+
           <p class="mb-6 text-sm text-muted-foreground sm:text-base">
             This tab is kept for future single lunchbox saving.
           </p>
+
           <button
             @click="router.push('/results')"
             class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#A8D5BA] px-8 py-3 text-[#2C5F2D] transition-colors hover:bg-[#8FC2A4] sm:w-auto"
@@ -339,6 +401,7 @@
             <h2 class="mb-2 text-lg font-semibold text-[#111827]">
               {{ lunchbox.name }}
             </h2>
+
             <p class="mb-4 text-sm leading-relaxed text-muted-foreground">
               {{ lunchbox.description || 'Nutritious and balanced meal' }}
             </p>
@@ -400,7 +463,13 @@ import {
   Sparkles,
   Settings,
 } from 'lucide-vue-next';
-import { getWeeklyPlans, deleteWeeklyPlan, duplicateWeeklyPlan } from '../services/api';
+
+import {
+  getWeeklyPlans,
+  deleteWeeklyPlan,
+  duplicateWeeklyPlan,
+  getWhyThisMeal,
+} from '../services/api';
 
 const router = useRouter();
 
@@ -411,14 +480,19 @@ const showReusePrompt = ref(true);
 const isLoading = ref(false);
 const errorMessage = ref('');
 
-// ── Normalise helpers (unchanged from original) ───────────────────────────
+// AI explanation state
+const aiExplanationLoading = ref({});
+const aiExplanations = ref({});
+const aiExplanationErrors = ref({});
+
+// ── Normalise helpers ───────────────────────────
 const parseTags = (tags) => {
   if (Array.isArray(tags)) return tags;
   if (!tags) return [];
 
   return String(tags)
     .split(',')
-    .map((t) => t.trim())
+    .map((tag) => tag.trim())
     .filter(Boolean);
 };
 
@@ -426,20 +500,34 @@ const normalizeChildren = (children) => {
   if (!Array.isArray(children)) return [];
 
   return children
-    .map((c) => (typeof c === 'string' ? c : c.child_name || c.name || c.childName || ''))
+    .map((child) => {
+      if (typeof child === 'string') return child;
+
+      return child.child_name || child.name || child.childName || '';
+    })
     .filter(Boolean);
 };
 
 const normalizeLunchbox = (meal, index = 0) => {
-  const lb = meal.lunchbox || {};
-  const items = lb.items || meal.items || meal.lunchbox_items || [];
+  const lunchbox = meal.lunchbox || {};
+  const items = lunchbox.items || meal.items || meal.lunchbox_items || [];
 
   return {
-    id: lb.id || meal.reference_food_id || meal.lunchbox_id || meal.source_id || `db-${index}`,
-    reference_food_id: lb.reference_food_id || meal.reference_food_id || null,
-    title: lb.title || meal.meal_title || meal.mealName || meal.lunchbox_title || 'Database Lunchbox',
-    nutritionFocus: parseTags(lb.nutritionFocus || meal.nutrition_tags || meal.tags),
-    whyThisMeal: lb.whyThisMeal || meal.whyThisMeal || '',
+    id:
+      lunchbox.id ||
+      meal.reference_food_id ||
+      meal.lunchbox_id ||
+      meal.source_id ||
+      `db-${index}`,
+    reference_food_id: lunchbox.reference_food_id || meal.reference_food_id || null,
+    title:
+      lunchbox.title ||
+      meal.meal_title ||
+      meal.mealName ||
+      meal.lunchbox_title ||
+      'Database Lunchbox',
+    nutritionFocus: parseTags(lunchbox.nutritionFocus || meal.nutrition_tags || meal.tags),
+    whyThisMeal: lunchbox.whyThisMeal || meal.whyThisMeal || '',
     items: Array.isArray(items) ? items : [],
   };
 };
@@ -449,8 +537,19 @@ const normalizeRecipe = (meal) => {
 
   return {
     id: recipe.id || meal.recipe_id || meal.recipeId || null,
-    title: recipe.title || meal.recipe_title || meal.recipeName || (meal.recipe_id ? `Recipe #${meal.recipe_id}` : 'Recipe Inspiration'),
-    image: recipe.image || recipe.heroImage || recipe.mealImage || meal.image_url || meal.heroImage || meal.mealImage || '',
+    title:
+      recipe.title ||
+      meal.recipe_title ||
+      meal.recipeName ||
+      (meal.recipe_id ? `Recipe #${meal.recipe_id}` : 'Recipe Inspiration'),
+    image:
+      recipe.image ||
+      recipe.heroImage ||
+      recipe.mealImage ||
+      meal.image_url ||
+      meal.heroImage ||
+      meal.mealImage ||
+      '',
     category: recipe.category || meal.category || '',
     area: recipe.area || meal.area || '',
     nutritionFocus: parseTags(recipe.nutritionFocus || meal.recipe_tags),
@@ -500,7 +599,7 @@ const loadSavedPlans = async () => {
 
     const localPlans = localStorage.getItem('nutriguide_saved_plans');
     const parsed = localPlans ? JSON.parse(localPlans) : [];
-    savedLunchboxes.value = parsed.filter((p) => p.type === 'lunchbox');
+    savedLunchboxes.value = parsed.filter((plan) => plan.type === 'lunchbox');
   } catch (error) {
     console.error('Failed to load saved plans:', error);
     errorMessage.value = error.message || 'Failed to load saved plans.';
@@ -508,7 +607,7 @@ const loadSavedPlans = async () => {
 
     const localPlans = localStorage.getItem('nutriguide_saved_plans');
     const parsed = localPlans ? JSON.parse(localPlans) : [];
-    savedLunchboxes.value = parsed.filter((p) => p.type === 'lunchbox');
+    savedLunchboxes.value = parsed.filter((plan) => plan.type === 'lunchbox');
   } finally {
     isLoading.value = false;
   }
@@ -516,7 +615,7 @@ const loadSavedPlans = async () => {
 
 onMounted(() => loadSavedPlans());
 
-const weeklyPlans = computed(() => savedPlans.value.filter((p) => p.type === 'weekly'));
+const weeklyPlans = computed(() => savedPlans.value.filter((plan) => plan.type === 'weekly'));
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -537,6 +636,39 @@ const formatDate = (dateString) => {
   });
 };
 
+// ── AI explanation ───────────────────────────
+const getMealKey = (plan, batch) => {
+  return `${plan.id}-${batch.id || batch.lunchbox?.id || batch.recipe?.id || batch.lunchbox?.title}`;
+};
+
+const explainMeal = async (plan, batch) => {
+  const mealKey = getMealKey(plan, batch);
+
+  try {
+    aiExplanationLoading.value[mealKey] = true;
+    aiExplanationErrors.value[mealKey] = '';
+
+    const mealName = batch.lunchbox?.title || batch.recipe?.title || 'Lunchbox meal';
+
+    const data = await getWhyThisMeal({
+      meal_name: mealName,
+      child_age: 7,
+      allergens: [],
+      dietary_restrictions: [],
+      season: plan.season || 'autumn',
+      meal_type: 'lunchbox',
+    });
+
+    aiExplanations.value[mealKey] = data.explanation;
+  } catch (error) {
+    aiExplanationErrors.value[mealKey] =
+      error.message || 'Could not generate explanation.';
+  } finally {
+    aiExplanationLoading.value[mealKey] = false;
+  }
+};
+
+// ── Actions ───────────────────────────
 const handleViewPlan = (plan) => router.push(`/weekly-plan?mode=view&planId=${plan.id}`);
 const handleEditPlan = (plan) => router.push(`/weekly-plan?mode=edit&planId=${plan.id}`);
 const handleReusePlan = (plan) => router.push(`/weekly-plan?mode=reuse&planId=${plan.id}`);
@@ -558,7 +690,7 @@ const handleDeletePlan = async (planId) => {
   try {
     errorMessage.value = '';
     await deleteWeeklyPlan(planId);
-    savedPlans.value = savedPlans.value.filter((p) => String(p.id) !== String(planId));
+    savedPlans.value = savedPlans.value.filter((plan) => String(plan.id) !== String(planId));
   } catch (error) {
     errorMessage.value = error.message || 'Failed to delete plan.';
   }
@@ -567,14 +699,16 @@ const handleDeletePlan = async (planId) => {
 const handleDeleteLunchbox = (lunchboxId) => {
   if (!confirm('Are you sure you want to delete this lunchbox?')) return;
 
-  savedLunchboxes.value = savedLunchboxes.value.filter((lb) => String(lb.id) !== String(lunchboxId));
+  savedLunchboxes.value = savedLunchboxes.value.filter(
+    (lunchbox) => String(lunchbox.id) !== String(lunchboxId),
+  );
 
   const localPlans = localStorage.getItem('nutriguide_saved_plans');
   const parsed = localPlans ? JSON.parse(localPlans) : [];
 
   localStorage.setItem(
     'nutriguide_saved_plans',
-    JSON.stringify(parsed.filter((p) => String(p.id) !== String(lunchboxId))),
+    JSON.stringify(parsed.filter((plan) => String(plan.id) !== String(lunchboxId))),
   );
 };
 

@@ -14,6 +14,7 @@ import RecipePage from '../views/RecipePage.vue';
 import WeeklyPlanPage from '../views/WeeklyPlanPage.vue';
 import MyPlansPage from '../views/MyPlansPage.vue';
 import KnowledgeHubPrototype from '../views/KnowledgeHubPrototype.vue';
+import FoodAnalyserPage from '../views/FoodAnalyserPage.vue';
 
 // Auth views
 import LoginPage from '../views/LoginPage.vue';
@@ -37,93 +38,142 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: LoginPage,
-    meta: { title: 'Sign In - LittleHelp', guestOnly: true },
+    meta: {
+      title: 'Sign In - LittleHelp',
+      guestOnly: true,
+    },
   },
   {
     path: '/register',
     name: 'Register',
     component: RegisterPage,
-    meta: { title: 'Create Account - LittleHelp', guestOnly: true },
+    meta: {
+      title: 'Create Account - LittleHelp',
+      guestOnly: true,
+    },
   },
 
   {
     path: '/',
     name: 'Home',
     component: HomePage,
-    meta: { title: 'Home - LittleHelp' },
+    meta: {
+      title: 'Home - LittleHelp',
+    },
   },
   {
     path: '/about',
     name: 'About',
     component: AboutPage,
-    meta: { title: 'About Us - LittleHelp' },
+    meta: {
+      title: 'About Us - LittleHelp',
+    },
   },
   {
     path: '/quick-start',
     name: 'QuickStart',
     component: QuickStartPage,
-    meta: { title: 'Quick Start - LittleHelp' },
+    meta: {
+      title: 'Quick Start - LittleHelp',
+    },
   },
   {
     path: '/results',
     name: 'Results',
     component: ResultsPage,
-    meta: { title: 'Lunchbox Results - LittleHelp' },
+    meta: {
+      title: 'Lunchbox Results - LittleHelp',
+    },
   },
   {
     path: '/recipe/:id',
     name: 'Recipe',
     component: RecipePage,
-    meta: { title: 'Recipe Details - LittleHelp' },
+    meta: {
+      title: 'Recipe Details - LittleHelp',
+    },
   },
 
   {
     path: '/nutrition-needs',
     name: 'NutritionNeeds',
     component: NutritionNeedsPage,
-    meta: { title: 'Nutrition Needs - LittleHelp', requiresAuth: true },
+    meta: {
+      title: 'Nutrition Needs - LittleHelp',
+      requiresAuth: true,
+    },
   },
   {
     path: '/child-info',
     name: 'ChildInfo',
     component: ChildInfoPage,
-    meta: { title: 'Child Information - LittleHelp', requiresAuth: true },
+    meta: {
+      title: 'Child Information - LittleHelp',
+      requiresAuth: true,
+    },
   },
   {
     path: '/profile-summary',
     name: 'ProfileSummary',
     component: ProfileSummaryPage,
-    meta: { title: 'Profile Summary - LittleHelp', requiresAuth: true },
+    meta: {
+      title: 'Profile Summary - LittleHelp',
+      requiresAuth: true,
+    },
   },
   {
     path: '/nutrition-check',
     name: 'NutritionCheck',
     component: NutritionCheckPage,
-    meta: { title: 'Nutrition Check - LittleHelp', requiresAuth: true },
+    meta: {
+      title: 'Nutrition Check - LittleHelp',
+      requiresAuth: true,
+    },
   },
   {
     path: '/nutrition-insights',
     name: 'NutritionInsights',
     component: NutritionInsightsPage,
-    meta: { title: 'Nutrition Insights - LittleHelp', requiresAuth: true },
+    meta: {
+      title: 'Nutrition Insights - LittleHelp',
+      requiresAuth: true,
+    },
   },
   {
     path: '/weekly-plan',
     name: 'WeeklyPlan',
     component: WeeklyPlanPage,
-    meta: { title: 'Weekly Plan - LittleHelp', requiresAuth: true },
+    meta: {
+      title: 'Weekly Plan - LittleHelp',
+      requiresAuth: true,
+    },
   },
   {
     path: '/my-plans',
     name: 'MyPlans',
     component: MyPlansPage,
-    meta: { title: 'My Plans - LittleHelp', requiresAuth: true },
+    meta: {
+      title: 'My Plans - LittleHelp',
+      requiresAuth: true,
+    },
   },
+
+  {
+    path: '/food-analyser',
+    name: 'FoodAnalyser',
+    component: FoodAnalyserPage,
+    meta: {
+      title: 'Food Analyser - LittleHelp',
+    },
+  },
+
   {
     path: '/knowledge-hub-prototype',
     name: 'KnowledgeHubPrototype',
     component: KnowledgeHubPrototype,
-    meta: { title: 'Knowledge Hub - LittleHelp' },
+    meta: {
+      title: 'Knowledge Hub - LittleHelp',
+    },
   },
 
   {
@@ -137,7 +187,10 @@ const router = createRouter({
   routes,
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) return savedPosition;
-    return { top: 0, behavior: 'smooth' };
+    return {
+      top: 0,
+      behavior: 'smooth',
+    };
   },
 });
 
