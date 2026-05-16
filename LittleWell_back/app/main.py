@@ -9,7 +9,7 @@ from .routers import (
     ml_router,
     knowledge,
     photo_analyser,
-    ai_insights,
+    ai_insights,s
 )
 
 app = FastAPI(title="LittleWell API")
