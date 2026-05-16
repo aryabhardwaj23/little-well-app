@@ -1,7 +1,16 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routers import auth, children, recommendations, weekly_plans, ml_router, knowledge
+from .routers import (
+    auth,
+    children,
+    recommendations,
+    weekly_plans,
+    ml_router,
+    knowledge,
+    photo_analyser,
+    ai_insights,
+)
 
 app = FastAPI(title="LittleWell API")
 
@@ -10,6 +19,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",
         "http://localhost:5174",
+        "http://127.0.0.1:5173",
         "https://littlewell.app",
         "https://www.littlewell.app",
         "https://dev.littlewell.app",
