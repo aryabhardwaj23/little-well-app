@@ -1,19 +1,12 @@
 <template>
   <div class="min-h-screen bg-white">
     <!-- Hero Section -->
-    <section class="py-10 md:py-20 bg-[#FAF9F6]">
-      <div class="container mx-auto px-4 sm:px-6 max-w-6xl">
+    <section class="relative bg-[#FAF9F6] pt-10 pb-8 md:pt-20 md:pb-12">
+      <div class="container relative z-10 mx-auto max-w-6xl px-4 sm:px-6">
         <div class="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
           <!-- Left Content -->
           <div>
-            <div
-              class="inline-flex items-center gap-2 bg-white border border-[#A8D5BA]/40 text-[#2C5F2D] rounded-full px-4 py-2 text-sm font-medium mb-5 md:mb-6 shadow-sm"
-            >
-              <LeafIcon class="w-4 h-4" />
-              Family nutrition made simpler
-            </div>
-
-            <h1 class="text-3xl sm:text-4xl md:text-5xl leading-tight text-[#2C5F2D] mb-5 md:mb-6">
+            <h1 class="mb-5 text-2xl leading-relaxed text-[#2C5F2D] sm:text-3xl md:mb-6 md:text-4xl">
               Helping families plan healthier lunchboxes with confidence
             </h1>
 
@@ -26,28 +19,33 @@
               </p>
             </div>
 
-            <div class="mt-7 md:mt-8 flex flex-col sm:flex-row gap-3">
-              <button
-                @click="goToStartPlanning"
-                type="button"
-                class="w-full sm:w-auto bg-[#A8D5BA] hover:bg-[#8FC2A4] text-[#2C5F2D] rounded-xl px-8 py-3 font-semibold transition-colors shadow-sm"
-              >
-                Start Planning
-              </button>
+            <!-- Trust / Value Strip -->
+            <div class="mt-5 grid w-full grid-cols-2 gap-x-4 gap-y-4 md:mt-6 md:grid-cols-4 md:gap-x-5 md:gap-y-4">
+              <div class="text-left">
+                <p class="text-base font-semibold text-[#2C5F2D] md:text-lg">5 to 12</p>
+                <p class="text-xs text-muted-foreground">Child age range</p>
+              </div>
 
-              <button
-                @click="goToQuickStart"
-                type="button"
-                class="w-full sm:w-auto bg-white hover:bg-[#FAF9F6] text-[#2C5F2D] border border-[#A8D5BA] rounded-xl px-8 py-3 font-semibold transition-colors"
-              >
-                Try Quick Start
-              </button>
+              <div class="text-left md:-translate-x-3 lg:-translate-x-4">
+                <p class="text-base font-semibold text-[#2C5F2D] md:text-lg">Personalised</p>
+                <p class="text-xs text-muted-foreground">Age and needs based</p>
+              </div>
+
+              <div class="text-left">
+                <p class="text-base font-semibold text-[#2C5F2D] md:text-lg">Seasonal</p>
+                <p class="text-xs text-muted-foreground">Fresh food guidance</p>
+              </div>
+
+              <div class="text-left">
+                <p class="text-base font-semibold text-[#2C5F2D] md:text-lg">Practical</p>
+                <p class="text-xs text-muted-foreground">Built for busy routines</p>
+              </div>
             </div>
           </div>
 
           <!-- Right Image -->
           <div class="relative">
-            <div class="rounded-3xl overflow-hidden shadow-xl bg-white p-2">
+            <div class="relative rounded-3xl overflow-hidden shadow-xl bg-white p-2">
               <img
                 src="https://images.unsplash.com/photo-1627896067004-38a36f39e506?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwYXJlbnQlMjBzaG9wcGluZyUyMGZyZXNoJTIwdmVnZXRhYmxlcyUyMGdyb2Nlcnl8ZW58MXx8fHwxNzc1MDE4Njk1fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
                 alt="Parent choosing fresh vegetables"
@@ -55,50 +53,21 @@
               />
             </div>
 
-            <div class="mt-4 md:mt-0 md:absolute md:-bottom-6 md:-left-6 bg-white rounded-2xl shadow-lg border p-4 md:p-5 max-w-xs">
-              <p class="text-sm text-muted-foreground mb-1">Designed for</p>
-              <p class="text-base md:text-lg font-semibold text-[#2C5F2D]">
-                Parents of children aged 5–12
-              </p>
-            </div>
-
             <div class="hidden md:block absolute -top-6 -right-6 w-28 h-28 bg-[#A8D5BA]/30 rounded-full -z-10"></div>
             <div class="hidden md:block absolute -bottom-8 right-12 w-20 h-20 bg-[#F7B267]/30 rounded-full -z-10"></div>
           </div>
         </div>
       </div>
-    </section>
 
-    <!-- Trust / Value Strip -->
-    <section class="py-8 md:py-10 bg-white border-b border-gray-100">
-      <div class="container mx-auto px-4 sm:px-6 max-w-6xl">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-5 md:gap-6">
-          <div class="text-center">
-            <p class="text-2xl font-semibold text-[#2C5F2D]">5–12</p>
-            <p class="text-sm text-muted-foreground">Child age range</p>
-          </div>
-
-          <div class="text-center">
-            <p class="text-2xl font-semibold text-[#2C5F2D]">Personalised</p>
-            <p class="text-sm text-muted-foreground">Age and needs based</p>
-          </div>
-
-          <div class="text-center">
-            <p class="text-2xl font-semibold text-[#2C5F2D]">Seasonal</p>
-            <p class="text-sm text-muted-foreground">Fresh food guidance</p>
-          </div>
-
-          <div class="text-center">
-            <p class="text-2xl font-semibold text-[#2C5F2D]">Practical</p>
-            <p class="text-sm text-muted-foreground">Built for busy routines</p>
-          </div>
-        </div>
-      </div>
+      <div
+        class="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-20 bg-gradient-to-b from-transparent via-[#FAF9F6]/60 to-white md:h-28"
+        aria-hidden="true"
+      />
     </section>
 
     <!-- What We Offer -->
-    <section class="py-12 md:py-20 bg-white">
-      <div class="container mx-auto px-4 sm:px-6 max-w-6xl">
+    <section class="overflow-visible bg-white pb-12 pt-14 md:pb-20 md:pt-20">
+      <div class="container mx-auto max-w-6xl overflow-visible px-4 sm:px-6">
         <div class="max-w-3xl mb-8 md:mb-12">
           <h2 class="text-2xl sm:text-3xl md:text-4xl mb-4 text-[#2C5F2D]">
             What LittleHelp offers
@@ -108,64 +77,28 @@
           </p>
         </div>
 
-        <div class="grid md:grid-cols-3 gap-5 md:gap-6">
-          <div class="p-5 md:p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow bg-[#FAF9F6] border border-gray-100">
-            <div class="w-11 h-11 md:w-12 md:h-12 bg-[#A8D5BA] rounded-full flex items-center justify-center mb-4 md:mb-5">
-              <UsersIcon class="w-6 h-6 text-[#2C5F2D]" />
+        <div class="grid gap-5 pb-2 md:grid-cols-3 md:gap-6 md:pb-4">
+          <div
+            v-for="card in offerCards"
+            :key="card.title"
+            class="group relative"
+          >
+            <div
+              tabindex="0"
+              class="rounded-2xl border border-gray-100 bg-[#FAF9F6] px-5 py-3 shadow-sm transition-shadow hover:shadow-md md:px-6 md:py-4"
+            >
+              <h3 class="text-center text-base font-semibold text-[#2C5F2D] md:text-lg">
+                {{ card.title }}
+              </h3>
             </div>
-            <h3 class="text-lg md:text-xl mb-3 text-[#2C5F2D] font-semibold">Family-focused planning</h3>
-            <p class="text-muted-foreground leading-relaxed">
-              Create child profiles and receive lunchbox ideas that consider age, allergies, dietary restrictions, and nutrition focus areas.
-            </p>
-          </div>
-
-          <div class="p-5 md:p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow bg-[#FAF9F6] border border-gray-100">
-            <div class="w-11 h-11 md:w-12 md:h-12 bg-[#F7B267] rounded-full flex items-center justify-center mb-4 md:mb-5">
-              <HeartIcon class="w-6 h-6 text-white" />
+            <div
+              role="tooltip"
+              class="pointer-events-none absolute left-0 right-0 top-full z-20 mt-3 hidden rounded-xl border border-[#A8D5BA]/40 bg-white p-4 text-left text-sm leading-relaxed text-muted-foreground shadow-lg opacity-0 transition-all duration-200 translate-y-1 group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100 md:block"
+            >
+              {{ card.hint }}
             </div>
-            <h3 class="text-lg md:text-xl mb-3 text-[#8B4513] font-semibold">Balanced lunchbox ideas</h3>
-            <p class="text-muted-foreground leading-relaxed">
-              Build practical lunchboxes with a mix of protein, grains, fruit, vegetables, and child-friendly options.
-            </p>
-          </div>
-
-          <div class="p-5 md:p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow bg-[#FAF9F6] border border-gray-100">
-            <div class="w-11 h-11 md:w-12 md:h-12 bg-[#CDE7F0] rounded-full flex items-center justify-center mb-4 md:mb-5">
-              <CalendarDaysIcon class="w-6 h-6 text-[#1B4965]" />
-            </div>
-            <h3 class="text-lg md:text-xl mb-3 text-[#1B4965] font-semibold">Weekly meal planning</h3>
-            <p class="text-muted-foreground leading-relaxed">
-              Plan multiple days at once, choose how often to cook, and save weekly lunchbox plans for easier school-week preparation.
-            </p>
-          </div>
-
-          <div class="p-5 md:p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow bg-[#FAF9F6] border border-gray-100">
-            <div class="w-11 h-11 md:w-12 md:h-12 bg-[#A8D5BA] rounded-full flex items-center justify-center mb-4 md:mb-5">
-              <SparklesIcon class="w-6 h-6 text-[#2C5F2D]" />
-            </div>
-            <h3 class="text-lg md:text-xl mb-3 text-[#2C5F2D] font-semibold">Simple nutrition guidance</h3>
-            <p class="text-muted-foreground leading-relaxed">
-              Understand food choices through clear explanations, without overwhelming nutrition jargon or strict dieting rules.
-            </p>
-          </div>
-
-          <div class="p-5 md:p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow bg-[#FAF9F6] border border-gray-100">
-            <div class="w-11 h-11 md:w-12 md:h-12 bg-[#F7B267] rounded-full flex items-center justify-center mb-4 md:mb-5">
-              <LeafIcon class="w-6 h-6 text-white" />
-            </div>
-            <h3 class="text-lg md:text-xl mb-3 text-[#8B4513] font-semibold">Seasonal suggestions</h3>
-            <p class="text-muted-foreground leading-relaxed">
-              Receive practical suggestions that highlight seasonal produce and everyday ingredients suitable for lunchboxes.
-            </p>
-          </div>
-
-          <div class="p-5 md:p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow bg-[#FAF9F6] border border-gray-100">
-            <div class="w-11 h-11 md:w-12 md:h-12 bg-[#CDE7F0] rounded-full flex items-center justify-center mb-4 md:mb-5">
-              <ShieldIcon class="w-6 h-6 text-[#1B4965]" />
-            </div>
-            <h3 class="text-lg md:text-xl mb-3 text-[#1B4965] font-semibold">Privacy-conscious design</h3>
-            <p class="text-muted-foreground leading-relaxed">
-              LittleHelp is designed to work with minimal personal details. Families can use nicknames and manage profiles with privacy in mind.
+            <p class="mt-2 text-xs leading-relaxed text-muted-foreground md:hidden">
+              {{ card.hint }}
             </p>
           </div>
         </div>
@@ -173,69 +106,65 @@
     </section>
 
     <!-- How It Helps -->
-    <section class="py-12 md:py-20 bg-[#FAF9F6]">
-      <div class="container mx-auto px-4 sm:px-6 max-w-6xl">
-        <div class="grid lg:grid-cols-2 gap-8 md:gap-12 items-start">
-          <div>
-            <h2 class="text-2xl sm:text-3xl md:text-4xl mb-5 text-[#2C5F2D]">
-              Built for real family routines
-            </h2>
-            <p class="text-base md:text-lg text-muted-foreground leading-relaxed mb-6 md:mb-8">
-              Healthy eating advice can be hard to apply when mornings are busy. LittleHelp focuses on practical, realistic lunchbox support that parents can use quickly.
-            </p>
+    <section class="relative overflow-hidden py-12 md:py-20">
+      <div class="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
+        <div class="absolute inset-0 bg-[#FAF9F6]"></div>
+        <div
+          class="absolute inset-0 bg-center bg-cover opacity-35 md:opacity-50"
+          style="background-image: url('https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=1600');"
+        ></div>
+        <div
+          class="absolute inset-y-0 left-0 z-[1] w-[28%] max-w-xs bg-gradient-to-r from-white from-5% via-white/95 via-60% to-transparent sm:w-[32%] sm:max-w-sm"
+        ></div>
+        <div
+          class="absolute inset-y-0 right-0 z-[1] w-[28%] max-w-xs bg-gradient-to-l from-white from-5% via-white/95 via-60% to-transparent sm:w-[32%] sm:max-w-sm"
+        ></div>
+      </div>
 
-            <div class="bg-white rounded-2xl shadow-sm border p-5 md:p-6">
-              <p class="text-base md:text-lg text-muted-foreground leading-relaxed">
-                Our goal is not to overwhelm families with information, but to help them make
-                <strong class="text-[#2C5F2D]"> confident, realistic, and repeatable choices</strong>.
+      <div class="container relative z-10 mx-auto max-w-6xl px-4 sm:px-6">
+        <div class="rounded-3xl border border-[#E8E4DC] bg-white/95 p-6 shadow-sm backdrop-blur-sm md:p-10">
+          <div class="grid items-start gap-8 lg:grid-cols-2 md:gap-12">
+            <div>
+              <h2 class="mb-5 text-2xl text-[#2C5F2D] sm:text-3xl md:text-4xl">
+                Built for real family routines
+              </h2>
+              <p class="mb-6 text-base leading-relaxed text-muted-foreground md:mb-8 md:text-lg">
+                Healthy eating advice can be hard to apply when mornings are busy. LittleHelp focuses on practical, realistic lunchbox support that parents can use quickly.
               </p>
-            </div>
-          </div>
 
-          <div class="space-y-4 md:space-y-5">
-            <div class="flex items-start gap-3 md:gap-4 bg-white rounded-2xl border p-4 md:p-5 shadow-sm">
-              <div class="w-10 h-10 bg-[#A8D5BA] rounded-full flex items-center justify-center flex-shrink-0">
-                <CheckCircleIcon class="w-5 h-5 text-[#2C5F2D]" />
+              <div class="rounded-2xl bg-[#FAF9F6] p-5 md:p-6">
+                <p class="text-base leading-relaxed text-muted-foreground md:text-lg">
+                  Our goal is not to overwhelm families with information, but to help them make
+                  <strong class="text-[#2C5F2D]"> confident, realistic, and repeatable choices</strong>.
+                </p>
               </div>
+            </div>
+
+            <div class="space-y-5 rounded-2xl bg-[#FAF9F6] p-5 md:space-y-6 md:p-6">
               <div>
-                <h4 class="text-base md:text-lg mb-1 font-semibold text-gray-800">Start with each child’s needs</h4>
-                <p class="text-sm md:text-base text-muted-foreground">
+                <h4 class="mb-1 text-base font-semibold text-gray-800 md:text-lg">Start with each child's needs</h4>
+                <p class="text-sm text-muted-foreground md:text-base">
                   Add age band, allergies, dietary restrictions, and nutrition focus areas to guide personalised recommendations.
                 </p>
               </div>
-            </div>
 
-            <div class="flex items-start gap-3 md:gap-4 bg-white rounded-2xl border p-4 md:p-5 shadow-sm">
-              <div class="w-10 h-10 bg-[#F7B267] rounded-full flex items-center justify-center flex-shrink-0">
-                <TargetIcon class="w-5 h-5 text-white" />
-              </div>
               <div>
-                <h4 class="text-base md:text-lg mb-1 font-semibold text-gray-800">Generate lunchbox options</h4>
-                <p class="text-sm md:text-base text-muted-foreground">
+                <h4 class="mb-1 text-base font-semibold text-gray-800 md:text-lg">Generate lunchbox options</h4>
+                <p class="text-sm text-muted-foreground md:text-base">
                   Receive food combinations and recipe inspiration that are easier to understand and prepare.
                 </p>
               </div>
-            </div>
 
-            <div class="flex items-start gap-3 md:gap-4 bg-white rounded-2xl border p-4 md:p-5 shadow-sm">
-              <div class="w-10 h-10 bg-[#CDE7F0] rounded-full flex items-center justify-center flex-shrink-0">
-                <BookOpenIcon class="w-5 h-5 text-[#1B4965]" />
-              </div>
               <div>
-                <h4 class="text-base md:text-lg mb-1 font-semibold text-gray-800">Understand the reason behind choices</h4>
-                <p class="text-sm md:text-base text-muted-foreground">
+                <h4 class="mb-1 text-base font-semibold text-gray-800 md:text-lg">Understand the reason behind choices</h4>
+                <p class="text-sm text-muted-foreground md:text-base">
                   See simple explanations that connect food suggestions to nutrition needs and family preferences.
                 </p>
               </div>
-            </div>
 
-            <div class="flex items-start gap-3 md:gap-4 bg-white rounded-2xl border p-4 md:p-5 shadow-sm">
-              <div class="w-10 h-10 bg-[#A8D5BA] rounded-full flex items-center justify-center flex-shrink-0">
-                <CalendarDaysIcon class="w-5 h-5 text-[#2C5F2D]" />
-              </div>
               <div>
-                <h4 class="text-base md:text-lg mb-1 font-semibold text-gray-800">Save and reuse weekly plans</h4>
-                <p class="text-sm md:text-base text-muted-foreground">
+                <h4 class="mb-1 text-base font-semibold text-gray-800 md:text-lg">Save and reuse weekly plans</h4>
+                <p class="text-sm text-muted-foreground md:text-base">
                   Keep useful weekly lunchbox plans so future preparation becomes faster and more consistent.
                 </p>
               </div>
@@ -256,21 +185,21 @@
         </div>
 
         <div class="grid md:grid-cols-3 gap-5 md:gap-6">
-          <div class="border-l-4 border-[#A8D5BA] bg-[#FAF9F6] rounded-r-2xl p-5 md:p-6">
+          <div class="border-l-4 border-[#A8D5BA] py-2 pl-5 md:pl-6">
             <h3 class="text-lg md:text-xl font-semibold text-[#2C5F2D] mb-3">Simple</h3>
             <p class="text-muted-foreground leading-relaxed">
               Information should be easy to understand and simple enough to act on.
             </p>
           </div>
 
-          <div class="border-l-4 border-[#F7B267] bg-[#FAF9F6] rounded-r-2xl p-5 md:p-6">
+          <div class="border-l-4 border-[#F7B267] py-2 pl-5 md:pl-6">
             <h3 class="text-lg md:text-xl font-semibold text-[#8B4513] mb-3">Practical</h3>
             <p class="text-muted-foreground leading-relaxed">
               Recommendations should fit into real shopping, cooking, and lunch-packing routines.
             </p>
           </div>
 
-          <div class="border-l-4 border-[#CDE7F0] bg-[#FAF9F6] rounded-r-2xl p-5 md:p-6">
+          <div class="border-l-4 border-[#CDE7F0] py-2 pl-5 md:pl-6">
             <h3 class="text-lg md:text-xl font-semibold text-[#1B4965] mb-3">Supportive</h3>
             <p class="text-muted-foreground leading-relaxed">
               The experience should guide families gently, without guilt, pressure, or unrealistic expectations.
@@ -283,36 +212,26 @@
     <!-- Privacy Section -->
     <section class="py-12 md:py-20 bg-[#FAF9F6]">
       <div class="container mx-auto px-4 sm:px-6 max-w-6xl">
-        <div class="bg-white rounded-3xl shadow-sm border p-5 md:p-10">
-          <div class="grid md:grid-cols-[auto,1fr] gap-5 md:gap-6 items-start">
-            <div class="w-14 h-14 md:w-16 md:h-16 bg-[#CDE7F0] rounded-full flex items-center justify-center">
-              <ShieldIcon class="w-7 h-7 md:w-8 md:h-8 text-[#1B4965]" />
-            </div>
+        <h2 class="text-2xl md:text-3xl mb-4 text-[#2C5F2D]">Privacy and trust</h2>
+        <p class="mb-5 max-w-3xl text-base leading-relaxed text-muted-foreground md:text-lg">
+          LittleHelp is built to minimise unnecessary personal information. Families can use nicknames for child profiles, and the platform focuses only on the details needed to provide better lunchbox guidance.
+        </p>
 
-            <div>
-              <h2 class="text-2xl md:text-3xl mb-4 text-[#2C5F2D]">Privacy and trust</h2>
-              <p class="text-muted-foreground text-base md:text-lg leading-relaxed mb-5">
-                LittleHelp is built to minimise unnecessary personal information. Families can use nicknames for child profiles, and the platform focuses only on the details needed to provide better lunchbox guidance.
-              </p>
-
-              <div class="grid sm:grid-cols-3 gap-4">
-                <div class="rounded-xl bg-[#FAF9F6] p-4">
-                  <p class="font-semibold text-gray-800 mb-1">Profile control</p>
-                  <p class="text-sm text-muted-foreground">Create, edit, or delete child profiles.</p>
-                </div>
-
-                <div class="rounded-xl bg-[#FAF9F6] p-4">
-                  <p class="font-semibold text-gray-800 mb-1">Minimal details</p>
-                  <p class="text-sm text-muted-foreground">Only use information relevant to lunchbox planning.</p>
-                </div>
-
-                <div class="rounded-xl bg-[#FAF9F6] p-4">
-                  <p class="font-semibold text-gray-800 mb-1">Clear purpose</p>
-                  <p class="text-sm text-muted-foreground">Information is used to support personalised recommendations.</p>
-                </div>
+        <div class="grid sm:grid-cols-3 gap-4">
+              <div class="rounded-xl bg-white p-4">
+                <p class="font-semibold text-[#2C5F2D] mb-1">Profile control</p>
+                <p class="text-sm text-muted-foreground">Create, edit, or delete child profiles.</p>
               </div>
-            </div>
-          </div>
+
+              <div class="rounded-xl bg-white p-4">
+                <p class="font-semibold text-[#2C5F2D] mb-1">Minimal details</p>
+                <p class="text-sm text-muted-foreground">Only use information relevant to lunchbox planning.</p>
+              </div>
+
+              <div class="rounded-xl bg-white p-4">
+                <p class="font-semibold text-[#2C5F2D] mb-1">Clear purpose</p>
+                <p class="text-sm text-muted-foreground">Information is used to support personalised recommendations.</p>
+              </div>
         </div>
       </div>
     </section>
@@ -427,8 +346,16 @@
     </section>
 
     <!-- Mission / CTA -->
-    <section class="py-12 md:py-20 bg-gradient-to-br from-[#A8D5BA]/15 to-white">
-      <div class="container mx-auto px-4 sm:px-6 max-w-4xl text-center">
+    <section class="relative overflow-hidden py-12 md:py-20">
+      <div
+        class="absolute inset-0 bg-gradient-to-br from-[#A8D5BA]/15 to-white"
+        aria-hidden="true"
+      ></div>
+      <div
+        class="pointer-events-none absolute inset-x-0 top-0 z-[1] h-48 bg-gradient-to-b from-white from-0% via-white/90 via-[58%] to-transparent to-100% sm:h-56 md:h-64"
+        aria-hidden="true"
+      ></div>
+      <div class="container relative z-10 mx-auto max-w-4xl px-4 text-center sm:px-6">
         <img
           :src="logoUrl"
           alt="LittleHelp logo"
@@ -456,19 +383,36 @@
 <script setup>
 import { useRouter } from 'vue-router';
 import logoUrl from '../assets/littlehelp-logo.jpg';
-import {
-  Heart as HeartIcon,
-  Users as UsersIcon,
-  Target as TargetIcon,
-  CheckCircle as CheckCircleIcon,
-  Shield as ShieldIcon,
-  Sparkles as SparklesIcon,
-  Leaf as LeafIcon,
-  BookOpen as BookOpenIcon,
-  CalendarDays as CalendarDaysIcon,
-} from 'lucide-vue-next';
 
 const router = useRouter();
+
+const offerCards = [
+  {
+    title: 'Family-focused planning',
+    hint: 'Create child profiles and receive lunchbox ideas that consider age, allergies, dietary restrictions, and nutrition focus areas.',
+  },
+  {
+    title: 'Balanced lunchbox ideas',
+    hint: 'Build practical lunchboxes with a mix of protein, grains, fruit, vegetables, and child-friendly options.',
+  },
+  {
+    title: 'Weekly meal planning',
+    hint: 'Plan multiple days at once, choose how often to cook, and save weekly lunchbox plans for easier school-week preparation.',
+  },
+  {
+    title: 'Simple nutrition guidance',
+    hint: 'Understand food choices through clear explanations, without overwhelming nutrition jargon or strict dieting rules.',
+  },
+  {
+    title: 'Seasonal suggestions',
+    hint: 'Receive practical suggestions that highlight seasonal produce and everyday ingredients suitable for lunchboxes.',
+  },
+  {
+    title: 'Privacy-conscious design',
+    hint: 'LittleHelp is designed to work with minimal personal details. Families can use nicknames and manage profiles with privacy in mind.',
+  },
+];
+
 
 const dataSources = [
   {
@@ -482,7 +426,7 @@ const dataSources = [
   },
   {
     id: 'D02',
-    name: 'AUSNUT 2023 — Australian Dietary Guidelines Classification System',
+    name: 'AUSNUT 2023 ? Australian Dietary Guidelines Classification System',
     link: 'https://www.foodstandards.gov.au/science-data/food-nutrient-databases/ausnut/data-files',
     purpose: 'Maps foods to Australian Dietary Guidelines classification categories.',
     format: 'XLSX',
@@ -491,7 +435,7 @@ const dataSources = [
   },
   {
     id: 'D03',
-    name: 'AUSNUT 2023 — Food Details',
+    name: 'AUSNUT 2023 ? Food Details',
     link: 'https://www.foodstandards.gov.au/science-data/food-nutrient-databases/ausnut/data-files',
     purpose: 'Food names, descriptions, and nutrition-related reference data.',
     format: 'XLSX',
@@ -500,7 +444,7 @@ const dataSources = [
   },
   {
     id: 'D04',
-    name: 'AUSNUT Release 3 — Food Group Information',
+    name: 'AUSNUT Release 3 ? Food Group Information',
     link: 'https://www.foodstandards.gov.au/science-data/food-nutrient-databases/afcd/data-files',
     purpose: 'Food group classification support for matching foods to broader groups.',
     format: 'XLSX',
@@ -509,7 +453,7 @@ const dataSources = [
   },
   {
     id: 'D05',
-    name: 'Australian Dietary Guidelines — Recommended Serves for Children',
+    name: 'Australian Dietary Guidelines ? Recommended Serves for Children',
     link: 'https://www.eatforhealth.gov.au/food-essentials/how-much-do-we-need-each-day/recommended-number-serves-children-adolescents-and-toddlers',
     purpose: 'Age-based serving size reference for children and adolescents.',
     format: 'PDF / Web',
@@ -540,9 +484,6 @@ const goToStartPlanning = () => {
   router.push('/child-profile');
 };
 
-const goToQuickStart = () => {
-  router.push('/quick-start');
-};
 </script>
 
 <style scoped>

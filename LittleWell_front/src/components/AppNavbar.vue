@@ -20,52 +20,30 @@
         </button>
 
         <!-- Desktop Navigation Links -->
-        <div class="hidden lg:flex items-center justify-end gap-2 flex-1" role="navigation">
-          <button
-            @click="goProtected('/weekly-plan')"
-            :class="['nav-link', { 'nav-link-active': isRouteActive('/weekly-plan') }]"
-            :aria-current="isRouteActive('/weekly-plan') ? 'page' : undefined"
-            type="button"
+        <div class="hidden lg:flex flex-1 items-center justify-end gap-2">
+          <div
+            ref="navLinksContainerRef"
+            class="relative flex items-center gap-2"
+            role="navigation"
           >
-            Weekly Plan
-          </button>
+            <div
+              class="nav-underline-indicator pointer-events-none absolute bottom-1 left-0 h-px rounded-full bg-[#2C5F2D] transition-[left,width,opacity] duration-300 ease-out"
+              :style="navUnderlineStyle"
+              aria-hidden="true"
+            />
 
-          <button
-            @click="goProtected('/my-plans')"
-            :class="['nav-link', { 'nav-link-active': isRouteActive('/my-plans') }]"
-            :aria-current="isRouteActive('/my-plans') ? 'page' : undefined"
-            type="button"
-          >
-            My Plans
-          </button>
-
-          <!-- Temporary Food Analyser entry -->
-          <button
-            @click="router.push('/food-analyser')"
-            :class="['nav-link', { 'nav-link-active': isRouteActive('/food-analyser') }]"
-            :aria-current="isRouteActive('/food-analyser') ? 'page' : undefined"
-            type="button"
-          >
-            Food Analyser
-          </button>
-
-          <button
-            @click="router.push('/knowledge-hub-prototype')"
-            :class="['nav-link', { 'nav-link-active': isRouteActive('/knowledge-hub-prototype') }]"
-            :aria-current="isRouteActive('/knowledge-hub-prototype') ? 'page' : undefined"
-            type="button"
-          >
-            Knowledge Hub
-          </button>
-
-          <button
-            @click="router.push('/about')"
-            :class="['nav-link', { 'nav-link-active': isRouteActive('/about') }]"
-            :aria-current="isRouteActive('/about') ? 'page' : undefined"
-            type="button"
-          >
-            About Us
-          </button>
+            <button
+              v-for="item in desktopNavItems"
+              :key="item.path"
+              :ref="(el) => setNavLinkRef(item.path, el)"
+              type="button"
+              :class="['nav-link', { 'nav-link-active': isRouteActive(item.path) }]"
+              :aria-current="isRouteActive(item.path) ? 'page' : undefined"
+              @click="item.action()"
+            >
+              {{ item.label }}
+            </button>
+          </div>
 
           <!-- Desktop Accessibility Dropdown -->
           <div ref="accessibilityMenuRef" class="relative">
@@ -373,7 +351,14 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+} from 'vue';
 import { useRouter } from 'vue-router';
 import { ChevronDown, Menu, X } from 'lucide-vue-next';
 import { useAuthStore } from '../stores/auth';
@@ -410,6 +395,75 @@ const isRouteActive = (path) => {
 
   return currentPath.value === path || currentPath.value.startsWith(`${path}/`);
 };
+
+const navLinksContainerRef = ref(null);
+const navLinkRefs = ref({});
+const navUnderlineStyle = ref({
+  left: '0px',
+  width: '0px',
+  opacity: '0',
+});
+
+const setNavLinkRef = (path, el) => {
+  if (el) {
+    navLinkRefs.value[path] = el;
+    return;
+  }
+
+  delete navLinkRefs.value[path];
+};
+
+const updateNavUnderline = () => {
+  nextTick(() => {
+    const container = navLinksContainerRef.value;
+    if (!container) {
+      return;
+    }
+
+    const activeItem = desktopNavItems.find((item) => isRouteActive(item.path));
+    if (!activeItem) {
+      navUnderlineStyle.value = {
+        left: '0px',
+        width: '0px',
+        opacity: '0',
+      };
+      return;
+    }
+
+    const linkEl = navLinkRefs.value[activeItem.path];
+    if (!linkEl) {
+      navUnderlineStyle.value = {
+        left: '0px',
+        width: '0px',
+        opacity: '0',
+      };
+      return;
+    }
+
+    const containerRect = container.getBoundingClientRect();
+    const linkRect = linkEl.getBoundingClientRect();
+    const underlineInset = 6;
+    const left = linkRect.left - containerRect.left + underlineInset;
+    const width = Math.max(0, linkRect.width - underlineInset * 2);
+
+    navUnderlineStyle.value = {
+      left: `${left}px`,
+      width: `${width}px`,
+      opacity: '1',
+    };
+  });
+};
+
+watch(currentPath, updateNavUnderline);
+
+onMounted(() => {
+  updateNavUnderline();
+  window.addEventListener('resize', updateNavUnderline);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', updateNavUnderline);
+});
 
 const closeMobileMenu = () => {
   showMobileMenu.value = false;
@@ -472,6 +526,34 @@ const goProtected = (path) => {
   router.push(path);
 };
 
+const desktopNavItems = [
+  {
+    path: '/weekly-plan',
+    label: 'Weekly Plan',
+    action: () => goProtected('/weekly-plan'),
+  },
+  {
+    path: '/my-plans',
+    label: 'My Plans',
+    action: () => goProtected('/my-plans'),
+  },
+  {
+    path: '/food-analyser',
+    label: 'Food Analyser',
+    action: () => router.push('/food-analyser'),
+  },
+  {
+    path: '/knowledge-hub-prototype',
+    label: 'Knowledge Hub',
+    action: () => router.push('/knowledge-hub-prototype'),
+  },
+  {
+    path: '/about',
+    label: 'About Us',
+    action: () => router.push('/about'),
+  },
+];
+
 const handleLogout = () => {
   authStore.logout();
   router.push('/');
@@ -502,28 +584,21 @@ const handleLogout = () => {
 }
 
 .nav-link-active {
-  background-color: rgba(168, 213, 186, 0.22);
   color: #214B24;
-  font-weight: 700;
-  box-shadow: inset 0 0 0 1px rgba(44, 95, 45, 0.12);
+  font-weight: 600;
 }
 
-.nav-link-active::after {
+.nav-signin-link::after {
   content: '';
   position: absolute;
   left: 50%;
   bottom: 0.25rem;
-  width: 1.25rem;
-  height: 0.18rem;
+  width: 2.5rem;
+  height: 2px;
   border-radius: 999px;
   background-color: #2C5F2D;
   transform: translateX(-50%);
-}
-
-.nav-signin-link {
-  text-decoration: underline;
-  text-decoration-color: #2C5F2D;
-  text-underline-offset: 3px;
+  pointer-events: none;
 }
 
 .nav-primary-button {

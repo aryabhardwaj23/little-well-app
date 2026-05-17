@@ -1,83 +1,130 @@
 <template>
-  <div class="min-h-screen bg-[#FAF9F6]">
+  <div class="flex flex-1 flex-col bg-[#F4F1EA]">
     <!-- Header: no internal nav, use global NavigationBar -->
-    <section class="pt-24 lg:pt-28 bg-white border-b border-gray-100">
-      <div class="container mx-auto px-4 sm:px-6 max-w-6xl py-8 sm:py-10">
-        <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-          <div
-            class="w-14 h-14 bg-[#A8D5BA] rounded-full flex items-center justify-center shrink-0"
-          >
-            <Camera class="w-7 h-7 text-white" />
-          </div>
-
-          <div>
-            <h1 class="text-2xl sm:text-3xl font-semibold text-[#2C5F2D] leading-tight">
-              Lunchbox Food Analyser
-            </h1>
-            <p class="mt-2 text-sm sm:text-base text-gray-500 leading-relaxed">
-              Upload a photo of your child's lunchbox for AI-powered nutrition insights.
-            </p>
-          </div>
+    <section class="bg-white">
+      <div class="container mx-auto max-w-6xl px-4 pb-5 pt-7 sm:px-6 sm:pb-6 sm:pt-10">
+        <div>
+          <h1 class="text-3xl font-semibold leading-tight text-[#2C5F2D] sm:text-4xl md:text-5xl">
+            Lunchbox Food Analyser
+          </h1>
+          <p class="mt-2 text-sm leading-relaxed text-gray-500 sm:text-base">
+            Upload a photo of your child's lunchbox for AI-powered nutrition insights.
+          </p>
         </div>
       </div>
     </section>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-4 sm:px-6 max-w-6xl py-6 sm:py-10">
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
-        <!-- Left Panel -->
-        <aside class="lg:col-span-1 space-y-5">
-          <!-- Child Details -->
-          <section class="bg-white rounded-2xl shadow-sm border p-5">
-            <h2 class="font-semibold text-[#2C5F2D] mb-4">
-              Child Details
-            </h2>
+    <div class="relative flex-1 pb-0">
+      <div class="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
+        <div class="absolute inset-0 bg-gradient-to-b from-[#FAF9F6] to-[#F4F1EA]"></div>
+        <div
+          class="absolute inset-0 bg-cover bg-center opacity-40 sm:opacity-50"
+          style="background-image: url('https://images.pexels.com/photos/5949887/pexels-photo-5949887.jpeg?auto=compress&cs=tinysrgb&w=1600');"
+        ></div>
+        <div
+          class="absolute inset-0 bg-gradient-to-br from-[#A8D5BA]/15 to-[#F4F1EA]/80"
+        ></div>
+        <div
+          class="absolute left-0 right-0 top-0 z-[1] h-10 bg-gradient-to-b from-white from-0% via-white/90 via-[58%] to-transparent to-100% sm:h-14"
+        ></div>
+        <div
+          class="absolute bottom-0 left-0 right-0 z-[1] h-16 bg-gradient-to-t from-[#F4F1EA] from-0% via-[#F4F1EA]/95 via-45% to-transparent to-100% sm:h-24"
+        ></div>
+      </div>
 
-            <div class="space-y-4">
-              <div>
-                <label class="text-xs text-gray-500 mb-1 block">
-                  Child's name
-                </label>
-                <input
-                  v-model="childName"
-                  type="text"
-                  placeholder="e.g. Arya"
-                  class="w-full border border-gray-200 rounded-lg px-3 py-3 sm:py-2 text-sm focus:outline-none focus:border-[#A8D5BA] focus:ring-1 focus:ring-[#A8D5BA]"
-                />
-              </div>
+      <main class="container relative z-10 mx-auto max-w-6xl px-4 pb-16 pt-6 sm:px-6 sm:pb-24 sm:pt-10">
+      <div class="flex flex-col gap-6 lg:gap-8">
+        <div class="grid grid-cols-1 items-start gap-6 lg:grid-cols-12 lg:gap-8">
+          <!-- Step 1 -->
+          <section class="relative z-20 overflow-visible rounded-2xl border bg-white p-5 shadow-sm lg:z-30 lg:col-span-4">
+            <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-[#2C5F2D] sm:text-sm">
+              Step 1 — Select your child
+            </p>
 
-              <div>
-                <label class="text-xs text-gray-500 mb-1 block">
-                  Age (years)
-                </label>
-                <select
-                  v-model="childAge"
-                  class="w-full border border-gray-200 rounded-lg px-3 py-3 sm:py-2 text-sm bg-white focus:outline-none focus:border-[#A8D5BA] focus:ring-1 focus:ring-[#A8D5BA]"
-                >
-                  <option
-                    v-for="age in allowedAges"
-                    :key="age"
-                    :value="age"
+            <div
+              class="child-picker-bubble rounded-2xl border border-gray-200 bg-white p-2 shadow-sm transition-[max-height] duration-300 ease-in-out"
+              :class="
+                childPickerOpen
+                  ? 'max-h-[min(36rem,72vh)] overflow-y-auto'
+                  : 'max-h-[14.5rem] overflow-hidden'
+              "
+              @mouseenter="openChildPicker"
+              @mouseleave="closeChildPicker"
+            >
+              <div
+                class="flex flex-col gap-2"
+                role="listbox"
+                aria-label="Child profiles"
+              >
+                  <button
+                    v-for="profile in orderedProfiles"
+                    :key="profile.id"
+                    type="button"
+                    role="option"
+                    :aria-selected="selectedChildId === profile.id"
+                    class="w-full shrink-0 rounded-2xl border-2 p-4 text-left transition-colors"
+                    :class="
+                      selectedChildId === profile.id
+                        ? 'border-[#2C5F2D] bg-[#A8D5BA]/15 shadow-md'
+                        : 'border-gray-200 bg-[#FAF9F6] hover:border-[#A8D5BA]/60'
+                    "
+                    @click="selectChildProfile(profile)"
                   >
-                    {{ age }} years old
-                  </option>
-                </select>
+                    <div class="mb-2 flex items-center gap-3">
+                      <div
+                        class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#CDE7F0]/50 text-base font-semibold text-[#1B4965] sm:h-12 sm:w-12 sm:text-lg"
+                        aria-hidden="true"
+                      >
+                        {{ profileInitials(profile.name) }}
+                      </div>
+                      <div class="min-w-0">
+                        <p class="truncate font-semibold text-[#111827]">{{ profile.name }}</p>
+                        <p class="text-sm text-muted-foreground">{{ profile.ageGroup }}</p>
+                      </div>
+                    </div>
+
+                    <p
+                      v-if="profile.allergies?.length"
+                      class="mt-2 rounded-lg bg-amber-50 px-2 py-1 text-xs text-amber-800"
+                    >
+                      Allergies: {{ profile.allergies.join(', ') }}
+                    </p>
+
+                    <p
+                      v-if="profile.dietaryRestriction"
+                      class="mt-2 rounded-lg bg-[#CDE7F0]/40 px-2 py-1 text-xs text-[#1B4965]"
+                    >
+                      {{ profile.dietaryRestriction }}
+                    </p>
+
+                    <p class="mt-2 text-[10px] uppercase tracking-wide text-muted-foreground">
+                      Demo profile
+                    </p>
+                  </button>
               </div>
             </div>
+
+            <p class="mt-3 text-xs leading-relaxed text-muted-foreground">
+              Mock profiles for UI preview. Child cards will be loaded from the backend later.
+            </p>
           </section>
 
-          <!-- Upload Card -->
-          <section class="bg-white rounded-2xl shadow-sm border p-5">
-            <h2 class="font-semibold text-[#2C5F2D] mb-4">
-              Lunchbox Photo
-            </h2>
+          <!-- Steps 2 & 3 — Upload, tips, and AI feedback (single white bubble) -->
+          <section class="flex min-w-0 flex-col rounded-2xl border bg-white p-5 shadow-sm lg:col-span-8">
+            <p class="mb-4 text-xs font-semibold uppercase tracking-wide text-[#2C5F2D] sm:text-sm">
+              Step 2 — Upload lunchbox photo
+            </p>
+
+            <div class="grid flex-1 grid-cols-1 gap-5 md:grid-cols-2 md:gap-6 lg:gap-8">
+              <div class="flex min-w-0 flex-col">
 
             <div
               @click="triggerPhotoUpload"
               @dragover.prevent
               @drop.prevent="onPhotoDrop"
               :class="[
-                'border-2 border-dashed rounded-xl p-5 sm:p-6 text-center cursor-pointer transition-colors',
+                'flex flex-1 flex-col justify-center border-2 border-dashed rounded-xl p-5 sm:p-6 text-center cursor-pointer transition-colors min-h-[10rem]',
                 photoPreview
                   ? 'border-[#A8D5BA]'
                   : 'border-gray-200 hover:border-[#A8D5BA]'
@@ -142,30 +189,35 @@
                 Analysing...
               </span>
             </button>
-          </section>
+              </div>
 
-          <!-- Tips -->
-          <section class="bg-[#CDE7F0]/30 rounded-2xl border border-[#CDE7F0] p-5">
-            <h2 class="text-sm font-semibold text-[#1B4965] mb-3">
-              Tips for best results
-            </h2>
+              <div
+                class="flex flex-col border-t border-gray-200 pt-5 md:border-l md:border-t-0 md:pl-6 md:pt-0"
+              >
+                <h3 class="mb-3 text-sm font-semibold text-[#1B4965]">
+                  Tips for best results
+                </h3>
 
-            <ul class="space-y-2 text-xs sm:text-sm text-[#1B4965] leading-relaxed">
-              <li>• Good lighting helps identify more foods</li>
-              <li>• Spread food out so all items are visible</li>
-              <li>• Photograph from directly above the lunchbox</li>
-              <li>• Enter your child's correct age for accurate scoring</li>
-            </ul>
-          </section>
-        </aside>
+                <ul class="space-y-2 text-xs leading-relaxed text-[#1B4965] sm:text-sm">
+                  <li>• Good lighting helps identify more foods</li>
+                  <li>• Spread food out so all items are visible</li>
+                  <li>• Photograph from directly above the lunchbox</li>
+                  <li>• Select the correct child profile for accurate scoring</li>
+                </ul>
+              </div>
+            </div>
 
-        <!-- Right Panel -->
-        <section class="lg:col-span-2">
-          <!-- Empty State -->
-          <div
-            v-if="!result && !loading"
-            class="bg-white rounded-2xl shadow-sm border p-8 sm:p-12 text-center flex flex-col items-center justify-center gap-4 min-h-[280px] sm:min-h-[360px]"
-          >
+            <!-- Step 3 — AI feedback -->
+            <div class="mt-6 border-t border-gray-200 pt-6">
+              <p class="mb-4 text-xs font-semibold uppercase tracking-wide text-[#2C5F2D] sm:text-sm">
+                Step 3 — Get AI powered nutrition feedback
+              </p>
+
+              <!-- Empty State -->
+              <div
+                v-if="!result && !loading"
+                class="flex min-h-[220px] flex-col items-center justify-center gap-4 rounded-xl bg-[#FAF9F6] p-8 text-center sm:min-h-[260px] sm:p-10"
+              >
             <div
               class="w-18 h-18 sm:w-20 sm:h-20 bg-[#A8D5BA]/20 rounded-full flex items-center justify-center"
             >
@@ -180,13 +232,13 @@
               Upload a lunchbox photo to get AI-powered nutrition feedback tailored
               to your child's age.
             </p>
-          </div>
+              </div>
 
-          <!-- Loading State -->
-          <div
-            v-if="loading"
-            class="bg-white rounded-2xl shadow-sm border p-8 sm:p-12 text-center flex flex-col items-center justify-center gap-4 min-h-[280px] sm:min-h-[360px]"
-          >
+              <!-- Loading State -->
+              <div
+                v-if="loading"
+                class="flex min-h-[220px] flex-col items-center justify-center gap-4 rounded-xl bg-[#FAF9F6] p-8 text-center sm:min-h-[260px] sm:p-10"
+              >
             <div
               class="w-16 h-16 bg-[#A8D5BA]/20 rounded-full flex items-center justify-center"
             >
@@ -215,12 +267,12 @@
                 style="animation-delay: 300ms"
               ></span>
             </div>
-          </div>
+              </div>
 
-          <!-- Result -->
-          <div v-if="result && !loading" class="space-y-5">
+              <!-- Result -->
+              <div v-if="result && !loading" class="space-y-5">
             <!-- Nutrition Score -->
-            <section class="bg-white rounded-2xl shadow-sm border p-5 sm:p-6">
+            <section class="rounded-xl border border-gray-100 bg-[#FAF9F6] p-5 sm:p-6">
               <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 gap-4">
                 <div>
                   <h2 class="text-xl font-semibold text-[#2C5F2D]">
@@ -325,7 +377,7 @@
             </section>
 
             <!-- AI Feedback -->
-            <section class="bg-white rounded-2xl shadow-sm border p-5 sm:p-6">
+            <section class="rounded-xl border border-gray-100 bg-[#FAF9F6] p-5 sm:p-6">
               <div class="flex items-center gap-3 mb-4">
                 <div
                   class="w-9 h-9 bg-[#A8D5BA] rounded-full flex items-center justify-center shrink-0"
@@ -355,35 +407,37 @@
             >
               Analyse Another Photo
             </button>
-          </div>
+              </div>
 
-          <!-- Error -->
-          <div
-            v-if="error"
-            class="bg-white rounded-2xl shadow-sm border border-red-100 p-5 sm:p-6 text-center mt-4"
-          >
-            <p class="text-red-500 text-sm leading-relaxed">
-              {{ error }}
-            </p>
+              <!-- Error -->
+              <div
+                v-if="error"
+                class="mt-4 rounded-xl border border-red-100 bg-red-50/50 p-5 text-center sm:p-6"
+              >
+                <p class="text-red-500 text-sm leading-relaxed">
+                  {{ error }}
+                </p>
 
-            <button
-              @click="error = null"
-              class="mt-3 text-xs text-gray-400 underline"
-              type="button"
-            >
-              Dismiss
-            </button>
-          </div>
-        </section>
+                <button
+                  @click="error = null"
+                  class="mt-3 text-xs text-gray-400 underline"
+                  type="button"
+                >
+                  Dismiss
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
       </div>
-    </main>
+      </main>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import {
-  Camera,
   Upload,
   X,
   Leaf,
@@ -391,11 +445,89 @@ import {
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
 
-const allowedAges = [5, 6, 7, 8, 9, 10, 11, 12];
-
 const childName = ref('');
 const childAge = ref(7);
 const error = ref(null);
+
+const selectedChildId = ref('demo-emma');
+const childPickerOpen = ref(false);
+
+/** Mock child cards for UI preview — replace with backend-driven list later */
+const MOCK_CHILD_PROFILES = [
+  {
+    id: 'demo-emma',
+    name: 'Emma',
+    ageGroup: '7-9 years',
+    allergies: [],
+    dietaryRestriction: '',
+  },
+  {
+    id: 'demo-oliver',
+    name: 'Oliver',
+    ageGroup: '5-6 years',
+    allergies: ['Peanuts'],
+    dietaryRestriction: '',
+  },
+  {
+    id: 'demo-maya',
+    name: 'Maya',
+    ageGroup: '10-12 years',
+    allergies: ['Milk'],
+    dietaryRestriction: 'Dairy-free',
+  },
+];
+
+const orderedProfiles = computed(() => {
+  const selected = MOCK_CHILD_PROFILES.find((p) => p.id === selectedChildId.value);
+  const rest = MOCK_CHILD_PROFILES.filter((p) => p.id !== selectedChildId.value);
+
+  return selected ? [selected, ...rest] : MOCK_CHILD_PROFILES;
+});
+
+const profileInitials = (name) => {
+  if (!name || typeof name !== 'string') return '?';
+
+  const parts = name.trim().split(/\s+/);
+
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+};
+
+const ageFromProfile = (profile) => {
+  const group = profile?.ageGroup || '';
+
+  if (group === '5-6 years') return 6;
+  if (group === '7-9 years') return 8;
+  if (group === '10-12 years') return 11;
+
+  return 7;
+};
+
+const syncChildFromProfile = (profile) => {
+  if (!profile) return;
+
+  childName.value = profile.name;
+  childAge.value = ageFromProfile(profile);
+};
+
+function openChildPicker() {
+  childPickerOpen.value = true;
+}
+
+function closeChildPicker() {
+  childPickerOpen.value = false;
+}
+
+function selectChildProfile(profile) {
+  selectedChildId.value = profile.id;
+  syncChildFromProfile(profile);
+  childPickerOpen.value = false;
+}
+
+onMounted(() => {
+  syncChildFromProfile(MOCK_CHILD_PROFILES[0]);
+});
 
 const photoInput = ref(null);
 const photoPreview = ref(null);
