@@ -187,10 +187,19 @@ const router = createRouter({
   routes,
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) return savedPosition;
-    return {
-      top: 0,
-      behavior: 'smooth',
-    };
+    if (to.hash) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          const el = document.querySelector(to.hash);
+          if (el) {
+            resolve({ el: to.hash, behavior: 'smooth', top: 24 });
+          } else {
+            resolve({ top: 0, behavior: 'smooth' });
+          }
+        }, 100);
+      });
+    }
+    return { top: 0, behavior: 'smooth' };
   },
 });
 
