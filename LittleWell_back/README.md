@@ -1,6 +1,6 @@
 # AI Ethics and Data Privacy Note
 ## LittleWell — Iteration 3 | FIT5120 Industry Experience Studio 2026 S1
-**Team 14 | Confidential — For PGP Assessment Use**
+**Team 14 | By - Suryansh Sharma**
 
 ---
 
