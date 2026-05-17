@@ -139,6 +139,3 @@ The UI clearly labels AI-generated content with "✨ AI Fusion" and "Powered by 
 LittleWell's AI features are designed to empower parents with evidence-based, personalised nutrition guidance while minimising the collection and external transmission of children's personal data. The system uses real Australian government datasets (AUSNUT 2011-13, ADG), clearly labels AI-generated content, and follows a minimal-data-collection approach. No sensitive personally identifiable information (PII) beyond a child's first name and age is processed, and this data is not retained beyond the scope of a single API request.
 
 ---
-
-*Document prepared: Iteration 3, Semester 1 2026 | Team 14 — LittleWell*
-*For PGP assessment and studio mentor review*
