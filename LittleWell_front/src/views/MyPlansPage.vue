@@ -26,7 +26,7 @@
         </h1>
 
         <p class="mx-auto max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-lg">
-          View, reuse, duplicate, and delete saved weekly plans
+          View, reuse, edit, duplicate, and understand your saved weekly lunchbox plans.
         </p>
       </header>
 
@@ -50,13 +50,13 @@
       </div>
 
       <!-- Reuse Prompt -->
-      <div
-        v-if="weeklyPlans.length > 0 && showReusePrompt"
+      <section
+        v-if="sortedWeeklyPlans.length > 0 && showReusePrompt"
         class="mb-6 rounded-2xl border border-[#A8D5BA]/30 bg-gradient-to-r from-[#A8D5BA]/20 to-[#CDE7F0]/20 p-5 sm:mb-8 sm:p-6"
         role="region"
         aria-label="Reuse previous plan prompt"
       >
-        <div class="flex flex-col gap-4 sm:flex-row sm:items-start">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-start">
           <div
             class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white sm:h-12 sm:w-12"
             aria-hidden="true"
@@ -65,102 +65,158 @@
           </div>
 
           <div class="flex-1">
-            <h3 class="mb-2 text-lg font-semibold text-[#2C5F2D]">
-              Use your previous weekly plan?
-            </h3>
+            <div class="mb-4 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <h2 class="mb-2 text-lg font-semibold text-[#2C5F2D]">
+                  Reuse a saved weekly plan?
+                </h2>
 
-            <p class="mb-4 text-sm leading-relaxed text-muted-foreground">
-              You can reuse "{{ weeklyPlans[0].name }}" or adjust it to fit this week's needs.
-            </p>
-
-            <div class="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-3">
-              <button
-                @click="handleReusePlan(weeklyPlans[0])"
-                class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#A8D5BA] px-6 py-3 text-sm font-medium text-[#2C5F2D] transition-colors hover:bg-[#8FC2A4] sm:w-auto sm:py-2"
-                type="button"
-              >
-                <Copy class="h-4 w-4" aria-hidden="true" />
-                Reuse Plan
-              </button>
-
-              <button
-                @click="handleAdjustPlan(weeklyPlans[0])"
-                class="inline-flex w-full items-center justify-center gap-2 rounded-lg border-2 border-[#A8D5BA] bg-white px-6 py-3 text-sm font-medium text-[#2C5F2D] transition-colors hover:bg-[#A8D5BA]/10 sm:w-auto sm:py-2"
-                type="button"
-              >
-                <Settings class="h-4 w-4" aria-hidden="true" />
-                Adjust Plan
-              </button>
+                <p class="text-sm leading-relaxed text-muted-foreground">
+                  Choose one of your saved plans and either reuse it directly or adjust it for this week.
+                </p>
+              </div>
 
               <button
                 @click="showReusePrompt = false"
-                class="inline-flex w-full items-center justify-center rounded-lg px-6 py-3 text-sm text-muted-foreground transition-colors hover:bg-white/70 hover:text-gray-700 sm:w-auto sm:py-2"
+                class="self-start rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-white/70 hover:text-gray-700"
                 type="button"
                 aria-label="Dismiss reuse prompt"
               >
                 Dismiss
               </button>
             </div>
+
+            <!-- Desktop / Tablet Plan Selector -->
+            <div class="hidden gap-3 md:grid md:grid-cols-2 lg:grid-cols-3">
+              <button
+                v-for="plan in sortedWeeklyPlans.slice(0, 6)"
+                :key="`reuse-${plan.id}`"
+                type="button"
+                @click="selectedReusePlanId = String(plan.id)"
+                :class="[
+                  'rounded-2xl border-2 bg-white p-4 text-left transition-all',
+                  selectedReusePlanId === String(plan.id)
+                    ? 'border-[#A8D5BA] shadow-sm'
+                    : 'border-white hover:border-[#A8D5BA]/60'
+                ]"
+              >
+                <div class="mb-2 flex items-start justify-between gap-2">
+                  <h3 class="line-clamp-1 text-sm font-semibold text-[#111827]">
+                    {{ plan.name }}
+                  </h3>
+
+                  <span
+                    v-if="selectedReusePlanId === String(plan.id)"
+                    class="rounded-full bg-[#A8D5BA]/30 px-2 py-0.5 text-xs text-[#2C5F2D]"
+                  >
+                    Selected
+                  </span>
+                </div>
+
+                <p class="mb-2 text-xs text-muted-foreground">
+                  {{ formatDate(plan.createdAt) }} ·
+                  {{ plan.batches.length }} session{{ plan.batches.length === 1 ? '' : 's' }}
+                </p>
+
+                <div class="flex flex-wrap gap-1">
+                  <span
+                    v-for="tag in buildWhyTags(plan).slice(0, 3)"
+                    :key="`${plan.id}-${tag}`"
+                    class="rounded-full bg-[#CDE7F0]/35 px-2 py-1 text-[11px] text-[#1B4965]"
+                  >
+                    {{ tag }}
+                  </span>
+                </div>
+              </button>
+            </div>
+
+            <!-- Mobile Plan Selector -->
+            <div class="md:hidden">
+              <label class="mb-2 block text-sm font-medium text-[#2C5F2D]">
+                Select a plan
+              </label>
+
+              <select
+                v-model="selectedReusePlanId"
+                class="w-full rounded-xl border border-[#D1D5DB] bg-white px-4 py-3 text-sm outline-none focus:border-[#A8D5BA] focus:ring-2 focus:ring-[#A8D5BA]/30"
+              >
+                <option
+                  v-for="plan in sortedWeeklyPlans"
+                  :key="`reuse-mobile-${plan.id}`"
+                  :value="String(plan.id)"
+                >
+                  {{ plan.name }} — {{ formatDate(plan.createdAt) }}
+                </option>
+              </select>
+            </div>
+
+            <div
+              v-if="selectedReusePlan"
+              class="mt-4 rounded-2xl border border-white/70 bg-white/70 p-4"
+            >
+              <p class="mb-3 text-sm text-[#374151]">
+                Selected:
+                <span class="font-semibold text-[#2C5F2D]">
+                  {{ selectedReusePlan.name }}
+                </span>
+              </p>
+
+              <div class="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-3">
+                <button
+                  @click="handleReusePlan(selectedReusePlan)"
+                  class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#A8D5BA] px-6 py-3 text-sm font-medium text-[#2C5F2D] transition-colors hover:bg-[#8FC2A4] sm:w-auto sm:py-2"
+                  type="button"
+                >
+                  <Copy class="h-4 w-4" aria-hidden="true" />
+                  Reuse Selected Plan
+                </button>
+
+                <button
+                  @click="handleAdjustPlan(selectedReusePlan)"
+                  class="inline-flex w-full items-center justify-center gap-2 rounded-lg border-2 border-[#A8D5BA] bg-white px-6 py-3 text-sm font-medium text-[#2C5F2D] transition-colors hover:bg-[#A8D5BA]/10 sm:w-auto sm:py-2"
+                  type="button"
+                >
+                  <Settings class="h-4 w-4" aria-hidden="true" />
+                  Adjust Selected Plan
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <!-- Tabs -->
-      <div
-        role="tablist"
-        aria-label="Plan tabs"
-        class="-mx-4 mb-6 flex gap-4 overflow-x-auto border-b px-4 sm:mx-0 sm:mb-8 sm:overflow-visible sm:px-0"
-      >
-        <button
-          id="tab-weekly"
-          role="tab"
-          :aria-selected="activeTab === 'weekly'"
-          aria-controls="panel-weekly"
-          @click="activeTab = 'weekly'"
-          :class="[
-            'shrink-0 px-1 pb-4 text-sm transition-all sm:px-2 sm:text-base',
-            activeTab === 'weekly'
-              ? 'border-b-2 border-[#A8D5BA] text-[#2C5F2D] font-medium'
-              : 'text-muted-foreground hover:text-gray-700'
-          ]"
-          type="button"
+      <!-- Weekly Plans -->
+      <section aria-labelledby="weekly-plans-heading">
+        <div class="mb-5 flex flex-col gap-2 sm:mb-6 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h2 id="weekly-plans-heading" class="text-2xl font-semibold text-[#2C5F2D]">
+              Weekly Plans
+            </h2>
+
+            <p class="text-sm text-muted-foreground">
+              {{ weeklyPlans.length }} saved plan{{ weeklyPlans.length === 1 ? '' : 's' }}
+            </p>
+          </div>
+
+          <button
+            @click="router.push('/weekly-plan')"
+            class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#A8D5BA] px-5 py-3 text-sm font-medium text-[#2C5F2D] transition-colors hover:bg-[#8FC2A4] sm:w-auto sm:py-2.5"
+            type="button"
+          >
+            <Plus class="h-4 w-4" aria-hidden="true" />
+            Create Weekly Plan
+          </button>
+        </div>
+
+        <div
+          v-if="weeklyPlans.length === 0 && !isLoading"
+          class="rounded-3xl border bg-white py-12 text-center shadow-sm sm:py-16"
         >
-          <CalendarDays class="mr-2 inline h-4 w-4" aria-hidden="true" />
-          Weekly Plans ({{ weeklyPlans.length }})
-        </button>
-
-        <button
-          id="tab-lunchboxes"
-          role="tab"
-          :aria-selected="activeTab === 'lunchboxes'"
-          aria-controls="panel-lunchboxes"
-          @click="activeTab = 'lunchboxes'"
-          :class="[
-            'shrink-0 px-1 pb-4 text-sm transition-all sm:px-2 sm:text-base',
-            activeTab === 'lunchboxes'
-              ? 'border-b-2 border-[#A8D5BA] text-[#2C5F2D] font-medium'
-              : 'text-muted-foreground hover:text-gray-700'
-          ]"
-          type="button"
-        >
-          <UtensilsCrossed class="mr-2 inline h-4 w-4" aria-hidden="true" />
-          Saved Lunchboxes ({{ savedLunchboxes.length }})
-        </button>
-      </div>
-
-      <!-- Weekly Plans Panel -->
-      <div
-        id="panel-weekly"
-        role="tabpanel"
-        aria-labelledby="tab-weekly"
-        v-if="activeTab === 'weekly'"
-      >
-        <div v-if="weeklyPlans.length === 0 && !isLoading" class="py-12 text-center sm:py-16">
           <div
-            class="mx-auto mb-4 flex h-18 w-18 items-center justify-center rounded-full bg-gray-100 sm:h-20 sm:w-20"
+            class="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gray-100"
             aria-hidden="true"
           >
-            <CalendarDays class="h-9 w-9 text-gray-400 sm:h-10 sm:w-10" />
+            <CalendarDays class="h-10 w-10 text-gray-400" />
           </div>
 
           <h2 class="mb-2 text-xl font-semibold text-[#2C5F2D]">
@@ -183,15 +239,15 @@
 
         <div v-else class="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
           <article
-            v-for="plan in weeklyPlans"
+            v-for="plan in sortedWeeklyPlans"
             :key="plan.id"
             class="rounded-2xl border bg-white p-5 shadow-sm transition-shadow hover:shadow-md sm:p-6"
           >
             <div class="mb-4 flex items-start justify-between gap-3">
               <div class="min-w-0 flex-1">
-                <h2 class="mb-2 truncate text-lg font-semibold text-[#111827] sm:text-xl">
+                <h3 class="mb-2 truncate text-lg font-semibold text-[#111827] sm:text-xl">
                   {{ plan.name }}
-                </h2>
+                </h3>
 
                 <div class="mb-2 flex items-center gap-2 text-sm text-muted-foreground">
                   <Clock class="h-4 w-4 shrink-0" aria-hidden="true" />
@@ -222,13 +278,16 @@
 
               <div v-if="plan.children.length > 0">
                 <p class="mb-1 text-xs text-muted-foreground">For:</p>
+
                 <div class="flex flex-wrap gap-1">
                   <span
                     v-for="child in plan.children"
-                    :key="child"
+                    :key="child.id || child.fallbackId || child.displayName"
                     class="rounded-full bg-[#CDE7F0]/30 px-2 py-1 text-xs text-[#1B4965]"
                   >
-                    {{ child }}
+                    {{ child.displayName }}
+                    <span v-if="child.age"> · {{ child.age }}</span>
+                    <span v-else-if="child.ageBand"> · {{ child.ageBand }}</span>
                   </span>
                 </div>
               </div>
@@ -237,22 +296,19 @@
             <!-- Meal Preview -->
             <div class="mb-4 rounded-lg bg-[#FAF9F6] p-3">
               <p class="mb-2 text-xs text-muted-foreground">
-                {{ plan.batches.length }} cooking sessions
+                {{ plan.batches.length }} cooking session{{ plan.batches.length === 1 ? '' : 's' }}
               </p>
 
-              <div class="space-y-3">
+              <div v-if="plan.batches.length > 0" class="space-y-3">
                 <div
                   v-for="(batch, index) in plan.batches.slice(0, 2)"
                   :key="`${plan.id}-${index}`"
                   class="rounded-lg border bg-white p-3"
                 >
                   <div class="flex items-start gap-3">
-                    <div
-                      v-if="batch.recipe.image"
-                      class="h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-gray-100"
-                    >
+                    <div class="h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-gray-100">
                       <img
-                        :src="batch.recipe.image"
+                        :src="batch.recipe.image || PLAN_IMAGE_FALLBACK"
                         :alt="batch.recipe.title"
                         class="h-full w-full object-cover"
                         @error="handleImageError"
@@ -269,57 +325,22 @@
                       </p>
 
                       <p class="truncate text-xs text-[#1B4965]">
-                        API recipe: {{ batch.recipe.title }}
+                        Recipe inspiration: {{ batch.recipe.title }}
                       </p>
-
-                      <!-- Why This Meal AI Explanation -->
-                      <div class="mt-3 rounded-lg border border-[#A8D5BA]/30 bg-[#FAF9F6] p-3">
-                        <div class="flex items-center justify-between gap-3">
-                          <div>
-                            <p class="text-xs font-semibold text-[#2C5F2D]">
-                              Why this meal?
-                            </p>
-                            <p class="text-xs text-muted-foreground">
-                              AI explanation for this lunchbox choice.
-                            </p>
-                          </div>
-
-                          <button
-                            @click="explainMeal(plan, batch)"
-                            :disabled="aiExplanationLoading[getMealKey(plan, batch)]"
-                            class="shrink-0 rounded-lg bg-[#A8D5BA] px-3 py-2 text-xs font-medium text-[#2C5F2D] transition-colors hover:bg-[#8FC2A4] disabled:opacity-50"
-                            type="button"
-                          >
-                            <span v-if="!aiExplanationLoading[getMealKey(plan, batch)]">
-                              Generate
-                            </span>
-                            <span v-else>
-                              Thinking...
-                            </span>
-                          </button>
-                        </div>
-
-                        <p
-                          v-if="aiExplanations[getMealKey(plan, batch)]"
-                          class="mt-3 text-xs leading-relaxed text-gray-700"
-                        >
-                          ✨ {{ aiExplanations[getMealKey(plan, batch)] }}
-                        </p>
-
-                        <p
-                          v-if="aiExplanationErrors[getMealKey(plan, batch)]"
-                          class="mt-3 text-xs text-red-500"
-                        >
-                          {{ aiExplanationErrors[getMealKey(plan, batch)] }}
-                        </p>
-                      </div>
                     </div>
                   </div>
                 </div>
               </div>
 
+              <div
+                v-else
+                class="rounded-lg border border-dashed bg-white p-3 text-sm text-muted-foreground"
+              >
+                No meal preview available for this plan.
+              </div>
+
               <p v-if="plan.batches.length > 2" class="mt-2 text-xs text-muted-foreground">
-                + {{ plan.batches.length - 2 }} more sessions
+                + {{ plan.batches.length - 2 }} more session{{ plan.batches.length - 2 === 1 ? '' : 's' }}
               </p>
             </div>
 
@@ -357,181 +378,266 @@
             </div>
           </article>
         </div>
-      </div>
+      </section>
 
-      <!-- Saved Lunchboxes Panel -->
-      <div
-        id="panel-lunchboxes"
-        role="tabpanel"
-        aria-labelledby="tab-lunchboxes"
-        v-if="activeTab === 'lunchboxes'"
-      >
-        <div v-if="savedLunchboxes.length === 0" class="py-12 text-center sm:py-16">
-          <div
-            class="mx-auto mb-4 flex h-18 w-18 items-center justify-center rounded-full bg-gray-100 sm:h-20 sm:w-20"
-            aria-hidden="true"
-          >
-            <UtensilsCrossed class="h-9 w-9 text-gray-400 sm:h-10 sm:w-10" />
-          </div>
-
-          <h2 class="mb-2 text-xl font-semibold text-[#2C5F2D]">
-            No saved lunchboxes yet
+      <!-- Why This Plan -->
+      <section id="why-this-plan" class="scroll-mt-8 py-12">
+        <div class="mb-6 text-center">
+          <h2 class="mb-3 text-2xl font-semibold text-[#2C5F2D] md:text-3xl">
+            Why This Plan?
           </h2>
 
-          <p class="mb-6 text-sm text-muted-foreground sm:text-base">
-            This tab is kept for future single lunchbox saving.
-          </p>
-
-          <button
-            @click="router.push('/results')"
-            class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#A8D5BA] px-8 py-3 text-[#2C5F2D] transition-colors hover:bg-[#8FC2A4] sm:w-auto"
-            type="button"
-          >
-            <Plus class="h-4 w-4" aria-hidden="true" />
-            Explore Lunchboxes
-          </button>
-        </div>
-
-        <div v-else class="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
-          <article
-            v-for="lunchbox in savedLunchboxes"
-            :key="lunchbox.id"
-            class="rounded-2xl border bg-white p-5 shadow-sm transition-shadow hover:shadow-md sm:p-6"
-          >
-            <h2 class="mb-2 text-lg font-semibold text-[#111827]">
-              {{ lunchbox.name }}
-            </h2>
-
-            <p class="mb-4 text-sm leading-relaxed text-muted-foreground">
-              {{ lunchbox.description || 'Nutritious and balanced meal' }}
-            </p>
-
-            <div class="grid grid-cols-[1fr_auto] gap-2">
-              <button
-                @click="router.push(`/recipe/${lunchbox.id}`)"
-                class="rounded-lg bg-[#A8D5BA] py-2.5 text-sm font-medium text-[#2C5F2D] transition-colors hover:bg-[#8FC2A4]"
-                type="button"
-                :aria-label="`View lunchbox ${lunchbox.name}`"
-              >
-                View
-              </button>
-
-              <button
-                @click="handleDeleteLunchbox(lunchbox.id)"
-                class="flex h-10 w-10 items-center justify-center rounded-lg transition-colors hover:bg-red-50"
-                type="button"
-                :aria-label="`Delete lunchbox ${lunchbox.name}`"
-              >
-                <Trash2 class="h-4 w-4 text-red-500" aria-hidden="true" />
-              </button>
-            </div>
-          </article>
-        </div>
-      </div>
-
-      <!-- Lunchbox plan questions + Why This Plan -->
-      <section id="why-this-plan" class="py-12 scroll-mt-8">
-        <div class="text-center mb-10 px-2 max-w-3xl mx-auto">
-          <h2 class="text-3xl md:text-4xl lg:text-5xl mb-4 text-[#2C5F2D] tracking-tight">
-            Questions about your lunchbox plan?
-          </h2>
-          <p class="text-lg md:text-xl text-muted-foreground leading-relaxed">
-            We're here to help you understand the science and care behind every recommendation we make for your family.
+          <p class="mx-auto max-w-3xl text-sm leading-relaxed text-muted-foreground md:text-base">
+            Select a saved weekly plan and generate separate AI explanations for each lunchbox meal.
           </p>
         </div>
 
-        <div class="bg-white rounded-3xl shadow-sm p-8 md:p-12 border border-[#E8E4DC]">
-          <div class="flex items-center gap-3 mb-6">
-            <h3 class="text-3xl text-[#2C5F2D]">Why This Plan?</h3>
-          </div>
-
-          <p class="text-muted-foreground mb-8">
-            Select a saved plan to understand the nutritional thinking behind our recommendations.
-          </p>
-
-          <div v-if="whyPlanDisplayList.length" class="space-y-4 mb-8">
-            <div
+        <div class="rounded-3xl border border-[#E8E4DC] bg-white p-5 shadow-sm sm:p-8 md:p-10">
+          <div v-if="whyPlanDisplayList.length" class="mb-8 grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <button
               v-for="row in whyPlanDisplayList"
               :key="row.id"
-              @click="selectedWhyPlanId = row.id"
+              @click="handleSelectWhyPlan(row.id)"
+              type="button"
               :class="[
-                'p-6 rounded-2xl border-2 cursor-pointer transition-all',
+                'rounded-2xl border-2 p-4 text-left transition-all sm:p-5',
                 selectedWhyPlanId === row.id
                   ? 'border-[#A8D5BA] bg-[#A8D5BA]/5'
                   : 'border-gray-200 hover:border-[#A8D5BA]/50'
               ]"
             >
-              <div class="flex items-start justify-between">
-                <div class="flex items-start gap-4 flex-1">
-                  <input
-                    type="radio"
-                    :checked="selectedWhyPlanId === row.id"
-                    class="mt-1"
-                    @click.stop
-                  />
-                  <div class="flex-1">
-                    <h3 class="text-lg font-medium mb-1">{{ row.name }}</h3>
-                    <p class="text-sm text-muted-foreground mb-3">{{ row.description }}</p>
-                    <div class="flex flex-wrap gap-2">
-                      <span
-                        v-for="tag in row.tags"
-                        :key="tag"
-                        class="bg-[#A8D5BA]/20 text-[#2C5F2D] text-xs rounded-full px-3 py-1"
-                      >
-                        {{ tag }}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div class="hidden sm:block w-36 h-24 rounded-2xl overflow-hidden border border-[#E5E7EB] ml-4 flex-shrink-0">
+              <div class="flex items-start gap-4">
+                <div
+                  class="hidden h-20 w-28 shrink-0 overflow-hidden rounded-2xl border border-[#E5E7EB] bg-gray-100 sm:block"
+                >
                   <img
-                    :src="row.image"
+                    :src="row.image || PLAN_IMAGE_FALLBACK"
                     :alt="`${row.name} meal preview`"
-                    class="w-full h-full object-cover"
+                    class="h-full w-full object-cover"
                     @error="handleImageError"
                   />
                 </div>
+
+                <div class="min-w-0 flex-1">
+                  <div class="mb-1 flex items-start justify-between gap-2">
+                    <h3 class="line-clamp-1 text-base font-semibold text-[#111827]">
+                      {{ row.name }}
+                    </h3>
+
+                    <span
+                      v-if="selectedWhyPlanId === row.id"
+                      class="shrink-0 rounded-full bg-[#A8D5BA]/30 px-2 py-0.5 text-xs text-[#2C5F2D]"
+                    >
+                      Selected
+                    </span>
+                  </div>
+
+                  <p class="mb-3 text-sm text-muted-foreground">
+                    {{ row.description }}
+                  </p>
+
+                  <div class="flex flex-wrap gap-2">
+                    <span
+                      v-for="tag in row.tags"
+                      :key="tag"
+                      class="rounded-full bg-[#A8D5BA]/20 px-3 py-1 text-xs text-[#2C5F2D]"
+                    >
+                      {{ tag }}
+                    </span>
+                  </div>
+                </div>
               </div>
-            </div>
+            </button>
           </div>
-          <div v-else-if="!isLoading" class="mb-8 rounded-2xl border border-[#E5E7EB] bg-[#FAF9F6] p-6 text-center">
-            <p class="text-[#4B5563] mb-4">
-              You do not have any saved plans yet. Please save a plan first to view explanations here.
+
+          <div
+            v-else-if="!isLoading"
+            class="rounded-2xl border border-[#E5E7EB] bg-[#FAF9F6] p-6 text-center"
+          >
+            <p class="mb-4 text-[#4B5563]">
+              You do not have any saved plans yet. Please save a plan first to view AI explanations here.
             </p>
+
             <button
               type="button"
-              class="px-5 py-2.5 rounded-lg bg-[#2C5F2D] text-white hover:bg-[#244E24] transition-colors"
+              class="rounded-lg bg-[#2C5F2D] px-5 py-2.5 text-white transition-colors hover:bg-[#244E24]"
               @click="goToWeeklyPlanFromWhy"
             >
               Create Personalised Lunchbox Plan
             </button>
           </div>
 
-          <div v-if="selectedWhyPlanId" class="bg-[#FAF9F6] rounded-2xl p-6">
-            <h3 class="text-lg font-medium mb-4 text-[#2C5F2D]">Why We Recommend This</h3>
-            <div class="space-y-4">
-              <div
-                v-for="reason in getSelectedPlanReasons()"
-                :key="reason.title"
-                class="flex gap-3"
+          <div v-if="selectedWhyPlan" class="rounded-2xl bg-[#FAF9F6] p-5 sm:p-6">
+            <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <h3 class="mb-2 text-lg font-semibold text-[#2C5F2D]">
+                  AI Explanation for This Plan
+                </h3>
+
+                <p class="text-sm leading-relaxed text-muted-foreground">
+                  Each meal is explained separately, then the results are summarised for the whole weekly plan.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#2C5F2D] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#244E24] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+                :disabled="whyPlanLoading"
+                @click="generateWhyThisPlan"
               >
-                <div>
-                  <h4 class="font-medium mb-1">{{ reason.title }}</h4>
-                  <p class="text-sm text-muted-foreground">{{ reason.description }}</p>
+                <Sparkles class="h-4 w-4" aria-hidden="true" />
+
+                <span v-if="!whyPlanLoading">
+                  {{ currentWhyPlanExplanation ? 'Regenerate AI Explanation' : 'Generate AI Explanation' }}
+                </span>
+
+                <span v-else>
+                  Thinking...
+                </span>
+              </button>
+            </div>
+
+            <div class="mb-5 rounded-2xl border bg-white p-4">
+              <p class="mb-2 text-sm font-medium text-[#111827]">
+                Selected plan:
+                <span class="text-[#2C5F2D]">
+                  {{ selectedWhyPlan.name }}
+                </span>
+              </p>
+
+              <p class="mb-2 text-sm leading-relaxed text-muted-foreground">
+                Meals used for AI explanation:
+                <span class="text-[#374151]">
+                  {{ getPlanAiPromptMealName(selectedWhyPlan) }}
+                </span>
+              </p>
+
+              <p class="text-sm leading-relaxed text-muted-foreground">
+                Child age used:
+                <span class="text-[#374151]">
+                  {{ getPlanAgeDisplay(selectedWhyPlan) }}
+                </span>
+              </p>
+
+              <div
+                v-if="!getResolvedPlanChildAge(selectedWhyPlan)"
+                class="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4"
+              >
+                <label class="mb-2 block text-sm font-medium text-amber-800">
+                  Age was not found by child name. Please select an age for this weekly plan.
+                </label>
+
+                <select
+                  :value="fallbackChildAgesByPlan[String(selectedWhyPlan.id)] || ''"
+                  @change="setManualAgeForPlan(selectedWhyPlan.id, $event.target.value)"
+                  class="w-full rounded-lg border border-amber-300 bg-white px-3 py-2 text-sm outline-none focus:border-[#A8D5BA] focus:ring-2 focus:ring-[#A8D5BA]/30 sm:max-w-xs"
+                >
+                  <option value="">Select age</option>
+                  <option
+                    v-for="age in supportedChildAges"
+                    :key="age"
+                    :value="age"
+                  >
+                    {{ age }} years old
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <div
+              v-if="whyPlanError"
+              class="mb-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
+            >
+              {{ whyPlanError }}
+            </div>
+
+            <div v-if="currentWhyPlanExplanation" class="space-y-5">
+              <!-- Plan Summary -->
+              <div class="rounded-2xl border border-[#A8D5BA]/40 bg-white p-5">
+                <div class="mb-3 flex items-center gap-2">
+                  <Sparkles class="h-4 w-4 text-[#2C5F2D]" aria-hidden="true" />
+
+                  <h4 class="font-semibold text-[#2C5F2D]">
+                    AI Plan Summary
+                  </h4>
+                </div>
+
+                <p class="whitespace-pre-line text-sm leading-relaxed text-[#374151]">
+                  {{ currentWhyPlanExplanation }}
+                </p>
+              </div>
+
+              <!-- Meal-by-meal AI Explanation -->
+              <div class="space-y-3">
+                <h4 class="font-semibold text-[#2C5F2D]">
+                  Meal-by-meal explanation
+                </h4>
+
+                <div
+                  v-for="meal in currentMealExplanations"
+                  :key="meal.id"
+                  :class="[
+                    'rounded-2xl border bg-white p-5',
+                    meal.hasError ? 'border-red-200' : 'border-[#E5E7EB]'
+                  ]"
+                >
+                  <div class="mb-2 flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <p class="text-sm font-semibold text-[#111827]">
+                        {{ meal.title }}
+                      </p>
+
+                      <p
+                        v-if="meal.recipeTitle"
+                        class="text-xs text-[#1B4965]"
+                      >
+                        Recipe inspiration: {{ meal.recipeTitle }}
+                      </p>
+                    </div>
+
+                    <span class="text-xs text-muted-foreground">
+                      {{ meal.cookDay }}
+                    </span>
+                  </div>
+
+                  <p
+                    :class="[
+                      'whitespace-pre-line text-sm leading-relaxed',
+                      meal.hasError ? 'text-red-600' : 'text-[#374151]'
+                    ]"
+                  >
+                    {{ meal.explanation }}
+                  </p>
                 </div>
               </div>
             </div>
-            <div class="mt-6 flex flex-wrap gap-3">
+
+            <div
+              v-else-if="!whyPlanLoading"
+              class="rounded-2xl border border-dashed border-[#D1D5DB] bg-white p-5 text-center text-sm text-muted-foreground"
+            >
+              Click “Generate AI Explanation” to understand why this saved plan may be suitable.
+            </div>
+
+            <div
+              v-if="whyPlanLoading"
+              class="rounded-2xl border border-[#A8D5BA]/30 bg-white p-5 text-center text-sm text-muted-foreground"
+            >
+              Generating AI explanations meal by meal…
+            </div>
+
+            <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <button
                 type="button"
-                class="px-4 py-2 rounded-lg bg-[#2C5F2D] text-white hover:bg-[#244E24] transition-colors"
+                class="rounded-lg bg-[#2C5F2D] px-4 py-2 text-white transition-colors hover:bg-[#244E24]"
                 @click="modifySelectedWhyPlan"
               >
                 Modify plan
               </button>
+
               <button
                 type="button"
-                class="px-4 py-2 rounded-lg border border-[#D1D5DB] text-[#374151] hover:bg-white transition-colors"
+                class="rounded-lg border border-[#D1D5DB] px-4 py-2 text-[#374151] transition-colors hover:bg-white"
                 @click="closeWhyPlanExplanation"
               >
                 Close explanation
@@ -539,14 +645,14 @@
             </div>
           </div>
 
-          <div v-else-if="whyPlanDisplayList.length" class="text-center py-8 text-muted-foreground">
-            <p>Select a plan above to see detailed nutritional insights</p>
+          <div v-else-if="whyPlanDisplayList.length" class="py-8 text-center text-muted-foreground">
+            <p>Select a plan above to generate an AI explanation.</p>
           </div>
         </div>
       </section>
 
       <!-- Bottom CTA -->
-      <div class="mt-10 flex justify-center sm:mt-12">
+      <div class="mt-2 flex justify-center sm:mt-4">
         <button
           @click="router.push('/weekly-plan')"
           class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#A8D5BA] px-8 py-3 text-[#2C5F2D] transition-colors hover:bg-[#8FC2A4] sm:w-auto"
@@ -567,7 +673,6 @@ import {
   ArrowLeft,
   BookmarkCheck,
   CalendarDays,
-  UtensilsCrossed,
   Plus,
   Clock,
   ChefHat,
@@ -582,6 +687,7 @@ import {
 
 import {
   getWeeklyPlans,
+  getChildren,
   deleteWeeklyPlan,
   duplicateWeeklyPlan,
   getWhyThisMeal,
@@ -593,46 +699,96 @@ const route = useRoute();
 const PLAN_IMAGE_FALLBACK =
   'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800';
 
-const selectedWhyPlanId = ref(null);
+const supportedChildAges = [5, 6, 7, 8, 9, 10, 11, 12];
 
-const activeTab = ref('weekly');
+const selectedWhyPlanId = ref(null);
+const selectedReusePlanId = ref(null);
+
 const savedPlans = ref([]);
-const savedLunchboxes = ref([]);
+const userChildren = ref([]);
+const fallbackChildAgesByPlan = ref({});
+
 const showReusePrompt = ref(true);
 const isLoading = ref(false);
 const errorMessage = ref('');
 
-// AI explanation state
-const aiExplanationLoading = ref({});
-const aiExplanations = ref({});
-const aiExplanationErrors = ref({});
+const whyPlanLoading = ref(false);
+const whyPlanError = ref('');
+const whyPlanExplanations = ref({});
+const whyPlanMealExplanations = ref({});
 
 const weeklyPlans = computed(() => {
   return savedPlans.value.filter((plan) => plan.type === 'weekly');
 });
 
+const sortedWeeklyPlans = computed(() => {
+  return [...weeklyPlans.value].sort((a, b) => {
+    const dateA = new Date(a.createdAt).getTime();
+    const dateB = new Date(b.createdAt).getTime();
+
+    return (Number.isNaN(dateB) ? 0 : dateB) - (Number.isNaN(dateA) ? 0 : dateA);
+  });
+});
+
+const selectedReusePlan = computed(() => {
+  if (!selectedReusePlanId.value) return null;
+
+  return sortedWeeklyPlans.value.find(
+    (plan) => String(plan.id) === String(selectedReusePlanId.value),
+  );
+});
+
+const selectedWhyPlan = computed(() => {
+  if (!selectedWhyPlanId.value) return null;
+
+  return weeklyPlans.value.find(
+    (plan) => String(plan.id) === String(selectedWhyPlanId.value),
+  );
+});
+
+const currentWhyPlanExplanation = computed(() => {
+  if (!selectedWhyPlanId.value) return '';
+
+  return whyPlanExplanations.value[String(selectedWhyPlanId.value)] || '';
+});
+
+const currentMealExplanations = computed(() => {
+  if (!selectedWhyPlanId.value) return [];
+
+  return whyPlanMealExplanations.value[String(selectedWhyPlanId.value)] || [];
+});
+
 const buildWhyTags = (plan) => {
   const tags = [];
+
   if (plan.children?.length > 1) tags.push('Multi-child');
   if (plan.varietyPreference) tags.push(String(plan.varietyPreference));
   if (plan.mealStyle) tags.push(String(plan.mealStyle));
-  if (plan.season) tags.push(`${plan.season}`);
+  if (plan.season) tags.push(String(plan.season));
   tags.push(`${plan.cookingFrequency}x cook days/week`);
+
   return tags.filter(Boolean).slice(0, 5);
 };
 
 const formatWhyPlanDescription = (plan) => {
   const d = new Date(plan.createdAt);
   const sessions = plan.batches?.length ?? 0;
+
   if (Number.isNaN(d.getTime())) {
     return `${sessions} cooking session${sessions === 1 ? '' : 's'}`;
   }
-  const label = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-  return `Saved ${label} • ${sessions} cooking session${sessions === 1 ? '' : 's'}`;
+
+  const label = d.toLocaleDateString('en-AU', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+
+  return `Saved ${label} · ${sessions} cooking session${sessions === 1 ? '' : 's'}`;
 };
 
 const whyPlanDisplayList = computed(() => {
-  return weeklyPlans.value.map((plan) => ({
+  return sortedWeeklyPlans.value.map((plan) => ({
     id: String(plan.id),
     name: plan.name,
     description: formatWhyPlanDescription(plan),
@@ -641,69 +797,11 @@ const whyPlanDisplayList = computed(() => {
   }));
 });
 
-const buildDynamicReasons = (plan) => {
-  const children =
-    plan.children?.length > 0 ? plan.children.join(', ') : 'your family';
-  const firstLunch = plan.batches?.[0]?.lunchbox?.title || 'each lunchbox idea';
-  const variety = plan.varietyPreference ? ` Variety preference: ${plan.varietyPreference}.` : '';
-  const style = plan.mealStyle ? ` Meal style: ${plan.mealStyle}.` : '';
-
-  return [
-    {
-      title: 'Personalised to your children',
-      description: `This plan centres on ${children}, with ideas such as ${firstLunch} aligned to what you saved.${variety}${style}`,
-    },
-    {
-      title: 'Seasonal focus',
-      description: `Ingredients lean toward ${plan.season || 'seasonal'} choices where possible, so meals stay fresh and varied through the week.`,
-    },
-    {
-      title: 'Batch-friendly structure',
-      description: `With about ${plan.cookingFrequency} cooking day(s) per week and ${plan.batches?.length || 0} prep block(s), the layout is meant to reduce weeknight scrambling.`,
-    },
-    {
-      title: 'Review and adjust anytime',
-      description:
-        'Use Edit or Adjust from the cards above if allergies, tastes, or schedules change. Updating the plan is usually easier than starting from zero.',
-    },
-  ];
+const handleSelectWhyPlan = (planId) => {
+  selectedWhyPlanId.value = String(planId);
+  whyPlanError.value = '';
 };
 
-const getSelectedPlanReasons = () => {
-  if (!selectedWhyPlanId.value) return [];
-  const plan = weeklyPlans.value.find((p) => String(p.id) === String(selectedWhyPlanId.value));
-  return plan ? buildDynamicReasons(plan) : [];
-};
-
-const modifySelectedWhyPlan = () => {
-  if (!selectedWhyPlanId.value) {
-    router.push('/weekly-plan');
-    return;
-  }
-  const plan = weeklyPlans.value.find((p) => String(p.id) === String(selectedWhyPlanId.value));
-  if (plan) {
-    router.push(`/weekly-plan?mode=edit&planId=${plan.id}`);
-  } else {
-    router.push('/weekly-plan');
-  }
-};
-
-const closeWhyPlanExplanation = () => {
-  selectedWhyPlanId.value = null;
-};
-
-const goToWeeklyPlanFromWhy = () => {
-  router.push('/weekly-plan');
-};
-
-const scrollToWhyThisPlanAnchor = () => {
-  if (route.hash !== '#why-this-plan') return;
-  nextTick(() => {
-    document.getElementById('why-this-plan')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
-};
-
-// ── Normalise helpers ───────────────────────────
 const parseTags = (tags) => {
   if (Array.isArray(tags)) return tags;
   if (!tags) return [];
@@ -714,16 +812,207 @@ const parseTags = (tags) => {
     .filter(Boolean);
 };
 
+const parseAgeNumber = (value) => {
+  if (value === null || value === undefined || value === '') return null;
+
+  const numberValue = Number(value);
+
+  if (Number.isFinite(numberValue) && numberValue > 0) {
+    return Math.round(numberValue);
+  }
+
+  const match = String(value).match(/\d+/);
+  if (!match) return null;
+
+  const parsed = Number(match[0]);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+};
+
+const parseAgeFromBand = (value) => {
+  if (!value) return null;
+
+  const numbers = String(value)
+    .match(/\d+/g)
+    ?.map((item) => Number(item))
+    .filter((item) => Number.isFinite(item) && item > 0);
+
+  if (!numbers || numbers.length === 0) return null;
+
+  if (numbers.length === 1) return numbers[0];
+
+  return Math.round((numbers[0] + numbers[1]) / 2);
+};
+
+const normaliseName = (value) => {
+  return String(value || '')
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .replace(/[^a-z0-9\u4e00-\u9fa5 ]/g, '');
+};
+
+const isLikelySameChildName = (profileName, planName) => {
+  const nameA = normaliseName(profileName);
+  const nameB = normaliseName(planName);
+
+  if (!nameA || !nameB) return false;
+
+  if (nameA === nameB) return true;
+
+  if (nameA.includes(nameB) || nameB.includes(nameA)) return true;
+
+  const partsA = nameA.split(' ').filter(Boolean);
+  const partsB = nameB.split(' ').filter(Boolean);
+
+  return partsA.some((partA) => partsB.some((partB) => partA === partB));
+};
+
+const getManualAgeForPlan = (planId) => {
+  if (!planId) return null;
+
+  return parseAgeNumber(fallbackChildAgesByPlan.value[String(planId)]);
+};
+
+const setManualAgeForPlan = (planId, age) => {
+  if (!planId) return;
+
+  fallbackChildAgesByPlan.value = {
+    ...fallbackChildAgesByPlan.value,
+    [String(planId)]: age,
+  };
+
+  whyPlanError.value = '';
+};
+
+const normalizeChild = (child, index = 0) => {
+  if (typeof child === 'string') {
+    return {
+      id: null,
+      fallbackId: `child-${index}-${child}`,
+      displayName: child,
+      age: null,
+      ageBand: '',
+    };
+  }
+
+  const age =
+    parseAgeNumber(child?.age) ||
+    parseAgeNumber(child?.child_age) ||
+    parseAgeNumber(child?.age_years) ||
+    parseAgeNumber(child?.childAge) ||
+    parseAgeFromBand(child?.age_band) ||
+    parseAgeFromBand(child?.ageBand) ||
+    parseAgeFromBand(child?.band_name);
+
+  const ageBand =
+    child?.age_band ||
+    child?.ageBand ||
+    child?.band_name ||
+    child?.age_group ||
+    '';
+
+  return {
+    id:
+      child?.child_id ??
+      child?.id ??
+      child?.user_child_id ??
+      null,
+    fallbackId: `child-${index}-${child?.child_name || child?.name || 'unknown'}`,
+    displayName:
+      child?.child_name ||
+      child?.name ||
+      child?.childName ||
+      child?.displayName ||
+      `Child ${index + 1}`,
+    age,
+    ageBand,
+  };
+};
+
 const normalizeChildren = (children) => {
   if (!Array.isArray(children)) return [];
 
-  return children
-    .map((child) => {
-      if (typeof child === 'string') return child;
+  return children.map(normalizeChild).filter((child) => child.displayName);
+};
 
-      return child.child_name || child.name || child.childName || '';
-    })
-    .filter(Boolean);
+const getChildrenLabel = (children) => {
+  if (!Array.isArray(children) || children.length === 0) {
+    return 'your family';
+  }
+
+  return children.map((child) => child.displayName).join(', ');
+};
+
+const extractAgeFromChildProfile = (child) => {
+  if (!child) return null;
+
+  return (
+    parseAgeNumber(child.age) ||
+    parseAgeNumber(child.child_age) ||
+    parseAgeNumber(child.age_years) ||
+    parseAgeNumber(child.childAge) ||
+    parseAgeFromBand(child.age_band) ||
+    parseAgeFromBand(child.ageBand) ||
+    parseAgeFromBand(child.band_name) ||
+    parseAgeFromBand(child.age_group)
+  );
+};
+
+const findAgeFromUserChildrenByName = (plan) => {
+  if (!userChildren.value.length) return null;
+  if (!plan?.children?.length) return null;
+
+  for (const planChild of plan.children) {
+    const planChildName =
+      planChild.displayName ||
+      planChild.child_name ||
+      planChild.name ||
+      planChild.childName ||
+      '';
+
+    if (!planChildName) continue;
+
+    const matchedChild = userChildren.value.find((child) => {
+      const profileName =
+        child.child_name ||
+        child.name ||
+        child.childName ||
+        child.displayName ||
+        '';
+
+      return isLikelySameChildName(profileName, planChildName);
+    });
+
+    const matchedAge = extractAgeFromChildProfile(matchedChild);
+
+    if (matchedAge) return matchedAge;
+  }
+
+  return null;
+};
+
+const getResolvedPlanChildAge = (plan) => {
+  if (!plan?.id) return null;
+
+  const ageFromName = findAgeFromUserChildrenByName(plan);
+  if (ageFromName) return ageFromName;
+
+  const manualAge = getManualAgeForPlan(plan.id);
+  if (manualAge) return manualAge;
+
+  return null;
+};
+
+const getPlanAgeDisplay = (plan) => {
+  if (!plan?.id) return 'Not available for this weekly plan';
+
+  const ageFromName = findAgeFromUserChildrenByName(plan);
+  if (ageFromName) return `${ageFromName} years old (matched by child name)`;
+
+  const manualAge = getManualAgeForPlan(plan.id);
+  if (manualAge) return `${manualAge} years old (selected manually for this plan)`;
+
+  return 'Not available for this weekly plan';
 };
 
 const normalizeLunchbox = (meal, index = 0) => {
@@ -800,6 +1089,8 @@ const normalizePlan = (plan) => {
     type: 'weekly',
     name: plan.plan_name || plan.name || 'Untitled Weekly Plan',
     cookingFrequency: plan.cook_frequency || plan.cookingFrequency || meals.length || 0,
+    varietyPreference: plan.variety_preference || plan.varietyPreference || '',
+    mealStyle: plan.meal_style || plan.mealStyle || '',
     season: plan.season || plan.season_name || getSeasonNameFromId(plan.season_id) || 'Seasonal',
     children: normalizeChildren(plan.children),
     batches: Array.isArray(meals) ? meals.map(normalizeMeal) : [],
@@ -807,25 +1098,251 @@ const normalizePlan = (plan) => {
   };
 };
 
+const resolvePlanAgeBeforeAi = async (plan) => {
+  const ageFromName = findAgeFromUserChildrenByName(plan);
+
+  if (ageFromName) {
+    return {
+      plan,
+      age: ageFromName,
+      ageSource: 'matched by child name',
+    };
+  }
+
+  const manualAge = getManualAgeForPlan(plan.id);
+
+  if (manualAge) {
+    return {
+      plan,
+      age: manualAge,
+      ageSource: 'selected manually for this plan',
+    };
+  }
+
+  return {
+    plan,
+    age: null,
+    ageSource: '',
+  };
+};
+
+const getBatchMealName = (batch) => {
+  return (
+    batch?.lunchbox?.title ||
+    batch?.recipe?.title ||
+    batch?.meal_title ||
+    'Lunchbox meal'
+  );
+};
+
+const getBatchRecipeName = (batch) => {
+  return batch?.recipe?.title || '';
+};
+
+const getPlanMealNames = (plan) => {
+  if (!plan?.batches?.length) return [];
+
+  return plan.batches.map(getBatchMealName).filter(Boolean);
+};
+
+const getPlanRecipeNames = (plan) => {
+  if (!plan?.batches?.length) return [];
+
+  return plan.batches.map(getBatchRecipeName).filter(Boolean);
+};
+
+const getPlanAiPromptMealName = (plan) => {
+  const mealNames = getPlanMealNames(plan);
+  const recipeNames = getPlanRecipeNames(plan);
+
+  const combined = [...new Set([...mealNames, ...recipeNames])].filter(Boolean);
+
+  if (combined.length === 0) {
+    return plan?.name || 'Saved weekly lunchbox plan';
+  }
+
+  return combined.slice(0, 6).join(', ');
+};
+
+const buildMealPayload = ({ plan, batch, index, resolvedAge }) => {
+  const childAge = resolvedAge || getResolvedPlanChildAge(plan);
+  const mealName = getBatchMealName(batch);
+  const recipeName = getBatchRecipeName(batch);
+
+  const promptMealName = [
+    `Meal ${index + 1}: ${mealName}`,
+    recipeName ? `Recipe inspiration: ${recipeName}` : '',
+    batch.cookDay ? `Cook day: ${batch.cookDay}` : '',
+    batch.coverDays ? `Covers: ${batch.coverDays}` : '',
+    plan.season ? `Season: ${plan.season}` : '',
+    plan.mealStyle ? `Meal style: ${plan.mealStyle}` : '',
+    plan.varietyPreference ? `Variety preference: ${plan.varietyPreference}` : '',
+    plan.children?.length ? `Children: ${getChildrenLabel(plan.children)}` : '',
+    childAge ? `Child age: ${childAge}` : '',
+  ]
+    .filter(Boolean)
+    .join('. ');
+
+  return {
+    meal_name: promptMealName,
+    child_age: childAge,
+    allergens: [],
+    dietary_restrictions: [],
+    season: plan.season || 'seasonal',
+    meal_type: 'weekly lunchbox meal',
+  };
+};
+
+const generateWhyThisPlan = async () => {
+  if (!selectedWhyPlan.value) return;
+
+  whyPlanLoading.value = true;
+  whyPlanError.value = '';
+
+  try {
+    const originalPlan = selectedWhyPlan.value;
+    const { plan, age, ageSource } = await resolvePlanAgeBeforeAi(originalPlan);
+
+    if (!age) {
+      whyPlanError.value =
+        'Child age was not found by child name. Please select an age for this weekly plan first.';
+      return;
+    }
+
+    const planKey = String(plan.id);
+    const batches = Array.isArray(plan.batches) ? plan.batches : [];
+
+    if (batches.length === 0) {
+      whyPlanError.value = 'This plan does not have any meals to explain.';
+      return;
+    }
+
+    const mealResults = [];
+
+    for (const [index, batch] of batches.entries()) {
+      const mealName = getBatchMealName(batch);
+      const recipeName = getBatchRecipeName(batch);
+      const payload = buildMealPayload({
+        plan,
+        batch,
+        index,
+        resolvedAge: age,
+      });
+
+      try {
+        const data = await getWhyThisMeal(payload);
+
+        mealResults.push({
+          id: batch.id || `${planKey}-${index}`,
+          title: mealName,
+          recipeTitle: recipeName,
+          cookDay: batch.cookDay || `Meal ${index + 1}`,
+          explanation:
+            data.explanation ||
+            data.ai_feedback ||
+            data.message ||
+            'This meal supports a practical and balanced lunchbox routine.',
+        });
+      } catch (mealError) {
+        mealResults.push({
+          id: batch.id || `${planKey}-${index}`,
+          title: mealName,
+          recipeTitle: recipeName,
+          cookDay: batch.cookDay || `Meal ${index + 1}`,
+          explanation:
+            mealError.message ||
+            'Could not generate an AI explanation for this meal.',
+          hasError: true,
+        });
+      }
+    }
+
+    const successfulMeals = mealResults.filter((meal) => !meal.hasError);
+    const mealTitles = successfulMeals.map((meal) => meal.title).join(', ');
+    const childAgeDisplay = `${age} years old${ageSource ? ` (${ageSource})` : ''}`;
+
+    const summaryText =
+      successfulMeals.length > 0
+        ? `This weekly plan includes ${successfulMeals.length} explained meal${successfulMeals.length === 1 ? '' : 's'}: ${mealTitles}. The explanations were generated meal by meal, using the saved recipe inspirations, ${plan.season || 'seasonal'} planning context, ${plan.cookingFrequency || batches.length} cooking day(s), and child age information. Child age used: ${childAgeDisplay}.`
+        : 'AI explanations could not be generated for this plan. Please try again later.';
+
+    whyPlanMealExplanations.value = {
+      ...whyPlanMealExplanations.value,
+      [planKey]: mealResults,
+    };
+
+    whyPlanExplanations.value = {
+      ...whyPlanExplanations.value,
+      [planKey]: summaryText,
+    };
+  } catch (error) {
+    whyPlanError.value =
+      error.message || 'Could not generate AI explanation for this plan.';
+  } finally {
+    whyPlanLoading.value = false;
+  }
+};
+
+const modifySelectedWhyPlan = () => {
+  if (!selectedWhyPlanId.value) {
+    router.push('/weekly-plan');
+    return;
+  }
+
+  const plan = weeklyPlans.value.find(
+    (p) => String(p.id) === String(selectedWhyPlanId.value),
+  );
+
+  if (plan) {
+    router.push(`/weekly-plan?mode=edit&planId=${plan.id}`);
+  } else {
+    router.push('/weekly-plan');
+  }
+};
+
+const closeWhyPlanExplanation = () => {
+  selectedWhyPlanId.value = null;
+  whyPlanError.value = '';
+};
+
+const goToWeeklyPlanFromWhy = () => {
+  router.push('/weekly-plan');
+};
+
+const scrollToWhyThisPlanAnchor = () => {
+  if (route.hash !== '#why-this-plan') return;
+
+  nextTick(() => {
+    document
+      .getElementById('why-this-plan')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+};
+
 const loadSavedPlans = async () => {
   try {
     isLoading.value = true;
     errorMessage.value = '';
 
-    const plans = await getWeeklyPlans();
-    savedPlans.value = Array.isArray(plans) ? plans.map(normalizePlan) : [];
+    const [plans, children] = await Promise.all([
+      getWeeklyPlans(),
+      getChildren().catch(() => []),
+    ]);
 
-    const localPlans = localStorage.getItem('nutriguide_saved_plans');
-    const parsed = localPlans ? JSON.parse(localPlans) : [];
-    savedLunchboxes.value = parsed.filter((plan) => plan.type === 'lunchbox');
+    savedPlans.value = Array.isArray(plans) ? plans.map(normalizePlan) : [];
+    userChildren.value = Array.isArray(children) ? children : [];
+
+    if (sortedWeeklyPlans.value.length > 0 && !selectedReusePlanId.value) {
+      selectedReusePlanId.value = String(sortedWeeklyPlans.value[0].id);
+    }
+
+    if (sortedWeeklyPlans.value.length > 0 && !selectedWhyPlanId.value) {
+      selectedWhyPlanId.value = String(sortedWeeklyPlans.value[0].id);
+    }
   } catch (error) {
     console.error('Failed to load saved plans:', error);
     errorMessage.value = error.message || 'Failed to load saved plans.';
     savedPlans.value = [];
-
-    const localPlans = localStorage.getItem('nutriguide_saved_plans');
-    const parsed = localPlans ? JSON.parse(localPlans) : [];
-    savedLunchboxes.value = parsed.filter((plan) => plan.type === 'lunchbox');
   } finally {
     isLoading.value = false;
   }
@@ -836,8 +1353,33 @@ onMounted(() => loadSavedPlans());
 watch([() => route.hash, isLoading, whyPlanDisplayList], () => {
   if (route.hash !== '#why-this-plan') return;
   if (isLoading.value) return;
+
   scrollToWhyThisPlanAnchor();
 }, { flush: 'post' });
+
+watch(sortedWeeklyPlans, (plans) => {
+  if (plans.length === 0) {
+    selectedReusePlanId.value = null;
+    selectedWhyPlanId.value = null;
+    return;
+  }
+
+  const reuseStillExists = plans.some(
+    (plan) => String(plan.id) === String(selectedReusePlanId.value),
+  );
+
+  if (!reuseStillExists) {
+    selectedReusePlanId.value = String(plans[0].id);
+  }
+
+  const whyStillExists = plans.some(
+    (plan) => String(plan.id) === String(selectedWhyPlanId.value),
+  );
+
+  if (!whyStillExists) {
+    selectedWhyPlanId.value = String(plans[0].id);
+  }
+});
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -856,38 +1398,6 @@ const formatDate = (dateString) => {
     day: 'numeric',
     year: 'numeric',
   });
-};
-
-// ── AI explanation ───────────────────────────
-const getMealKey = (plan, batch) => {
-  return `${plan.id}-${batch.id || batch.lunchbox?.id || batch.recipe?.id || batch.lunchbox?.title}`;
-};
-
-const explainMeal = async (plan, batch) => {
-  const mealKey = getMealKey(plan, batch);
-
-  try {
-    aiExplanationLoading.value[mealKey] = true;
-    aiExplanationErrors.value[mealKey] = '';
-
-    const mealName = batch.lunchbox?.title || batch.recipe?.title || 'Lunchbox meal';
-
-    const data = await getWhyThisMeal({
-      meal_name: mealName,
-      child_age: 7,
-      allergens: [],
-      dietary_restrictions: [],
-      season: plan.season || 'autumn',
-      meal_type: 'lunchbox',
-    });
-
-    aiExplanations.value[mealKey] = data.explanation;
-  } catch (error) {
-    aiExplanationErrors.value[mealKey] =
-      error.message || 'Could not generate explanation.';
-  } finally {
-    aiExplanationLoading.value[mealKey] = false;
-  }
 };
 
 // ── Actions ───────────────────────────
@@ -912,35 +1422,34 @@ const handleDeletePlan = async (planId) => {
   try {
     errorMessage.value = '';
     await deleteWeeklyPlan(planId);
-    savedPlans.value = savedPlans.value.filter((plan) => String(plan.id) !== String(planId));
+    savedPlans.value = savedPlans.value.filter(
+      (plan) => String(plan.id) !== String(planId),
+    );
   } catch (error) {
     errorMessage.value = error.message || 'Failed to delete plan.';
   }
 };
 
-const handleDeleteLunchbox = (lunchboxId) => {
-  if (!confirm('Are you sure you want to delete this lunchbox?')) return;
-
-  savedLunchboxes.value = savedLunchboxes.value.filter(
-    (lunchbox) => String(lunchbox.id) !== String(lunchboxId),
-  );
-
-  const localPlans = localStorage.getItem('nutriguide_saved_plans');
-  const parsed = localPlans ? JSON.parse(localPlans) : [];
-
-  localStorage.setItem(
-    'nutriguide_saved_plans',
-    JSON.stringify(parsed.filter((plan) => String(plan.id) !== String(lunchboxId))),
-  );
-};
-
 const handleImageError = (event) => {
-  event.target.style.display = 'none';
+  if (event.target.src !== PLAN_IMAGE_FALLBACK) {
+    event.target.src = PLAN_IMAGE_FALLBACK;
+  }
 };
 </script>
 
 <style scoped>
 .text-muted-foreground {
   color: #6b7280;
+}
+
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.whitespace-pre-line {
+  white-space: pre-line;
 }
 </style>
