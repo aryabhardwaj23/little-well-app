@@ -22,6 +22,7 @@ router = APIRouter(prefix="/photo", tags=["Photo Analyser"])
 
 # Important:
 # auto_error=False means no token will NOT automatically return 401.
+# This allows both logged-in and non-logged-in users to use photo analysis.
 oauth2_scheme_optional = OAuth2PasswordBearer(
     tokenUrl="/auth/login",
     auto_error=False,
@@ -53,7 +54,7 @@ async def get_optional_current_user(
         return None
 
     try:
-        # Reuse your existing auth logic.
+        # Reuse existing auth logic.
         # get_current_user normally expects Depends(), so we manually pass token/db.
         return await get_current_user(token=token, db=db)
     except Exception:
@@ -86,6 +87,7 @@ async def analyse_photo(
         mode = "quick_age_only"
 
         # Default quick-analysis context.
+        # This is used when the user is not logged in or no child_id is provided.
         child_context = {
             "child_id": None,
             "child_name": child_name or "your child",
@@ -124,9 +126,13 @@ async def analyse_photo(
 
         matched_df = match_ausnut(food_labels)
 
+        # Important:
+        # food_labels is now passed into score_nutrition.
+        # Frontend does not need to change because the returned core fields stay the same.
         nutrition_score = score_nutrition(
             matched_df=matched_df,
             child_age=child_age_for_scoring,
+            food_labels=food_labels,
         )
 
         personalised_checks = generate_personalised_checks(

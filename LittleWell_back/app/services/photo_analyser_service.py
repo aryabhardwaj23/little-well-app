@@ -214,67 +214,431 @@ def match_ausnut(food_labels: list) -> pd.DataFrame:
         return pd.DataFrame()
 
 
-def score_nutrition(matched_df: pd.DataFrame, child_age: int) -> dict:
+def _safe_mean_from_columns(
+    matched_df: pd.DataFrame,
+    col_lower: dict,
+    keywords: List[str],
+):
+    """
+    Get average numeric value from AUSNUT matched rows.
+
+    This is better than iloc[0] because one detected food can match
+    several AUSNUT rows.
+    """
+    for kw in keywords:
+        for lk, oc in col_lower.items():
+            if kw in lk:
+                try:
+                    values = pd.to_numeric(
+                        matched_df[oc],
+                        errors="coerce",
+                    ).dropna()
+
+                    if not values.empty:
+                        return float(values.mean())
+                except Exception:
+                    pass
+
+    return None
+
+
+def _build_food_text(food_labels: Optional[List[str]]) -> str:
+    return " ".join(
+        [
+            str(item).lower().strip()
+            for item in food_labels or []
+            if str(item).strip()
+        ]
+    )
+
+
+def _has_any(text: str, keywords: List[str]) -> bool:
+    return any(keyword in text for keyword in keywords)
+
+
+def _visual_adjustment(food_labels: Optional[List[str]]) -> dict:
+    """
+    Small visual adjustment only.
+
+    AUSNUT remains the main scoring source.
+    This adjustment helps photo analysis handle visible food balance,
+    because a photo cannot provide exact serving weight.
+    """
+    text = _build_food_text(food_labels)
+
+    adjustment = 0
+    reasons = []
+
+    has_fruit = _has_any(
+        text,
+        [
+            "apple",
+            "banana",
+            "orange",
+            "grape",
+            "berry",
+            "berries",
+            "strawberry",
+            "blueberry",
+            "pear",
+            "melon",
+            "kiwi",
+            "mandarin",
+            "peach",
+            "pineapple",
+            "fruit",
+        ],
+    )
+
+    has_vegetable = _has_any(
+        text,
+        [
+            "carrot",
+            "cucumber",
+            "lettuce",
+            "tomato",
+            "spinach",
+            "broccoli",
+            "corn",
+            "peas",
+            "pea",
+            "vegetable",
+            "salad",
+            "capsicum",
+            "avocado",
+            "zucchini",
+        ],
+    )
+
+    has_protein = _has_any(
+        text,
+        [
+            "chicken",
+            "beef",
+            "egg",
+            "eggs",
+            "tuna",
+            "salmon",
+            "fish",
+            "tofu",
+            "beans",
+            "lentils",
+            "lentil",
+            "chickpea",
+            "turkey",
+            "cheese",
+            "yoghurt",
+            "yogurt",
+        ],
+    )
+
+    has_grain = _has_any(
+        text,
+        [
+            "bread",
+            "sandwich",
+            "wrap",
+            "rice",
+            "pasta",
+            "noodle",
+            "crackers",
+            "cracker",
+            "oats",
+            "cereal",
+            "roll",
+            "toast",
+            "tortilla",
+        ],
+    )
+
+    has_sweet_snack = _has_any(
+        text,
+        [
+            "cake",
+            "cookie",
+            "cookies",
+            "biscuit",
+            "chocolate",
+            "candy",
+            "lolly",
+            "lollies",
+            "chips",
+            "crisps",
+            "soft drink",
+            "soda",
+            "donut",
+            "doughnut",
+            "muffin",
+        ],
+    )
+
+    has_processed = _has_any(
+        text,
+        [
+            "sausage",
+            "salami",
+            "bacon",
+            "nugget",
+            "nuggets",
+            "processed",
+            "fried",
+            "hot dog",
+            "pizza",
+        ],
+    )
+
+    visible_count = len(
+        set(
+            [
+                str(item).lower().strip()
+                for item in food_labels or []
+                if str(item).strip()
+            ]
+        )
+    )
+
+    if has_fruit:
+        adjustment += 3
+        reasons.append("fruit detected")
+
+    if has_vegetable:
+        adjustment += 3
+        reasons.append("vegetable detected")
+
+    if has_protein:
+        adjustment += 3
+        reasons.append("protein source detected")
+
+    if has_grain:
+        adjustment += 2
+        reasons.append("grain or carbohydrate source detected")
+
+    if visible_count >= 4:
+        adjustment += 2
+        reasons.append("good visible variety")
+
+    if has_sweet_snack:
+        adjustment -= 5
+        reasons.append("sweet or snack food detected")
+
+    if has_processed:
+        adjustment -= 4
+        reasons.append("processed food detected")
+
+    # Keep visual adjustment small.
+    adjustment = max(-8, min(10, adjustment))
+
+    return {
+        "adjustment": adjustment,
+        "reasons": reasons,
+    }
+
+
+def _get_grade_and_color(overall_score: int):
+    if overall_score >= 80:
+        return "Excellent", "green"
+
+    if overall_score >= 65:
+        return "Good", "blue"
+
+    if overall_score >= 50:
+        return "Fair", "amber"
+
+    return "Needs improvement", "red"
+
+
+def score_nutrition(
+    matched_df: pd.DataFrame,
+    child_age: int,
+    food_labels: Optional[List[str]] = None,
+) -> dict:
+    """
+    AUSNUT-first scoring.
+
+    Frontend does not need to change because the main response fields stay:
+    - overall_score
+    - grade
+    - color
+    - nutrient_scores
+    - ml_classification
+
+    Main idea:
+    - AUSNUT nutrient data creates the base score.
+    - Visible food labels only provide a small adjustment.
+    - If AUSNUT matching fails, use a conservative visible-food estimate.
+    """
+
+    visual = _visual_adjustment(food_labels)
+
     if matched_df.empty:
+        fallback_score = 55 + visual["adjustment"]
+        fallback_score = max(40, min(75, round(fallback_score)))
+
+        grade, color = _get_grade_and_color(fallback_score)
+
         return {
-            "overall_score": 55,
-            "grade": "Fair",
-            "color": "amber",
+            "overall_score": fallback_score,
+            "grade": grade,
+            "color": color,
             "nutrient_scores": {},
-            "note": "AUSNUT data not matched — score estimated",
+            "ml_classification": {
+                "label": "estimated",
+                "display_label": "Estimated from visible foods",
+            },
+            "note": "AUSNUT data not matched — score estimated from visible foods",
         }
 
     adg = get_adg(child_age)
-
     col_lower = {c.lower(): c for c in matched_df.columns}
 
-    def get_val(keywords: List[str]):
-        for kw in keywords:
-            for lk, oc in col_lower.items():
-                if kw in lk:
-                    try:
-                        return float(matched_df[oc].iloc[0])
-                    except Exception:
-                        pass
-        return None
-
     nutrients = {
-        "energy_kj": get_val(["energy_kj", "energy"]),
-        "protein_g": get_val(["protein_g", "protein"]),
-        "fat_g": get_val(["fat_g", "fat"]),
-        "carbs_g": get_val(["carbs_g", "carb"]),
-        "fibre_g": get_val(["fibre_g", "fibre", "fiber"]),
-        "calcium_mg": get_val(["calcium_mg", "calcium"]),
-        "iron_mg": get_val(["iron_mg", "iron"]),
-        "sodium_mg": get_val(["sodium_mg", "sodium"]),
+        "energy_kj": _safe_mean_from_columns(
+            matched_df,
+            col_lower,
+            ["energy_kj", "energy"],
+        ),
+        "protein_g": _safe_mean_from_columns(
+            matched_df,
+            col_lower,
+            ["protein_g", "protein"],
+        ),
+        "fat_g": _safe_mean_from_columns(
+            matched_df,
+            col_lower,
+            ["fat_g", "total_fat", "fat"],
+        ),
+        "carbs_g": _safe_mean_from_columns(
+            matched_df,
+            col_lower,
+            ["carbs_g", "carbohydrate", "carb"],
+        ),
+        "fibre_g": _safe_mean_from_columns(
+            matched_df,
+            col_lower,
+            ["fibre_g", "fiber", "fibre"],
+        ),
+        "calcium_mg": _safe_mean_from_columns(
+            matched_df,
+            col_lower,
+            ["calcium_mg", "calcium"],
+        ),
+        "iron_mg": _safe_mean_from_columns(
+            matched_df,
+            col_lower,
+            ["iron_mg", "iron"],
+        ),
+        "sodium_mg": _safe_mean_from_columns(
+            matched_df,
+            col_lower,
+            ["sodium_mg", "sodium"],
+        ),
     }
 
-    scores = {}
+    nutrient_scores = {}
 
     for key, val in nutrients.items():
-        if val is not None and key in adg and adg[key] > 0:
-            ratio = val / (adg[key] * 0.33)
-            scores[key] = round(max(0, min(100, 100 - abs(1 - ratio) * 100)))
+        if val is None:
+            continue
 
-    overall_score = round(sum(scores.values()) / len(scores)) if scores else 55
+        if key not in adg or adg[key] <= 0:
+            continue
 
-    if overall_score >= 80:
-        grade, color = "Excellent", "green"
-    elif overall_score >= 60:
-        grade, color = "Good", "blue"
-    elif overall_score >= 40:
-        grade, color = "Fair", "amber"
+        lunchbox_target = adg[key] * 0.33
+        ratio = val / lunchbox_target
+
+        # Positive nutrients.
+        # The old formula was too strict because it punished anything not close
+        # to exactly 33% of daily intake. This banded scoring is more stable.
+        if key in [
+            "energy_kj",
+            "protein_g",
+            "carbs_g",
+            "fibre_g",
+            "calcium_mg",
+            "iron_mg",
+        ]:
+            if 0.8 <= ratio <= 1.3:
+                score = 90
+            elif 0.6 <= ratio < 0.8:
+                score = 75
+            elif 0.4 <= ratio < 0.6:
+                score = 60
+            elif 1.3 < ratio <= 1.8:
+                score = 75
+            elif ratio > 1.8:
+                score = 60
+            else:
+                score = 45
+
+            nutrient_scores[key] = score
+
+        # Fat should be moderate, not simply high or low.
+        elif key == "fat_g":
+            if 0.6 <= ratio <= 1.3:
+                score = 85
+            elif 1.3 < ratio <= 1.8:
+                score = 70
+            elif ratio > 1.8:
+                score = 50
+            else:
+                score = 60
+
+            nutrient_scores[key] = score
+
+        # Sodium should be lower.
+        elif key == "sodium_mg":
+            if ratio <= 0.8:
+                score = 90
+            elif ratio <= 1.0:
+                score = 80
+            elif ratio <= 1.5:
+                score = 60
+            elif ratio <= 2.0:
+                score = 45
+            else:
+                score = 30
+
+            nutrient_scores[key] = score
+
+    if nutrient_scores:
+        ausnut_score = round(
+            sum(nutrient_scores.values()) / len(nutrient_scores)
+        )
     else:
-        grade, color = "Needs improvement", "red"
+        ausnut_score = 55
 
-    ml_result = predict(nutrients, child_age)
+    overall_score = ausnut_score + visual["adjustment"]
+
+    # Keep final score reasonable.
+    overall_score = max(35, min(95, round(overall_score)))
+
+    grade, color = _get_grade_and_color(overall_score)
+
+    try:
+        ml_result = predict(nutrients, child_age)
+    except Exception:
+        ml_result = {
+            "label": "unknown",
+            "display_label": "Not enough data",
+        }
 
     return {
         "overall_score": overall_score,
         "grade": grade,
         "color": color,
-        "nutrient_scores": scores,
+        "nutrient_scores": nutrient_scores,
         "ml_classification": ml_result,
+
+        # Extra fields are safe.
+        # Frontend can ignore them if it does not use them.
+        "ausnut_score": ausnut_score,
+        "visual_adjustment": visual["adjustment"],
+        "balance_reasons": visual["reasons"],
+        "scoring_method": "ausnut_first_with_small_visual_adjustment",
+        "note": (
+            "Overall score is mainly based on AUSNUT nutrient data. "
+            "Visible food groups only provide a small adjustment because photo analysis cannot confirm exact portion size."
+        ),
     }
 
 
@@ -401,13 +765,17 @@ def generate_personalised_checks(
             allergen_keywords.extend(["peanut butter", "nuts", "nut"])
 
         if allergen_text in ["milk", "dairy"]:
-            allergen_keywords.extend(["milk", "cheese", "yoghurt", "yogurt", "cream", "butter"])
+            allergen_keywords.extend(
+                ["milk", "cheese", "yoghurt", "yogurt", "cream", "butter"]
+            )
 
         if allergen_text in ["egg", "eggs"]:
             allergen_keywords.extend(["egg", "omelette", "mayonnaise"])
 
         if allergen_text in ["gluten", "wheat"]:
-            allergen_keywords.extend(["bread", "pasta", "cracker", "biscuit", "wrap", "wheat"])
+            allergen_keywords.extend(
+                ["bread", "pasta", "cracker", "biscuit", "wrap", "wheat"]
+            )
 
         if _contains_any(foods_text, allergen_keywords):
             allergy_warnings.append(
@@ -416,7 +784,10 @@ def generate_personalised_checks(
 
     # Dietary restriction warning using existing DietaryRestriction exclusion flags.
     if restriction:
-        restriction_name = restriction.get("restriction_name", "the selected dietary restriction")
+        restriction_name = restriction.get(
+            "restriction_name",
+            "the selected dietary restriction",
+        )
 
         if restriction.get("excludes_meat") == 1 and _contains_any(
             foods_text,
