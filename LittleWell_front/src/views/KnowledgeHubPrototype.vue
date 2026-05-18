@@ -9,6 +9,21 @@
         <p class="mx-auto max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-lg md:text-xl">
           Learn about serving sizes, food groups, and what to watch out for in everyday foods.
         </p>
+
+        <div class="mt-5 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <button
+            type="button"
+            @click="goToFoodAnalyser"
+            class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#A8D5BA] px-5 py-3 text-sm font-semibold text-[#2C5F2D] shadow-sm transition-colors hover:bg-[#8FC2A4] sm:px-6"
+          >
+            <ScanLine class="h-4 w-4" aria-hidden="true" />
+            Try Food Analyser
+          </button>
+
+          <p class="text-xs leading-relaxed text-muted-foreground sm:text-sm">
+            Upload a lunchbox photo and get quick AI-powered nutrition feedback.
+          </p>
+        </div>
       </div>
     </div>
 
@@ -668,6 +683,7 @@ import {
   Info,
   ChevronRight,
   AlertTriangle,
+  ScanLine,
 } from 'lucide-vue-next';
 import {
   getChildren,
@@ -1527,6 +1543,10 @@ const goToLogin = () => {
 
 const goToRegister = () => {
   window.location.href = '/register';
+};
+
+const goToFoodAnalyser = () => {
+  window.location.href = '/food-analyser';
 };
 
 // ── Lifecycle ────────────────────────────────────────────────────────────────

@@ -18,45 +18,56 @@
     <div class="relative flex-1 pb-0">
       <div class="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
         <div class="absolute inset-0 bg-gradient-to-b from-[#FAF9F6] to-[#F4F1EA]"></div>
+
         <div
           class="absolute inset-0 bg-cover bg-center opacity-40 sm:opacity-50"
           style="background-image: url('https://images.pexels.com/photos/5949887/pexels-photo-5949887.jpeg?auto=compress&cs=tinysrgb&w=1600');"
         ></div>
-        <div
-          class="absolute inset-0 bg-gradient-to-br from-[#A8D5BA]/15 to-[#F4F1EA]/80"
-        ></div>
+
+        <div class="absolute inset-0 bg-gradient-to-br from-[#A8D5BA]/15 to-[#F4F1EA]/80"></div>
+
         <div
           class="absolute left-0 right-0 top-0 z-[1] h-10 bg-gradient-to-b from-white from-0% via-white/90 via-[58%] to-transparent to-100% sm:h-14"
         ></div>
+
         <div
           class="absolute bottom-0 left-0 right-0 z-[1] h-16 bg-gradient-to-t from-[#F4F1EA] from-0% via-[#F4F1EA]/95 via-45% to-transparent to-100% sm:h-24"
         ></div>
       </div>
 
       <main class="container relative z-10 mx-auto max-w-6xl px-4 pb-16 pt-6 sm:px-6 sm:pb-24 sm:pt-10">
-      <div class="flex flex-col gap-6 lg:gap-8">
-        <div class="grid grid-cols-1 items-start gap-6 lg:grid-cols-12 lg:gap-8">
-          <!-- Step 1 -->
-          <section class="relative z-20 overflow-visible rounded-2xl border bg-white p-5 shadow-sm lg:z-30 lg:col-span-4">
-            <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-[#2C5F2D] sm:text-sm">
-              Step 1 — Select your child
-            </p>
+        <div class="flex flex-col gap-6 lg:gap-8">
+          <div class="grid grid-cols-1 items-start gap-6 lg:grid-cols-12 lg:gap-8">
+            <!-- Step 1 -->
+            <section class="relative z-20 overflow-visible rounded-2xl border bg-white p-5 shadow-sm lg:z-30 lg:col-span-4">
+              <div class="mb-3 flex items-center justify-between gap-3">
+                <p class="text-xs font-semibold uppercase tracking-wide text-[#2C5F2D] sm:text-sm">
+                  Step 1 — Select child or age
+                </p>
 
-            <div
-              class="child-picker-bubble rounded-2xl border border-gray-200 bg-white p-2 shadow-sm transition-[max-height] duration-300 ease-in-out"
-              :class="
-                childPickerOpen
-                  ? 'max-h-[min(36rem,72vh)] overflow-y-auto'
-                  : 'max-h-[14.5rem] overflow-hidden'
-              "
-              @mouseenter="openChildPicker"
-              @mouseleave="closeChildPicker"
-            >
+                <span
+                  v-if="childrenLoading"
+                  class="text-[11px] text-gray-400"
+                >
+                  Loading...
+                </span>
+              </div>
+
               <div
-                class="flex flex-col gap-2"
-                role="listbox"
-                aria-label="Child profiles"
+                class="child-picker-bubble rounded-2xl border border-gray-200 bg-white p-2 shadow-sm transition-[max-height] duration-300 ease-in-out"
+                :class="
+                  childPickerOpen
+                    ? 'max-h-[min(36rem,72vh)] overflow-y-auto'
+                    : 'max-h-[14.5rem] overflow-hidden'
+                "
+                @mouseenter="openChildPicker"
+                @mouseleave="closeChildPicker"
               >
+                <div
+                  class="flex flex-col gap-2"
+                  role="listbox"
+                  aria-label="Child profiles or ages"
+                >
                   <button
                     v-for="profile in orderedProfiles"
                     :key="profile.id"
@@ -78,9 +89,14 @@
                       >
                         {{ profileInitials(profile.name) }}
                       </div>
+
                       <div class="min-w-0">
-                        <p class="truncate font-semibold text-[#111827]">{{ profile.name }}</p>
-                        <p class="text-sm text-muted-foreground">{{ profile.ageGroup }}</p>
+                        <p class="truncate font-semibold text-[#111827]">
+                          {{ profile.name }}
+                        </p>
+                        <p class="text-sm text-muted-foreground">
+                          {{ profile.subtitle }}
+                        </p>
                       </div>
                     </div>
 
@@ -99,337 +115,403 @@
                     </p>
 
                     <p class="mt-2 text-[10px] uppercase tracking-wide text-muted-foreground">
-                      Demo profile
+                      {{ profile.isQuickMode ? 'Quick age mode' : 'Saved profile' }}
                     </p>
                   </button>
-              </div>
-            </div>
-
-            <p class="mt-3 text-xs leading-relaxed text-muted-foreground">
-              Mock profiles for UI preview. Child cards will be loaded from the backend later.
-            </p>
-          </section>
-
-          <!-- Steps 2 & 3 — Upload, tips, and AI feedback (single white bubble) -->
-          <section class="flex min-w-0 flex-col rounded-2xl border bg-white p-5 shadow-sm lg:col-span-8">
-            <p class="mb-4 text-xs font-semibold uppercase tracking-wide text-[#2C5F2D] sm:text-sm">
-              Step 2 — Upload lunchbox photo
-            </p>
-
-            <div class="grid flex-1 grid-cols-1 gap-5 md:grid-cols-2 md:gap-6 lg:gap-8">
-              <div class="flex min-w-0 flex-col">
-
-            <div
-              @click="triggerPhotoUpload"
-              @dragover.prevent
-              @drop.prevent="onPhotoDrop"
-              :class="[
-                'flex flex-1 flex-col justify-center border-2 border-dashed rounded-xl p-5 sm:p-6 text-center cursor-pointer transition-colors min-h-[10rem]',
-                photoPreview
-                  ? 'border-[#A8D5BA]'
-                  : 'border-gray-200 hover:border-[#A8D5BA]'
-              ]"
-            >
-              <input
-                ref="photoInput"
-                type="file"
-                accept="image/*"
-                class="hidden"
-                @change="onPhotoSelected"
-              />
-
-              <div v-if="!photoPreview" class="space-y-2">
-                <div
-                  class="w-12 h-12 bg-[#A8D5BA]/20 rounded-full flex items-center justify-center mx-auto"
-                >
-                  <Upload class="w-6 h-6 text-[#2C5F2D]" />
                 </div>
-
-                <p class="text-sm text-[#2C5F2D] font-medium">
-                  Upload or drag a photo
-                </p>
-                <p class="text-xs text-gray-500">
-                  JPG, PNG up to 5MB
-                </p>
               </div>
 
-              <div v-else class="relative">
-                <img
-                  :src="photoPreview"
-                  class="w-full rounded-lg object-cover max-h-56 sm:max-h-48"
-                  alt="Lunchbox preview"
-                />
-
-                <button
-                  @click.stop="clearPhoto"
-                  class="absolute top-2 right-2 bg-white rounded-full p-2 shadow hover:bg-gray-50"
-                  type="button"
-                  aria-label="Remove uploaded photo"
-                >
-                  <X class="w-4 h-4 text-gray-500" />
-                </button>
-              </div>
-            </div>
-
-            <button
-              v-if="photoPreview"
-              @click="analysePhoto"
-              :disabled="loading"
-              class="w-full mt-4 bg-[#A8D5BA] hover:bg-[#8FC2A4] disabled:opacity-50 disabled:cursor-not-allowed text-[#2C5F2D] font-medium rounded-xl py-3.5 sm:py-3 flex items-center justify-center gap-2 transition-colors"
-              type="button"
-            >
-              <span v-if="!loading">
-                ✨ Analyse Nutrition
-              </span>
-
-              <span v-else class="flex items-center gap-2">
-                <span
-                  class="w-4 h-4 border-2 border-[#2C5F2D] border-t-transparent rounded-full animate-spin"
-                ></span>
-                Analysing...
-              </span>
-            </button>
-              </div>
-
-              <div
-                class="flex flex-col border-t border-gray-200 pt-5 md:border-l md:border-t-0 md:pl-6 md:pt-0"
-              >
-                <h3 class="mb-3 text-sm font-semibold text-[#1B4965]">
-                  Tips for best results
-                </h3>
-
-                <ul class="space-y-2 text-xs leading-relaxed text-[#1B4965] sm:text-sm">
-                  <li>• Good lighting helps identify more foods</li>
-                  <li>• Spread food out so all items are visible</li>
-                  <li>• Photograph from directly above the lunchbox</li>
-                  <li>• Select the correct child profile for accurate scoring</li>
-                </ul>
-              </div>
-            </div>
-
-            <!-- Step 3 — AI feedback -->
-            <div class="mt-6 border-t border-gray-200 pt-6">
-              <p class="mb-4 text-xs font-semibold uppercase tracking-wide text-[#2C5F2D] sm:text-sm">
-                Step 3 — Get AI powered nutrition feedback
+              <p class="mt-3 text-xs leading-relaxed text-muted-foreground">
+                {{
+                  isLoggedIn
+                    ? 'Select a saved child profile for personalised nutrition feedback.'
+                    : 'You are using quick age-only analysis. Select the child’s exact age.'
+                }}
               </p>
 
-              <!-- Empty State -->
               <div
-                v-if="!result && !loading"
-                class="flex min-h-[220px] flex-col items-center justify-center gap-4 rounded-xl bg-[#FAF9F6] p-8 text-center sm:min-h-[260px] sm:p-10"
+                v-if="!isLoggedIn"
+                class="mt-3 rounded-xl border border-[#CDE7F0] bg-[#CDE7F0]/30 px-3 py-2 text-xs leading-relaxed text-[#1B4965]"
               >
-            <div
-              class="w-18 h-18 sm:w-20 sm:h-20 bg-[#A8D5BA]/20 rounded-full flex items-center justify-center"
-            >
-              <Leaf class="w-9 h-9 sm:w-10 sm:h-10 text-[#A8D5BA]" />
-            </div>
-
-            <h2 class="text-lg font-medium text-[#2C5F2D]">
-              Ready to analyse
-            </h2>
-
-            <p class="text-gray-500 text-sm max-w-xs leading-relaxed">
-              Upload a lunchbox photo to get AI-powered nutrition feedback tailored
-              to your child's age.
-            </p>
+                Quick mode only sends the selected age number to the backend. It does not send a child name or saved profile data.
               </div>
+            </section>
 
-              <!-- Loading State -->
-              <div
-                v-if="loading"
-                class="flex min-h-[220px] flex-col items-center justify-center gap-4 rounded-xl bg-[#FAF9F6] p-8 text-center sm:min-h-[260px] sm:p-10"
-              >
-            <div
-              class="w-16 h-16 bg-[#A8D5BA]/20 rounded-full flex items-center justify-center"
-            >
-              <span class="text-3xl">🤖</span>
-            </div>
+            <!-- Steps 2 & 3 -->
+            <section class="flex min-w-0 flex-col rounded-2xl border bg-white p-5 shadow-sm lg:col-span-8">
+              <p class="mb-4 text-xs font-semibold uppercase tracking-wide text-[#2C5F2D] sm:text-sm">
+                Step 2 — Upload lunchbox photo
+              </p>
 
-            <h2 class="text-lg font-medium text-[#2C5F2D]">
-              AI is analysing your lunchbox...
-            </h2>
+              <div class="grid flex-1 grid-cols-1 gap-5 md:grid-cols-2 md:gap-6 lg:gap-8">
+                <div class="flex min-w-0 flex-col">
+                  <div
+                    @click="triggerPhotoUpload"
+                    @dragover.prevent
+                    @drop.prevent="onPhotoDrop"
+                    :class="[
+                      'flex flex-1 flex-col justify-center border-2 border-dashed rounded-xl p-5 sm:p-6 text-center cursor-pointer transition-colors min-h-[10rem]',
+                      photoPreview
+                        ? 'border-[#A8D5BA]'
+                        : 'border-gray-200 hover:border-[#A8D5BA]'
+                    ]"
+                  >
+                    <input
+                      ref="photoInput"
+                      type="file"
+                      accept="image/*"
+                      class="hidden"
+                      @change="onPhotoSelected"
+                    />
 
-            <p class="text-sm text-gray-500 leading-relaxed">
-              Detecting foods, scoring nutrition, and running the ML classifier.
-            </p>
+                    <div v-if="!photoPreview" class="space-y-2">
+                      <div
+                        class="w-12 h-12 bg-[#A8D5BA]/20 rounded-full flex items-center justify-center mx-auto"
+                      >
+                        <Upload class="w-6 h-6 text-[#2C5F2D]" />
+                      </div>
 
-            <div class="flex gap-1 mt-2">
-              <span
-                class="w-2 h-2 bg-[#A8D5BA] rounded-full animate-bounce"
-                style="animation-delay: 0ms"
-              ></span>
-              <span
-                class="w-2 h-2 bg-[#A8D5BA] rounded-full animate-bounce"
-                style="animation-delay: 150ms"
-              ></span>
-              <span
-                class="w-2 h-2 bg-[#A8D5BA] rounded-full animate-bounce"
-                style="animation-delay: 300ms"
-              ></span>
-            </div>
-              </div>
+                      <p class="text-sm text-[#2C5F2D] font-medium">
+                        Upload or drag a photo
+                      </p>
+                      <p class="text-xs text-gray-500">
+                        JPG, PNG up to 5MB
+                      </p>
+                    </div>
 
-              <!-- Result -->
-              <div v-if="result && !loading" class="space-y-5">
-            <!-- Nutrition Score -->
-            <section class="rounded-xl border border-gray-100 bg-[#FAF9F6] p-5 sm:p-6">
-              <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 gap-4">
-                <div>
-                  <h2 class="text-xl font-semibold text-[#2C5F2D]">
-                    Nutrition Score
-                  </h2>
-                  <p class="text-sm text-gray-500 mt-1">
-                    for {{ childName || 'your child' }}, age {{ childAge }}
-                  </p>
-                </div>
+                    <div v-else class="relative">
+                      <img
+                        :src="photoPreview"
+                        class="w-full rounded-lg object-cover max-h-56 sm:max-h-48"
+                        alt="Lunchbox preview"
+                      />
 
-                <div class="text-left sm:text-right shrink-0">
-                  <div :class="['text-4xl font-bold', scoreColor]">
-                    {{ result.nutrition_score?.overall_score ?? 0 }}
-                    <span class="text-lg text-gray-400 font-normal">/100</span>
+                      <button
+                        @click.stop="clearPhoto"
+                        class="absolute top-2 right-2 bg-white rounded-full p-2 shadow hover:bg-gray-50"
+                        type="button"
+                        aria-label="Remove uploaded photo"
+                      >
+                        <X class="w-4 h-4 text-gray-500" />
+                      </button>
+                    </div>
                   </div>
 
-                  <span
-                    :class="['inline-block mt-1 text-sm font-medium px-3 py-1 rounded-full', gradeBadge]"
+                  <button
+                    v-if="photoPreview"
+                    @click="analysePhoto"
+                    :disabled="loading"
+                    class="w-full mt-4 bg-[#A8D5BA] hover:bg-[#8FC2A4] disabled:opacity-50 disabled:cursor-not-allowed text-[#2C5F2D] font-medium rounded-xl py-3.5 sm:py-3 flex items-center justify-center gap-2 transition-colors"
+                    type="button"
                   >
-                    {{ result.nutrition_score?.grade || 'N/A' }}
-                  </span>
-                </div>
-              </div>
-
-              <div class="w-full bg-gray-100 rounded-full h-3 mb-5">
-                <div
-                  :class="['h-3 rounded-full transition-all duration-700', scoreBarColor]"
-                  :style="{ width: `${result.nutrition_score?.overall_score || 0}%` }"
-                ></div>
-              </div>
-
-              <!-- ML Classification -->
-              <div
-                v-if="
-                  result.nutrition_score?.ml_classification &&
-                  result.nutrition_score.ml_classification.class !== 'unknown'
-                "
-                class="flex flex-col sm:flex-row sm:items-center gap-3 mb-5 p-3 rounded-xl border"
-                :class="{
-                  'bg-green-50 border-green-200':
-                    result.nutrition_score.ml_classification.color === 'green',
-                  'bg-amber-50 border-amber-200':
-                    result.nutrition_score.ml_classification.color === 'amber',
-                  'bg-red-50 border-red-200':
-                    result.nutrition_score.ml_classification.color === 'red',
-                }"
-              >
-                <span class="text-2xl shrink-0">
-                  {{ result.nutrition_score.ml_classification.emoji }}
-                </span>
-
-                <div class="flex-1">
-                  <p
-                    class="text-sm font-semibold flex items-center gap-2 flex-wrap"
-                    :class="{
-                      'text-green-700':
-                        result.nutrition_score.ml_classification.color === 'green',
-                      'text-amber-700':
-                        result.nutrition_score.ml_classification.color === 'amber',
-                      'text-red-700':
-                        result.nutrition_score.ml_classification.color === 'red',
-                    }"
-                  >
-                    ML Classification:
-                    {{ result.nutrition_score.ml_classification.display_label }}
-
-                    <span
-                      class="font-normal text-xs bg-white/70 px-2 py-0.5 rounded-full"
-                    >
-                      {{ result.nutrition_score.ml_classification.confidence }}%
-                      confidence
+                    <span v-if="!loading">
+                      ✨ Analyse Nutrition
                     </span>
-                  </p>
 
-                  <p class="text-xs text-gray-500 mt-1 leading-relaxed">
-                    {{ result.nutrition_score.ml_classification.message }}
-                  </p>
+                    <span v-else class="flex items-center gap-2">
+                      <span
+                        class="w-4 h-4 border-2 border-[#2C5F2D] border-t-transparent rounded-full animate-spin"
+                      ></span>
+                      Analysing...
+                    </span>
+                  </button>
                 </div>
-              </div>
 
-              <!-- Detected Foods -->
-              <p class="text-xs text-gray-500 mb-2">
-                Detected foods
-              </p>
-
-              <div class="flex flex-wrap gap-2 mb-4">
-                <span
-                  v-for="food in result.detected_foods || []"
-                  :key="food"
-                  class="bg-[#A8D5BA]/20 text-[#2C5F2D] text-xs rounded-full px-3 py-1 capitalize"
-                >
-                  {{ food }}
-                </span>
-              </div>
-
-              <div
-                v-if="result.nutrition_score?.note"
-                class="bg-[#CDE7F0]/30 rounded-xl p-3 text-xs text-[#1B4965] leading-relaxed"
-              >
-                ℹ️ {{ result.nutrition_score.note }}
-              </div>
-            </section>
-
-            <!-- AI Feedback -->
-            <section class="rounded-xl border border-gray-100 bg-[#FAF9F6] p-5 sm:p-6">
-              <div class="flex items-center gap-3 mb-4">
                 <div
-                  class="w-9 h-9 bg-[#A8D5BA] rounded-full flex items-center justify-center shrink-0"
+                  class="flex flex-col border-t border-gray-200 pt-5 md:border-l md:border-t-0 md:pl-6 md:pt-0"
                 >
-                  <span class="text-sm">✨</span>
-                </div>
+                  <h3 class="mb-3 text-sm font-semibold text-[#1B4965]">
+                    Tips for best results
+                  </h3>
 
-                <div>
-                  <h2 class="font-semibold text-[#2C5F2D]">
-                    AI Nutritionist Feedback
-                  </h2>
-                  <p class="text-xs text-gray-500">
-                    Powered by Groq LLaMA · Based on Australian Dietary Guidelines
-                  </p>
+                  <ul class="space-y-2 text-xs leading-relaxed text-[#1B4965] sm:text-sm">
+                    <li>• Good lighting helps identify more foods</li>
+                    <li>• Spread food out so all items are visible</li>
+                    <li>• Photograph from directly above the lunchbox</li>
+                    <li>
+                      •
+                      {{
+                        isLoggedIn
+                          ? 'Select the correct child profile for personalised feedback'
+                          : 'Select the correct age for quick scoring'
+                      }}
+                    </li>
+                  </ul>
                 </div>
               </div>
 
-              <p class="text-sm text-gray-700 leading-relaxed whitespace-pre-line">
-                {{ result.ai_feedback }}
-              </p>
-            </section>
-
-            <button
-              @click="resetAnalysis"
-              class="w-full border border-[#A8D5BA] text-[#2C5F2D] hover:bg-[#A8D5BA]/10 rounded-xl py-3.5 sm:py-3 text-sm font-medium transition-colors"
-              type="button"
-            >
-              Analyse Another Photo
-            </button>
-              </div>
-
-              <!-- Error -->
-              <div
-                v-if="error"
-                class="mt-4 rounded-xl border border-red-100 bg-red-50/50 p-5 text-center sm:p-6"
-              >
-                <p class="text-red-500 text-sm leading-relaxed">
-                  {{ error }}
+              <!-- Step 3 — AI feedback -->
+              <div class="mt-6 border-t border-gray-200 pt-6">
+                <p class="mb-4 text-xs font-semibold uppercase tracking-wide text-[#2C5F2D] sm:text-sm">
+                  Step 3 — Get AI powered nutrition feedback
                 </p>
 
-                <button
-                  @click="error = null"
-                  class="mt-3 text-xs text-gray-400 underline"
-                  type="button"
+                <!-- Empty State -->
+                <div
+                  v-if="!result && !loading"
+                  class="flex min-h-[220px] flex-col items-center justify-center gap-4 rounded-xl bg-[#FAF9F6] p-8 text-center sm:min-h-[260px] sm:p-10"
                 >
-                  Dismiss
-                </button>
+                  <div
+                    class="w-18 h-18 sm:w-20 sm:h-20 bg-[#A8D5BA]/20 rounded-full flex items-center justify-center"
+                  >
+                    <Leaf class="w-9 h-9 sm:w-10 sm:h-10 text-[#A8D5BA]" />
+                  </div>
+
+                  <h2 class="text-lg font-medium text-[#2C5F2D]">
+                    Ready to analyse
+                  </h2>
+
+                  <p class="text-gray-500 text-sm max-w-xs leading-relaxed">
+                    {{
+                      isLoggedIn
+                        ? 'Upload a lunchbox photo to get AI-powered nutrition feedback tailored to the selected child profile.'
+                        : 'Upload a lunchbox photo to get AI-powered nutrition feedback based on the selected age.'
+                    }}
+                  </p>
+                </div>
+
+                <!-- Loading State -->
+                <div
+                  v-if="loading"
+                  class="flex min-h-[220px] flex-col items-center justify-center gap-4 rounded-xl bg-[#FAF9F6] p-8 text-center sm:min-h-[260px] sm:p-10"
+                >
+                  <div
+                    class="w-16 h-16 bg-[#A8D5BA]/20 rounded-full flex items-center justify-center"
+                  >
+                    <span class="text-3xl">🤖</span>
+                  </div>
+
+                  <h2 class="text-lg font-medium text-[#2C5F2D]">
+                    AI is analysing your lunchbox...
+                  </h2>
+
+                  <p class="text-sm text-gray-500 leading-relaxed">
+                    Detecting foods, scoring nutrition, and generating feedback.
+                  </p>
+
+                  <div class="flex gap-1 mt-2">
+                    <span
+                      class="w-2 h-2 bg-[#A8D5BA] rounded-full animate-bounce"
+                      style="animation-delay: 0ms"
+                    ></span>
+                    <span
+                      class="w-2 h-2 bg-[#A8D5BA] rounded-full animate-bounce"
+                      style="animation-delay: 150ms"
+                    ></span>
+                    <span
+                      class="w-2 h-2 bg-[#A8D5BA] rounded-full animate-bounce"
+                      style="animation-delay: 300ms"
+                    ></span>
+                  </div>
+                </div>
+
+                <!-- Result -->
+                <div v-if="result && !loading" class="space-y-5">
+                  <!-- Nutrition Score -->
+                  <section class="rounded-xl border border-gray-100 bg-[#FAF9F6] p-5 sm:p-6">
+                    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 gap-4">
+                      <div>
+                        <h2 class="text-xl font-semibold text-[#2C5F2D]">
+                          Nutrition Score
+                        </h2>
+
+                        <p class="text-sm text-gray-500 mt-1">
+                          {{
+                            result.mode === 'profile_personalised'
+                              ? `for ${result.child_profile?.child_name || 'your child'}, ${result.child_profile?.age_band || `age ${childAge}`}`
+                              : `for your child, age ${childAge}`
+                          }}
+                        </p>
+
+                        <p
+                          v-if="result.mode"
+                          class="mt-1 text-xs text-gray-400"
+                        >
+                          {{
+                            result.mode === 'profile_personalised'
+                              ? 'Personalised profile mode'
+                              : 'Quick age-only mode'
+                          }}
+                        </p>
+                      </div>
+
+                      <div class="text-left sm:text-right shrink-0">
+                        <div :class="['text-4xl font-bold', scoreColor]">
+                          {{ result.nutrition_score?.overall_score ?? 0 }}
+                          <span class="text-lg text-gray-400 font-normal">/100</span>
+                        </div>
+
+                        <span
+                          :class="['inline-block mt-1 text-sm font-medium px-3 py-1 rounded-full', gradeBadge]"
+                        >
+                          {{ result.nutrition_score?.grade || 'N/A' }}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="w-full bg-gray-100 rounded-full h-3 mb-5">
+                      <div
+                        :class="['h-3 rounded-full transition-all duration-700', scoreBarColor]"
+                        :style="{ width: `${result.nutrition_score?.overall_score || 0}%` }"
+                      ></div>
+                    </div>
+
+                    <!-- ML Classification -->
+                    <div
+                      v-if="
+                        result.nutrition_score?.ml_classification &&
+                        result.nutrition_score.ml_classification.class !== 'unknown'
+                      "
+                      class="flex flex-col sm:flex-row sm:items-center gap-3 mb-5 p-3 rounded-xl border"
+                      :class="{
+                        'bg-green-50 border-green-200':
+                          result.nutrition_score.ml_classification.color === 'green',
+                        'bg-amber-50 border-amber-200':
+                          result.nutrition_score.ml_classification.color === 'amber',
+                        'bg-red-50 border-red-200':
+                          result.nutrition_score.ml_classification.color === 'red',
+                      }"
+                    >
+                      <span class="text-2xl shrink-0">
+                        {{ result.nutrition_score.ml_classification.emoji }}
+                      </span>
+
+                      <div class="flex-1">
+                        <p
+                          class="text-sm font-semibold flex items-center gap-2 flex-wrap"
+                          :class="{
+                            'text-green-700':
+                              result.nutrition_score.ml_classification.color === 'green',
+                            'text-amber-700':
+                              result.nutrition_score.ml_classification.color === 'amber',
+                            'text-red-700':
+                              result.nutrition_score.ml_classification.color === 'red',
+                          }"
+                        >
+                          ML Classification:
+                          {{ result.nutrition_score.ml_classification.display_label }}
+
+                          <span
+                            class="font-normal text-xs bg-white/70 px-2 py-0.5 rounded-full"
+                          >
+                            {{ result.nutrition_score.ml_classification.confidence }}%
+                            confidence
+                          </span>
+                        </p>
+
+                        <p class="text-xs text-gray-500 mt-1 leading-relaxed">
+                          {{ result.nutrition_score.ml_classification.message }}
+                        </p>
+                      </div>
+                    </div>
+
+                    <!-- Detected Foods -->
+                    <p class="text-xs text-gray-500 mb-2">
+                      Detected foods
+                    </p>
+
+                    <div class="flex flex-wrap gap-2 mb-4">
+                      <span
+                        v-for="food in result.detected_foods || []"
+                        :key="food"
+                        class="bg-[#A8D5BA]/20 text-[#2C5F2D] text-xs rounded-full px-3 py-1 capitalize"
+                      >
+                        {{ food }}
+                      </span>
+                    </div>
+
+                    <!-- Personalised checks -->
+                    <div
+                      v-if="hasPersonalisedChecks"
+                      class="mb-4 space-y-2"
+                    >
+                      <div
+                        v-for="warning in result.personalised_checks?.allergy_warnings || []"
+                        :key="warning"
+                        class="rounded-xl border border-red-100 bg-red-50 px-3 py-2 text-xs leading-relaxed text-red-700"
+                      >
+                        ⚠️ {{ warning }}
+                      </div>
+
+                      <div
+                        v-for="warning in result.personalised_checks?.dietary_warnings || []"
+                        :key="warning"
+                        class="rounded-xl border border-amber-100 bg-amber-50 px-3 py-2 text-xs leading-relaxed text-amber-800"
+                      >
+                        🥗 {{ warning }}
+                      </div>
+
+                      <div
+                        v-for="tip in result.personalised_checks?.nutrition_focus_feedback || []"
+                        :key="tip"
+                        class="rounded-xl border border-[#CDE7F0] bg-[#CDE7F0]/30 px-3 py-2 text-xs leading-relaxed text-[#1B4965]"
+                      >
+                        💡 {{ tip }}
+                      </div>
+                    </div>
+
+                    <div
+                      v-if="result.nutrition_score?.note"
+                      class="bg-[#CDE7F0]/30 rounded-xl p-3 text-xs text-[#1B4965] leading-relaxed"
+                    >
+                      ℹ️ {{ result.nutrition_score.note }}
+                    </div>
+                  </section>
+
+                  <!-- AI Feedback -->
+                  <section class="rounded-xl border border-gray-100 bg-[#FAF9F6] p-5 sm:p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                      <div
+                        class="w-9 h-9 bg-[#A8D5BA] rounded-full flex items-center justify-center shrink-0"
+                      >
+                        <span class="text-sm">✨</span>
+                      </div>
+
+                      <div>
+                        <h2 class="font-semibold text-[#2C5F2D]">
+                          AI Nutritionist Feedback
+                        </h2>
+                        <p class="text-xs text-gray-500">
+                          Powered by Groq LLaMA · Based on Australian Dietary Guidelines
+                        </p>
+                      </div>
+                    </div>
+
+                    <p class="text-sm text-gray-700 leading-relaxed whitespace-pre-line">
+                      {{ result.ai_feedback }}
+                    </p>
+                  </section>
+
+                  <button
+                    @click="resetAnalysis"
+                    class="w-full border border-[#A8D5BA] text-[#2C5F2D] hover:bg-[#A8D5BA]/10 rounded-xl py-3.5 sm:py-3 text-sm font-medium transition-colors"
+                    type="button"
+                  >
+                    Analyse Another Photo
+                  </button>
+                </div>
+
+                <!-- Error -->
+                <div
+                  v-if="error"
+                  class="mt-4 rounded-xl border border-red-100 bg-red-50/50 p-5 text-center sm:p-6"
+                >
+                  <p class="text-red-500 text-sm leading-relaxed">
+                    {{ error }}
+                  </p>
+
+                  <button
+                    @click="error = null"
+                    class="mt-3 text-xs text-gray-400 underline"
+                    type="button"
+                  >
+                    Dismiss
+                  </button>
+                </div>
               </div>
-            </div>
-          </section>
+            </section>
+          </div>
         </div>
-      </div>
       </main>
     </div>
   </div>
@@ -449,43 +531,134 @@ const childName = ref('');
 const childAge = ref(7);
 const error = ref(null);
 
-const selectedChildId = ref('demo-emma');
+const selectedChildId = ref(null);
 const childPickerOpen = ref(false);
+const childProfiles = ref([]);
+const childrenLoading = ref(false);
 
-/** Mock child cards for UI preview — replace with backend-driven list later */
-const MOCK_CHILD_PROFILES = [
+const token = ref(localStorage.getItem('littlewell_token') || '');
+const isLoggedIn = computed(() => !!token.value);
+
+const QUICK_AGE_PROFILES = [
   {
-    id: 'demo-emma',
-    name: 'Emma',
-    ageGroup: '7-9 years',
+    id: 'quick-age-5',
+    name: 'Age 5',
+    subtitle: 'Quick analysis for a 5-year-old child',
+    childAge: 5,
+    ageGroup: '5 years old',
     allergies: [],
     dietaryRestriction: '',
+    isQuickMode: true,
   },
   {
-    id: 'demo-oliver',
-    name: 'Oliver',
-    ageGroup: '5-6 years',
-    allergies: ['Peanuts'],
+    id: 'quick-age-6',
+    name: 'Age 6',
+    subtitle: 'Quick analysis for a 6-year-old child',
+    childAge: 6,
+    ageGroup: '6 years old',
+    allergies: [],
     dietaryRestriction: '',
+    isQuickMode: true,
   },
   {
-    id: 'demo-maya',
-    name: 'Maya',
-    ageGroup: '10-12 years',
-    allergies: ['Milk'],
-    dietaryRestriction: 'Dairy-free',
+    id: 'quick-age-7',
+    name: 'Age 7',
+    subtitle: 'Quick analysis for a 7-year-old child',
+    childAge: 7,
+    ageGroup: '7 years old',
+    allergies: [],
+    dietaryRestriction: '',
+    isQuickMode: true,
+  },
+  {
+    id: 'quick-age-8',
+    name: 'Age 8',
+    subtitle: 'Quick analysis for an 8-year-old child',
+    childAge: 8,
+    ageGroup: '8 years old',
+    allergies: [],
+    dietaryRestriction: '',
+    isQuickMode: true,
+  },
+  {
+    id: 'quick-age-9',
+    name: 'Age 9',
+    subtitle: 'Quick analysis for a 9-year-old child',
+    childAge: 9,
+    ageGroup: '9 years old',
+    allergies: [],
+    dietaryRestriction: '',
+    isQuickMode: true,
+  },
+  {
+    id: 'quick-age-10',
+    name: 'Age 10',
+    subtitle: 'Quick analysis for a 10-year-old child',
+    childAge: 10,
+    ageGroup: '10 years old',
+    allergies: [],
+    dietaryRestriction: '',
+    isQuickMode: true,
+  },
+  {
+    id: 'quick-age-11',
+    name: 'Age 11',
+    subtitle: 'Quick analysis for an 11-year-old child',
+    childAge: 11,
+    ageGroup: '11 years old',
+    allergies: [],
+    dietaryRestriction: '',
+    isQuickMode: true,
+  },
+  {
+    id: 'quick-age-12',
+    name: 'Age 12',
+    subtitle: 'Quick analysis for a 12-year-old child',
+    childAge: 12,
+    ageGroup: '12 years old',
+    allergies: [],
+    dietaryRestriction: '',
+    isQuickMode: true,
   },
 ];
 
 const orderedProfiles = computed(() => {
-  const selected = MOCK_CHILD_PROFILES.find((p) => p.id === selectedChildId.value);
-  const rest = MOCK_CHILD_PROFILES.filter((p) => p.id !== selectedChildId.value);
+  const profiles = childProfiles.value.length
+    ? childProfiles.value
+    : QUICK_AGE_PROFILES;
 
-  return selected ? [selected, ...rest] : MOCK_CHILD_PROFILES;
+  const selected = profiles.find((p) => p.id === selectedChildId.value);
+  const rest = profiles.filter((p) => p.id !== selectedChildId.value);
+
+  return selected ? [selected, ...rest] : profiles;
+});
+
+const selectedProfile = computed(() => {
+  const profiles = childProfiles.value.length
+    ? childProfiles.value
+    : QUICK_AGE_PROFILES;
+
+  return profiles.find((p) => p.id === selectedChildId.value) || profiles[0] || null;
+});
+
+const hasPersonalisedChecks = computed(() => {
+  const checks = result.value?.personalised_checks;
+
+  if (!checks) return false;
+
+  return Boolean(
+    checks.allergy_warnings?.length ||
+    checks.dietary_warnings?.length ||
+    checks.nutrition_focus_feedback?.length
+  );
 });
 
 const profileInitials = (name) => {
   if (!name || typeof name !== 'string') return '?';
+
+  if (name.toLowerCase().startsWith('age ')) {
+    return name.replace('Age ', '');
+  }
 
   const parts = name.trim().split(/\s+/);
 
@@ -494,22 +667,97 @@ const profileInitials = (name) => {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 };
 
-const ageFromProfile = (profile) => {
-  const group = profile?.ageGroup || '';
-
-  if (group === '5-6 years') return 6;
-  if (group === '7-9 years') return 8;
-  if (group === '10-12 years') return 11;
+const ageFromAgeBand = (ageBand) => {
+  if (ageBand === '5-6 years') return 6;
+  if (ageBand === '7-9 years') return 8;
+  if (ageBand === '10-12 years') return 11;
 
   return 7;
+};
+
+const normaliseChildProfile = (child) => {
+  const ageBand = child.age_band || '7-9 years';
+  const estimatedAge = ageFromAgeBand(ageBand);
+
+  return {
+    id: child.child_id,
+    name: child.child_name || 'Your child',
+    subtitle: ageBand,
+    childAge: estimatedAge,
+    ageGroup: ageBand,
+    allergies: Array.isArray(child.allergies)
+      ? child.allergies.map((item) => String(item))
+      : [],
+    dietaryRestriction:
+      child.restriction_name ||
+      child.restriction_code ||
+      '',
+    raw: child,
+    isQuickMode: false,
+  };
 };
 
 const syncChildFromProfile = (profile) => {
   if (!profile) return;
 
-  childName.value = profile.name;
-  childAge.value = ageFromProfile(profile);
+  childAge.value = profile.childAge || 7;
+
+  if (profile.isQuickMode) {
+    childName.value = '';
+  } else {
+    childName.value = profile.name || '';
+  }
 };
+
+async function loadChildren() {
+  if (!token.value) {
+    childProfiles.value = QUICK_AGE_PROFILES;
+    selectedChildId.value = QUICK_AGE_PROFILES[2].id;
+    syncChildFromProfile(QUICK_AGE_PROFILES[2]);
+    return;
+  }
+
+  childrenLoading.value = true;
+
+  try {
+    const response = await fetch(`${API_BASE}/children`, {
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Could not load child profiles. Quick age-only mode is still available.');
+    }
+
+    const data = await response.json();
+
+    const children = Array.isArray(data)
+      ? data
+      : Array.isArray(data.children)
+        ? data.children
+        : [];
+
+    const profiles = children.map(normaliseChildProfile);
+
+    if (profiles.length) {
+      childProfiles.value = profiles;
+      selectedChildId.value = profiles[0].id;
+      syncChildFromProfile(profiles[0]);
+    } else {
+      childProfiles.value = QUICK_AGE_PROFILES;
+      selectedChildId.value = QUICK_AGE_PROFILES[2].id;
+      syncChildFromProfile(QUICK_AGE_PROFILES[2]);
+    }
+  } catch (err) {
+    childProfiles.value = QUICK_AGE_PROFILES;
+    selectedChildId.value = QUICK_AGE_PROFILES[2].id;
+    syncChildFromProfile(QUICK_AGE_PROFILES[2]);
+    error.value = err.message || 'Could not load child profiles.';
+  } finally {
+    childrenLoading.value = false;
+  }
+}
 
 function openChildPicker() {
   childPickerOpen.value = true;
@@ -526,7 +774,7 @@ function selectChildProfile(profile) {
 }
 
 onMounted(() => {
-  syncChildFromProfile(MOCK_CHILD_PROFILES[0]);
+  loadChildren();
 });
 
 const photoInput = ref(null);
@@ -606,11 +854,30 @@ async function analysePhoto() {
   try {
     const form = new FormData();
     form.append('file', photoFile.value);
-    form.append('child_age', childAge.value);
-    form.append('child_name', childName.value || 'your child');
+
+    const profile = selectedProfile.value;
+
+    if (token.value && profile && !profile.isQuickMode) {
+      // Logged in: use saved child profile.
+      // child_age is included only as a safe fallback.
+      form.append('child_id', profile.id);
+      form.append('child_age', profile.childAge || childAge.value);
+    } else {
+      // Not logged in: exact age-only mode.
+      // Do not send child_name.
+      // Do not send child_id.
+      form.append('child_age', profile?.childAge || childAge.value);
+    }
+
+    const headers = {};
+
+    if (token.value) {
+      headers.Authorization = `Bearer ${token.value}`;
+    }
 
     const response = await fetch(`${API_BASE}/photo/analyse`, {
       method: 'POST',
+      headers,
       body: form,
     });
 
