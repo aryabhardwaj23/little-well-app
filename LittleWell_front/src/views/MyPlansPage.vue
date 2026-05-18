@@ -388,7 +388,8 @@
           </h2>
 
           <p class="mx-auto max-w-3xl text-sm leading-relaxed text-muted-foreground md:text-base">
-            Select a saved weekly plan and generate separate AI explanations for each lunchbox meal.
+            Select a saved weekly plan and generate AI explanations using saved lunchbox items,
+            nutrition focus, recipe inspiration, storage tips, and seasonal planning notes.
           </p>
         </div>
 
@@ -475,14 +476,14 @@
                 </h3>
 
                 <p class="text-sm leading-relaxed text-muted-foreground">
-                  Each meal is explained separately, then the results are summarised for the whole weekly plan.
+                  Each meal is explained separately first, then a weekly plan summary is generated from those meal explanations.
                 </p>
               </div>
 
               <button
                 type="button"
                 class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#2C5F2D] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#244E24] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
-                :disabled="whyPlanLoading"
+                :disabled="whyPlanLoading || !getResolvedPlanChildAge(selectedWhyPlan)"
                 @click="generateWhyThisPlan"
               >
                 <Sparkles class="h-4 w-4" aria-hidden="true" />
@@ -512,10 +513,17 @@
                 </span>
               </p>
 
-              <p class="text-sm leading-relaxed text-muted-foreground">
+              <p class="mb-2 text-sm leading-relaxed text-muted-foreground">
                 Child age used:
                 <span class="text-[#374151]">
                   {{ getPlanAgeDisplay(selectedWhyPlan) }}
+                </span>
+              </p>
+
+              <p class="text-sm leading-relaxed text-muted-foreground">
+                AI context:
+                <span class="text-[#374151]">
+                  lunchbox items, nutrition tags, seasonal notes, storage tips, prep time, and recipe inspiration.
                 </span>
               </p>
 
@@ -623,7 +631,7 @@
               v-if="whyPlanLoading"
               class="rounded-2xl border border-[#A8D5BA]/30 bg-white p-5 text-center text-sm text-muted-foreground"
             >
-              Generating AI explanations meal by meal…
+              Generating meal-by-meal explanations and weekly plan summary…
             </div>
 
             <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
@@ -691,6 +699,7 @@ import {
   deleteWeeklyPlan,
   duplicateWeeklyPlan,
   getWhyThisMeal,
+  getWeeklyNutritionStory,
 } from '../services/api';
 
 const router = useRouter();
@@ -803,7 +812,12 @@ const handleSelectWhyPlan = (planId) => {
 };
 
 const parseTags = (tags) => {
-  if (Array.isArray(tags)) return tags;
+  if (Array.isArray(tags)) {
+    return tags
+      .map((tag) => String(tag || '').trim())
+      .filter(Boolean);
+  }
+
   if (!tags) return [];
 
   return String(tags)
@@ -858,7 +872,6 @@ const isLikelySameChildName = (profileName, planName) => {
   if (!nameA || !nameB) return false;
 
   if (nameA === nameB) return true;
-
   if (nameA.includes(nameB) || nameB.includes(nameA)) return true;
 
   const partsA = nameA.split(' ').filter(Boolean);
@@ -1015,9 +1028,59 @@ const getPlanAgeDisplay = (plan) => {
   return 'Not available for this weekly plan';
 };
 
+const normalizeLunchboxItems = (items) => {
+  if (!Array.isArray(items)) return [];
+
+  return items
+    .map((item) => {
+      if (typeof item === 'string') {
+        return {
+          name: item,
+          amount: '',
+          section: '',
+        };
+      }
+
+      return {
+        reference_food_id:
+          item?.reference_food_id ||
+          item?.referenceFoodId ||
+          item?.product_id ||
+          item?.food_id ||
+          item?.id ||
+          null,
+        name:
+          item?.name ||
+          item?.food_name ||
+          item?.product_name ||
+          item?.title ||
+          'Food item',
+        amount:
+          item?.amount ||
+          item?.serving ||
+          item?.quantity ||
+          item?.serving_size ||
+          '',
+        section:
+          item?.section ||
+          item?.type ||
+          item?.category ||
+          '',
+      };
+    })
+    .filter((item) => item.name);
+};
+
 const normalizeLunchbox = (meal, index = 0) => {
   const lunchbox = meal.lunchbox || {};
-  const items = lunchbox.items || meal.items || meal.lunchbox_items || [];
+
+  const items = normalizeLunchboxItems(
+    lunchbox.items ||
+      meal.items ||
+      meal.lunchbox_items ||
+      meal.lunchboxItems ||
+      [],
+  );
 
   return {
     id:
@@ -1026,16 +1089,29 @@ const normalizeLunchbox = (meal, index = 0) => {
       meal.lunchbox_id ||
       meal.source_id ||
       `db-${index}`,
-    reference_food_id: lunchbox.reference_food_id || meal.reference_food_id || null,
+    reference_food_id:
+      lunchbox.reference_food_id ||
+      meal.reference_food_id ||
+      null,
     title:
       lunchbox.title ||
       meal.meal_title ||
       meal.mealName ||
       meal.lunchbox_title ||
       'Database Lunchbox',
-    nutritionFocus: parseTags(lunchbox.nutritionFocus || meal.nutrition_tags || meal.tags),
-    whyThisMeal: lunchbox.whyThisMeal || meal.whyThisMeal || '',
-    items: Array.isArray(items) ? items : [],
+    nutritionFocus: parseTags(
+      lunchbox.nutritionFocus ||
+        lunchbox.nutrition_tags ||
+        meal.nutrition_tags ||
+        meal.tags,
+    ),
+    whyThisMeal:
+      lunchbox.whyThisMeal ||
+      lunchbox.why_this_meal ||
+      meal.whyThisMeal ||
+      meal.why_this_meal ||
+      '',
+    items,
   };
 };
 
@@ -1043,9 +1119,16 @@ const normalizeRecipe = (meal) => {
   const recipe = meal.recipe || {};
 
   return {
-    id: recipe.id || meal.recipe_id || meal.recipeId || null,
+    id:
+      recipe.id ||
+      recipe.idMeal ||
+      meal.recipe_id ||
+      meal.recipeId ||
+      null,
     title:
       recipe.title ||
+      recipe.mealName ||
+      recipe.strMeal ||
       meal.recipe_title ||
       meal.recipeName ||
       (meal.recipe_id ? `Recipe #${meal.recipe_id}` : 'Recipe Inspiration'),
@@ -1053,25 +1136,64 @@ const normalizeRecipe = (meal) => {
       recipe.image ||
       recipe.heroImage ||
       recipe.mealImage ||
+      recipe.strMealThumb ||
       meal.image_url ||
+      meal.image ||
       meal.heroImage ||
       meal.mealImage ||
       '',
-    category: recipe.category || meal.category || '',
-    area: recipe.area || meal.area || '',
-    nutritionFocus: parseTags(recipe.nutritionFocus || meal.recipe_tags),
-    whyThisMeal: recipe.whyThisMeal || meal.recipe_note || '',
+    category:
+      recipe.category ||
+      recipe.strCategory ||
+      meal.category ||
+      '',
+    area:
+      recipe.area ||
+      recipe.strArea ||
+      meal.area ||
+      '',
+    nutritionFocus: parseTags(
+      recipe.nutritionFocus ||
+        recipe.nutrition_tags ||
+        meal.recipe_tags,
+    ),
+    whyThisMeal:
+      recipe.whyThisMeal ||
+      recipe.why_this_meal ||
+      meal.recipe_note ||
+      '',
   };
 };
 
-const normalizeMeal = (meal, index = 0) => ({
-  id: meal.meal_id || meal.id || `meal-${index}`,
-  cookDay: meal.cook_day || meal.cookDay || meal.title || `Cook Session ${index + 1}`,
-  coverDays: meal.cover_days || meal.coverDays || meal.covers || 'Selected days',
-  prepTime: meal.prep_time_minutes ? `${meal.prep_time_minutes} mins` : meal.prepTime || '30 mins',
-  lunchbox: normalizeLunchbox(meal, index),
-  recipe: normalizeRecipe(meal),
-});
+const normalizeMeal = (meal, index = 0) => {
+  const prepMinutes =
+    meal.prep_time_minutes ||
+    meal.prepMinutes ||
+    meal.prep_minutes ||
+    null;
+
+  return {
+    id: meal.meal_id || meal.id || `meal-${index}`,
+    cookDay: meal.cook_day || meal.cookDay || meal.title || `Cook Session ${index + 1}`,
+    coverDays: meal.cover_days || meal.coverDays || meal.covers || 'Selected days',
+    prepTime:
+      meal.prepTime ||
+      meal.prep_time ||
+      (prepMinutes ? `${prepMinutes} mins` : '30 mins'),
+    seasonalNote:
+      meal.seasonal_note ||
+      meal.seasonalNote ||
+      meal.season_note ||
+      'Selected with seasonal ingredients.',
+    storageTip:
+      meal.storage_tip ||
+      meal.storageTip ||
+      meal.storage ||
+      'Store safely in the fridge and keep chilled.',
+    lunchbox: normalizeLunchbox(meal, index),
+    recipe: normalizeRecipe(meal),
+  };
+};
 
 const getSeasonNameFromId = (seasonId) =>
   ({
@@ -1164,33 +1286,110 @@ const getPlanAiPromptMealName = (plan) => {
   return combined.slice(0, 6).join(', ');
 };
 
-const buildMealPayload = ({ plan, batch, index, resolvedAge }) => {
-  const childAge = resolvedAge || getResolvedPlanChildAge(plan);
+const safeJoin = (items, fallback = '') => {
+  if (!Array.isArray(items)) return fallback;
+
+  const cleaned = items
+    .map((item) => String(item || '').trim())
+    .filter(Boolean);
+
+  return cleaned.length ? cleaned.join(', ') : fallback;
+};
+
+const formatLunchboxItemsForAi = (items) => {
+  if (!Array.isArray(items) || items.length === 0) return '';
+
+  return items
+    .map((item) => {
+      const parts = [
+        item.name,
+        item.amount ? `(${item.amount})` : '',
+        item.section ? `[${item.section}]` : '',
+      ].filter(Boolean);
+
+      return parts.join(' ');
+    })
+    .filter(Boolean)
+    .join(', ');
+};
+
+const buildMealContextText = ({ plan, batch, index, childAge }) => {
   const mealName = getBatchMealName(batch);
   const recipeName = getBatchRecipeName(batch);
 
-  const promptMealName = [
+  const lunchboxTags = parseTags(batch?.lunchbox?.nutritionFocus);
+  const recipeTags = parseTags(batch?.recipe?.nutritionFocus);
+  const allTags = [...new Set([...lunchboxTags, ...recipeTags])];
+
+  const lunchboxItemsText = formatLunchboxItemsForAi(batch?.lunchbox?.items || []);
+
+  const contextLines = [
     `Meal ${index + 1}: ${mealName}`,
     recipeName ? `Recipe inspiration: ${recipeName}` : '',
-    batch.cookDay ? `Cook day: ${batch.cookDay}` : '',
-    batch.coverDays ? `Covers: ${batch.coverDays}` : '',
-    plan.season ? `Season: ${plan.season}` : '',
-    plan.mealStyle ? `Meal style: ${plan.mealStyle}` : '',
-    plan.varietyPreference ? `Variety preference: ${plan.varietyPreference}` : '',
-    plan.children?.length ? `Children: ${getChildrenLabel(plan.children)}` : '',
-    childAge ? `Child age: ${childAge}` : '',
-  ]
-    .filter(Boolean)
-    .join('. ');
+    lunchboxItemsText ? `Lunchbox items: ${lunchboxItemsText}` : '',
+    allTags.length ? `Nutrition focus: ${safeJoin(allTags)}` : '',
+    batch?.seasonalNote ? `Seasonal note: ${batch.seasonalNote}` : '',
+    batch?.storageTip ? `Storage tip: ${batch.storageTip}` : '',
+    batch?.prepTime ? `Prep time: ${batch.prepTime}` : '',
+    batch?.cookDay ? `Cook day: ${batch.cookDay}` : '',
+    batch?.coverDays ? `Covers: ${batch.coverDays}` : '',
+    plan?.season ? `Season: ${plan.season}` : '',
+    plan?.mealStyle ? `Meal style: ${plan.mealStyle}` : '',
+    plan?.varietyPreference ? `Variety preference: ${plan.varietyPreference}` : '',
+    plan?.cookingFrequency ? `Cooking frequency: ${plan.cookingFrequency} cooking days per week` : '',
+    plan?.children?.length ? `Children: ${getChildrenLabel(plan.children)}` : '',
+    childAge ? `Child age: ${childAge} years old` : '',
+    batch?.lunchbox?.whyThisMeal ? `Existing lunchbox note: ${batch.lunchbox.whyThisMeal}` : '',
+    batch?.recipe?.whyThisMeal ? `Existing recipe note: ${batch.recipe.whyThisMeal}` : '',
+  ];
+
+  return contextLines.filter(Boolean).join('. ');
+};
+
+const buildMealPayload = ({ plan, batch, index, resolvedAge }) => {
+  const childAge = resolvedAge || getResolvedPlanChildAge(plan);
+
+  const contextText = buildMealContextText({
+    plan,
+    batch,
+    index,
+    childAge,
+  });
 
   return {
-    meal_name: promptMealName,
+    meal_name: contextText,
     child_age: childAge,
     allergens: [],
     dietary_restrictions: [],
     season: plan.season || 'seasonal',
-    meal_type: 'weekly lunchbox meal',
+    meal_type:
+      'weekly school lunchbox meal. Explain with specific nutrition reasons, lunchbox practicality, child age suitability, and seasonal context. Avoid generic phrases unless they are linked to a concrete food, recipe, lunchbox item, or nutrient.',
   };
+};
+
+const buildWeeklyStoryMeals = (mealResults, plan, childAge) => {
+  return mealResults
+    .filter((meal) => !meal.hasError)
+    .map((meal, index) => {
+      const batch = plan.batches?.[index];
+
+      return {
+        title: meal.title,
+        recipe_title: meal.recipeTitle || '',
+        cook_day: meal.cookDay || '',
+        explanation: meal.explanation || '',
+        nutrition_focus: [
+          ...parseTags(batch?.lunchbox?.nutritionFocus),
+          ...parseTags(batch?.recipe?.nutritionFocus),
+        ],
+        meal_context: buildMealContextText({
+          plan,
+          batch,
+          index,
+          childAge,
+        }),
+      };
+    });
 };
 
 const generateWhyThisPlan = async () => {
@@ -1201,7 +1400,7 @@ const generateWhyThisPlan = async () => {
 
   try {
     const originalPlan = selectedWhyPlan.value;
-    const { plan, age, ageSource } = await resolvePlanAgeBeforeAi(originalPlan);
+    const { plan, age } = await resolvePlanAgeBeforeAi(originalPlan);
 
     if (!age) {
       whyPlanError.value =
@@ -1222,6 +1421,7 @@ const generateWhyThisPlan = async () => {
     for (const [index, batch] of batches.entries()) {
       const mealName = getBatchMealName(batch);
       const recipeName = getBatchRecipeName(batch);
+
       const payload = buildMealPayload({
         plan,
         batch,
@@ -1241,7 +1441,7 @@ const generateWhyThisPlan = async () => {
             data.explanation ||
             data.ai_feedback ||
             data.message ||
-            'This meal supports a practical and balanced lunchbox routine.',
+            'This meal supports a practical school lunchbox routine.',
         });
       } catch (mealError) {
         mealResults.push({
@@ -1258,13 +1458,30 @@ const generateWhyThisPlan = async () => {
     }
 
     const successfulMeals = mealResults.filter((meal) => !meal.hasError);
-    const mealTitles = successfulMeals.map((meal) => meal.title).join(', ');
-    const childAgeDisplay = `${age} years old${ageSource ? ` (${ageSource})` : ''}`;
 
-    const summaryText =
-      successfulMeals.length > 0
-        ? `This weekly plan includes ${successfulMeals.length} explained meal${successfulMeals.length === 1 ? '' : 's'}: ${mealTitles}. The explanations were generated meal by meal, using the saved recipe inspirations, ${plan.season || 'seasonal'} planning context, ${plan.cookingFrequency || batches.length} cooking day(s), and child age information. Child age used: ${childAgeDisplay}.`
-        : 'AI explanations could not be generated for this plan. Please try again later.';
+    let summaryText =
+      'AI explanations could not be generated for this plan. Please try again later.';
+
+    if (successfulMeals.length > 0) {
+      try {
+        const weeklyStory = await getWeeklyNutritionStory({
+          meals: buildWeeklyStoryMeals(mealResults, plan, age),
+          child_age: age,
+          child_name: plan.children?.[0]?.displayName || 'your child',
+        });
+
+        summaryText =
+          weeklyStory.story ||
+          weeklyStory.explanation ||
+          weeklyStory.ai_feedback ||
+          weeklyStory.message ||
+          '';
+      } catch (summaryError) {
+        console.warn('Weekly summary AI failed:', summaryError);
+
+        summaryText = `This plan gives ${age}-year-old ${plan.children?.[0]?.displayName || 'your child'} a more organised school lunchbox routine. It uses different meals across ${plan.cookingFrequency || batches.length} cooking day(s), with saved lunchbox items, recipe inspiration, storage tips, and seasonal planning notes to reduce repetition and make preparation easier for parents.`;
+      }
+    }
 
     whyPlanMealExplanations.value = {
       ...whyPlanMealExplanations.value,

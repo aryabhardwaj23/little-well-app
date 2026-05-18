@@ -10,7 +10,7 @@
           Learn about serving sizes, food groups, and what to watch out for in everyday foods.
         </p>
 
-        <div class="mt-5 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:mt-10 sm:flex-row">
           <button
             type="button"
             @click="goToFoodAnalyser"
