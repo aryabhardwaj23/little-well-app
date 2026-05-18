@@ -42,7 +42,7 @@
             <section class="relative z-20 overflow-visible rounded-2xl border bg-white p-5 shadow-sm lg:z-30 lg:col-span-4">
               <div class="mb-3 flex items-center justify-between gap-3">
                 <p class="text-xs font-semibold uppercase tracking-wide text-[#2C5F2D] sm:text-sm">
-                  Step 1 — Select child or age
+                  Step 1 — {{ isLoggedIn ? 'Select child profile' : 'Select child age' }}
                 </p>
 
                 <span
@@ -66,7 +66,7 @@
                 <div
                   class="flex flex-col gap-2"
                   role="listbox"
-                  aria-label="Child profiles or ages"
+                  :aria-label="isLoggedIn ? 'Child profiles' : 'Child ages'"
                 >
                   <button
                     v-for="profile in orderedProfiles"
@@ -101,21 +101,21 @@
                     </div>
 
                     <p
-                      v-if="profile.allergies?.length"
+                      v-if="isLoggedIn && profile.allergies?.length"
                       class="mt-2 rounded-lg bg-amber-50 px-2 py-1 text-xs text-amber-800"
                     >
                       Allergies: {{ profile.allergies.join(', ') }}
                     </p>
 
                     <p
-                      v-if="profile.dietaryRestriction"
+                      v-if="isLoggedIn && profile.dietaryRestriction"
                       class="mt-2 rounded-lg bg-[#CDE7F0]/40 px-2 py-1 text-xs text-[#1B4965]"
                     >
                       {{ profile.dietaryRestriction }}
                     </p>
 
                     <p class="mt-2 text-[10px] uppercase tracking-wide text-muted-foreground">
-                      {{ profile.isQuickMode ? 'Quick age mode' : 'Saved profile' }}
+                      {{ isLoggedIn ? 'Saved profile' : 'Quick age mode' }}
                     </p>
                   </button>
                 </div>
@@ -125,15 +125,21 @@
                 {{
                   isLoggedIn
                     ? 'Select a saved child profile for personalised nutrition feedback.'
-                    : 'You are using quick age-only analysis. Select the child’s exact age.'
+                    : 'Select your child’s exact age for quick nutrition feedback.'
                 }}
               </p>
 
               <div
                 v-if="!isLoggedIn"
-                class="mt-3 rounded-xl border border-[#CDE7F0] bg-[#CDE7F0]/30 px-3 py-2 text-xs leading-relaxed text-[#1B4965]"
+                class="mt-3 rounded-xl border border-[#CDE7F0] bg-[#CDE7F0]/30 px-3 py-3 text-xs leading-relaxed text-[#1B4965]"
               >
-                Quick mode only sends the selected age number to the backend. It does not send a child name or saved profile data.
+                <p class="font-semibold">
+                  Log in for more personalised recommendations.
+                </p>
+
+                <p class="mt-1">
+                  With a saved profile, LittleHelp can use your child’s allergies, dietary restrictions, and nutrition needs to provide more tailored feedback.
+                </p>
               </div>
             </section>
 
