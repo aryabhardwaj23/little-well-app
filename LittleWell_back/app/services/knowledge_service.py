@@ -233,17 +233,33 @@ def build_food_group_tip(group_code: str) -> str:
 def get_additive_awareness_guide(db: Session):
     sql = text("""
         SELECT
-            category,
+            COALESCE(NULLIF(category_map, ''), NULLIF(category, ''), 'Other') AS category,
             COUNT(*) AS total_products,
+
             SUM(CASE WHEN has_added_sugar = 1 THEN 1 ELSE 0 END) AS added_sugar_count,
             SUM(CASE WHEN has_added_preservatives = 1 THEN 1 ELSE 0 END) AS preservatives_count,
-            SUM(CASE WHEN has_food_color = 1 THEN 1 ELSE 0 END) AS food_color_count
-        FROM packaged_products
-        WHERE category IS NOT NULL
-          AND category <> ''
-        GROUP BY category
+            SUM(CASE WHEN has_food_color = 1 THEN 1 ELSE 0 END) AS food_color_count,
+
+            SUM(COALESCE(sugar_detected_count, 0)) AS sugar_detected_total,
+            SUM(COALESCE(preservative_detected_count, 0)) AS preservative_detected_total,
+            SUM(COALESCE(color_detected_count, 0)) AS color_detected_total
+
+        FROM packaged_products_enriched
+
+        WHERE COALESCE(NULLIF(category_map, ''), NULLIF(category, '')) IS NOT NULL
+
+        GROUP BY COALESCE(NULLIF(category_map, ''), NULLIF(category, ''), 'Other')
+
         HAVING COUNT(*) >= 3
-        ORDER BY total_products DESC
+
+        ORDER BY
+            (
+                SUM(CASE WHEN has_added_sugar = 1 THEN 1 ELSE 0 END) * 0.4
+                + SUM(CASE WHEN has_added_preservatives = 1 THEN 1 ELSE 0 END) * 0.3
+                + SUM(CASE WHEN has_food_color = 1 THEN 1 ELSE 0 END) * 0.3
+            ) DESC,
+            total_products DESC
+
         LIMIT 12
     """)
 
@@ -252,11 +268,11 @@ def get_additive_awareness_guide(db: Session):
     heatmap = []
 
     for row in rows:
-        total = row["total_products"] or 1
+        total = int(row["total_products"] or 1)
 
-        added_sugar_count = row["added_sugar_count"] or 0
-        preservatives_count = row["preservatives_count"] or 0
-        food_color_count = row["food_color_count"] or 0
+        added_sugar_count = int(row["added_sugar_count"] or 0)
+        preservatives_count = int(row["preservatives_count"] or 0)
+        food_color_count = int(row["food_color_count"] or 0)
 
         added_sugar_percent = round(added_sugar_count / total * 100)
         preservatives_percent = round(preservatives_count / total * 100)
@@ -284,16 +300,19 @@ def get_additive_awareness_guide(db: Session):
             ),
             "added_sugar": {
                 "count": added_sugar_count,
+                "detected_total": int(row["sugar_detected_total"] or 0),
                 "percent": added_sugar_percent,
                 "level": get_heat_level(added_sugar_percent),
             },
             "preservatives": {
                 "count": preservatives_count,
+                "detected_total": int(row["preservative_detected_total"] or 0),
                 "percent": preservatives_percent,
                 "level": get_heat_level(preservatives_percent),
             },
             "artificial_colours": {
                 "count": food_color_count,
+                "detected_total": int(row["color_detected_total"] or 0),
                 "percent": artificial_colours_percent,
                 "level": get_heat_level(artificial_colours_percent),
             },
