@@ -1,11 +1,12 @@
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Depends
+from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from typing import Optional
 
 from ..db import get_db
-from ..auth_utils import get_current_user
 from .. import models
+from ..auth_utils import get_current_user
 
 from ..services.photo_analyser_service import (
     detect_food_labels,
@@ -19,6 +20,13 @@ from ..services.photo_analyser_service import (
 
 router = APIRouter(prefix="/photo", tags=["Photo Analyser"])
 
+# Important:
+# auto_error=False means no token will NOT automatically return 401.
+oauth2_scheme_optional = OAuth2PasswordBearer(
+    tokenUrl="/auth/login",
+    auto_error=False,
+)
+
 
 class PhotoAnalysisResponse(BaseModel):
     detected_foods: list
@@ -27,21 +35,44 @@ class PhotoAnalysisResponse(BaseModel):
     matched_foods: list
     child_profile: dict
     personalised_checks: dict
+    mode: str
+
+
+async def get_optional_current_user(
+    token: Optional[str] = Depends(oauth2_scheme_optional),
+    db: Session = Depends(get_db),
+):
+    """
+    Optional authentication helper.
+
+    - If no token is provided, return None.
+    - If token is provided and valid, return current user.
+    - If token is invalid/expired, also return None instead of blocking quick analysis.
+    """
+    if not token:
+        return None
+
+    try:
+        # Reuse your existing auth logic.
+        # get_current_user normally expects Depends(), so we manually pass token/db.
+        return await get_current_user(token=token, db=db)
+    except Exception:
+        return None
 
 
 @router.post("/analyse", response_model=PhotoAnalysisResponse)
 async def analyse_photo(
     file: UploadFile = File(...),
 
-    # New profile-based mode
+    # Optional profile-based mode
     child_id: Optional[int] = Form(None),
 
-    # Backward-compatible fallback mode
+    # Quick analysis fallback mode
     child_age: int = Form(6),
     child_name: str = Form("your child"),
 
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_user),
+    current_user: Optional[models.User] = Depends(get_optional_current_user),
 ):
     if not file.content_type or not file.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="File must be an image")
@@ -52,10 +83,25 @@ async def analyse_photo(
         if len(image_bytes) > 5 * 1024 * 1024:
             raise HTTPException(status_code=400, detail="Image must be under 5MB")
 
-        child_context = None
+        mode = "quick_age_only"
 
-        # Preferred mode: use saved child profile
-        if child_id is not None:
+        # Default quick-analysis context.
+        child_context = {
+            "child_id": None,
+            "child_name": child_name or "your child",
+            "age_band": f"{child_age} years old",
+            "child_age": child_age,
+            "allergens": [],
+            "dietary_restriction": None,
+            "dietary_restrictions": [],
+            "nutrition_focus": [],
+        }
+
+        child_age_for_scoring = child_age
+
+        # Enhanced personalised mode:
+        # only use profile if BOTH login token and child_id are present.
+        if current_user is not None and child_id is not None:
             child = (
                 db.query(models.UserChild)
                 .filter(
@@ -65,24 +111,14 @@ async def analyse_photo(
                 .first()
             )
 
-            if not child:
-                raise HTTPException(status_code=404, detail="Child profile not found")
-
-            child_context = build_child_profile_context(db=db, child=child)
-            child_age_for_scoring = age_band_to_age(child_context.get("age_band"))
-        else:
-            # Fallback mode for old frontend
-            child_context = {
-                "child_id": None,
-                "child_name": child_name or "your child",
-                "age_band": f"{child_age} years old",
-                "child_age": child_age,
-                "allergens": [],
-                "dietary_restriction": None,
-                "dietary_restrictions": [],
-                "nutrition_focus": [],
-            }
-            child_age_for_scoring = child_age
+            if child:
+                child_context = build_child_profile_context(db=db, child=child)
+                child_age_for_scoring = age_band_to_age(child_context.get("age_band"))
+                mode = "profile_personalised"
+            else:
+                # Token exists, but child does not belong to this user.
+                # Do not expose profile data. Fall back to quick mode safely.
+                mode = "quick_age_only"
 
         food_labels = detect_food_labels(image_bytes)
 
@@ -106,6 +142,7 @@ async def analyse_photo(
         )
 
         matched_foods = []
+
         if not matched_df.empty:
             try:
                 matched_foods = matched_df.iloc[:, 1].dropna().astype(str).tolist()
@@ -119,6 +156,7 @@ async def analyse_photo(
             matched_foods=matched_foods,
             child_profile=child_context,
             personalised_checks=personalised_checks,
+            mode=mode,
         )
 
     except HTTPException:
@@ -136,6 +174,6 @@ def photo_health():
             "image_recognition": "Groq vision model",
             "nutrition_data": "AUSNUT",
             "ai_explanation": "Groq LLaMA",
-            "personalisation": "Child profile context",
+            "personalisation": "Optional child profile context",
         },
     }
