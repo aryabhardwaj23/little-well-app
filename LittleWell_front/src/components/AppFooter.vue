@@ -5,9 +5,11 @@
     <div class="h-1 bg-gradient-to-r from-[#A8D5BA] via-[#F7B267]/70 to-[#CDE7F0]"></div>
 
     <div class="container mx-auto px-4 sm:px-6 max-w-6xl py-10 sm:py-14">
-      <div class="grid gap-10 lg:grid-cols-[1.3fr,0.9fr,1.1fr]">
+      <div
+        class="grid gap-10 lg:grid-cols-[minmax(0,1.3fr)_auto_minmax(0,1.1fr)_auto_minmax(0,0.9fr)] lg:items-start lg:gap-x-0"
+      >
         <!-- Brand -->
-        <section aria-label="LittleHelp summary">
+        <section aria-label="LittleHelp summary" class="lg:pr-8">
           <button
             type="button"
             @click="goHome"
@@ -36,45 +38,84 @@
             lunchbox plans through science-backed nutrition guidance.
           </p>
 
-          <div class="mt-5 space-y-3 max-w-md">
-            <div class="rounded-2xl border border-[#D8D2C4] bg-white/60 p-4">
-              <p class="text-xs font-semibold uppercase tracking-wide text-[#2C5F2D] mb-1">
+          <div class="mt-5 max-w-md space-y-5">
+            <div>
+              <p class="mb-1 text-xs font-semibold uppercase tracking-wide text-[#2C5F2D]">
                 Educational guidance
               </p>
-              <p class="text-xs text-muted-foreground leading-relaxed">
+              <p class="text-xs leading-relaxed text-muted-foreground">
                 LittleHelp provides educational food guidance only and is not a replacement
                 for professional medical or dietetic advice.
               </p>
             </div>
 
-            <div class="rounded-2xl border border-[#D8D2C4] bg-white/60 p-4">
-              <p class="text-xs font-semibold uppercase tracking-wide text-[#2C5F2D] mb-1">
+            <div>
+              <p class="mb-1 text-xs font-semibold uppercase tracking-wide text-[#2C5F2D]">
                 Data & attribution
               </p>
-
-              <p class="text-xs text-muted-foreground leading-relaxed">
+              <p class="text-xs leading-relaxed text-muted-foreground">
                 Built with public food and nutrition references including OpenFoodFacts,
                 AUSNUT, Australian Dietary Guidelines, and seasonal food resources.
               </p>
-
               <button
                 type="button"
                 @click="goTo('/about#data-sources')"
-                class="mt-2 text-xs font-semibold text-[#2C5F2D] hover:underline"
+                class="group mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-[#2C5F2D]"
               >
-                View data sources
+                <span aria-hidden="true" class="text-[0.65rem] leading-none">→</span>
+                <span class="underline underline-offset-[3px] decoration-[#2C5F2D]/70 group-hover:decoration-[#2C5F2D]">
+                  View data sources
+                </span>
               </button>
             </div>
           </div>
         </section>
 
+        <div
+          class="footer-column-divider hidden lg:flex lg:items-start lg:justify-center lg:px-8"
+          aria-hidden="true"
+        >
+          <span class="mt-[4.25rem] h-44 w-px bg-[#6B7280]/70" />
+        </div>
+
+        <!-- CTA -->
+        <section aria-label="Begin with LittleHelp" class="lg:px-8 lg:pt-[4.25rem]">
+          <div>
+            <p class="footer-heading mb-3">
+              Begin with LittleHelp
+            </p>
+
+            <p class="text-sm leading-relaxed text-muted-foreground">
+              Set up a child profile to receive simple, personalised lunchbox guidance
+              for your family.
+            </p>
+
+            <div class="mt-5">
+              <button
+                type="button"
+                @click="goProtected('/child-info')"
+                class="footer-primary-button"
+              >
+                Start Planning
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <div
+          class="footer-column-divider hidden lg:flex lg:items-start lg:justify-center lg:px-8"
+          aria-hidden="true"
+        >
+          <span class="mt-[4.25rem] h-44 w-px bg-[#6B7280]/70" />
+        </div>
+
         <!-- Navigation -->
-        <nav aria-label="Footer navigation">
+        <nav aria-label="Footer navigation" class="lg:pl-0 lg:pt-[4.25rem]">
           <p class="footer-heading">
             Explore
           </p>
 
-          <div class="grid grid-cols-2 sm:grid-cols-1 gap-2 text-sm">
+          <div class="mt-3.5 grid grid-cols-2 gap-x-6 gap-y-1 text-sm sm:grid-cols-1 sm:gap-y-1">
             <button type="button" @click="goHome" class="footer-link">
               Home
             </button>
@@ -96,42 +137,6 @@
             </button>
           </div>
         </nav>
-
-        <!-- CTA -->
-        <section aria-label="Get started">
-          <div class="rounded-3xl bg-white border border-[#D8D2C4] p-5 sm:p-6 shadow-sm">
-            <p class="footer-heading mb-3">
-              Get started
-            </p>
-
-            <h2 class="text-xl font-semibold text-[#2C5F2D] leading-snug">
-              Build a lunchbox plan that fits your child.
-            </h2>
-
-            <p class="mt-3 text-sm text-muted-foreground leading-relaxed">
-              Create a child profile for personalised ideas based on age, allergies,
-              dietary needs, and nutrition focus.
-            </p>
-
-            <div class="mt-5 flex flex-col gap-3">
-              <button
-                type="button"
-                @click="goProtected('/child-info')"
-                class="footer-primary-button"
-              >
-                Start Planning
-              </button>
-
-              <button
-                type="button"
-                @click="goTo('/quick-start')"
-                class="footer-secondary-button"
-              >
-                Try Quick Start
-              </button>
-            </div>
-          </div>
-        </section>
       </div>
 
       <div
@@ -248,7 +253,7 @@ const goProtected = async (path) => {
   display: inline-flex;
   align-items: center;
   color: #2C5F2D;
-  padding: 0.35rem 0;
+  padding: 0.2rem 0;
   border-radius: 0.5rem;
   transition:
     color 0.2s ease,
@@ -263,21 +268,16 @@ const goProtected = async (path) => {
 
 .footer-primary-button {
   width: 100%;
-  background-color: #A8D5BA;
-  color: #2C5F2D;
-  border-radius: 0.75rem;
-  padding: 0.85rem 1.25rem;
-  font-weight: 700;
-  transition:
-    background-color 0.2s ease,
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+  background-color: #2C5F2D;
+  color: #ffffff;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.75rem;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
 }
 
 .footer-primary-button:hover {
-  background-color: #8FC2A4;
-  transform: translateY(-1px);
-  box-shadow: 0 8px 18px rgba(44, 95, 45, 0.12);
+  background-color: #254F25;
 }
 
 .footer-secondary-button {
