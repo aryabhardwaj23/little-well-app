@@ -1,8 +1,8 @@
 <template>
   <div class="min-h-screen bg-[#FAF9F6]">
     <!-- Header: no internal nav, use global NavigationBar -->
-    <section class="pt-24 lg:pt-28 bg-white border-b border-gray-100">
-      <div class="container mx-auto px-4 sm:px-6 max-w-6xl py-8 sm:py-10">
+    <section class="pt-16 sm:pt-20 lg:pt-20 bg-white border-b border-gray-100">
+      <div class="container mx-auto px-4 sm:px-6 max-w-6xl py-5 sm:py-6">
         <div class="flex flex-col sm:flex-row sm:items-center gap-4">
           <div
             class="w-14 h-14 bg-[#A8D5BA] rounded-full flex items-center justify-center shrink-0"
@@ -23,7 +23,7 @@
     </section>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-4 sm:px-6 max-w-6xl py-6 sm:py-10">
+    <main class="container mx-auto px-4 sm:px-6 max-w-6xl py-5 sm:py-7">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
         <!-- Left Panel -->
         <aside class="lg:col-span-1 space-y-5">
@@ -33,36 +33,22 @@
               Child Details
             </h2>
 
-            <div class="space-y-4">
-              <div>
-                <label class="text-xs text-gray-500 mb-1 block">
-                  Child's name
-                </label>
-                <input
-                  v-model="childName"
-                  type="text"
-                  placeholder="e.g. Arya"
-                  class="w-full border border-gray-200 rounded-lg px-3 py-3 sm:py-2 text-sm focus:outline-none focus:border-[#A8D5BA] focus:ring-1 focus:ring-[#A8D5BA]"
-                />
-              </div>
-
-              <div>
-                <label class="text-xs text-gray-500 mb-1 block">
-                  Age (years)
-                </label>
-                <select
-                  v-model="childAge"
-                  class="w-full border border-gray-200 rounded-lg px-3 py-3 sm:py-2 text-sm bg-white focus:outline-none focus:border-[#A8D5BA] focus:ring-1 focus:ring-[#A8D5BA]"
+            <div>
+              <label class="text-xs text-gray-500 mb-1 block">
+                Age (years)
+              </label>
+              <select
+                v-model="childAge"
+                class="w-full border border-gray-200 rounded-lg px-3 py-3 sm:py-2 text-sm bg-white focus:outline-none focus:border-[#A8D5BA] focus:ring-1 focus:ring-[#A8D5BA]"
+              >
+                <option
+                  v-for="age in allowedAges"
+                  :key="age"
+                  :value="age"
                 >
-                  <option
-                    v-for="age in allowedAges"
-                    :key="age"
-                    :value="age"
-                  >
-                    {{ age }} years old
-                  </option>
-                </select>
-              </div>
+                  {{ age }} years old
+                </option>
+              </select>
             </div>
           </section>
 
@@ -154,7 +140,7 @@
               <li>• Good lighting helps identify more foods</li>
               <li>• Spread food out so all items are visible</li>
               <li>• Photograph from directly above the lunchbox</li>
-              <li>• Enter your child's correct age for accurate scoring</li>
+              <li>• Select the correct age for more accurate scoring</li>
             </ul>
           </section>
         </aside>
@@ -227,7 +213,7 @@
                     Nutrition Score
                   </h2>
                   <p class="text-sm text-gray-500 mt-1">
-                    for {{ childName || 'your child' }}, age {{ childAge }}
+                    Based on age {{ childAge }}
                   </p>
                 </div>
 
@@ -393,7 +379,6 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
 
 const allowedAges = [5, 6, 7, 8, 9, 10, 11, 12];
 
-const childName = ref('');
 const childAge = ref(7);
 const error = ref(null);
 
@@ -475,7 +460,6 @@ async function analysePhoto() {
     const form = new FormData();
     form.append('file', photoFile.value);
     form.append('child_age', childAge.value);
-    form.append('child_name', childName.value || 'your child');
 
     const response = await fetch(`${API_BASE}/photo/analyse`, {
       method: 'POST',
