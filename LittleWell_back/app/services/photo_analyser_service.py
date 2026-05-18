@@ -22,6 +22,21 @@ AUSNUT_PATH = os.path.join(
 )
 
 
+# Scoring settings.
+# A lunchbox photo cannot confirm exact serving size, so 25% of daily target is
+# more reasonable than treating the image as exactly one third of daily intake.
+TARGET_SHARE = 0.25
+
+MAX_VISUAL_BONUS = 6
+MAX_VISUAL_PENALTY = -6
+
+FALLBACK_MIN = 45
+FALLBACK_MAX = 70
+
+FINAL_MIN = 35
+FINAL_MAX = 95
+
+
 ADG_BY_AGE = {
     2: {
         "energy_kj": 4800,
@@ -398,35 +413,35 @@ def _visual_adjustment(food_labels: Optional[List[str]]) -> dict:
     )
 
     if has_fruit:
-        adjustment += 3
+        adjustment += 2
         reasons.append("fruit detected")
 
     if has_vegetable:
-        adjustment += 3
+        adjustment += 2
         reasons.append("vegetable detected")
 
     if has_protein:
-        adjustment += 3
+        adjustment += 2
         reasons.append("protein source detected")
 
     if has_grain:
-        adjustment += 2
+        adjustment += 1
         reasons.append("grain or carbohydrate source detected")
 
     if visible_count >= 4:
-        adjustment += 2
+        adjustment += 1
         reasons.append("good visible variety")
 
     if has_sweet_snack:
-        adjustment -= 5
+        adjustment -= 4
         reasons.append("sweet or snack food detected")
 
     if has_processed:
-        adjustment -= 4
+        adjustment -= 3
         reasons.append("processed food detected")
 
-    # Keep visual adjustment small.
-    adjustment = max(-8, min(10, adjustment))
+    # Keep visual adjustment small so AUSNUT remains the main scoring source.
+    adjustment = max(MAX_VISUAL_PENALTY, min(MAX_VISUAL_BONUS, adjustment))
 
     return {
         "adjustment": adjustment,
@@ -435,10 +450,10 @@ def _visual_adjustment(food_labels: Optional[List[str]]) -> dict:
 
 
 def _get_grade_and_color(overall_score: int):
-    if overall_score >= 80:
+    if overall_score >= 85:
         return "Excellent", "green"
 
-    if overall_score >= 65:
+    if overall_score >= 70:
         return "Good", "blue"
 
     if overall_score >= 50:
@@ -472,7 +487,7 @@ def score_nutrition(
 
     if matched_df.empty:
         fallback_score = 55 + visual["adjustment"]
-        fallback_score = max(40, min(75, round(fallback_score)))
+        fallback_score = max(FALLBACK_MIN, min(FALLBACK_MAX, round(fallback_score)))
 
         grade, color = _get_grade_and_color(fallback_score)
 
@@ -543,12 +558,12 @@ def score_nutrition(
         if key not in adg or adg[key] <= 0:
             continue
 
-        lunchbox_target = adg[key] * 0.33
+        lunchbox_target = adg[key] * TARGET_SHARE
         ratio = val / lunchbox_target
 
         # Positive nutrients.
-        # The old formula was too strict because it punished anything not close
-        # to exactly 33% of daily intake. This banded scoring is more stable.
+        # Banded scoring is more stable than forcing every value to be exactly
+        # close to the target.
         if key in [
             "energy_kj",
             "protein_g",
@@ -566,22 +581,28 @@ def score_nutrition(
             elif 1.3 < ratio <= 1.8:
                 score = 75
             elif ratio > 1.8:
-                score = 60
+                # Too much energy/carbs should be treated more carefully.
+                # For protein, fibre, calcium and iron, being above target is
+                # not necessarily as negative.
+                if key in ["energy_kj", "carbs_g"]:
+                    score = 60
+                else:
+                    score = 65
             else:
                 score = 45
 
             nutrient_scores[key] = score
 
-        # Fat should be moderate, not simply high or low.
+        # Fat should be moderate, but children also need some healthy fats.
         elif key == "fat_g":
-            if 0.6 <= ratio <= 1.3:
+            if 0.5 <= ratio <= 1.4:
                 score = 85
-            elif 1.3 < ratio <= 1.8:
+            elif 1.4 < ratio <= 2.0:
                 score = 70
-            elif ratio > 1.8:
+            elif ratio > 2.0:
                 score = 50
             else:
-                score = 60
+                score = 65
 
             nutrient_scores[key] = score
 
@@ -610,7 +631,7 @@ def score_nutrition(
     overall_score = ausnut_score + visual["adjustment"]
 
     # Keep final score reasonable.
-    overall_score = max(35, min(95, round(overall_score)))
+    overall_score = max(FINAL_MIN, min(FINAL_MAX, round(overall_score)))
 
     grade, color = _get_grade_and_color(overall_score)
 

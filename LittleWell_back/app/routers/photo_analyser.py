@@ -54,8 +54,6 @@ async def get_optional_current_user(
         return None
 
     try:
-        # Reuse existing auth logic.
-        # get_current_user normally expects Depends(), so we manually pass token/db.
         return await get_current_user(token=token, db=db)
     except Exception:
         return None
@@ -87,7 +85,7 @@ async def analyse_photo(
         mode = "quick_age_only"
 
         # Default quick-analysis context.
-        # This is used when the user is not logged in or no child_id is provided.
+        # Used when the user is not logged in or no child_id is provided.
         child_context = {
             "child_id": None,
             "child_name": child_name or "your child",
@@ -126,9 +124,8 @@ async def analyse_photo(
 
         matched_df = match_ausnut(food_labels)
 
-        # Important:
-        # food_labels is now passed into score_nutrition.
-        # Frontend does not need to change because the returned core fields stay the same.
+        # AUSNUT-first scoring with small visual adjustment.
+        # Frontend does not need to change because the response shape stays compatible.
         nutrition_score = score_nutrition(
             matched_df=matched_df,
             child_age=child_age_for_scoring,
