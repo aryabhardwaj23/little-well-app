@@ -232,8 +232,246 @@ def build_food_group_tip(group_code: str) -> str:
 
 def get_additive_awareness_guide(db: Session):
     sql = text("""
+        WITH cleaned_products AS (
+            SELECT
+                product_id,
+                name,
+                brand,
+                category,
+                category_map,
+                has_added_sugar,
+                has_added_preservatives,
+                has_food_color,
+                sugar_detected_count,
+                preservative_detected_count,
+                color_detected_count,
+
+                CASE
+                    /* Exclude unsuitable non-lunchbox / non-food records */
+                    WHEN LOWER(COALESCE(category_map, category, '')) LIKE '%dietary supplement%'
+                      OR LOWER(COALESCE(category_map, category, '')) LIKE '%supplement%'
+                      OR LOWER(COALESCE(category_map, category, '')) LIKE '%vitamin%'
+                      OR LOWER(COALESCE(category_map, category, '')) LIKE '%bodybuilding%'
+                      OR LOWER(COALESCE(category_map, category, '')) LIKE '%protein powder%'
+                      OR LOWER(COALESCE(category_map, category, '')) LIKE '%protein shake%'
+                      OR LOWER(COALESCE(category_map, category, '')) LIKE '%medication%'
+                      OR LOWER(COALESCE(category_map, category, '')) LIKE '%non food%'
+                      OR LOWER(COALESCE(category_map, category, '')) LIKE '%open beauty facts%'
+                    THEN NULL
+
+                    /* Alcohol is not suitable for a children lunchbox guide */
+                    WHEN LOWER(COALESCE(category_map, category, '')) LIKE '%alcohol%'
+                      OR LOWER(COALESCE(category_map, category, '')) LIKE '%beer%'
+                      OR LOWER(COALESCE(category_map, category, '')) LIKE '%wine%'
+                      OR LOWER(COALESCE(category_map, category, '')) LIKE '%cider%'
+                      OR LOWER(COALESCE(category_map, category, '')) LIKE '%whisky%'
+                      OR LOWER(COALESCE(category_map, category, '')) LIKE '%lagers%'
+                    THEN NULL
+
+                    /* Use existing cleaned category if it is already useful */
+                    WHEN category_map IS NOT NULL
+                      AND category_map <> ''
+                      AND category_map <> 'Other'
+                    THEN category_map
+
+                    /* Sweet snacks / confectionery */
+                    WHEN LOWER(COALESCE(category, '')) LIKE '%candy%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%candies%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%bonbon%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%gummi%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%gummy%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%lollipop%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%chocolate%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%confection%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%marshmallow%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%sweet snack%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%dessert%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%pudding%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%jelly%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%lamington%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%ice pop%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%protein bar%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%health bar%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%energy bar%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%bars%'
+                    THEN 'Sweet Snacks & Confectionery'
+
+                    /* Biscuits / cookies / cakes */
+                    WHEN LOWER(COALESCE(category, '')) LIKE '%biscuit%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%cookie%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%cake%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%brownie%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%waffle%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%pastr%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%croissant%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%doughnut%'
+                    THEN 'Biscuits, Cookies & Cakes'
+
+                    /* Beverages */
+                    WHEN LOWER(COALESCE(category, '')) LIKE '%beverage%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%drink%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%water%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%cola%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%soda%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%juice%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%tea%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%coffee%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%kombucha%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%coconut water%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%chai%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%cappuccino%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%electrolyte%'
+                    THEN 'Beverages'
+
+                    /* Frozen and ready meals */
+                    WHEN LOWER(COALESCE(category, '')) LIKE '%readymeal%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%ready meal%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%microwave%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%meal%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%dumpling%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%ravioli%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%spring roll%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%sandwich%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%sushi%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%pizza%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%lasagna%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%hash brown%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%recipe base%'
+                    THEN 'Frozen & Ready Meals'
+
+                    /* Condiments / sauces / spreads */
+                    WHEN LOWER(COALESCE(category, '')) LIKE '%condiment%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%sauce%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%spread%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%spice%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%salt%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%sweetener%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%sugar%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%broth%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%seasoning%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%garlic%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%ginger%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%paprika%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%vanilla extract%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%jelly cup%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%mint jelly%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%tahini%'
+                    THEN 'Condiments, Sauces & Spreads'
+
+                    /* Dairy and eggs */
+                    WHEN LOWER(COALESCE(category, '')) LIKE '%dair%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%lait%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%fromage%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%cheese%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%milk%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%yogurt%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%yoghurt%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%cream%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%butter%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%egg%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%camembert%'
+                    THEN 'Dairy & Eggs'
+
+                    /* Breakfast cereals */
+                    WHEN LOWER(COALESCE(category, '')) LIKE '%breakfast%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%cereal%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%corn-flake%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%muesli%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%musli%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%porridge%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%oat%'
+                    THEN 'Breakfast Cereals'
+
+                    /* Salty snacks */
+                    WHEN LOWER(COALESCE(category, '')) LIKE '%salty snack%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%chips%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%crisps%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%crackers%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%popcorn%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%pea puffs%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%salty roasted peas%'
+                    THEN 'Salty Snacks'
+
+                    /* Bread and bakery */
+                    WHEN LOWER(COALESCE(category, '')) LIKE '%bread%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%bakery%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%wrap%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%naan%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%roti%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%taco shell%'
+                    THEN 'Bread & Bakery'
+
+                    /* Meat, fish, poultry */
+                    WHEN LOWER(COALESCE(category, '')) LIKE '%meat%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%chicken%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%fish%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%tuna%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%salmon%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%mackerel%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%bacon%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%pepperoni%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%pâté%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%beef%'
+                    THEN 'Meat, Fish & Poultry'
+
+                    /* Fruits and vegetables */
+                    WHEN LOWER(COALESCE(category, '')) LIKE '%fruit%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%vegetable%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%salad%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%tomato%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%beetroot%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%corn%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%carrot%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%cherries%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%apricot%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%olives%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%kalamata%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%capers%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%pickled%'
+                    THEN 'Fruits & Vegetables'
+
+                    /* Legumes and plant proteins */
+                    WHEN LOWER(COALESCE(category, '')) LIKE '%legume%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%bean%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%chickpea%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%lentil%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%tofu%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%falafel%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%plant protein%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%meat analogue%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%vegetarian ground%'
+                    THEN 'Legumes & Plant Proteins'
+
+                    /* Grains, pasta, rice */
+                    WHEN LOWER(COALESCE(category, '')) LIKE '%pasta%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%rice%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%quinoa%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%noodle%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%spaghetti%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%penne%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%gnocchi%'
+                    THEN 'Grains, Pasta & Rice'
+
+                    /* Oils and fats */
+                    WHEN LOWER(COALESCE(category, '')) LIKE '%oil%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%margarine%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%fat%'
+                    THEN 'Oils & Fats'
+
+                    /* Baby foods */
+                    WHEN LOWER(COALESCE(category, '')) LIKE '%baby%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%toddler%'
+                      OR LOWER(COALESCE(category, '')) LIKE '%aliments pour bébé%'
+                    THEN 'Baby & Toddler Foods'
+
+                    ELSE NULL
+                END AS cleaned_category
+
+            FROM packaged_products_enriched
+        )
+
         SELECT
-            COALESCE(NULLIF(category_map, ''), NULLIF(category, ''), 'Other') AS category,
+            cleaned_category AS category,
             COUNT(*) AS total_products,
 
             SUM(CASE WHEN has_added_sugar = 1 THEN 1 ELSE 0 END) AS added_sugar_count,
@@ -244,11 +482,13 @@ def get_additive_awareness_guide(db: Session):
             SUM(COALESCE(preservative_detected_count, 0)) AS preservative_detected_total,
             SUM(COALESCE(color_detected_count, 0)) AS color_detected_total
 
-        FROM packaged_products_enriched
+        FROM cleaned_products
 
-        WHERE COALESCE(NULLIF(category_map, ''), NULLIF(category, '')) IS NOT NULL
+        WHERE cleaned_category IS NOT NULL
+          AND cleaned_category <> ''
+          AND cleaned_category <> 'Other'
 
-        GROUP BY COALESCE(NULLIF(category_map, ''), NULLIF(category, ''), 'Other')
+        GROUP BY cleaned_category
 
         HAVING COUNT(*) >= 3
 
@@ -329,7 +569,9 @@ def get_additive_awareness_guide(db: Session):
         ),
         "disclaimer": (
             "A higher percentage does not mean every product in the category is unhealthy. "
-            "It means this category may need closer label checking when choosing lunchbox items."
+            "It means this category may need closer label checking when choosing lunchbox items. "
+            "Records such as supplements, alcohol, and unclear non-food products are excluded "
+            "from this children-focused guide."
         ),
         "how_to_read": [
             {
