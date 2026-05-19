@@ -628,6 +628,31 @@ const QUICK_AGE_PROFILES = [
   },
 ];
 
+const allergenIdToName = {
+  47: 'Peanuts',
+  40: 'Tree nuts',
+  16: 'Milk',
+  18: 'Eggs',
+  24: 'Wheat',
+  50: 'Soy',
+  22: 'Fish',
+  15: 'Shellfish',
+};
+
+const mapAllergiesToNames = (allergies) => {
+  if (!Array.isArray(allergies)) return [];
+
+  return allergies
+    .map((allergy) => {
+      if (typeof allergy === 'string' && Number.isNaN(Number(allergy))) {
+        return allergy;
+      }
+
+      return allergenIdToName[Number(allergy)] || String(allergy);
+    })
+    .filter(Boolean);
+};
+
 const orderedProfiles = computed(() => {
   const profiles = childProfiles.value.length
     ? childProfiles.value
@@ -691,9 +716,7 @@ const normaliseChildProfile = (child) => {
     subtitle: ageBand,
     childAge: estimatedAge,
     ageGroup: ageBand,
-    allergies: Array.isArray(child.allergies)
-      ? child.allergies.map((item) => String(item))
-      : [],
+    allergies: mapAllergiesToNames(child.allergies),
     dietaryRestriction:
       child.restriction_name ||
       child.restriction_code ||
