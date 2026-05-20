@@ -8,9 +8,7 @@
       <div class="absolute top-[-80px] right-[-80px] w-80 h-80 bg-white/10 rounded-full" />
       <div class="absolute bottom-[-60px] left-[-60px] w-64 h-64 bg-white/10 rounded-full" />
 
-      <div class="flex items-center relative z-10">
-        <img :src="logoUrl" alt="" class="h-12 w-auto object-contain rounded-lg" />
-      </div>
+      <div class="relative z-10" />
 
       <div class="relative z-10">
         <h2 class="text-4xl font-light text-white leading-snug mb-4">
@@ -39,16 +37,9 @@
         <div
           class="mb-6 rounded-3xl bg-gradient-to-br from-[#A8D5BA] to-[#8FC2A4] p-5 shadow-sm lg:hidden"
         >
-          <div class="flex items-center gap-3 mb-5">
-            <img
-              :src="logoUrl"
-              alt="LittleHelp logo"
-              class="h-11 w-11 rounded-2xl object-cover bg-white/80 p-1"
-            />
-            <div>
-              <p class="text-lg font-semibold text-white">LittleHelp</p>
-              <p class="text-xs text-white/80">Lunchbox planning made simple</p>
-            </div>
+          <div class="mb-5">
+            <p class="text-lg font-semibold text-white">LittleHelp</p>
+            <p class="text-xs text-white/80">Lunchbox planning made simple</p>
           </div>
 
           <h2 class="text-2xl font-light leading-snug text-white">
@@ -186,7 +177,6 @@ import { ref, reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { User, Lock, Eye, EyeOff, AlertCircle, Loader2, ArrowLeft } from 'lucide-vue-next';
 import { useAuthStore } from '../stores/auth';
-import logoUrl from '../assets/littlehelp-logo.jpg';
 
 const router = useRouter();
 const route = useRoute();
@@ -215,11 +205,13 @@ const handleLogin = async () => {
 
     const rawRedirect = route.query.redirect;
     let destination = '/';
+
     if (typeof rawRedirect === 'string' && rawRedirect.startsWith('/') && !rawRedirect.startsWith('//')) {
       destination = rawRedirect;
     }
 
     const hashIndex = destination.indexOf('#');
+
     if (hashIndex !== -1) {
       router.push({
         path: destination.slice(0, hashIndex),

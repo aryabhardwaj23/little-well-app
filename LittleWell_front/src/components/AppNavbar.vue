@@ -27,7 +27,7 @@
             role="navigation"
           >
             <div
-              class="nav-underline-indicator pointer-events-none absolute bottom-1 left-0 h-px rounded-full bg-[#2C5F2D] transition-[left,width,opacity] duration-300 ease-out"
+              class="nav-underline-indicator pointer-events-none absolute bottom-1 left-0 h-[2px] rounded-full bg-[#2C5F2D] transition-[transform,width,opacity] duration-300 ease-out"
               :style="navUnderlineStyle"
               aria-hidden="true"
             />
@@ -399,10 +399,13 @@ const isRouteActive = (path) => {
 const navLinksContainerRef = ref(null);
 const navLinkRefs = ref({});
 const navUnderlineStyle = ref({
-  left: '0px',
+  transform: 'translateX(0px)',
   width: '0px',
   opacity: '0',
 });
+
+let navResizeObserver = null;
+let underlineRafId = null;
 
 const setNavLinkRef = (path, el) => {
   if (el) {
@@ -413,56 +416,129 @@ const setNavLinkRef = (path, el) => {
   delete navLinkRefs.value[path];
 };
 
+const resetNavUnderline = () => {
+  navUnderlineStyle.value = {
+    transform: 'translateX(0px)',
+    width: '0px',
+    opacity: '0',
+  };
+};
+
 const updateNavUnderline = () => {
-  nextTick(() => {
+  if (underlineRafId) {
+    cancelAnimationFrame(underlineRafId);
+  }
+
+  underlineRafId = requestAnimationFrame(() => {
     const container = navLinksContainerRef.value;
+
     if (!container) {
+      resetNavUnderline();
       return;
     }
 
     const activeItem = desktopNavItems.find((item) => isRouteActive(item.path));
+
     if (!activeItem) {
-      navUnderlineStyle.value = {
-        left: '0px',
-        width: '0px',
-        opacity: '0',
-      };
+      resetNavUnderline();
       return;
     }
 
     const linkEl = navLinkRefs.value[activeItem.path];
+
     if (!linkEl) {
-      navUnderlineStyle.value = {
-        left: '0px',
-        width: '0px',
-        opacity: '0',
-      };
+      resetNavUnderline();
       return;
     }
 
     const containerRect = container.getBoundingClientRect();
     const linkRect = linkEl.getBoundingClientRect();
-    const underlineInset = 6;
+
+    const underlineInset = 12;
     const left = linkRect.left - containerRect.left + underlineInset;
-    const width = Math.max(0, linkRect.width - underlineInset * 2);
+    const width = Math.max(24, linkRect.width - underlineInset * 2);
 
     navUnderlineStyle.value = {
-      left: `${left}px`,
+      transform: `translateX(${left}px)`,
       width: `${width}px`,
       opacity: '1',
     };
   });
 };
 
-watch(currentPath, updateNavUnderline);
+const updateNavUnderlineAfterLayout = async () => {
+  await nextTick();
+
+  requestAnimationFrame(() => {
+    updateNavUnderline();
+
+    requestAnimationFrame(() => {
+      updateNavUnderline();
+    });
+  });
+};
+
+const setupNavResizeObserver = () => {
+  if (!('ResizeObserver' in window)) {
+    return;
+  }
+
+  if (navResizeObserver) {
+    navResizeObserver.disconnect();
+  }
+
+  navResizeObserver = new ResizeObserver(() => {
+    updateNavUnderlineAfterLayout();
+  });
+
+  if (navLinksContainerRef.value) {
+    navResizeObserver.observe(navLinksContainerRef.value);
+  }
+
+  Object.values(navLinkRefs.value).forEach((el) => {
+    if (el) {
+      navResizeObserver.observe(el);
+    }
+  });
+};
+
+watch(currentPath, () => {
+  updateNavUnderlineAfterLayout();
+});
+
+watch(
+  [largeTextMode, highContrastMode, isLoggedIn, username],
+  async () => {
+    await updateNavUnderlineAfterLayout();
+    setupNavResizeObserver();
+  }
+);
 
 onMounted(() => {
-  updateNavUnderline();
-  window.addEventListener('resize', updateNavUnderline);
+  updateNavUnderlineAfterLayout();
+  setupNavResizeObserver();
+
+  window.addEventListener('resize', updateNavUnderlineAfterLayout);
+
+  if (document.fonts?.ready) {
+    document.fonts.ready.then(() => {
+      updateNavUnderlineAfterLayout();
+    });
+  }
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener('resize', updateNavUnderline);
+  window.removeEventListener('resize', updateNavUnderlineAfterLayout);
+
+  if (navResizeObserver) {
+    navResizeObserver.disconnect();
+    navResizeObserver = null;
+  }
+
+  if (underlineRafId) {
+    cancelAnimationFrame(underlineRafId);
+    underlineRafId = null;
+  }
 });
 
 const closeMobileMenu = () => {
