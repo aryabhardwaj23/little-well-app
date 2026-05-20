@@ -2,6 +2,7 @@ import os
 import base64
 import json
 import re
+import unicodedata
 from typing import Dict, List, Any, Optional
 
 import pandas as pd
@@ -139,14 +140,15 @@ Important:
 - Include drinks if visible.
 - Include items that are not suitable for children if visible.
 - Do not hide unsafe or non-food items.
-- Be specific when possible, for example "beer", "wine", "energy drink", "coffee", "vape", "cigarette", "soft drink", or "whole grapes".
-- If the item is a branded drink, describe the type if you can, such as "energy drink", "soft drink", "sports drink", or "coffee".
+- Be specific when possible, for example "beer", "wine", "Jägermeister", "energy drink", "coffee", "vape", "cigarette", "soft drink", or "whole grapes".
+- If the item is a branded drink, describe the type if you can, such as "alcoholic drink", "energy drink", "soft drink", "sports drink", or "coffee".
+- If you recognise an alcohol brand, return both the brand and the type when possible, for example "Jägermeister alcoholic drink".
 
 Example:
 ["sandwich", "apple", "yoghurt", "water"]
 
 Unsafe examples that should still be returned if visible:
-["beer", "wine", "vodka", "energy drink", "coffee", "vape", "cigarette", "tobacco"]
+["Jägermeister alcoholic drink", "beer", "wine", "vodka", "energy drink", "coffee", "vape", "cigarette", "tobacco"]
 
 If no food or drink is visible, return:
 ["unknown food"]
@@ -247,6 +249,17 @@ def match_ausnut(food_labels: list) -> pd.DataFrame:
         return pd.DataFrame()
 
 
+def _normalise_text(text: str) -> str:
+    """
+    Lowercase text and remove accents so words like Jägermeister
+    can match jagermeister.
+    """
+    text = str(text).lower().strip()
+    text = unicodedata.normalize("NFKD", text)
+    text = "".join(ch for ch in text if not unicodedata.combining(ch))
+    return text
+
+
 def _safe_mean_from_columns(
     matched_df: pd.DataFrame,
     col_lower: dict,
@@ -278,7 +291,7 @@ def _safe_mean_from_columns(
 def _build_food_text(food_labels: Optional[List[str]]) -> str:
     return " ".join(
         [
-            str(item).lower().strip()
+            _normalise_text(item)
             for item in food_labels or []
             if str(item).strip()
         ]
@@ -286,7 +299,8 @@ def _build_food_text(food_labels: Optional[List[str]]) -> str:
 
 
 def _has_any(text: str, keywords: List[str]) -> bool:
-    return any(keyword.lower() in text for keyword in keywords)
+    normalised_text = _normalise_text(text)
+    return any(_normalise_text(keyword) in normalised_text for keyword in keywords)
 
 
 def _child_safety_check(food_labels: Optional[List[str]]) -> dict:
@@ -303,6 +317,7 @@ def _child_safety_check(food_labels: Optional[List[str]]) -> dict:
 
     alcohol_keywords = [
         "alcohol",
+        "alcoholic",
         "alcoholic drink",
         "alcoholic beverage",
         "beer",
@@ -337,6 +352,39 @@ def _child_safety_check(food_labels: Optional[List[str]]) -> dict:
         "baijiu",
         "shochu",
         "spirits",
+
+        # Common alcohol brands / products.
+        # Include both accented and non-accented forms where useful.
+        "jagermeister",
+        "jägermeister",
+        "jäger",
+        "jager",
+        "jack daniels",
+        "johnnie walker",
+        "smirnoff",
+        "absolut",
+        "bacardi",
+        "captain morgan",
+        "bombay sapphire",
+        "tanqueray",
+        "grey goose",
+        "hennessy",
+        "malibu",
+        "baileys",
+        "kahlua",
+        "corona",
+        "heineken",
+        "budweiser",
+        "guinness",
+        "asahi",
+        "sapporo",
+        "tsingtao",
+        "stella artois",
+        "carlsberg",
+        "peroni",
+        "jacobs creek",
+        "penfolds",
+        "yellow tail",
     ]
 
     energy_drink_keywords = [
@@ -680,6 +728,28 @@ def _get_grade_and_color(overall_score: int):
     return "Needs improvement", "red"
 
 
+def _critical_ml_classification() -> dict:
+    """
+    Fixed ML classification returned when child-safety override is triggered.
+
+    This prevents the frontend from showing the old model result such as
+    'Moderate' for alcohol, nicotine, or energy drinks.
+    """
+    return {
+        "label": "not_suitable",
+        "display_label": "Not suitable for children",
+        "classification": "Not suitable",
+        "prediction": "Not suitable",
+        "confidence": 1.0,
+        "confidence_percent": 100,
+        "message": "This item is not suitable for children.",
+        "recommendation": (
+            "This should not be included in a child's lunchbox. "
+            "Please replace it with child-friendly options such as water, fruit, yoghurt, wholegrain snacks, or a balanced sandwich."
+        ),
+    }
+
+
 def score_nutrition(
     matched_df: pd.DataFrame,
     child_age: int,
@@ -697,6 +767,7 @@ def score_nutrition(
 
     Main idea:
     - Critical child-safety issues override normal scoring.
+    - Critical safety items also override ml_classification.
     - AUSNUT nutrient data creates the base score.
     - Visible food labels only provide a small adjustment.
     - If AUSNUT matching fails, use a conservative visible-food estimate.
@@ -707,34 +778,14 @@ def score_nutrition(
 
     # Critical safety override:
     # alcohol, energy drinks, tobacco or nicotine products should not receive
-    # a normal nutrition score.
+    # a normal nutrition score or a normal ML classification.
     if safety["is_critical"]:
-        try:
-            ml_result = predict(
-                {
-                    "energy_kj": None,
-                    "protein_g": None,
-                    "fat_g": None,
-                    "carbs_g": None,
-                    "fibre_g": None,
-                    "calcium_mg": None,
-                    "iron_mg": None,
-                    "sodium_mg": None,
-                },
-                child_age,
-            )
-        except Exception:
-            ml_result = {
-                "label": "not_suitable",
-                "display_label": "Not suitable for children",
-            }
-
         return {
             "overall_score": CRITICAL_SAFETY_SCORE,
             "grade": "Not suitable",
             "color": "red",
             "nutrient_scores": {},
-            "ml_classification": ml_result,
+            "ml_classification": _critical_ml_classification(),
             "ausnut_score": None,
             "visual_adjustment": 0,
             "balance_reasons": [],
@@ -743,7 +794,7 @@ def score_nutrition(
             "scoring_method": "child_safety_override",
             "note": (
                 "This item is not suitable for children. The normal nutrition score "
-                "was overridden by child safety rules."
+                "and ML classification were overridden by child safety rules."
             ),
         }
 
@@ -767,6 +818,12 @@ def score_nutrition(
             "ml_classification": {
                 "label": "estimated",
                 "display_label": "Estimated from visible foods",
+                "classification": grade,
+                "prediction": grade,
+                "confidence": 0.5,
+                "confidence_percent": 50,
+                "message": "AUSNUT data was not matched, so this is an estimated result.",
+                "recommendation": "Please check the visible foods and choose a balanced, age-appropriate lunchbox.",
             },
             "ausnut_score": None,
             "visual_adjustment": visual["adjustment"],
@@ -923,6 +980,26 @@ def score_nutrition(
         ml_result = {
             "label": "unknown",
             "display_label": "Not enough data",
+            "classification": grade,
+            "prediction": grade,
+            "confidence": 0.5,
+            "confidence_percent": 50,
+            "message": "The model could not confidently classify this lunchbox.",
+            "recommendation": "Please review the visible foods and nutrition score.",
+        }
+
+    # If caution safety is triggered, override the ML wording enough that the
+    # frontend does not display a misleading "Moderate / okay occasionally" message.
+    if safety["is_caution"]:
+        ml_result = {
+            "label": "safety_caution",
+            "display_label": "Safety caution",
+            "classification": "Safety caution",
+            "prediction": "Safety caution",
+            "confidence": 1.0,
+            "confidence_percent": 100,
+            "message": "This lunchbox contains an item that is not recommended for children.",
+            "recommendation": "Please check the safety warning and choose a more age-appropriate option.",
         }
 
     return {
@@ -1043,14 +1120,15 @@ def build_child_profile_context(db: Session, child: models.UserChild) -> Dict[st
 
 
 def _contains_any(text: str, keywords: List[str]) -> bool:
-    return any(keyword.lower() in text for keyword in keywords)
+    normalised_text = _normalise_text(text)
+    return any(_normalise_text(keyword) in normalised_text for keyword in keywords)
 
 
 def generate_personalised_checks(
     food_labels: List[str],
     child_context: Dict[str, Any],
 ) -> Dict[str, Any]:
-    foods_text = " ".join([str(food).lower() for food in food_labels])
+    foods_text = _build_food_text(food_labels)
 
     allergy_warnings = []
     dietary_warnings = []
@@ -1063,7 +1141,7 @@ def generate_personalised_checks(
     # Allergy warning by simple keyword match.
     # Use cautious wording because image recognition cannot confirm ingredients.
     for allergen in allergens:
-        allergen_text = str(allergen).lower().strip()
+        allergen_text = _normalise_text(allergen)
 
         if not allergen_text:
             continue
