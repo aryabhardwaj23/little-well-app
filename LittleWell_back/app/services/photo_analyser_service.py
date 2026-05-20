@@ -36,6 +36,14 @@ FALLBACK_MAX = 70
 FINAL_MIN = 35
 FINAL_MAX = 95
 
+# Child safety settings.
+# Critical items override normal nutrition scoring.
+CRITICAL_SAFETY_SCORE = 15
+
+# Caution items are not as severe as alcohol / nicotine / energy drinks,
+# but should not receive a high score.
+CAUTION_SAFETY_SCORE_CAP = 45
+
 
 ADG_BY_AGE = {
     2: {
@@ -124,13 +132,23 @@ def detect_food_labels(image_bytes: bytes) -> list:
     b64 = base64.standard_b64encode(image_bytes).decode("utf-8")
 
     prompt = """
-Look at this image and list every food item you can see.
-Return ONLY a JSON array of food name strings, nothing else.
+Look at this image and list every visible food item, drink item, or lunchbox-related item.
+Return ONLY a JSON array of item name strings, nothing else.
+
+Important:
+- Include drinks if visible.
+- Include items that are not suitable for children if visible.
+- Do not hide unsafe or non-food items.
+- Be specific when possible, for example "beer", "wine", "energy drink", "coffee", "vape", "cigarette", "soft drink", or "whole grapes".
+- If the item is a branded drink, describe the type if you can, such as "energy drink", "soft drink", "sports drink", or "coffee".
 
 Example:
-["pasta", "tomato sauce", "cheese", "apple"]
+["sandwich", "apple", "yoghurt", "water"]
 
-If no food is visible, return:
+Unsafe examples that should still be returned if visible:
+["beer", "wine", "vodka", "energy drink", "coffee", "vape", "cigarette", "tobacco"]
+
+If no food or drink is visible, return:
 ["unknown food"]
 """
 
@@ -153,7 +171,7 @@ If no food is visible, return:
                 ],
             }
         ],
-        max_tokens=120,
+        max_tokens=180,
         temperature=0.1,
     )
 
@@ -165,7 +183,7 @@ If no food is visible, return:
         try:
             parsed = json.loads(match.group())
             if isinstance(parsed, list):
-                return [str(item).strip() for item in parsed if str(item).strip()][:10]
+                return [str(item).strip() for item in parsed if str(item).strip()][:12]
         except Exception:
             pass
 
@@ -173,7 +191,7 @@ If no food is visible, return:
 
     labels = [w.strip() for w in words if w.strip()]
 
-    return labels[:8] or ["unknown food"]
+    return labels[:10] or ["unknown food"]
 
 
 def match_ausnut(food_labels: list) -> pd.DataFrame:
@@ -268,7 +286,207 @@ def _build_food_text(food_labels: Optional[List[str]]) -> str:
 
 
 def _has_any(text: str, keywords: List[str]) -> bool:
-    return any(keyword in text for keyword in keywords)
+    return any(keyword.lower() in text for keyword in keywords)
+
+
+def _child_safety_check(food_labels: Optional[List[str]]) -> dict:
+    """
+    Detect items that are not suitable or not recommended for children's lunchboxes.
+
+    Critical items override the normal nutrition score.
+    Caution items cap the score and produce a clear warning.
+    """
+    text = _build_food_text(food_labels)
+
+    warnings = []
+    detected_categories = []
+
+    alcohol_keywords = [
+        "alcohol",
+        "alcoholic drink",
+        "alcoholic beverage",
+        "beer",
+        "lager",
+        "ale",
+        "stout",
+        "wine",
+        "red wine",
+        "white wine",
+        "sparkling wine",
+        "champagne",
+        "prosecco",
+        "cider",
+        "hard cider",
+        "vodka",
+        "whiskey",
+        "whisky",
+        "bourbon",
+        "scotch",
+        "rum",
+        "gin",
+        "tequila",
+        "brandy",
+        "liqueur",
+        "liquor",
+        "cocktail",
+        "martini",
+        "margarita",
+        "mojito",
+        "soju",
+        "sake",
+        "baijiu",
+        "shochu",
+        "spirits",
+    ]
+
+    energy_drink_keywords = [
+        "energy drink",
+        "red bull",
+        "monster",
+        "v energy",
+        "rockstar",
+        "mother energy",
+        "prime energy",
+        "bang energy",
+        "reign",
+        "celsius",
+        "lucozade energy",
+        "5-hour energy",
+        "energy shot",
+    ]
+
+    tobacco_nicotine_keywords = [
+        "tobacco",
+        "cigarette",
+        "cigarettes",
+        "cigar",
+        "cigars",
+        "vape",
+        "vaping",
+        "vape pen",
+        "e-cigarette",
+        "e cigarette",
+        "electronic cigarette",
+        "nicotine",
+        "nicotine pouch",
+        "nicotine pouches",
+        "snus",
+        "hookah",
+        "shisha",
+    ]
+
+    caffeine_keywords = [
+        "coffee",
+        "espresso",
+        "latte",
+        "cappuccino",
+        "flat white",
+        "iced coffee",
+        "cold brew",
+        "mocha",
+        "macchiato",
+        "americano",
+        "strong tea",
+        "black tea",
+        "green tea",
+        "matcha",
+        "yerba mate",
+    ]
+
+    high_sugar_drink_keywords = [
+        "soft drink",
+        "soda",
+        "cola",
+        "coke",
+        "pepsi",
+        "sprite",
+        "fanta",
+        "lemonade",
+        "sports drink",
+        "gatorade",
+        "powerade",
+        "slurpee",
+        "slushie",
+        "bubble tea",
+        "milk tea",
+    ]
+
+    choking_risk_keywords = [
+        "whole grapes",
+        "grapes",
+        "hard candy",
+        "hard lolly",
+        "hard lollies",
+        "popcorn",
+        "marshmallow",
+        "whole nuts",
+        "peanuts",
+        "almonds",
+        "cashews",
+    ]
+
+    if _has_any(text, alcohol_keywords):
+        detected_categories.append("alcohol")
+        warnings.append(
+            "Alcohol was detected. Alcohol is not suitable for children and should not be included in a child's lunchbox."
+        )
+
+    if _has_any(text, energy_drink_keywords):
+        detected_categories.append("energy_drink")
+        warnings.append(
+            "An energy drink may be present. Energy drinks are not suitable for children."
+        )
+
+    if _has_any(text, tobacco_nicotine_keywords):
+        detected_categories.append("tobacco_or_nicotine")
+        warnings.append(
+            "A tobacco or nicotine product may be present. This is not suitable or safe for children."
+        )
+
+    if _has_any(text, caffeine_keywords):
+        detected_categories.append("caffeine")
+        warnings.append(
+            "A caffeinated drink may be present. Caffeinated drinks are not recommended for children's lunchboxes."
+        )
+
+    if _has_any(text, high_sugar_drink_keywords):
+        detected_categories.append("high_sugar_drink")
+        warnings.append(
+            "A high-sugar drink may be present. Water or milk is usually a better lunchbox drink for children."
+        )
+
+    if _has_any(text, choking_risk_keywords):
+        detected_categories.append("possible_choking_risk")
+        warnings.append(
+            "A possible choking-risk food may be present. Please prepare age-appropriate portions, such as cutting grapes and avoiding hard lollies."
+        )
+
+    critical_categories = {
+        "alcohol",
+        "energy_drink",
+        "tobacco_or_nicotine",
+    }
+
+    caution_categories = {
+        "caffeine",
+        "high_sugar_drink",
+        "possible_choking_risk",
+    }
+
+    is_critical = any(
+        category in critical_categories for category in detected_categories
+    )
+
+    is_caution = any(
+        category in caution_categories for category in detected_categories
+    )
+
+    return {
+        "is_critical": is_critical,
+        "is_caution": is_caution,
+        "detected_categories": detected_categories,
+        "warnings": warnings,
+    }
 
 
 def _visual_adjustment(food_labels: Optional[List[str]]) -> dict:
@@ -468,7 +686,7 @@ def score_nutrition(
     food_labels: Optional[List[str]] = None,
 ) -> dict:
     """
-    AUSNUT-first scoring.
+    AUSNUT-first scoring with child-safety override.
 
     Frontend does not need to change because the main response fields stay:
     - overall_score
@@ -478,15 +696,65 @@ def score_nutrition(
     - ml_classification
 
     Main idea:
+    - Critical child-safety issues override normal scoring.
     - AUSNUT nutrient data creates the base score.
     - Visible food labels only provide a small adjustment.
     - If AUSNUT matching fails, use a conservative visible-food estimate.
     """
 
+    safety = _child_safety_check(food_labels)
     visual = _visual_adjustment(food_labels)
+
+    # Critical safety override:
+    # alcohol, energy drinks, tobacco or nicotine products should not receive
+    # a normal nutrition score.
+    if safety["is_critical"]:
+        try:
+            ml_result = predict(
+                {
+                    "energy_kj": None,
+                    "protein_g": None,
+                    "fat_g": None,
+                    "carbs_g": None,
+                    "fibre_g": None,
+                    "calcium_mg": None,
+                    "iron_mg": None,
+                    "sodium_mg": None,
+                },
+                child_age,
+            )
+        except Exception:
+            ml_result = {
+                "label": "not_suitable",
+                "display_label": "Not suitable for children",
+            }
+
+        return {
+            "overall_score": CRITICAL_SAFETY_SCORE,
+            "grade": "Not suitable",
+            "color": "red",
+            "nutrient_scores": {},
+            "ml_classification": ml_result,
+            "ausnut_score": None,
+            "visual_adjustment": 0,
+            "balance_reasons": [],
+            "safety_warnings": safety["warnings"],
+            "safety_categories": safety["detected_categories"],
+            "scoring_method": "child_safety_override",
+            "note": (
+                "This item is not suitable for children. The normal nutrition score "
+                "was overridden by child safety rules."
+            ),
+        }
 
     if matched_df.empty:
         fallback_score = 55 + visual["adjustment"]
+
+        # Caution items are not as severe as alcohol/energy drinks/tobacco,
+        # but they should not receive a high score either.
+        if safety["is_caution"]:
+            fallback_score = min(fallback_score, CAUTION_SAFETY_SCORE_CAP)
+
         fallback_score = max(FALLBACK_MIN, min(FALLBACK_MAX, round(fallback_score)))
 
         grade, color = _get_grade_and_color(fallback_score)
@@ -500,6 +768,16 @@ def score_nutrition(
                 "label": "estimated",
                 "display_label": "Estimated from visible foods",
             },
+            "ausnut_score": None,
+            "visual_adjustment": visual["adjustment"],
+            "balance_reasons": visual["reasons"],
+            "safety_warnings": safety["warnings"],
+            "safety_categories": safety["detected_categories"],
+            "scoring_method": (
+                "visible_estimate_with_safety_caution"
+                if safety["is_caution"]
+                else "visible_estimate_no_ausnut_match"
+            ),
             "note": "AUSNUT data not matched — score estimated from visible foods",
         }
 
@@ -630,6 +908,10 @@ def score_nutrition(
 
     overall_score = ausnut_score + visual["adjustment"]
 
+    # Caution safety items should cap the score even if AUSNUT score looks okay.
+    if safety["is_caution"]:
+        overall_score = min(overall_score, CAUTION_SAFETY_SCORE_CAP)
+
     # Keep final score reasonable.
     overall_score = max(FINAL_MIN, min(FINAL_MAX, round(overall_score)))
 
@@ -655,7 +937,13 @@ def score_nutrition(
         "ausnut_score": ausnut_score,
         "visual_adjustment": visual["adjustment"],
         "balance_reasons": visual["reasons"],
-        "scoring_method": "ausnut_first_with_small_visual_adjustment",
+        "safety_warnings": safety["warnings"],
+        "safety_categories": safety["detected_categories"],
+        "scoring_method": (
+            "ausnut_first_with_safety_caution"
+            if safety["is_caution"]
+            else "ausnut_first_with_small_visual_adjustment"
+        ),
         "note": (
             "Overall score is mainly based on AUSNUT nutrient data. "
             "Visible food groups only provide a small adjustment because photo analysis cannot confirm exact portion size."
@@ -960,6 +1248,32 @@ def generate_ai_feedback(
     dietary_warnings = personalised_checks.get("dietary_warnings", []) or []
     nutrition_focus_feedback = personalised_checks.get("nutrition_focus_feedback", []) or []
 
+    safety_warnings = nutrition_score.get("safety_warnings", []) or []
+    safety_categories = nutrition_score.get("safety_categories", []) or []
+    scoring_method = nutrition_score.get("scoring_method", "")
+
+    # Hard override for critical child-safety issues.
+    # This avoids the LLM softening alcohol / energy drink / nicotine warnings.
+    if scoring_method == "child_safety_override" and safety_warnings:
+        warning_text = " ".join(safety_warnings)
+
+        return (
+            f"I detected {foods} in the lunchbox photo. "
+            f"This is not suitable for {child_name}'s lunchbox. {warning_text} "
+            "Please remove this item and replace it with child-friendly options such as water, fruit, yoghurt, wholegrain snacks, or a balanced sandwich."
+        )
+
+    # Softer direct handling for caution warnings, such as caffeine, high-sugar drinks,
+    # or possible choking-risk foods.
+    if safety_warnings:
+        warning_text = " ".join(safety_warnings)
+
+        return (
+            f"I detected {foods} in the lunchbox photo. "
+            f"The score is {score}/100, rated {grade}, but there is an important safety note: {warning_text} "
+            "Please check the item carefully and choose an age-appropriate, child-friendly option where needed."
+        )
+
     prompt = f"""
 You are a friendly children's nutritionist for the LittleWell app in Australia.
 
@@ -980,6 +1294,9 @@ Nutrition result:
 - Score: {score}/100
 - Rating: {grade}
 - ML classification: {ml_label if ml_label else "not available"}
+- Safety categories: {safety_categories if safety_categories else "none"}
+- Safety warnings: {safety_warnings if safety_warnings else "none"}
+- Scoring method: {scoring_method if scoring_method else "standard nutrition scoring"}
 
 Rule-based personalised findings:
 - Allergy warnings: {allergy_warnings if allergy_warnings else "none"}
@@ -989,12 +1306,15 @@ Rule-based personalised findings:
 Write a warm 3-sentence feedback paragraph for the parent:
 1. Acknowledge the detected foods.
 2. Explain the rating using the child's age band and profile.
-3. Give one specific improvement tip based on allergy, dietary restriction, or nutrition focus if relevant.
+3. Give one specific improvement tip based on allergy, dietary restriction, nutrition focus, or safety warning if relevant.
 
 Important safety rules:
+- If safety warnings are present, clearly state that the item is not suitable or not recommended for children.
+- If alcohol, energy drinks, tobacco or nicotine products are detected, make this the main message.
+- Do not soften alcohol, energy drink, nicotine, tobacco or vaping warnings as normal nutrition issues.
 - Do not claim the image proves an allergen is definitely present.
 - Use cautious wording such as "may contain" or "please check ingredients" for allergy and restriction issues.
-- Be encouraging.
+- Be encouraging, but be direct when the item is unsafe or unsuitable for children.
 - No bullet points.
 - Parent-friendly language.
 """
@@ -1007,8 +1327,8 @@ Important safety rules:
                 "content": prompt,
             }
         ],
-        max_tokens=220,
-        temperature=0.7,
+        max_tokens=240,
+        temperature=0.6,
     )
 
     return resp.choices[0].message.content.strip()

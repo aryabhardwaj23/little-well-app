@@ -124,7 +124,7 @@ async def analyse_photo(
 
         matched_df = match_ausnut(food_labels)
 
-        # AUSNUT-first scoring with small visual adjustment.
+        # AUSNUT-first scoring with child safety override and small visual adjustment.
         # Frontend does not need to change because the response shape stays compatible.
         nutrition_score = score_nutrition(
             matched_df=matched_df,
@@ -178,5 +178,6 @@ def photo_health():
             "nutrition_data": "AUSNUT",
             "ai_explanation": "Groq LLaMA",
             "personalisation": "Optional child profile context",
+            "child_safety": "Safety override for unsuitable child lunchbox items",
         },
     }
