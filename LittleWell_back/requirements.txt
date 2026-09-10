@@ -6,3 +6,10 @@ python-dotenv
 pydantic
 httpx
 pandas
+python-jose[cryptography]
+passlib[bcrypt]
+bcrypt==4.0.1
+python-multipart
+numpy
+scikit-learn
+groq
